@@ -1,0 +1,100 @@
+
+### AUTHORITATIVE DLA MATERIAL COMMISSION
+
+This embedded JSON is the authoritative DLA material commission for Generate Activity Materials. Author only the listed activities and required_materials rows. Preserve activity_id, material_id, and material_type. Fulfil each row's purpose and specification. Honour instructional_archetype and archetype_plan when present. Honour evidence_requirement when present. Honour response_fulfilment when present — preserve learner-completion bounds and blank response loci for commissioned workspace rows. Honour practice_independence when present on model rows. Do not add, delete, substitute, rename, or reassign commissioned material rows. Copilot conversation may provide contextual continuity but must not override this embedded commission.
+
+```json
+{
+  "kind": "gam_authoritative_dla_commission",
+  "activities": [
+    {
+      "activity_id": "A1",
+      "required_materials": [
+        {
+          "material_id": "A1-M1",
+          "material_type": "worked_example",
+          "purpose": "Model the procedure on a distinct operand.",
+          "specification": "One worked example with two intermediate steps; distinct from practice operand.",
+          "practice_independence": {
+            "attempt_operand_material_ids": [
+              "A1-M2"
+            ]
+          }
+        },
+        {
+          "material_id": "A1-M2",
+          "material_type": "data_table",
+          "purpose": "Learner practice operand.",
+          "specification": "Blank response cells for learner completion.",
+          "response_fulfilment": {
+            "kind": "learner_workspace",
+            "binds_learner_task": true
+          }
+        },
+        {
+          "material_id": "A1-M3",
+          "material_type": "template",
+          "purpose": "Structured derivation workspace.",
+          "specification": "Ordered **Label:** response fields for derivation steps.",
+          "response_fulfilment": {
+            "kind": "learner_workspace",
+            "binds_learner_task": true
+          }
+        },
+        {
+          "material_id": "A1-M4",
+          "material_type": "checklist",
+          "purpose": "Diagnostic review of the learner attempt.",
+          "specification": "3–4 guided criteria covering A1-M2/A1-M3.",
+          "diagnostic_review": {
+            "covers_response_material_ids": [
+              "A1-M2",
+              "A1-M3"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "activity_id": "A2",
+      "required_materials": [
+        {
+          "material_id": "A2-M1",
+          "material_type": "transfer_prompt",
+          "purpose": "Culminating learner-production transfer.",
+          "specification": "Compact transfer task on meaningfully changed context; learner response required."
+        },
+        {
+          "material_id": "A2-M2",
+          "material_type": "consolidation_summary",
+          "purpose": "Page-level consolidation host for study_tips transport.",
+          "specification": "Host ### Page learner-resource closure; 2–4 consolidation bullets."
+        }
+      ]
+    }
+  ]
+}
+```
+
+S78-WS-2 MODEL-PRACTICE-INDEPENDENCE (auto-applied):
+- Authoritative DLA practice_independence bindings below — do not infer model/attempt pairing from task verbs when present.
+- When emitting the listed model material(s): demonstrate the same target method/capability on a DISTINCT comparable operand; do not use any bound attempt operand as the worked instance.
+- MUST NOT copy, restate, solve, answer, or substantially complete load-bearing reasoning for bound attempt operand(s) in the model body.
+- **Bridge:** transfer method, sequence, decision process, or criteria — not the attempt's answer, attempt-specific calculations, or final conclusion.
+- Bound attempt operand material bodies (scenario, task_card, etc.) remain learner-owned; preserve response_fulfilment blank cells on workspace rows.
+
+Per-binding authoring obligations:
+- Model A1-M1 (worked_example) in activity A1: attempt operand material_id(s) A1-M2 (data_table) are LEARNER-OWNED — author this model on a different near-transfer instance; do not disclose or complete those operands.
+
+S78-OPERATIONAL-SUITABILITY (auto-applied):
+- Authoritative DLA commission below — operational suitability (Case 1) applies locally to listed material(s).
+- Generated load-bearing particulars must be mutually consistent and sufficient for the commissioned action/result within intended scope.
+- Provide enough coherent information for the commissioned operation; do not emit contradictory or underdetermined particulars when the commission requires identifying or completing a determinate result.
+- If purpose/specification promises a complete worked result, reach that promised result — do not stop at partial intermediate steps.
+- If the material supplies learner-owned operand particulars, keep them unsolved but operationally usable for expected_output.
+- Preserve intentional open-endedness or deliberate insufficiency when learner_task/expected_output makes that the object of learning.
+- Preserve response_fulfilment blank cells on workspace rows; do not conflate with S78-WS-2 independence rules.
+
+Per-material authoring obligations:
+- A1-M1 (worked_example) in activity A1 [model demonstration]: Model the procedure on a distinct operand.
+- A1-M2 (data_table) in activity A1 [learner operand]: Learner practice operand. — particulars must make expected_output actually achievable; do not pre-solve.

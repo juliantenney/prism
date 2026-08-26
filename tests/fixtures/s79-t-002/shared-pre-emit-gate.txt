@@ -1,0 +1,4 @@
+FINAL SILENT PRE-EMIT CONSISTENCY CHECK:
+A. Role/status: silently verify generated particulars still instantiate the pedagogical role/status commissioned by purpose, specification, evidence_requirement, learner task, and expected output (intended category, contrast polarity, constrained vs unconstrained, positive vs counterexample, transfer target). Do not invent qualifications that flip that status.
+B. Quantitative/derived (only when the material contains quantitative, mathematical, computed, derived, or answer-bearing particulars): silently recompute/verify enough that values, equations, constraints, worked steps, derived quantities, and reference/diagnostic answers are mutually consistent and supported by learner-visible evidence. Skip when the material is purely qualitative.
+Correct inconsistencies before emission. Emit only the corrected artefact — do not output checking or reasoning.

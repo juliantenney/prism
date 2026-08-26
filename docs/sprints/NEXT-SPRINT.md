@@ -1,20 +1,27 @@
 # Next sprint — selection pointer
 
-**Status:** Sprint 78 **CLOSED** (2026-08-25). Sprint 77 **COMPLETE / CLOSED**. Sprint 76 **COMPLETE / Closed**.  
-**Updated:** 2026-08-25
+**Status:** Sprint 79 **OPEN** (2026-08-26). Sprint 78 **CLOSED** (2026-08-25).  
+**Updated:** 2026-08-26
 
 ---
 
 ## Current programme
 
-Sprint 78 — Learner Resource Quality Recovery — **CLOSED**.
+Sprint 79 — GAM Architecture and Maintainability — **OPEN**.
+
+**Pack:** [SPRINT-79-START-HERE.md](../development/sprints/2026-08-26-sprint-79-gam-architecture-and-maintainability/SPRINT-79-START-HERE.md) · **Opening task:** [S79-T-001](../development/sprints/2026-08-26-sprint-79-gam-architecture-and-maintainability/S79-T-001-sprint-open-architecture-diagnostic-target-design-and-implementation-plan.md) · **Opening decision:** [S79-D01](../development/sprints/2026-08-26-sprint-79-gam-architecture-and-maintainability/decisions.md#s79-d01-open-sprint-79--gam-architecture-and-maintainability)
+
+**Objective:** behavior-preserving GAM architecture reorganisation for maintainability.  
+**Immediate priority:** execute **S79-T-002** (canonical section inventory + prompt-equivalence baseline).
+
+### Protected closure state
+
+Sprint 78 remains **CLOSED**.
 
 **Closeout:** [sprint-78-closeout.md](sprint-78-closeout.md) · **Pack:** [SPRINT-78-START-HERE.md](../development/sprints/2026-08-17-sprint-78-learner-resource-quality-recovery/SPRINT-78-START-HERE.md) · **Admin record:** [S78-T-056](../development/sprints/2026-08-17-sprint-78-learner-resource-quality-recovery/S78-T-056-sprint-78-closure.md)
 
 **Final Gate:** Lagrangian **94/100**, 0 Critical, 0 Major — **MET**.  
 **T-013 / Workstream 2:** **CLOSED**.
-
-**Immediate priority:** Next sprint is **not** selected here. See pre-alpha carry-forwards in [S78-T-056 §9–10](../development/sprints/2026-08-17-sprint-78-learner-resource-quality-recovery/S78-T-056-sprint-78-closure.md) and [PRODUCT-BACKLOG.md](../backlog/PRODUCT-BACKLOG.md).
 
 ### Sprint 78 final workstream disposition
 

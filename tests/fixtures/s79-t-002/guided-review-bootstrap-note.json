@@ -1,0 +1,5 @@
+{
+  "finding": "SUSPECTED DRIFT / REQUIRES DECISION — Node require() contract includes full guided-review lines; live VM/app builder uses fallback guided-review stub unless guided-review-generation-contract is bootstrapped",
+  "node_has_hard_maximum_5": true,
+  "live_api_has_hard_maximum_5": false
+}

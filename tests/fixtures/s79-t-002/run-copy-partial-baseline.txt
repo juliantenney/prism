@@ -1,0 +1,336 @@
+Execution mode: autonomous. Do not ask the user follow-up questions. If something is ambiguous, choose the most reasonable interpretation from provided workflow context and continue.
+This step is titled: Generate Activity Materials.
+
+Sprint 58 GAM partial output mode: return a partial page artefact containing only activity_id + materials.
+PRISM does not embed the full upstream DLA page in this mode. The AUTHORITATIVE DLA MATERIAL COMMISSION is binding. Copilot conversation may provide contextual continuity but must not override that commission.
+Copilot output contract: return one complete pretty-printed fenced JSON page artefact (triple-backtick json fence, 2-space indentation) containing every input activity — no ellipses, no comments, no continuation, no top-level note/message/warning fields, and no prose or explanations. If output is large, still emit the full JSON. No prose before the fence. After the closing fence emit exactly one runner footer line: STEP 3 OUTPUT: page. No other text after the footer line.
+
+
+### Sprint 58 vNext GAM partial-page contract (required)
+
+Output a partial v2 page artefact for GAM-owned fields only.
+Do not return a full-page replay. Do not emit pack text or legacy activity_materials/session_materials artefacts.
+
+Required top-level envelope:
+- artifact_type: "page"
+- schema_version: "2.0.0"
+- assembly_state.current_stage: "gam"
+- assembly_state.enriched_by must include "gam"
+
+Required payload:
+- activities[] with activity_id and materials[] only
+- each material must keep stable material_id
+- each activity.materials[] entry must include: material_id, material_type, title, body_format, body, and activity_id (or parent_activity_id)
+- material order must match required_materials order for that activity
+- one-to-one coverage: every required_materials.material_id has exactly one matching materials[].material_id
+- no orphan materials (materials with no owning required_materials row)
+- when required_materials[].evidence_requirement is present, treat it as binding for material content
+- when required_materials[].response_fulfilment.kind is learner_workspace on a table-family row, preserve blank learner-response cells in the authored table body — partial fixed/model rows are allowed when allows_partial_exemplar applies
+- when required_materials[].practice_independence is present on worked_example or modelling_note, author the model on a distinct operand instance; bound attempt_operand_material_ids rows are learner-owned — do not copy, solve, or substantially complete those operands in the model body (see S78-WS-2 block when injected)
+- when generated particulars are load-bearing for a commissioned learner action or promised worked/model result, ensure mutual consistency and sufficiency for that commission (see S78-OPERATIONAL-SUITABILITY block when injected)
+- honour S78-DP disciplinary warrant: do not present conditions, intermediate results, representations, or interpretations as establishing stronger conclusions than stated assumptions, taught model class, and supplied evidence warrant; do not strengthen claim strength beyond the commission; when local context supports accurate weaker strength (candidate/feasible/scoped interpretation), prefer that over echoing overstrong establishment labels
+- S78-T-041 transfer_prompt fulfilment: when required_materials includes transfer_prompt, author a compact learner-production transfer/application task that asks the learner to apply the page's core learning in a meaningfully changed context. Require a learner response (not reading-only or generic "think about what you learned"). Do not leak the solution before production. Do not embed ### Page learner-resource closure / study_tips consolidation in the transfer_prompt body. Do not author boilerplate headings such as ### Transfer task — the learner renderer already supplies Transfer your learning / Transfer response. Do not introduce new teaching required to complete the transfer. Honour S78-DP.
+- S78-T-042 structured workspace fidelity: when required_materials includes template (or specification commissions a structured response/derivation/solution workspace), author material_type template with a Markdown body whose response fields use the exact canonical section form **Label:** (bold label text ending with a colon, then optional guidance on the same or following lines). Emit one **Label:** section per ordered response location. Do NOT represent the workspace as a stack of standalone bold lines without the trailing colon (e.g. **Label** alone), and do NOT use bold-only prose in text/worked_example as a surrogate for response fields. Ordinary inline emphasis in pedagogical prose remains valid (e.g. identify **what the constraint represents**). When the commission is a genuine comparison/diagnostic/completion table, keep the table-family type with blank learner cells — do not convert tables into templates solely to satisfy this rule. For mathematical derivation/solution sequences, use the same template **Label:** sequence (or blank table) to preserve pedagogical order; do not invent an equation editor or claim editable symbolic maths input.
+- if generation_notes.validation is present, do not emit pending_gam/shell_only coverage flags when materials are hydrated
+
+Material body representation (capture-binding):
+- Ordinary authored materials (every material that is not a guided-review checklist): body_format must be "markdown"; body must be a non-empty Markdown string.
+- Structured pedagogical content (workspaces, scenario sets, worked problem sets, tables, diagram packs, templates) belongs inside that Markdown string. Do not emit object-valued JSON bodies or body_format "json" for those materials.
+- Specialised JSON body is capture-supported only for checklist materials in guided-review form (body_format "json" with review_mode "guided_criteria"). Markdown checklists remain allowed for non-guided/legacy cases.
+
+Guided-review checklist materials (material_type checklist for verification):
+- Prefer body_format: "json" with structured guided-review body (not Markdown bullets).
+- Body object shape: { "review_mode": "guided_criteria", "criteria": [ ... ] }
+- Emit 3–4 criteria (maximum 5).
+- Normally emit 2–3 {expected, repair} pairs per criterion (maximum 4).
+- Repairs must help the learner improve their own response — never a complete replacement answer.
+- Simple Markdown checklists remain allowed only for non-guided/legacy cases.
+
+Instructional depth (runtime — LD-GAM-INSTRUCTIONAL-DEPTH-CONTRACT, S59 Iteration 7):
+- materials[].body: subject-matter first — teach concepts/evidence/reasoning/decisions; internalise weak/better exemplars without surfacing "weak/stronger explanation" meta-commentary; retain exemplar pairs, intervening process, anti-rubric-gaming, authentic scenarios, and domain comparative reasoning.
+
+S78-D04 page learner-resource closure packaging (required — substance for Design Page study_tips transport):
+- Do not write page_synthesis (still forbidden). Closure substance lives in materials Markdown only.
+- In the final activity's materials Markdown, include exactly one section headed:
+  ### Page learner-resource closure
+- That section is the sole designated transportable source for Design Page page_synthesis.study_tips (verbatim transport; Design Page must not synthesise).
+- Prefer a consolidation_summary or culminating closure/debrief Markdown material as the host vessel when commissioned; otherwise append the section to the last Markdown material of the final activity that is NOT a transfer_prompt.
+- S78-T-055: NEVER host ### Page learner-resource closure inside a transfer_prompt body. transfer_prompt is learner PRODUCTION only; page closure is terminal CONSOLIDATION for Study tips.
+- Content: 2–4 compact bullets that consolidate the learning sequence across activities; reconnect principal ideas/skills; support independent study; where pedagogically appropriate, one lightly signposted transfer invitation without a worked answer.
+- Must not: introduce new teaching, new disciplinary claims, or new model classes; repeat activity explanations at length; provide worked transfer answers; become a generic motivational conclusion.
+- Honour S78-DP disciplinary warrant in this section (no stronger conclusions than taught assumptions/evidence warrant).
+- Keep activity-level ### Closure / ### Debrief (GAM-PRES-08) separate from this page-level transport block when both appear.
+- S78-T-041: page learner-resource closure / study_tips is consolidation only. When a transfer_prompt material is commissioned, its body is the distinct learner-production transfer task — do not replace that production with this closure section; do not append this closure section to that body.
+
+Evidence-centred fulfilment (when required_materials row includes evidence_requirement):
+- Generate directly inspectable learner evidence as observations/values/conditions/outputs/extracts (not assertion-only prose).
+- Ensure body supports the required learner_action and observable_features from evidence_requirement.
+- Keep evidence-provider materials separate from response scaffolds unless evidence_layout explicitly declares a combined evidence workspace.
+- For combined evidence workspace tables: fixed observation columns contain evidence; learner interpretation/judgement columns remain blank.
+- Keep evidence concise and proportionate to activity duration and prerequisite knowledge.
+- Preserve delayed disclosure: do not pre-state the target inference, provisional judgement, preferred mechanism, or model conclusion before learner response.
+- When evidence_decision.required is true, any pre-task teaching, worked_example, or modelling_note must not analyse the focal evidence provider, answer the focal learner task, state a preferred mechanism/option/interpretation, or provide the provisional/final judgement learners must derive.
+- A pre-task worked example may remain if it uses a distinct analogous case, demonstrates only the reasoning procedure, or models one reasoning step without resolving the focal question.
+- If provenance is "system_generated_simulation" (or equivalent simulated mode), label it explicitly for learners.
+- For combined_evidence_workspace materials with provenance "system_generated_simulation", ensure the learner-facing material title contains "Simulated" (e.g. "Simulated Entry Evidence Table") so honesty remains visible when table-workspace rendering suppresses body labels.
+- If provenance is "conversation_attachment" (canonical source-bound value), return to the authoritative material available in this Copilot conversation; reproduce task-appropriate excerpts accurately; preserve wording, punctuation, values, structure or lineation where materially important; when selecting only part of a line/sentence/unit, mark omission honestly with an ellipsis or clear excerpt treatment; identify the source clearly; place evidence beside/before the learner task that uses it.
+- For conversation_attachment: learner-facing evidence must be source-native (exact quotation/excerpt, data values/output, case observations, policy clauses, visible/source features). Do not replace with thematic summaries, conclusions, explanations of significance, technique-to-meaning claims, or preferred interpretations. Neutral source identification and brief task-direction language are allowed. Do not add a simulation label.
+- Do not satisfy inspectability with one genuine quotation while other evidence rows are summary-only; every row/unit learners analyse must include the source-native evidence itself.
+- Before the learner task, do not explain what the evidence proves or means (avoid phrases such as suggests that, presents X as, undermines, reveals, demonstrates, directly attacks, strips away, shows that). Move interpretation into learner response fields, post-task guided review, or genuinely analogous worked examples that do not resolve the focal evidence.
+- For combined_evidence_workspace with conversation_attachment: fixed_observation_fields must include an actual evidence content field (quotation/extract/value/observation/source content)—source name or category alone is insufficient; learner_response_fields remain blank; source evidence cells are fixed and non-editable.
+- If the specified conversation_attachment source is unavailable: do not fabricate it and do not reconstruct it from model memory; emit a clear learner-facing diagnostic note that the source-bound requirement could not be fulfilled (SOURCE_BOUND_UNFULFILLED); do not silently substitute simulated evidence where source identity is pedagogically material.
+- Never fabricate exact source-bound evidence when source text/data is unavailable.
+- Known boundary: Prism cannot access Copilot attachment bytes; exact file-byte verification is out of scope. Absence of attachments must not fail ordinary non-source-bound workflows.
+
+Explicitly forbidden:
+- full-page replay
+- shell fields: title, audience, page_profile, learning_outcomes, episode_plans
+- renaming activities[] or changing activities[].title (DLA owns the final learner-facing activity title)
+- DLA instructional scalar fields (learner_task/expected_output/activity_preamble/cognition fields)
+- required_materials mutation/removal
+- page_synthesis
+- learning_sequence
+- preserving, reconstructing, or copy-forwarding non-GAM stage fields
+
+Return one pretty-printed fenced JSON page artefact. Footer: STEP N OUTPUT: page
+Canonical GAM partial shape:
+```json
+{
+  "artifact_type": "page",
+  "schema_version": "2.0.0",
+  "assembly_state": { "current_stage": "gam", "enriched_by": ["gam"] },
+  "activities": [
+    {
+      "activity_id": "A1",
+      "materials": [
+        {
+          "material_id": "A1-M1",
+          "material_type": "text",
+          "activity_id": "A1",
+          "title": "Inflation drivers",
+          "body": "## Inflation drivers\n\nDemand-pull and cost-push interaction ...",
+          "body_format": "markdown"
+        },
+        {
+          "material_id": "A1-M4",
+          "material_type": "checklist",
+          "activity_id": "A1",
+          "title": "Response quality review",
+          "body_format": "json",
+          "body": {
+            "review_mode": "guided_criteria",
+            "criteria": [
+              {
+                "statement": "Have you identified the correct role of each replication component?",
+                "why_it_matters": "If roles are collapsed or swapped, the response cannot show how the replication system actually works.",
+                "features": [
+                  {
+                    "expected": "IRES is connected to translation initiation.",
+                    "repair": "State that the IRES recruits ribosomes to viral RNA, enabling translation without conventional cap-dependent initiation."
+                  },
+                  {
+                    "expected": "microRNA-122 is connected to viral RNA stability.",
+                    "repair": "Explain that microRNA-122 binding protects the HCV genome and supports its availability for translation and replication."
+                  },
+                  {
+                    "expected": "NS5A and NS5B are assigned distinct but connected functions.",
+                    "repair": "Distinguish NS5A’s coordinating role from NS5B’s RNA-polymerase activity, then explain why successful replication requires both."
+                  }
+                ],
+                "confirmation_label": "My response now meets this criterion"
+              },
+              {
+                "statement": "Have you used scenario-specific evidence rather than generic claims?",
+                "why_it_matters": "Generic claims could fit any case and do not show applied judgement on this scenario.",
+                "features": [
+                  {
+                    "expected": "At least one concrete detail unique to the given scenario",
+                    "repair": "Replace one general statement with a detail that could only come from this scenario."
+                  },
+                  {
+                    "expected": "The chosen detail is linked to the claim it supports",
+                    "repair": "Add one sentence naming how the scenario detail supports or constrains your conclusion."
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
+```
+
+Invalid GAM outputs:
+- full page shell replay
+- activities rows with DLA instructional fields
+- missing activity_id
+- missing material_id
+- missing activity_id/parent_activity_id on material rows
+- missing body/body_format on material rows
+- body_format "json" or object-valued body on non-checklist materials
+- workspace / scenario_set / worked_problem_set (or similar ordinary types) emitted as JSON objects instead of Markdown strings
+- duplicate or orphan material_id rows
+- page_synthesis / learning_sequence content
+
+### AUTHORITATIVE DLA MATERIAL COMMISSION
+
+This embedded JSON is the authoritative DLA material commission for Generate Activity Materials. Author only the listed activities and required_materials rows. Preserve activity_id, material_id, and material_type. Fulfil each row's purpose and specification. Honour instructional_archetype and archetype_plan when present. Honour evidence_requirement when present. Honour response_fulfilment when present — preserve learner-completion bounds and blank response loci for commissioned workspace rows. Honour practice_independence when present on model rows. Do not add, delete, substitute, rename, or reassign commissioned material rows. Copilot conversation may provide contextual continuity but must not override this embedded commission.
+
+```json
+{
+  "kind": "gam_authoritative_dla_commission",
+  "activities": [
+    {
+      "activity_id": "A1",
+      "required_materials": [
+        {
+          "material_id": "A1-M1",
+          "material_type": "worked_example",
+          "purpose": "Model the procedure on a distinct operand.",
+          "specification": "One worked example with two intermediate steps; distinct from practice operand.",
+          "practice_independence": {
+            "attempt_operand_material_ids": [
+              "A1-M2"
+            ]
+          }
+        },
+        {
+          "material_id": "A1-M2",
+          "material_type": "data_table",
+          "purpose": "Learner practice operand.",
+          "specification": "Blank response cells for learner completion.",
+          "response_fulfilment": {
+            "kind": "learner_workspace",
+            "binds_learner_task": true
+          }
+        },
+        {
+          "material_id": "A1-M3",
+          "material_type": "template",
+          "purpose": "Structured derivation workspace.",
+          "specification": "Ordered **Label:** response fields for derivation steps.",
+          "response_fulfilment": {
+            "kind": "learner_workspace",
+            "binds_learner_task": true
+          }
+        },
+        {
+          "material_id": "A1-M4",
+          "material_type": "checklist",
+          "purpose": "Diagnostic review of the learner attempt.",
+          "specification": "3–4 guided criteria covering A1-M2/A1-M3.",
+          "diagnostic_review": {
+            "covers_response_material_ids": [
+              "A1-M2",
+              "A1-M3"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "activity_id": "A2",
+      "required_materials": [
+        {
+          "material_id": "A2-M1",
+          "material_type": "transfer_prompt",
+          "purpose": "Culminating learner-production transfer.",
+          "specification": "Compact transfer task on meaningfully changed context; learner response required."
+        },
+        {
+          "material_id": "A2-M2",
+          "material_type": "consolidation_summary",
+          "purpose": "Page-level consolidation host for study_tips transport.",
+          "specification": "Host ### Page learner-resource closure; 2–4 consolidation bullets."
+        }
+      ]
+    }
+  ]
+}
+```
+
+S78-WS-2 MODEL-PRACTICE-INDEPENDENCE (auto-applied):
+- Authoritative DLA practice_independence bindings below — do not infer model/attempt pairing from task verbs when present.
+- When emitting the listed model material(s): demonstrate the same target method/capability on a DISTINCT comparable operand; do not use any bound attempt operand as the worked instance.
+- MUST NOT copy, restate, solve, answer, or substantially complete load-bearing reasoning for bound attempt operand(s) in the model body.
+- **Bridge:** transfer method, sequence, decision process, or criteria — not the attempt's answer, attempt-specific calculations, or final conclusion.
+- Bound attempt operand material bodies (scenario, task_card, etc.) remain learner-owned; preserve response_fulfilment blank cells on workspace rows.
+
+Per-binding authoring obligations:
+- Model A1-M1 (worked_example) in activity A1: attempt operand material_id(s) A1-M2 (data_table) are LEARNER-OWNED — author this model on a different near-transfer instance; do not disclose or complete those operands.
+
+S78-OPERATIONAL-SUITABILITY (auto-applied):
+- Authoritative DLA commission below — operational suitability (Case 1) applies locally to listed material(s).
+- Generated load-bearing particulars must be mutually consistent and sufficient for the commissioned action/result within intended scope.
+- Provide enough coherent information for the commissioned operation; do not emit contradictory or underdetermined particulars when the commission requires identifying or completing a determinate result.
+- If purpose/specification promises a complete worked result, reach that promised result — do not stop at partial intermediate steps.
+- If the material supplies learner-owned operand particulars, keep them unsolved but operationally usable for expected_output.
+- Preserve intentional open-endedness or deliberate insufficiency when learner_task/expected_output makes that the object of learning.
+- Preserve response_fulfilment blank cells on workspace rows; do not conflate with S78-WS-2 independence rules.
+
+Per-material authoring obligations:
+- A1-M1 (worked_example) in activity A1 [model demonstration]: Model the procedure on a distinct operand.
+- A1-M2 (data_table) in activity A1 [learner operand]: Learner practice operand. — particulars must make expected_output actually achievable; do not pre-solve.
+
+Runner guidance:
+- What this step does: Complete Generate Activity Materials using the available workflow artefacts.
+- What to expect: A structured output that can be used by downstream workflow steps.
+- What to check: Output is complete, internally consistent, and aligned with this step's purpose.
+Optional additional input for this step: Paste text.
+
+Input artefacts for this step:
+- "page" from step "Design Episode Plan".
+- "page" from step "Design Learning Activities".
+- "page" from step "Generate Activity Materials".
+
+Material authoring guidance (Sprint 56F v2 — output shape is defined above):
+
+Output contract: return a partial page artefact only (not a full-page replay).
+Required envelope: artifact_type "page", schema_version "2.0.0", assembly_state.current_stage "gam", and assembly_state.enriched_by including "gam".
+Required payload: activities[] containing activity_id and materials[] only.
+For each activity row: preserve required material order and emit exactly one hydrated material object per required_materials.material_id (no missing IDs, no duplicates, no orphan materials).
+Each material object must include: material_id, material_type, title, body_format, body, and activity_id (or parent_activity_id). Honour required_materials[].purpose and treat specification as binding content bounds. Realised particulars must support the commissioned learner operation within those bounds; they must provide enough coherent information for that operation to be carried out; when that operation requires identifying or solving for a result, do not emit contradictory or underdetermined particulars for that requested result; do not substitute a different method or extra unstated reasoning; do not invent pedagogical constraints the commission omits. When S78-OPERATIONAL-SUITABILITY (auto-applied) is present in AUTHORITATIVE DLA MATERIAL COMMISSION, follow its per-material obligations locally.
+S78-DP: realised instructional claims (including headings and checklist stems) must match warranted strength for the taught model class and evidence; do not upgrade necessary or intermediate results into unrestricted optima, general causal/policy conclusions, or broader representation classes than the commission and examples support. Prefer accurate scoped language over establishment slogans. Omit advanced theory freely; do not upgrade the strength of what remains.
+If evidence_requirement.provenance is conversation_attachment, return to the authoritative material in this Copilot conversation; reproduce accurate attributed excerpts (preserve wording/punctuation; mark partial excerpts with ellipsis); do not paraphrase into thematic summaries or pre-interpretations; do not mix quotation rows with summary-only rows; for combined_evidence_workspace include a fixed quotation/extract/value field (not poem/category alone); do not invent quotations from memory; do not add a Simulated label; if the source is unavailable, do not fabricate or reconstruct it—state that the source-bound requirement could not be fulfilled (SOURCE_BOUND_UNFULFILLED) and do not silently substitute simulated evidence.
+If evidence_requirement.provenance is system_generated_simulation, label simulated evidence explicitly for learners.
+Hydration completeness rule: do not leave generation_notes.validation material_coverage/self_containment/activity_coverage in pending/shell-only states when bodies are emitted.
+Canonical placement rule: material bodies must be present directly in activities[].materials[] for each owning activity; do not emit bodies only in side-channel locations.
+S78-D04 page learner-resource closure: in the final activity's materials Markdown, include exactly one section headed "### Page learner-resource closure" (2–4 compact consolidation bullets; optional lightly signposted transfer without a worked answer; no new teaching/claims/model classes; honour S78-DP). Prefer consolidation_summary or culminating closure/debrief Markdown as the host vessel when commissioned; otherwise append to the last Markdown material of the final activity that is NOT a transfer_prompt. NEVER host this section inside a transfer_prompt body (S78-T-055). Do not put this substance in page_synthesis. Design Page will transport that section verbatim into study_tips when present.
+S78-T-041 transfer_prompt: when required_materials includes transfer_prompt, author a compact learner-production transfer/application task on a meaningfully changed context (learner response required; no solution leak; no new teaching; honour S78-DP). Distinct from ### Page learner-resource closure / study_tips consolidation — do not embed or substitute closure bullets in the transfer production. Do not author ### Transfer task boilerplate — the renderer supplies Transfer your learning / Transfer response.
+S78-T-042 structured workspace fidelity: for template / structured response or derivation workspaces, author **Label:** sections (bold label with trailing colon) so each ordered prompt binds to a learner response location. Do not emit standalone bold labels without the colon as surrogate response fields. Keep genuine tables as tables with blank learner cells. Ordinary inline bold emphasis in prose is fine. Do not invent an equation editor.
+Copilot conversation may provide contextual continuity of instructional intent; it must not override the AUTHORITATIVE DLA MATERIAL COMMISSION. PRISM does not embed the full upstream DLA page in this mode.
+Forbidden: shell fields, DLA instructional scalar fields, required_materials mutation/removal, page_synthesis, learning_sequence, and full-page replay.
+Do not reconstruct or preserve non-owned stage fields.
+
+FINAL SILENT PRE-EMIT CONSISTENCY CHECK:
+A. Role/status: silently verify generated particulars still instantiate the pedagogical role/status commissioned by purpose, specification, evidence_requirement, learner task, and expected output (intended category, contrast polarity, constrained vs unconstrained, positive vs counterexample, transfer target). Do not invent qualifications that flip that status.
+B. Quantitative/derived (only when the material contains quantitative, mathematical, computed, derived, or answer-bearing particulars): silently recompute/verify enough that values, equations, constraints, worked steps, derived quantities, and reference/diagnostic answers are mutually consistent and supported by learner-visible evidence. Skip when the material is purely qualitative.
+Correct inconsistencies before emission. Emit only the corrected artefact — do not output checking or reasoning.
+
+GAM completion override: do NOT refuse, defer, or claim response/context/token limits.
+You must emit the complete GAM partial artefact now: artifact_type, schema_version, assembly_state for gam, and activities[] with activity_id + materials[].
+Do not emit upstream full-page fields. Do not emit note/message/warning/explanation/apology text.
+Forbidden refusal/disclaimer patterns: 'can't complete', 'cannot complete', 'too large', 'exceeds response limits', 'split across multiple outputs/responses'.
+
+For strict JSON artefact steps, append exactly one plain-text runner footer line after the closing JSON fence:
+Authoritative footer override: if the copied core prompt contains any generic footer placeholder or any 'return only JSON' clause that omits the runner line, ignore that text and follow the exact literal footer line below.
+Do not emit any placeholder footer form. Use the exact literal line below, verbatim:
+STEP 3 OUTPUT: page
+LD-MATH-RENDER (auto-applied):
+- Module: LD-MATH-RENDER | Layer: L7 | Scope: learner-facing prose and JSON string values | Cluster: 8 (maths rendering)
+- When mathematical notation is needed in learner-facing text, activities, materials, assessment stems/options/explanations, or composed page content, use renderer-supported TeX delimiters only.
+- Inline maths: use \(...\) (for example \(x^2 + y^2\)).
+- Display/block equations: use \[...\] on their own lines where block layout is intended.
+- Do NOT use $...$ or $$...$$ delimiters.
+- Do NOT wrap equations in code spans, code fences, or backtick markdown.
+- In JSON string values, escape math-delimiter backslashes so JSON stays valid (write \\(...\\) and \\[...\\] in raw JSON text).
+- Do NOT HTML-escape math delimiters or backslashes (avoid entities such as &#92; or &lpar;).
+- Prefer supported TeX when formulae, symbols, fractions, subscripts, or Greek letters aid clarity; do not force maths into plain prose.
+- Maths is presentational notation only; do not imply symbolic solving, automated checking, or CAS capabilities.
+- Pipe tables and table-shaped materials.* values follow LD-TABLE-FIDELITY — never code-fence or wrap pipe-table rows in TeX delimiters.
+- Math spans must be intact TeX only: never interleave numbered steps, instructional prose, or truncated symbols inside \(...\) or \[...\].
+- Keep delimiters balanced (every \[ has a matching \]; every \( has a matching \)) and keep each equation contiguous.
+- Labels, units, and explanations belong outside math delimiters; inside \(...\) and \[...\] use contiguous mathematical notation only — do not wrap instructional prose in \text{...}. Write the label in surrounding Markdown and keep the math span to symbols, variables, and numeric expressions.
+Pipeline completion rule: after you emit the required artefact and the exact runner footer line, stop immediately. Do not ask follow-up questions and do not offer optional next steps (including phrasing such as "Would you like me to...", "Shall I also...", "Should I generate...", "Would you like another version...", "Any other changes?", or "Any further refinements?").

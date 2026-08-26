@@ -1,0 +1,24 @@
+{
+  "live_contract_shape_gate": "BYTE-IDENTICAL (shared live API builders on both paths)",
+  "authoritative_commission_partial": "PATH-SPECIFIC BY DESIGN (Copy yes / Studio no in partial mode)",
+  "gam_completion_override": "PATH-SPECIFIC BY DESIGN (Copy only)",
+  "authoring_brief": "PATH-SPECIFIC BY DESIGN (Copy only)",
+  "pipeline_framing_and_footer": "PATH-SPECIFIC BY DESIGN (Copy/Run instructions wrapper)",
+  "materials_copy_marker": {
+    "studio": false,
+    "copy": false,
+    "class": "BYTE-IDENTICAL OR BOTH ABSENT"
+  },
+  "table_fidelity_marker": {
+    "studio": true,
+    "copy": true,
+    "class": "BYTE-IDENTICAL OR BOTH ABSENT"
+  },
+  "archetype_routing_marker": {
+    "studio": false,
+    "copy": false,
+    "class": "BOTH PRESENT OR BOTH ABSENT (post T-029/archetype delivery fix)"
+  },
+  "t004_whole_prompt_byte_identity": "NOT REQUIRED — path-specific framing is legitimate",
+  "t004_narrow_byte_identity_boundary": "live buildGamV2CopilotSchemaInstructions() + GAM_FINAL_SILENT_PRE_EMIT_CONSISTENCY_GATE + protected ordering (gate before completion override on Copy)"
+}

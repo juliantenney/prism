@@ -1,0 +1,78 @@
+{
+  "artifact_type": "page",
+  "schema_version": "2.0.0",
+  "assembly_state": { "current_stage": "dla", "enriched_by": ["dla"] },
+  "title": "S79 T-002 baseline page",
+  "learning_outcomes": [
+    { "id": "LO1", "cognitive_level": "apply", "statement": "Apply the core procedure in a changed context." }
+  ],
+  "episode_plans": [],
+  "activities": [
+    {
+      "activity_id": "A1",
+      "title": "Model then attempt",
+      "learner_task": "Study the model, then solve the practice problem.",
+      "expected_output": "Completed practice response in the blank table.",
+      "required_materials": [
+        {
+          "material_id": "A1-M1",
+          "material_type": "worked_example",
+          "purpose": "Model the procedure on a distinct operand.",
+          "specification": "One worked example with two intermediate steps; distinct from practice operand.",
+          "practice_independence": {
+            "attempt_operand_material_ids": ["A1-M2"]
+          }
+        },
+        {
+          "material_id": "A1-M2",
+          "material_type": "data_table",
+          "purpose": "Learner practice operand.",
+          "specification": "Blank response cells for learner completion.",
+          "response_fulfilment": {
+            "kind": "learner_workspace",
+            "binds_learner_task": true
+          }
+        },
+        {
+          "material_id": "A1-M3",
+          "material_type": "template",
+          "purpose": "Structured derivation workspace.",
+          "specification": "Ordered **Label:** response fields for derivation steps.",
+          "response_fulfilment": {
+            "kind": "learner_workspace",
+            "binds_learner_task": true
+          }
+        },
+        {
+          "material_id": "A1-M4",
+          "material_type": "checklist",
+          "purpose": "Diagnostic review of the learner attempt.",
+          "specification": "3–4 guided criteria covering A1-M2/A1-M3.",
+          "diagnostic_review": {
+            "covers_response_material_ids": ["A1-M2", "A1-M3"]
+          }
+        }
+      ]
+    },
+    {
+      "activity_id": "A2",
+      "title": "Transfer and close",
+      "learner_task": "Apply learning in a new context.",
+      "expected_output": "Transfer response.",
+      "required_materials": [
+        {
+          "material_id": "A2-M1",
+          "material_type": "transfer_prompt",
+          "purpose": "Culminating learner-production transfer.",
+          "specification": "Compact transfer task on meaningfully changed context; learner response required."
+        },
+        {
+          "material_id": "A2-M2",
+          "material_type": "consolidation_summary",
+          "purpose": "Page-level consolidation host for study_tips transport.",
+          "specification": "Host ### Page learner-resource closure; 2–4 consolidation bullets."
+        }
+      ]
+    }
+  ]
+}

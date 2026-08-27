@@ -21,8 +21,8 @@
 | DLA live path | **Canonical-only** (`assembleDlaCanonicalContract` / `78-DLA-WS-3`) |
 | GAM live path | **Canonical-only** (Sprint 79 assembler; temporary rollback retired) |
 | Sprint 80 | **OPEN** |
-| Sprint 80 mode | **Discovery / planning only** |
-| Current task | **S80-T-007 PLAN delivered** — awaiting operator review and answers to Q1–Q4 |
+| Sprint 80 mode | **Discovery / planning, plus authorised slices S1, S3, S2, S4, S5, S6, S7** |
+| Current task | **S80-S7 implemented** — awaiting operator review |
 | S80-T-001 … T-004 | **COMPLETE — ACCEPTED** |
 | S80-T-005 | **COMPLETE** (awaiting acceptance unless separately accepted) |
 | S80-T-005A | **COMPLETE** (awaiting acceptance) |
@@ -30,8 +30,16 @@
 | S80-T-005B.1 | **COMPLETE** (awaiting acceptance) — brief-factor inventory, corrected to 44 keys by T-005B.2 |
 | S80-T-005B.2 | **COMPLETE — ACCEPTED** — effectiveness audit: 25 effective, 17 with no proven effect |
 | S80-T-006 | **DECIDED** — Option C: Adjustments = typed workflow parameters + per-step author instruction |
-| S80-T-007 | **PLAN** — target architecture + slices S1–S10; corrects T-006's projection chokepoint |
-| Settings runtime implementation | **Not authorised** |
+| S80-T-007 | **PLAN — ACCEPTED** — target architecture + slices S1–S10; corrects T-006's projection chokepoint |
+| **S80-S1** | **COMPLETE — ACCEPTED** — parameter registry + `workflow.adjustments` persistence |
+| **S80-S3** | **COMPLETE — ACCEPTED** — per-step Additional Instruction, live via I1 + I2; byte-identical when unset |
+| **S80-S2** | **COMPLETE — ACCEPTED** — `topic` declared and **live** in all 8 model-driven steps; Henry VIII → Elizabeth I proven on one saved workflow |
+| **S80-S4** | **COMPLETE** — Settings tab is now **Adjustments**; historical pack catalogue off the active surface (code retained, inert); Instructions and Additional Instruction reconciled as **two distinct supported** capabilities; **Episode Plan now steerable** (operator correction superseding S2/S3); stale step-1 `Goal:` repaired |
+| **S80-S5** | **COMPLETE** — awaiting review — runtime **Goal** governed (`multiline` text); `#workflowGoal` read-only; D4/D5/D6 fixed |
+| **S80-S6** | **COMPLETE** — awaiting review — **Duration** governed (`number`, minutes, 10–480); canonical DLA timing derived; **D1 fixed**, byte-identical at 60 |
+| **S80-S7** | **COMPLETE** — awaiting review — **Audience** governed (single-line text, free text only); mutable `#workflowAudience` and the step-1 `Audience:` line retired; `page.audience` truthful; **D13/D16 fixed**; learner level deferred |
+| Assessment, S8–S10 | **NOT STARTED** — each needs separate authorisation |
+| Settings runtime implementation | **Not authorised** (legacy Settings remain superseded and inert) |
 | Existing Settings catalogue | **Hypotheses**, not requirements |
 | Supersession by later architecture | **Must be considered** |
 | Operator decision gate | **S80-T-006** |
@@ -46,10 +54,10 @@ Cursor must **not** choose A/B/C/D.
 
 | Priority | Work |
 | -------- | ---- |
-| **Now** | Operator review of [S80-T-007](S80-T-007-adjustments-target-architecture-and-implementation-plan.md) + answers to **Q1–Q4** (§22). Then authorise slice **S1** and/or **S3** |
-| **Next** | **S80-T-006** — operator product/architecture decision gate (HUMAN) |
-| **Stop for humans** | S80-T-006 — Cursor prepares matrix only; operator decides |
-| **Do not** | Settings activation; schema migration; parameter schemas; choosing A/B/C/D in Cursor |
+| **Now** | Operator review of [S80-S4](S80-S4-adjustments-ui-repurpose.md) — the Adjustments UI repurpose |
+| **Next** | Authorise the next slice. **S5 (Duration)** stays blocked behind defect **D1** (hardcoded canonical DLA ~60 / 50-70 timing language), so **S6 Audience**, **S7 Assessment** or **S9 regression tests** may be better follow-ons |
+| **Stop for humans** | Slice authorisation — no further slice starts without it |
+| **Do not** | Settings activation; schema migration; declare a parameter live without its projection and tests; merge or migrate `step.notes` into `additional_instruction`; re-exclude Episode Plan from Additional Instruction; start S5–S10 unauthorised |
 
 ---
 
@@ -105,7 +113,11 @@ Do not structure work so that B or C is predetermined.
 - [S80-T-005B.1-complete-brief-factor-inventory-and-resolution-diagnostic.md](S80-T-005B.1-complete-brief-factor-inventory-and-resolution-diagnostic.md)
 - [S80-T-005B.2-resolved-brief-factor-effectiveness-live-consumer-audit.md](S80-T-005B.2-resolved-brief-factor-effectiveness-live-consumer-audit.md)
 - [S80-T-006-operator-product-architecture-decision-gate.md](S80-T-006-operator-product-architecture-decision-gate.md) — **authoritative product decision**
-- [S80-T-007-adjustments-target-architecture-and-implementation-plan.md](S80-T-007-adjustments-target-architecture-and-implementation-plan.md) — **authoritative architecture plan** (corrects T-006 §17C)
+- [S80-T-007-adjustments-target-architecture-and-implementation-plan.md](S80-T-007-adjustments-target-architecture-and-implementation-plan.md) — **authoritative architecture plan** (corrects T-006 §17C) — ACCEPTED
+- [S80-S1-adjustments-parameter-registry-and-persistence.md](S80-S1-adjustments-parameter-registry-and-persistence.md) — **COMPLETE — ACCEPTED**
+- [S80-S3-per-step-additional-instruction.md](S80-S3-per-step-additional-instruction.md) — **COMPLETE — ACCEPTED**
+- [S80-S2-topic-vertical-proof.md](S80-S2-topic-vertical-proof.md) — **COMPLETE — ACCEPTED**
+- [S80-S4-adjustments-ui-repurpose.md](S80-S4-adjustments-ui-repurpose.md) — **COMPLETE**
 
 Related prior evidence (read when needed; not rewritten here):
 

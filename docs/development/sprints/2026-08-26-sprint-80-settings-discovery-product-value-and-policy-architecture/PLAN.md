@@ -137,7 +137,7 @@ S80-T-001 … T-004  ✅ COMPLETE — ACCEPTED
 
 ### S80-T-007 — Target architecture + implementation plan
 
-- Status: **PLAN delivered** — awaiting operator review (2026-08-27)
+- Status: **PLAN — ACCEPTED** (2026-08-27); slices S1 and S3 authorised and implemented
 - Record: [S80-T-007](S80-T-007-adjustments-target-architecture-and-implementation-plan.md) · Decision log: **S80-D07**
 - Mode: **design and planning only**; implementation requires explicit slice authorisation
 - Architecture: declarative parameter registry → one deterministic `resolveEffectiveRunContext` resolver → three named projections → **two** prompt-assembly ingress points; plus `step.additional_instruction` as a new dedicated field
@@ -148,6 +148,66 @@ S80-T-001 … T-004  ✅ COMPLETE — ACCEPTED
 - Operator questions **Q1–Q4** gate specific slices; **Q1** alone gates the Alpha minimum
 - New defect recorded: **D3** (LS duration step param never reaches the model)
 - PB-FA-005: former meaning superseded; no definition carried forward
+
+### S80-S1 — Adjustments parameter registry + persistence contract
+
+- Status: **COMPLETE — ACCEPTED** (2026-08-27)
+- Record: [S80-S1](S80-S1-adjustments-parameter-registry-and-persistence.md)
+- Delivers the declaration contract, `resolveEffectiveRunContext(wf)` and `workflow.adjustments = {version:1, parameters:{…}}`
+- Shipped with an empty registry; **S2 added the first declaration (`topic`)**. Declarations are now validated at load
+- Absence means Auto; no `"AUTO"` sentinel was needed; empty adjustments are omitted rather than stored as an empty container
+- Only allowlisted declared keys survive normalization, so retired controls cannot regain authority
+- Gather carries the persisted record forward when the field is not rendered
+- Proven: no AI/fetch, no `resolvedFactors` mutation, no `[PRISM_STEP_PARAMS]` write, no prompt change
+- Tests: `tests/s80-s1-adjustments-parameter-registry.test.js` — 16 passing
+
+### S80-S3 — Generic per-step Additional Instruction
+
+- Status: **COMPLETE — ACCEPTED** (2026-08-27)
+- Record: [S80-S3](S80-S3-per-step-additional-instruction.md)
+- New field `step.additional_instruction`, separate from `step.notes` and `[PRISM_STEP_PARAMS]`; blank keys removed
+- **One** shared block renderer used at **both** ingress points; precedence wording defined once
+- I1 `buildWorkflowStepInstructions` (all ordinary steps) and I2 `buildLiveGamV2CopyPromptViaCanonicalAssembler` (GAM v2). Appended after all canonical requirements
+- Model-driven detection inverted the problem: every step qualified **except** deterministic ones, and Design Episode Plan was the sole exclusion. S2 promoted this to one shared predicate. **S4 split it again** (see S80-S4): steering eligibility and projection eligibility are different questions, and EP is now steerable
+- Canonical DLA/GAM text unmodified; `NEUTRAL_POLICY_INGRESS` untouched; `settingsEffective` not flipped
+- Proven: step-scoped with no leakage, no new AI/fetch call, byte-identical prompts when unset
+- Minimal UI only: one new "Additional instruction (optional)" textarea per eligible step. The "Instructions" textarea still writes `step.notes`; **S4 reconciled the two as distinct retained capabilities**
+- Tests: `tests/s80-s3-step-additional-instruction.test.js` — 19 passing
+
+### S80-S2 — Topic vertical proof
+
+- Status: **COMPLETE** (2026-08-27)
+- Record: [S80-S2](S80-S2-topic-vertical-proof.md)
+- Declares `topic` (`type: text`, `projection: workflowContext`, `owner: workflow_run_context`, always applicable, no enum, no topology effect)
+- Commissioned fallback reads the **existing** authoritative source `wf.workflowBriefResolution.resolvedFactors.topic` (alias `workshop_subject`). No second store; read-only
+- Provenance preserved: `adjustment` when explicit, `commissioned` when falling back, `absent` when neither. Absence still means Auto — no sentinel
+- **One shared registry-driven projector** (`buildEffectiveWorkflowContextLines` / `…Block` / `append…ToPrompt`) consumes `resolveEffectiveRunContext(wf)`. Proven extensible: a second `workflowContext` parameter appears in prompts with **no prompt edits**
+- I1 injects early (ahead of step content, ahead of the subordinate S3 block); I2 appends after canonical GAM output so canonical ownership and `NEUTRAL_POLICY_INGRESS` are untouched
+- Coverage: MK, LO, DLA, GAM, LS, Design Page, Design Assessment, Generate Assessment Items (**8 steps**). Episode Plan excluded and enforced
+- Precedence structural and asserted: an Additional Instruction cannot displace an explicit Topic. No AI conflict detection
+- Minimal transitional UI in the existing workflow Settings panel, rendered independently of pack `briefConfig`; commissioned value shown as **placeholder**, never prefilled
+- Vertical proof: Henry VIII → Elizabeth I on one saved workflow, asserting unchanged topology/step ids/baked bodies/`resolvedFactors`, and no `fetch` or `[PRISM_STEP_PARAMS]`
+- Fixed in passing: `validateAdjustmentsParameterValue` now rejects non-scalars, which previously coerced to `"[object Object]"`
+- Tests: `tests/s80-s2-topic-workflow-parameter.test.js` — 20 passing. Two S1 tests legitimately updated (empty-registry and `workflowContext`-inertness claims are no longer true)
+
+### S80-S4 — Adjustments UI repurpose
+
+- Status: **COMPLETE** (2026-08-27)
+- Record: [S80-S4](S80-S4-adjustments-ui-repurpose.md)
+- Workflow **Settings** tab is now **Adjustments**. Unrelated application settings (`#apiSettings`) untouched, and so is the Prompt Factory `Settings...` button on step rows
+- Panel presents **Workflow parameters** (registry-driven; Topic only) and **Workflow steps** (Additional instruction + Instructions per step). No implementation vocabulary is exposed
+- Historical pack-derived Settings catalogue **removed from the active surface**: no pack controls render, the `Tunable`/`Settings` step badge and `Editable in the Settings tab…` cue are gone, and both `Open Settings` jump buttons are removed. Nothing was migrated or made effective
+- Pack parsing/aggregation/`[PRISM_STEP_PARAMS]` code is **deliberately retained** and unreferenced from the panel; its 60+ unit tests still pass, which is what makes retention safe. Deeper retirement is separate work
+- Tab badge no longer counts knobs: it shows **`Customised`** when an adjustment exists and nothing otherwise
+- **`step.notes` (Instructions) retained unchanged** in storage, gather and runtime, and presented as a distinct general-purpose capability alongside Additional Instruction. The panel edits it as a second view, preferring the Edit-tab textarea on read and mirroring on write so gather keeps one source of truth
+- **Operator correction: Episode Plan now supports Additional Instruction.** The single S2/S3 predicate was **split** — `isWorkflowStepEligibleForAdditionalInstruction` (every step, EP included) vs `isWorkflowStepEligibleForWorkflowContextProjection` (EP still excluded as a derived shell). EP uses the same generic storage and shared block helper; no bespoke mechanism. New rule: *steerable = has an author-facing prompt with legitimate author discretion*; "deterministic" is not a disqualifier. `NON_STEERABLE_CANONICAL_STEP_IDS` is the extension point and is deliberately empty
+- **Stale step-1 context repaired declaratively.** Topic declares `supersedesCommissionedContextFields: ["goal"]`; `buildWorkflowRuntimeContextText` omits `Goal:` only when Topic's provenance is `adjustment`. Audience/constraints/inputs/outputs are retained. No prose parsing, no AI, and no change at all when Topic is on Auto
+- Tests: `tests/s80-s4-adjustments-ui-repurpose.test.js` — 28 passing; 155/155 across the focused set. **Four superseded assertions honestly updated** (2 EP-exclusion, 1 badge count, 1 `Tunable` source scan), each annotated in-file as an operator correction
+- Regression: **zero new failing locations** (55 → 55) across the 93-suite targeted set. A wider 157-suite sweep found exactly one S4-sensitive failure (`s75-d25` source scan), fixed
+
+### S80-S5–S10 — not started
+
+- Each requires separate operator authorisation. **S5 (Duration) remains blocked behind defect D1.**
 
 ### S80-T-008 — Final review + discovery sprint closure
 

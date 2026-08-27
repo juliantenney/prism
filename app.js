@@ -3015,6 +3015,23 @@
     els.unifiedWorkflowSettingsSaveHint.classList.toggle("hidden", !visible);
   }
 
+  /**
+   * Adjustments tab badge (S80-S4 §13).
+   *
+   * The old badge counted pack-declared Settings controls — a count of knobs
+   * that were never runtime-effective. It is replaced by a semantic marker that
+   * shows only when the author has actually customised something, so an
+   * all-automatic workflow reads as clean rather than as "0".
+   */
+  function countExplicitWorkflowAdjustments(wf) {
+    if (!wf || typeof wf !== "object") return 0;
+    var total = Object.keys(getWorkflowAdjustmentParameters(wf)).length;
+    (Array.isArray(wf.steps) ? wf.steps : []).forEach(function (step) {
+      if (normalizeStepAdditionalInstruction(step && step.additional_instruction)) total += 1;
+    });
+    return total;
+  }
+
   function refreshWorkflowModeSettingsTabBadge() {
     if (!els.workflowModeSettingsBadge) return;
     var wf = findWorkflowById(state.selectedWorkflowId || "");
@@ -3026,30 +3043,13 @@
       }
       return;
     }
-    var briefConfig = resolveWorkflowBriefConfigForWorkflow(wf, state.workflowBriefResolved);
-    if (!briefConfig) {
-      var recovered = getRecoveredBriefConfigForWorkflow(wf.id);
-      if (recovered) briefConfig = recovered;
-    }
-    if (!briefConfig) {
-      els.workflowModeSettingsBadge.classList.add("hidden");
-      els.workflowModeSettingsBadge.textContent = "";
-      if (els.workflowModeSettingsBtn) {
-        els.workflowModeSettingsBtn.setAttribute(
-          "title",
-          "Tune pack-defined workflow and step parameters (metadata may load after save)"
-        );
-      }
-      return;
-    }
-    var count = countUnifiedWorkflowVisibleParameterControls(wf, briefConfig);
-    if (count > 0) {
-      els.workflowModeSettingsBadge.textContent = String(count);
+    if (countExplicitWorkflowAdjustments(wf) > 0) {
+      els.workflowModeSettingsBadge.textContent = "Customised";
       els.workflowModeSettingsBadge.classList.remove("hidden");
       if (els.workflowModeSettingsBtn) {
         els.workflowModeSettingsBtn.setAttribute(
           "title",
-          count + " pack parameter control" + (count === 1 ? "" : "s") + " available"
+          "This workflow has Adjustments set"
         );
       }
     } else {
@@ -3058,7 +3058,7 @@
       if (els.workflowModeSettingsBtn) {
         els.workflowModeSettingsBtn.setAttribute(
           "title",
-          "No pack parameters apply to this workflow"
+          "Everything is automatic — open Adjustments to change a value or add step guidance"
         );
       }
     }
@@ -3262,76 +3262,339 @@
     });
   }
 
+  // ==========================================================================
+  // Sprint 80 S4 — Adjustments product surface.
+  //
+  // This panel replaces the historical pack-derived Settings catalogue as the
+  // active product surface. It presents only capabilities that actually work:
+  //
+  //   Workflow parameters   typed, registry-declared (S1/S2)
+  //   Workflow steps        Instructions (step.notes) + Additional Instruction
+  //
+  // The pack-parameter machinery below is retained as inert legacy code but is
+  // no longer rendered or presented as runtime authority. Nothing here reads or
+  // writes [PRISM_STEP_PARAMS].
+  // ==========================================================================
+
+  /** The step's row in the Edit-tab step editor, when it is rendered. */
+  function findAdjustmentsStepEditorRow(stepId) {
+    if (!els.workflowSteps) return null;
+    var id = String(stepId || "").trim();
+    if (!id) return null;
+    var found = null;
+    Array.prototype.forEach.call(els.workflowSteps.children, function (child) {
+      if (found) return;
+      if (!child.classList || !child.classList.contains("workflow-step")) return;
+      if (String(child.getAttribute("data-step-id") || "") === id) found = child;
+    });
+    return found;
+  }
+
+  /**
+   * Read a step field, preferring the Edit-tab textarea when it is rendered.
+   *
+   * The editor DOM is the live draft that Save gathers, so it outranks the
+   * stored record. Without this, editing in Edit and then opening Adjustments
+   * would show a stale value and overwrite the draft.
+   */
+  function readAdjustmentsStepField(step, fieldName, storedValue) {
+    var row = findAdjustmentsStepEditorRow(step && step.id);
+    var area = row ? row.querySelector('[data-field="' + fieldName + '"]') : null;
+    if (area && typeof area.value === "string") return area.value;
+    return String(storedValue == null ? "" : storedValue);
+  }
+
+  /** Write a step field to the record and mirror it into the editor textarea. */
+  function writeAdjustmentsStepField(wf, step, fieldName, recordKey, value) {
+    var text = String(value == null ? "" : value);
+    var row = findAdjustmentsStepEditorRow(step && step.id);
+    var area = row ? row.querySelector('[data-field="' + fieldName + '"]') : null;
+    if (area) area.value = text;
+
+    var target = null;
+    (Array.isArray(wf && wf.steps) ? wf.steps : []).forEach(function (candidate) {
+      if (String(candidate.id || "") === String(step.id || "")) target = candidate;
+    });
+    if (!target) return;
+    var trimmed = text.trim();
+    if (recordKey === "additional_instruction") {
+      if (trimmed) target.additional_instruction = trimmed;
+      else delete target.additional_instruction;
+      return;
+    }
+    target.notes = text;
+  }
+
+  function renderAdjustmentsWorkflowParametersSection(wf) {
+    if (!els.unifiedWorkflowSettingsOptions || !wf) return;
+    var declarations = getAdjustmentsParameterRegistry().filter(function (declaration) {
+      return (
+        declaration.projection === "workflowContext" &&
+        isAdjustmentsParameterApplicable(declaration, wf)
+      );
+    });
+    if (!declarations.length) return;
+
+    var effective = resolveEffectiveRunContext(wf);
+    var explicit = getWorkflowAdjustmentParameters(wf);
+
+    var wrap = document.createElement("div");
+    wrap.className = "unified-workflow-settings-section";
+    wrap.setAttribute("data-role", "adjustments-workflow-parameters");
+    var heading = document.createElement("h4");
+    heading.textContent = "Workflow parameters";
+    wrap.appendChild(heading);
+    var intro = document.createElement("p");
+    intro.className = "helper-text";
+    intro.textContent =
+      "Reuse this workflow with different values. Leave a field blank to keep the value it was created with.";
+    wrap.appendChild(intro);
+
+    declarations.forEach(function (declaration) {
+      var group = document.createElement("div");
+      group.className = "form-group";
+      group.setAttribute("data-adjustment-id", declaration.id);
+
+      var label = document.createElement("label");
+      label.textContent = declaration.label;
+      group.appendChild(label);
+
+      // S80-S5 §14: prose parameters get a textarea so a multi-sentence Goal is
+      // visibly a different kind of thing from a short subject label. Driven by
+      // the declaration, not by a special case for Goal.
+      var input;
+      if (declaration.multiline) {
+        input = document.createElement("textarea");
+        input.rows = 3;
+      } else {
+        input = document.createElement("input");
+        input.type = declaration.type === "number" ? "number" : "text";
+        if (declaration.type === "number") {
+          if (declaration.min != null) input.min = String(declaration.min);
+          if (declaration.max != null) input.max = String(declaration.max);
+          input.step = "1";
+        }
+      }
+      input.setAttribute("data-field", "adjustmentParameter");
+      input.setAttribute("data-adjustment-id", declaration.id);
+      input.autocomplete = "off";
+      var explicitValue = Object.prototype.hasOwnProperty.call(explicit, declaration.id)
+        ? explicit[declaration.id]
+        : "";
+      input.value = explicitValue == null ? "" : String(explicitValue);
+
+      var commissioned =
+        effective.provenance[declaration.id] === "commissioned"
+          ? effective.parameters[declaration.id]
+          : "";
+      // Absence is Auto: show the inherited value as the placeholder rather than
+      // prefilling it, so blank keeps meaning "use the commissioned value".
+      input.placeholder = commissioned
+        ? "Auto — " + formatAdjustmentsParameterValueForDisplay(declaration, commissioned)
+        : "Auto";
+
+      // A number with a declared unit gets the unit rendered beside the field
+      // rather than inside the label, so the control reads "Duration [60]
+      // minutes" without a second duration control existing anywhere.
+      if (declaration.units) {
+        var inputRow = document.createElement("div");
+        inputRow.className = "form-inline";
+        inputRow.setAttribute("data-role", "adjustment-input-row");
+        inputRow.appendChild(input);
+        var unitLabel = document.createElement("span");
+        unitLabel.className = "helper-text";
+        unitLabel.setAttribute("data-role", "adjustment-units");
+        unitLabel.textContent = declaration.units;
+        inputRow.appendChild(unitLabel);
+        group.appendChild(inputRow);
+      } else {
+        group.appendChild(input);
+      }
+
+      var status = document.createElement("div");
+      status.className = "helper-text";
+      status.setAttribute("data-role", "adjustment-status");
+      group.appendChild(status);
+
+      function refreshStatus() {
+        var current = resolveEffectiveRunContext(wf);
+        var provenance = current.provenance[declaration.id];
+        var value = current.parameters[declaration.id];
+        if (provenance === "adjustment") {
+          status.textContent =
+            "Using your value: " + formatAdjustmentsParameterValueForDisplay(declaration, value);
+        } else if (provenance === "commissioned") {
+          status.textContent =
+            "Auto — using the value this workflow was created with: " +
+            formatAdjustmentsParameterValueForDisplay(declaration, value);
+        } else {
+          status.textContent = "Auto — this workflow has no stored value for " + declaration.label + ".";
+        }
+      }
+      refreshStatus();
+
+      input.addEventListener("input", function () {
+        setWorkflowAdjustmentParameterValue(wf, declaration.id, input.value);
+        refreshStatus();
+        setUnifiedWorkflowSettingsSaveHintVisible(true);
+      });
+
+      if (declaration.help) {
+        var help = document.createElement("div");
+        help.className = "helper-text";
+        help.textContent = declaration.help;
+        group.appendChild(help);
+      }
+
+      wrap.appendChild(group);
+    });
+
+    els.unifiedWorkflowSettingsOptions.appendChild(wrap);
+  }
+
+  /**
+   * Per-step Adjustments (S80-S4 §3, §6, §7).
+   *
+   * Two deliberately distinct fields per step:
+   *
+   *   Instructions            general-purpose step content (step.notes),
+   *                           especially valuable for hand-rolled workflows.
+   *                           Existing storage and runtime behaviour unchanged.
+   *   Additional instruction  optional steering of PRISM's discretion for this
+   *                           stage (step.additional_instruction), consumed via
+   *                           the shared subordinate prompt block.
+   *
+   * Labels and help are written so the difference is understandable without any
+   * knowledge of PRISM internals.
+   */
+  function renderAdjustmentsWorkflowStepsSection(wf) {
+    if (!els.unifiedWorkflowSettingsOptions || !wf) return;
+    var steps = Array.isArray(wf.steps) ? wf.steps : [];
+    if (!steps.length) return;
+
+    var wrap = document.createElement("div");
+    wrap.className = "unified-workflow-settings-section";
+    wrap.setAttribute("data-role", "adjustments-workflow-steps");
+    var heading = document.createElement("h4");
+    heading.textContent = "Workflow steps";
+    wrap.appendChild(heading);
+    var intro = document.createElement("p");
+    intro.className = "helper-text";
+    intro.textContent =
+      "Add optional guidance for individual steps. Everything here is optional — leave a step untouched to let PRISM decide.";
+    wrap.appendChild(intro);
+
+    steps.forEach(function (step) {
+      var card = document.createElement("section");
+      card.className = "unified-workflow-settings-step card";
+      card.setAttribute("data-unified-step-id", String(step.id || ""));
+      card.setAttribute(
+        "data-unified-canonical-step-id",
+        normalizeCanonicalStepId(step.canonical_step_id || step.canonicalStepId || "")
+      );
+
+      var title = document.createElement("h3");
+      title.className = "unified-workflow-settings-step-title";
+      title.textContent = String(step.title || "Untitled step");
+      card.appendChild(title);
+
+      var body = document.createElement("div");
+      body.className = "unified-workflow-settings-step-body";
+
+      if (stepSupportsAdditionalInstruction(step)) {
+        var aiGroup = document.createElement("div");
+        aiGroup.className = "form-group";
+        aiGroup.setAttribute("data-role", "adjustments-additional-instruction");
+        var aiLabel = document.createElement("label");
+        aiLabel.textContent = "Additional instruction (optional)";
+        aiGroup.appendChild(aiLabel);
+        var aiArea = document.createElement("textarea");
+        aiArea.rows = 3;
+        aiArea.setAttribute("data-field", "adjustmentsAdditionalInstruction");
+        aiArea.autocomplete = "off";
+        aiArea.placeholder = "e.g. Keep the learning arc relatively flat for an introductory resource.";
+        aiArea.value = readAdjustmentsStepField(
+          step,
+          "additionalInstruction",
+          step.additional_instruction
+        );
+        aiGroup.appendChild(aiArea);
+        var aiHelp = document.createElement("div");
+        aiHelp.className = "helper-text";
+        aiHelp.textContent =
+          "Optional guidance to influence choices PRISM can make when generating this step. It cannot override workflow parameters, required output structure, or information established by earlier steps.";
+        aiGroup.appendChild(aiHelp);
+        aiArea.addEventListener("input", function () {
+          writeAdjustmentsStepField(
+            wf,
+            step,
+            "additionalInstruction",
+            "additional_instruction",
+            aiArea.value
+          );
+          setUnifiedWorkflowSettingsSaveHintVisible(true);
+        });
+        body.appendChild(aiGroup);
+      }
+
+      var notesGroup = document.createElement("div");
+      notesGroup.className = "form-group";
+      notesGroup.setAttribute("data-role", "adjustments-instructions");
+      var notesLabel = document.createElement("label");
+      notesLabel.textContent = "Instructions (optional)";
+      notesGroup.appendChild(notesLabel);
+      var notesArea = document.createElement("textarea");
+      notesArea.rows = 4;
+      notesArea.setAttribute("data-field", "adjustmentsNotes");
+      notesArea.autocomplete = "off";
+      notesArea.placeholder = "Guidance for running this step";
+      notesArea.value = readAdjustmentsStepField(step, "notes", step.notes);
+      notesGroup.appendChild(notesArea);
+      var notesHelp = document.createElement("div");
+      notesHelp.className = "helper-text";
+      notesHelp.textContent =
+        "Your own instructions for this step, included when the step runs. Use this for steps you have written yourself, or to add detail PRISM has no other way to know.";
+      notesGroup.appendChild(notesHelp);
+      notesArea.addEventListener("input", function () {
+        writeAdjustmentsStepField(wf, step, "notes", "notes", notesArea.value);
+        setUnifiedWorkflowSettingsSaveHintVisible(true);
+      });
+      body.appendChild(notesGroup);
+
+      card.appendChild(body);
+      wrap.appendChild(card);
+    });
+
+    els.unifiedWorkflowSettingsOptions.appendChild(wrap);
+  }
+
+  /**
+   * The Adjustments panel (S80-S4).
+   *
+   * The historical pack-derived Settings catalogue is no longer rendered here:
+   * it was superseded product design (S80-T-006) and was never runtime-effective
+   * through this surface. The panel therefore no longer needs pack `briefConfig`
+   * at all, which also removes the async metadata-recovery states.
+   */
   function renderUnifiedWorkflowSettingsUI() {
     if (!els.unifiedWorkflowSettingsPanel || !els.unifiedWorkflowSettingsOptions) return;
     var wf = findWorkflowById(state.selectedWorkflowId || "");
     els.unifiedWorkflowSettingsOptions.innerHTML = "";
     if (!wf) {
-      renderUnifiedWorkflowSettingsEmptyHint("Select a workflow to tune parameters.");
-      return;
-    }
-    var briefConfig = resolveWorkflowBriefConfigForWorkflow(wf, state.workflowBriefResolved);
-    if (
-      briefConfig &&
-      (shouldAugmentPersistedBriefConfigForUnifiedSettings(wf, briefConfig) ||
-        shouldRefreshRecoveredBriefConfigForUnifiedSettings(wf))
-    ) {
-      var priorConfig = briefConfig;
-      renderUnifiedWorkflowSettingsEmptyHint("Loading pack parameter metadata…");
-      state.unifiedSettingsBriefConfigLoadSeq =
-        (state.unifiedSettingsBriefConfigLoadSeq || 0) + 1;
-      var augmentSeq = state.unifiedSettingsBriefConfigLoadSeq;
-      var augmentWfId = String(wf.id || "").trim();
-      recoverWorkflowBriefConfigForUnifiedSettings(wf).then(function (payload) {
-        if (augmentSeq !== state.unifiedSettingsBriefConfigLoadSeq) return;
-        if (String(state.selectedWorkflowId || "").trim() !== augmentWfId) return;
-        if (state.workflowDetailMode !== "settings") return;
-        if (!els.unifiedWorkflowSettingsOptions) return;
-        els.unifiedWorkflowSettingsOptions.innerHTML = "";
-        var discovered = payload && payload.config ? payload.config : null;
-        var merged = unionWorkflowBriefConfigsForDisplay(priorConfig, discovered);
-        if (!merged) {
-          renderUnifiedWorkflowSettingsEmptyHint(
-            "No pack parameter metadata is available for this workflow."
-          );
-          return;
-        }
-        renderUnifiedWorkflowSettingsContent(wf, merged);
-        refreshWorkflowModeSettingsTabBadge();
-      });
-      return;
-    }
-    if (briefConfig) {
-      renderUnifiedWorkflowSettingsContent(wf, briefConfig);
-      return;
-    }
-    if (!workflowNeedsUnifiedSettingsBriefConfigRecovery(wf)) {
       renderUnifiedWorkflowSettingsEmptyHint(
-        "No pack parameter metadata is available for this workflow. Choose a structured domain pack when designing, or open a workflow saved with pack metadata."
+        "Select a saved workflow to review its Adjustments."
       );
+      refreshWorkflowModeSettingsTabBadge();
       return;
     }
-    renderUnifiedWorkflowSettingsEmptyHint("Loading pack parameter metadata…");
-    state.unifiedSettingsBriefConfigLoadSeq =
-      (state.unifiedSettingsBriefConfigLoadSeq || 0) + 1;
-    var loadSeq = state.unifiedSettingsBriefConfigLoadSeq;
-    var wfId = String(wf.id || "").trim();
-    recoverWorkflowBriefConfigForUnifiedSettings(wf).then(function (payload) {
-      if (loadSeq !== state.unifiedSettingsBriefConfigLoadSeq) return;
-      if (String(state.selectedWorkflowId || "").trim() !== wfId) return;
-      if (state.workflowDetailMode !== "settings") return;
-      if (!els.unifiedWorkflowSettingsOptions) return;
-      els.unifiedWorkflowSettingsOptions.innerHTML = "";
-      var cfg = payload && payload.config ? payload.config : null;
-      if (!cfg) {
-        renderUnifiedWorkflowSettingsEmptyHint(
-          "No pack parameter metadata is available for this workflow. The saved domain selection may be general-only, or the pack could not be loaded."
-        );
-        return;
-      }
-      renderUnifiedWorkflowSettingsContent(wf, cfg);
-      refreshWorkflowModeSettingsTabBadge();
-    });
+    if (els.unifiedWorkflowSettingsHint) {
+      els.unifiedWorkflowSettingsHint.textContent =
+        "Reuse this workflow with different values, and add optional guidance for individual steps. Anything left blank stays automatic.";
+    }
+    renderAdjustmentsWorkflowParametersSection(wf);
+    renderAdjustmentsWorkflowStepsSection(wf);
+    setUnifiedWorkflowSettingsSaveHintVisible(true);
+    refreshWorkflowModeSettingsTabBadge();
   }
 
   function resolveWorkflowSettingsParamLabel(key, canonicalStepId, briefConfig) {
@@ -3736,30 +3999,17 @@
         ? state.workflowBriefResolved
         : null;
     var briefConfig = getWorkflowBriefConfigFromResolvedState(resolvedState);
-    var configurable = isWorkflowStepConfigurableInSettings(step, catalog, briefConfig);
+    // S80-S4 §5: the pack-derived Settings catalogue is no longer a product
+    // surface, so a step must not advertise "tunable pack parameters" that the
+    // Adjustments panel does not expose. `isWorkflowStepConfigurableInSettings`
+    // itself is left intact for the retained legacy machinery.
+    var configurable = false;
     var summary = buildWorkflowStepSettingsSummaryText(step, catalog, resolvedState, briefConfig);
-    if (!configurable && !summary) return;
-
-    var titleEl = li.querySelector(".workflow-step-header-title");
-    if (configurable && titleEl) {
-      var badge = document.createElement("span");
-      badge.className = "workflow-step-settings-badge badge badge-muted";
-      badge.textContent = opts.context === "design" ? "Tunable" : "Settings";
-      badge.title = "Step parameters can be tuned in Settings";
-      titleEl.appendChild(document.createTextNode(" "));
-      titleEl.appendChild(badge);
-    }
+    if (!summary) return;
 
     var cue = document.createElement("div");
     cue.className = "workflow-step-settings-cue muted";
     var cueParts = [];
-    if (configurable) {
-      cueParts.push(
-        opts.context === "design"
-          ? "Editable in the Settings tab after you save this workflow."
-          : "Editable in the Settings tab — open Settings to tune step parameters."
-      );
-    }
     if (summary) cueParts.push(summary);
     cue.textContent = cueParts.join(" ");
     var header = li.querySelector(".workflow-step-header");
@@ -3889,7 +4139,7 @@
       switchTab("workflowFactory");
       highlightWorkflowStepSettingsTarget(designLi);
       showToast(
-        "Save the workflow, then open Settings on the matching step to tune parameters.",
+        "Save the workflow, then open Adjustments to add guidance for the matching step.",
         "success"
       );
       return true;
@@ -4190,17 +4440,9 @@
       actionText.textContent = "Suggestion: " + String(row.action).trim();
       actionRow.appendChild(actionText);
 
-      var settingsTarget = resolvePlanningAdequacySettingsNavigationTarget(row);
-      if (settingsTarget && settingsTarget.canonicalStepId) {
-        var linkBtn = document.createElement("button");
-        linkBtn.type = "button";
-        linkBtn.className = "btn small workflow-planning-settings-link";
-        linkBtn.textContent = "Open Settings";
-        linkBtn.addEventListener("click", function () {
-          focusWorkflowStepSettings(settingsTarget, { openSettings: true });
-        });
-        actionRow.appendChild(linkBtn);
-      }
+      // S80-S4 §5: this link pointed at pack-parameter controls that Adjustments
+      // no longer exposes, so it would navigate to a surface that cannot action
+      // the suggestion. The suggestion text itself remains.
       item.appendChild(actionRow);
     }
 
@@ -4635,25 +4877,8 @@
         factorUl.appendChild(fLi);
       });
       stepLi.appendChild(factorUl);
-      if (stepRow.canonicalStepId) {
-        var pseudoStep = { canonical_step_id: stepRow.canonicalStepId, title: stepRow.stepTitle };
-        if (
-          isWorkflowStepConfigurableInSettings(pseudoStep, catalog, config) &&
-          typeof focusWorkflowStepSettings === "function"
-        ) {
-          var settingsLink = document.createElement("button");
-          settingsLink.type = "button";
-          settingsLink.className = "btn small workflow-brief-provenance-settings-link";
-          settingsLink.textContent = "Open Settings";
-          settingsLink.addEventListener("click", function () {
-            focusWorkflowStepSettings(
-              { canonicalStepId: stepRow.canonicalStepId, titleHint: stepRow.stepTitle },
-              { openSettings: true }
-            );
-          });
-          stepLi.appendChild(settingsLink);
-        }
-      }
+      // S80-S4 §5: provenance rows no longer offer an "Open Settings" jump,
+      // because the pack controls they referenced are not part of Adjustments.
       stepList.appendChild(stepLi);
     });
     section.appendChild(stepList);
@@ -7042,7 +7267,6 @@
     var defaults = {
       goal:
         "What the saved workflow should achieve for the learner-facing run (workflows orchestrate generation; they are not the primary learner artefact).",
-      audience: "Primary end users or learners for the learner-facing output.",
       constraints:
         "Non-negotiables such as policy, compliance, style, or venue/channel delivery constraints (plain language; not a sequencing engine).",
       inputs: "Source materials this workflow expects at run time (artefacts passed into steps).",
@@ -7054,9 +7278,11 @@
       if (els.workflowGoalHint) {
         els.workflowGoalHint.textContent = String(h.design_intent || h.goal || defaults.goal);
       }
-      if (els.workflowAudienceHint) {
-        els.workflowAudienceHint.textContent = String(h.audience || defaults.audience);
-      }
+      // S80-S7 §8/§18: the Audience hint is no longer overwritten from domain
+      // UI hints. Those hints describe an *editable* audience field; this field
+      // is now read-only commissioning information whose helper text has to
+      // explain why and point at Adjustments, so a domain hint would make the
+      // UI lie about where Audience is changed.
       if (els.workflowConstraintsHint) {
         els.workflowConstraintsHint.textContent = String(h.constraints || defaults.constraints);
       }
@@ -8215,8 +8441,17 @@
       (wf && wf.workflowOutputSpec && typeof wf.workflowOutputSpec === "object"
         ? wf.workflowOutputSpec
         : normalizeWorkflowOutputSpec({}));
+    // S80-S5 §10 (D6): cognition pack and contract selection is *commissioning
+    // interpretation*, so it must read the frozen Create-time prose, never the
+    // runtime Goal. Previously this read the mutable `workflowOutputSpec.goal`,
+    // which meant editing Goal silently re-derived factors and re-selected
+    // scaffolds. `ctx.workflowGoal` remains the last resort only for records
+    // that carry no frozen brief at all.
     var base = {
-      goal: String(ctx.workflowGoal || outputSpec.goal || (wf && wf.goal) || "").trim(),
+      goal: resolveCommissioningGoalProseForFactorDerivation(
+        wf,
+        ctx.workflowGoal || (wf && wf.goal) || ""
+      ),
       inputs: String((wf && wf.inputs) || "").trim(),
       desiredOutputs: String((wf && wf.desiredOutputs) || "").trim(),
       startingArtefact: String((wf && wf.startingArtefact) || "").trim()
@@ -10333,9 +10568,16 @@
     } catch (_) {}
     var overlayOn = shouldApplyLearnerPagePedagogicFramingScaffold(context, resolved, base);
     var contractMod = resolveLdDlaPageEnrichContractLib();
+    // S80-S6 §4/§7: the workbook overlay used to assert a hardcoded ~60-minute
+    // session, which was simply false for any other duration. It now receives
+    // the effective authoritative Duration as a target/band. DLA designs a
+    // feasible activity set against that total; it does not become the
+    // allocator — Learning Sequence still owns the per-activity allocation.
     var overlayText =
       overlayOn && contractMod && typeof contractMod.buildDlaWorkbookOverlayBlock === "function"
-        ? contractMod.buildDlaWorkbookOverlayBlock()
+        ? contractMod.buildDlaWorkbookOverlayBlock({
+            durationMinutes: resolveEffectiveWorkflowDurationMinutes(wf)
+          })
         : "";
     return {
       workbookOverlay: overlayOn,
@@ -11611,6 +11853,19 @@
     return validateEpisodePlansCaptureV1(parsed);
   }
 
+  /**
+   * Effective Topic as a title-capable subject label (S80-S5 §11).
+   * Reads the governed parameter, so an adjusted Topic retitles the page and an
+   * unadjusted one keeps the commissioned subject. Returns "" when Topic is
+   * absent, letting the caller fall through to its next title source.
+   */
+  function resolveEffectiveWorkflowTopicForTitle(wf) {
+    if (!wf || typeof wf !== "object") return "";
+    var context = resolveEffectiveRunContext(wf);
+    var value = context && context.parameters ? context.parameters.topic : "";
+    return String(value == null ? "" : value).trim();
+  }
+
   function buildPageShellOptionsFromWorkflow(wf, learningOutcomes) {
     var workflow = resolveActiveWorkflowForEpisodePlanDerive(wf);
     var briefCtx = resolveWorkflowBriefContextForPageComposition({
@@ -11626,16 +11881,39 @@
       resolved.profile_type,
       "learner"
     ]);
+    // S80-S5 §11 (D5): the title used to fall back to `base.goal`, so a
+    // commissioning sentence such as "Create a 60-minute self-study resource on
+    // Henry VIII with 10 formative assessment questions." became the learner
+    // page title verbatim. Goal prose is never a title. Precedence is now:
+    //   1. explicit commissioned page title  (resolved.page_title)
+    //   2. explicit commissioned title       (resolved.title)
+    //   3. effective Topic                   (adjustment, else commissioned)
+    //   4. workflow name
+    //   5. "Learning page"
+    // Topic is a concise subject label by contract, so it is title-capable;
+    // nothing here derives a Topic from Goal prose (see D7).
     return {
       title: utilityFirstPresent([
         resolved.page_title,
         resolved.title,
-        base.goal,
-        workflow && workflow.goal,
+        resolveEffectiveWorkflowTopicForTitle(workflow),
         workflow && workflow.name,
         "Learning page"
       ]),
-      audience: utilityFirstPresent([resolved.audience, resolved.learner_audience, "Learners"]),
+      // S80-S7 §10 (D16): the page artefact used to read only
+      // `resolvedFactors.audience`, a key that is never written under the
+      // learning-design pack — so every LD learner page carried the constant
+      // "Learners" while the real audience went to the prompts, and a runtime
+      // Adjustment could never reach the artefact at all. The effective governed
+      // Audience now leads, so Adjustments, prompts and page metadata report one
+      // authority. The existing frozen reads and the "Learners" last resort are
+      // retained beneath it for workflows that resolve no Audience.
+      audience: utilityFirstPresent([
+        resolveEffectiveWorkflowAudience(workflow),
+        resolved.audience,
+        resolved.learner_audience,
+        "Learners"
+      ]),
       page_profile: { profile_type: profileType || "learner" },
       learning_outcomes: learningOutcomes,
       workflow: workflow
@@ -15927,7 +16205,13 @@
       : normalizeWorkflowOutputSpec({});
     var ctx = {
       workflowId: wfRec ? String(wfRec.id || "") : "",
-      workflowGoal: String(outputSpec.goal || (wfRec && wfRec.goal) || "").trim(),
+      // S80-S5 §10 (D6): this ctx feeds scaffold/contract gating, which is
+      // commissioning interpretation. It carries the frozen Create-time prose,
+      // not the runtime Goal, so changing Goal cannot re-gate scaffolds.
+      workflowGoal: resolveCommissioningGoalProseForFactorDerivation(
+        wfRec,
+        (outputSpec && outputSpec.goal) || (wfRec && wfRec.goal) || ""
+      ),
       desiredOutputs: Array.isArray(wfRec && wfRec.workflowOutputs)
         ? wfRec.workflowOutputs.join(", ")
         : String((wfRec && wfRec.desiredOutputs) || "").trim(),
@@ -21447,7 +21731,7 @@
         if (skipPostGenerationRefinement) {
           appendWorkflowDesignLog(
             "assistant",
-            "Your workflow is ready. You can adjust Settings at any time."
+            "Your workflow is ready. You can open Adjustments at any time."
           );
           setWorkflowDesignStatusBadge("Ready", "badge badge-success");
           return;
@@ -21545,7 +21829,7 @@
           logWorkflowTrace("[PRISM][WizardFlow] no required post-generation queue; finalizing current draft");
           appendWorkflowDesignLog(
             "assistant",
-            "Your workflow is ready. You can adjust Settings at any time."
+            "Your workflow is ready. You can open Adjustments at any time."
           );
           setWorkflowDesignStatusBadge("Ready", "badge badge-success");
           return;
@@ -25463,6 +25747,15 @@
         }
       }
 
+      // Sprint 80 S3: Additional Instruction is authored in Edit, not in Run.
+      // The textarea stays in the DOM (read-only) so Save cannot clear it.
+      var additionalInstructionGroupEl = li.querySelector(
+        '[data-role="additional-instruction-group"]'
+      );
+      if (additionalInstructionGroupEl) {
+        additionalInstructionGroupEl.classList.toggle("hidden", isRun);
+      }
+
       // Move / remove buttons are disabled in run mode, copy stays active.
       var moveAndRemove = li.querySelectorAll(
         ".workflow-step-move-btn, .workflow-step-remove-btn"
@@ -26957,10 +27250,17 @@
       els.workflowOutputs.readOnly = readOnlyTopLevel;
     }
     if (els.workflowAudience) {
-      els.workflowAudience.readOnly = readOnlyTopLevel;
+      // S80-S7 §8: disposition C, as S5 applied to Goal. The commissioning
+      // Audience is reference information in every mode; the only editable
+      // Audience is the runtime Audience in Adjustments. Never conditional on
+      // mode.
+      els.workflowAudience.readOnly = true;
     }
     if (els.workflowGoal) {
-      els.workflowGoal.readOnly = readOnlyTopLevel;
+      // S80-S5 §8: disposition C. The commissioning Goal is reference
+      // information in every mode; the only editable Goal is the runtime Goal
+      // in Adjustments. Never conditional on mode.
+      els.workflowGoal.readOnly = true;
     }
     if (els.workflowConstraints) {
       els.workflowConstraints.readOnly = readOnlyTopLevel;
@@ -26990,11 +27290,16 @@
           typeof els.workflowAudience.value === "string"
             ? els.workflowAudience.value.trim()
             : "";
-        var wfGoal =
-          els.workflowGoal &&
-          typeof els.workflowGoal.value === "string"
-            ? els.workflowGoal.value.trim()
-            : "";
+        // S80-S5 §8: the run header reports the *effective* Goal for this run
+        // (explicit runtime Goal, else commissioned), so the screen agrees with
+        // the projected prompt instead of echoing the read-only commissioning
+        // field.
+        var wfGoalContext = resolveEffectiveRunContext(
+          findWorkflowById(state.selectedWorkflowId || "") || {}
+        );
+        var wfGoal = String(
+          (wfGoalContext && wfGoalContext.parameters && wfGoalContext.parameters.goal) || ""
+        ).trim();
         var wfConstraints =
           els.workflowConstraints &&
           typeof els.workflowConstraints.value === "string"
@@ -30949,8 +31254,24 @@
       els.workflowStartingArtefact.value = String(wf.startingArtefact || "").trim();
     }
     var outputSpec = normalizeWorkflowOutputSpec(wf.workflowOutputSpec);
-    if (els.workflowAudience) els.workflowAudience.value = outputSpec.audience;
-    if (els.workflowGoal) els.workflowGoal.value = outputSpec.goal;
+    // S80-S7 §8: show the frozen commissioning Audience, clearly labelled as
+    // such in index.html. `resolveCommissionedWorkflowAudience` already applies
+    // the narrow legacy allowance for records with no frozen brief, so no
+    // additional fallback to the mutable spec is needed here. Where a frozen
+    // brief exists but recorded no audience, the field stays empty and its
+    // placeholder says so — deliberately, rather than displaying a historical
+    // edit as if it were commissioning history.
+    if (els.workflowAudience) {
+      els.workflowAudience.value = resolveCommissionedWorkflowAudience(wf);
+    }
+    // S80-S5 §8: show the frozen commissioning Goal, clearly labelled as such
+    // in index.html, and fall back to the stored spec goal only for legacy
+    // records that never had a frozen brief. This field is read-only.
+    if (els.workflowGoal) {
+      els.workflowGoal.value =
+        resolveCommissionedWorkflowGoal(wf) ||
+        (wf.workflowBriefResolution ? "" : outputSpec.goal);
+    }
     if (els.workflowConstraints) els.workflowConstraints.value = outputSpec.constraints;
 
     if (els.workflowSteps) {
@@ -32464,6 +32785,33 @@
     runInstructionsProse.setAttribute("data-role", "run-instructions-prose");
     instructionsGroup.appendChild(runInstructionsProse);
 
+    // Sprint 80 S3/S4: Adjustments author steering, stored in its own field
+    // rather than in step.notes. Distinct from Instructions above: Instructions
+    // is general-purpose step content, this steers a PRISM stage's discretion.
+    var additionalInstructionGroup = null;
+    if (stepSupportsAdditionalInstruction(step)) {
+      additionalInstructionGroup = document.createElement("div");
+      additionalInstructionGroup.className = "form-group workflow-step-additional-instruction";
+      additionalInstructionGroup.setAttribute("data-role", "additional-instruction-group");
+      var additionalInstructionLabel = document.createElement("label");
+      additionalInstructionLabel.setAttribute("data-role", "additional-instruction-label");
+      additionalInstructionLabel.textContent = "Additional instruction (optional)";
+      var additionalInstructionArea = document.createElement("textarea");
+      additionalInstructionArea.rows = 3;
+      additionalInstructionArea.setAttribute("data-field", "additionalInstruction");
+      additionalInstructionArea.placeholder =
+        "Optional steering for this step, applied where the step has discretion.";
+      additionalInstructionArea.autocomplete = "off";
+      additionalInstructionArea.value = getStepAdditionalInstruction(step);
+      var additionalInstructionHelp = document.createElement("div");
+      additionalInstructionHelp.className = "helper-text";
+      additionalInstructionHelp.textContent =
+        "Subordinate to output contracts, validators, workflow parameters and upstream artefacts.";
+      additionalInstructionGroup.appendChild(additionalInstructionLabel);
+      additionalInstructionGroup.appendChild(additionalInstructionArea);
+      additionalInstructionGroup.appendChild(additionalInstructionHelp);
+    }
+
     var userNotesWrap = document.createElement("div");
     userNotesWrap.className = "workflow-step-run-output-wrap hidden";
     userNotesWrap.setAttribute("data-role", "run-step-output-wrap");
@@ -32556,6 +32904,9 @@
     li.appendChild(header);
     li.appendChild(fields);
     li.appendChild(instructionsGroup);
+    if (additionalInstructionGroup) {
+      li.appendChild(additionalInstructionGroup);
+    }
     li.appendChild(runCopy);
     li.appendChild(userNotesWrap);
     if (isWorkflowStepGenerateActivityMaterials(buildWorkflowStepRecognitionContext(step, {}))) {
@@ -32587,9 +32938,34 @@
     workflowNotes = String(workflowNotes).trim();
     var artefacts = (els.workflowArtefacts && els.workflowArtefacts.value) || "";
     var workflowOutputs = (els.workflowOutputs && els.workflowOutputs.value) || "";
+    // S80-S5 §8 (D4): `goal` is no longer gathered from the DOM. The field is
+    // read-only commissioning information, so Save preserves whatever is stored
+    // rather than writing the displayed text back. This is what stops
+    // `workflowOutputSpec.goal` being a second mutable Goal authority; the
+    // runtime Goal lives in `adjustments.parameters.goal`.
+    // S80-S7 §8 (D13): `audience` is no longer gathered from the DOM either,
+    // for the same reason. Save preserves the stored value rather than writing
+    // the displayed commissioning text back, which both stops the field being a
+    // second mutable Audience authority and avoids destroying a legacy stored
+    // value that is no longer runtime authority (S80-S7 §17).
+    var existingGoalForPreservation = "";
+    var existingAudienceForPreservation = "";
+    var existingForGoal = findWorkflowById(state.selectedWorkflowId || "");
+    if (
+      existingForGoal &&
+      existingForGoal.workflowOutputSpec &&
+      typeof existingForGoal.workflowOutputSpec === "object"
+    ) {
+      if (existingForGoal.workflowOutputSpec.goal != null) {
+        existingGoalForPreservation = String(existingForGoal.workflowOutputSpec.goal);
+      }
+      if (existingForGoal.workflowOutputSpec.audience != null) {
+        existingAudienceForPreservation = String(existingForGoal.workflowOutputSpec.audience);
+      }
+    }
     var workflowOutputSpec = normalizeWorkflowOutputSpec({
-      audience: (els.workflowAudience && els.workflowAudience.value) || "",
-      goal: (els.workflowGoal && els.workflowGoal.value) || "",
+      audience: existingAudienceForPreservation,
+      goal: existingGoalForPreservation,
       constraints: (els.workflowConstraints && els.workflowConstraints.value) || ""
     });
 
@@ -32636,6 +33012,9 @@
         var inputKindSelect = child.querySelector('[data-field="inputKind"]');
         var outputInput = child.querySelector('[data-field="outputName"]');
         var notesArea = child.querySelector('[data-field="notes"]');
+        var additionalInstructionArea = child.querySelector(
+          '[data-field="additionalInstruction"]'
+        );
         var existingStep = null;
         if (existingWf && Array.isArray(existingWf.steps)) {
           existingStep = existingWf.steps.find(function (row) {
@@ -32661,6 +33040,14 @@
           existingStep && typeof existingStep.override_prompt_body === "string"
             ? existingStep.override_prompt_body
             : "";
+        // Sprint 80 S3: when the field is not rendered (e.g. run mode, or a
+        // step whose editor row is absent), preserve the stored value rather
+        // than clearing it on save.
+        var additionalInstructionValue = additionalInstructionArea
+          ? normalizeStepAdditionalInstruction(additionalInstructionArea.value)
+          : normalizeStepAdditionalInstruction(
+              existingStep ? existingStep.additional_instruction : ""
+            );
         var promptAttachment = canonicalizeWorkflowStepPromptAttachment(
           {
             prompt_source_type: sourceType,
@@ -32707,12 +33094,19 @@
                   : notesArea.value
               )
             : "",
+          additional_instruction: additionalInstructionValue,
           inputBindings: inputBindings
         });
       });
     }
 
-    return {
+    // Sprint 80 S3: absent means no steering, so blank instructions are dropped
+    // rather than persisted as empty keys on every step.
+    steps.forEach(function (row) {
+      if (!row.additional_instruction) delete row.additional_instruction;
+    });
+
+    var draft = {
       id: state.selectedWorkflowId,
       name: name.trim() || "Untitled workflow",
       tags: workflowTags,
@@ -32724,6 +33118,13 @@
       workflowOutputSpec: workflowOutputSpec,
       steps: steps
     };
+    // Sprint 80 S1: Adjustments parameters have no editor in this slice, so the
+    // gather pass carries the persisted record forward instead of dropping it.
+    var carriedAdjustments = normalizeWorkflowAdjustments(
+      existingWf ? existingWf.adjustments : null
+    );
+    if (carriedAdjustments) draft.adjustments = carriedAdjustments;
+    return draft;
   }
 
   function handleNewWorkflow() {
@@ -33122,13 +33523,36 @@
     var inputs = Array.isArray(wf.workflowInputs) ? wf.workflowInputs : parseStringList(wf.artefacts || "");
     var outputs = Array.isArray(wf.workflowOutputs) ? wf.workflowOutputs : [];
     var suppressAssessmentCues = isFoundationUpstreamStep(step);
+    // S80-S4 §12: omit a commissioned field whose typed parameter has been
+    // explicitly adjusted, so step 1 cannot present stale commissioning prose
+    // as current authority beside the effective parameter.
+    var supersededFields = getSupersededCommissionedContextFields(wf);
     if (name) lines.push("Workflow: " + name);
-    var goalText = suppressAssessmentCues
-      ? sanitizeAssessmentCuesForUpstreamContext(outputSpec.goal)
-      : outputSpec.goal;
-    if (goalText) lines.push("Goal: " + goalText);
-    if (outputSpec.audience) lines.push("Audience: " + outputSpec.audience);
-    var constraintsText = String(outputSpec.constraints || "").trim();
+    // S80-S5 §8/§9 (D4): the commissioned `Goal:` line used to be emitted here
+    // from the mutable `workflowOutputSpec.goal`, in parallel with — and
+    // capable of contradicting — the governed Topic parameter. Goal is now a
+    // declared Adjustments parameter, so it is projected once, through the
+    // shared effective-context projector, with explicit provenance and
+    // precedence. Emitting it here as well would restore the two-authority
+    // defect this slice exists to remove.
+    // S80-S7 §9 (D13): the commissioned `Audience:` line used to be emitted
+    // here from the mutable `workflowOutputSpec.audience`, in parallel with —
+    // and capable of contradicting — the effective Audience. Audience is now a
+    // declared Adjustments parameter, so it is projected once, through the
+    // shared effective-context projector, with explicit provenance and
+    // precedence. This is the same disposition S5 applied to `Goal:` directly
+    // above.
+    //
+    // Note this is a removal rather than a `supersedesCommissionedContextFields`
+    // entry. Supersession fires only when provenance is `adjustment`, so a
+    // workflow with Audience on Auto would still emit this line — and where a
+    // frozen brief says "Undergraduate students" while a historical edit left
+    // "Senior executives" in the spec, the two would contradict each other with
+    // no adjustment present at all. Governance has to be unconditional to close
+    // D13; the generic mechanism cannot express that.
+    var constraintsText = supersededFields.constraints
+      ? ""
+      : String(outputSpec.constraints || "").trim();
     if (constraintsText) {
       if (suppressAssessmentCues) {
         var keptConstraintLines = constraintsText
@@ -33290,6 +33714,264 @@
    * Fail closed if assembler unavailable (no OLD assembly path).
    * Post-assembly: archetype (when plans present) then math then pipeline close.
    */
+  // ==========================================================================
+  // Sprint 80 S3 — Adjustments: per-step Additional Instruction.
+  //
+  // One generic mechanism for every model-driven step. The author text is
+  // appended as a delimited, explicitly subordinate block after all canonical
+  // requirements. It is never interpreted by a separate model call, never
+  // written into step.notes or [PRISM_STEP_PARAMS], and never leaves the step
+  // it belongs to.
+  // ==========================================================================
+
+  // ==========================================================================
+  // Sprint 80 S2 — shared effective-workflow-context projection.
+  //
+  // The single projector for every parameter declared with the `workflowContext`
+  // strategy. It consumes resolveEffectiveRunContext(wf), so adding a further
+  // workflowContext parameter requires no prompt edits anywhere: declare it in
+  // the registry and it appears here.
+  //
+  // Deliberately compact — this is authoritative parameter state, not a place to
+  // duplicate the workflow brief.
+  // ==========================================================================
+
+  /**
+   * Typed (scalar) workflowContext parameters, as inline `Label: value` lines.
+   * Prose parameters are excluded — they carry newlines and would break the
+   * one-value-per-line contract this block relies on.
+   */
+  function buildEffectiveWorkflowContextLines(wf) {
+    var context = resolveEffectiveRunContext(wf);
+    var lines = [];
+    getAdjustmentsParameterRegistry().forEach(function (declaration) {
+      if (declaration.projection !== "workflowContext") return;
+      if (declaration.multiline) return;
+      if (!Object.prototype.hasOwnProperty.call(context.parameters, declaration.id)) return;
+      var value = context.parameters[declaration.id];
+      if (value == null || String(value) === "") return;
+      lines.push(declaration.label + ": " + formatAdjustmentsParameterValueForDisplay(declaration, value));
+    });
+    return lines;
+  }
+
+  /**
+   * Render a resolved parameter value with its declared unit noun, so
+   * "Duration: 30 minutes" is produced by the shared projector rather than by
+   * timing-specific prose in each prompt builder (S80-S6 §9).
+   */
+  function formatAdjustmentsParameterValueForDisplay(declaration, value) {
+    var text = String(value == null ? "" : value);
+    var units = declaration && declaration.units ? String(declaration.units) : "";
+    if (!units || !text) return text;
+    return text + " " + units;
+  }
+
+  /**
+   * Prose (multiline) workflowContext parameters — currently Goal (S80-S5 §6).
+   *
+   * `step` is honoured so the existing upstream assessment-cue boundary still
+   * applies: a foundation upstream step must not be told about assessment items
+   * just because the author's Goal mentions them. Same sanitiser the step-1
+   * commissioning context has always used, so the boundary does not weaken now
+   * that intent prose reaches every step.
+   */
+  function buildEffectiveWorkflowIntentEntries(wf, step) {
+    var context = resolveEffectiveRunContext(wf);
+    var suppressAssessmentCues = isFoundationUpstreamStep(step);
+    var entries = [];
+    getAdjustmentsParameterRegistry().forEach(function (declaration) {
+      if (declaration.projection !== "workflowContext") return;
+      if (!declaration.multiline) return;
+      if (!Object.prototype.hasOwnProperty.call(context.parameters, declaration.id)) return;
+      var value = String(context.parameters[declaration.id] == null ? "" : context.parameters[declaration.id]).trim();
+      if (!value) return;
+      if (suppressAssessmentCues) {
+        value = String(sanitizeAssessmentCuesForUpstreamContext(value) || "").trim();
+        if (!value) return;
+      }
+      entries.push({ id: declaration.id, label: declaration.label, value: value });
+    });
+    return entries;
+  }
+
+  /**
+   * Render the model-visible effective-workflow-context block.
+   *
+   * Two sections with deliberate ordering, which is how precedence is expressed
+   * without any AI conflict detection (S80-S5 §7):
+   *
+   *   1. typed parameters, declared authoritative;
+   *   2. prose intent, declared subordinate to (1).
+   *
+   * The subordination sentence is written generically over "the authoritative
+   * workflow parameters above", so a future typed Duration or Audience
+   * structurally outranks Goal prose the moment it is declared — no wording
+   * change required.
+   *
+   * Returns "" when nothing resolves, which keeps prompts byte-identical for
+   * workflows with neither an adjustment nor commissioned state.
+   */
+  function buildEffectiveWorkflowContextBlock(wf, step) {
+    var typedLines = buildEffectiveWorkflowContextLines(wf);
+    var intentEntries = buildEffectiveWorkflowIntentEntries(wf, step);
+    if (!typedLines.length && !intentEntries.length) return "";
+    var sections = [];
+    if (typedLines.length) {
+      sections.push(
+        ["Authoritative workflow parameters for this run:"]
+          .concat(typedLines)
+          .concat([
+            "",
+            "These values are authoritative for this run. If any other text in this prompt — including copied prompt bodies, workflow context or an author instruction — names a different value for one of them, the value above wins and the conflicting text is superseded."
+          ])
+          .join("\n")
+      );
+    }
+    intentEntries.forEach(function (entry) {
+      var framing = typedLines.length
+        ? "This is the author's intent for this run. It is subordinate to the authoritative workflow parameters above: where it names a different value for one of them, that parameter wins."
+        : "This is the author's intent for this run.";
+      sections.push(
+        [
+          "Workflow-wide intent for this run (" + entry.label + "):",
+          entry.value,
+          "",
+          framing +
+            " It does not change which stages this workflow runs, or what this workflow is capable of producing."
+        ].join("\n")
+      );
+    });
+    return sections.join("\n\n");
+  }
+
+  /**
+   * Which commissioned brief fields are superseded for this run (S80-S4 §12).
+   *
+   * A commissioning field is suppressed only when its typed parameter is
+   * *explicitly adjusted* — provenance `adjustment`. Falling back to the
+   * commissioned value (`commissioned`) leaves everything untouched, so a
+   * workflow with Topic on Auto keeps the accepted post-S2 prompt exactly.
+   *
+   * No prose is parsed and no value is rewritten: a stale field is either shown
+   * whole or omitted whole.
+   */
+  function getSupersededCommissionedContextFields(wf) {
+    var context = resolveEffectiveRunContext(wf);
+    var superseded = {};
+    getAdjustmentsParameterRegistry().forEach(function (declaration) {
+      if (context.provenance[declaration.id] !== "adjustment") return;
+      (declaration.supersedesCommissionedContextFields || []).forEach(function (field) {
+        superseded[field] = true;
+      });
+    });
+    return superseded;
+  }
+
+  function appendEffectiveWorkflowContextBlockToPrompt(promptText, wf, step) {
+    var block = buildEffectiveWorkflowContextBlock(wf, step);
+    if (!block) return promptText;
+    return [String(promptText || ""), "", block]
+      .filter(function (part) {
+        return part != null && String(part).length > 0;
+      })
+      .join("\n");
+  }
+
+  function normalizeStepAdditionalInstruction(raw) {
+    if (raw == null) return "";
+    return String(raw).trim();
+  }
+
+  /**
+   * Design Episode Plan derives its page shell from upstream learning outcomes
+   * rather than authoring it freely, so it receives no projected workflow
+   * parameters (S80-S2 §7). This is a *projection* rule only — as of S80-S4 it
+   * no longer governs Additional Instruction eligibility.
+   */
+  function isDerivedShellWorkflowStep(step) {
+    if (!step || typeof step !== "object") return false;
+    return !!isWorkflowStepDesignEpisodePlanRow(step);
+  }
+
+  function isWorkflowStepEligibleForWorkflowContextProjection(step) {
+    if (!step || typeof step !== "object") return false;
+    return !isDerivedShellWorkflowStep(step);
+  }
+
+  /**
+   * Additional Instruction eligibility (S80-S4 §10, operator correction).
+   *
+   * The old rule was "deterministic step => no Additional Instruction", which
+   * excluded Design Episode Plan. That conflated two different questions and is
+   * superseded. The product question is whether the stage has an author-facing
+   * prompt/copy operation whose output materially shapes downstream artefacts
+   * and over which the author can legitimately exercise discretion.
+   *
+   * Episode Plan qualifies: PRISM derives the shell, but the stage still emits
+   * an author-facing prompt, and its learning arc measurably shapes everything
+   * downstream. Every workflow step in the runner emits such a prompt, so every
+   * step is eligible. `NON_STEERABLE_CANONICAL_STEP_IDS` is the extension point
+   * for a genuinely non-steerable operation (one with no author-facing prompt);
+   * it is deliberately empty today rather than pre-populated with guesses.
+   */
+  var NON_STEERABLE_CANONICAL_STEP_IDS = {};
+
+  function isWorkflowStepEligibleForAdditionalInstruction(step) {
+    if (!step || typeof step !== "object") return false;
+    var canonicalId = normalizeCanonicalStepId(
+      step.canonical_step_id || step.canonicalStepId || ""
+    );
+    if (canonicalId && NON_STEERABLE_CANONICAL_STEP_IDS[canonicalId]) return false;
+    return true;
+  }
+
+  function stepSupportsAdditionalInstruction(step) {
+    return isWorkflowStepEligibleForAdditionalInstruction(step);
+  }
+
+  function getStepAdditionalInstruction(step) {
+    if (!stepSupportsAdditionalInstruction(step)) return "";
+    return normalizeStepAdditionalInstruction(step.additional_instruction);
+  }
+
+  /**
+   * Shared renderer for the model-visible Additional Instruction block.
+   * Both ordinary prompt assembly (I1) and canonical GAM assembly (I2) call
+   * this, so the precedence wording is defined exactly once.
+   * Returns "" when there is no instruction, keeping prompts byte-identical.
+   */
+  function buildStepAdditionalInstructionBlock(step) {
+    var instruction = getStepAdditionalInstruction(step);
+    if (!instruction) return "";
+    return [
+      "Author additional instruction for this step.",
+      "",
+      "Apply this instruction only where this step has legitimate discretion.",
+      "",
+      "It is subordinate to:",
+      "- output contracts and schemas;",
+      "- validators;",
+      "- explicit workflow parameters;",
+      "- authoritative upstream artefacts;",
+      "- fixed workflow capabilities and required stage responsibilities.",
+      "",
+      "If the instruction conflicts with those requirements, preserve the requirements and ignore the conflicting part.",
+      "",
+      instruction
+    ].join("\n");
+  }
+
+  function appendStepAdditionalInstructionBlockToPrompt(promptText, step) {
+    var block = buildStepAdditionalInstructionBlock(step);
+    if (!block) return promptText;
+    return [String(promptText || ""), "", block]
+      .filter(function (part) {
+        return part != null && String(part).length > 0;
+      })
+      .join("\n");
+  }
+
   function buildLiveGamV2CopyPromptViaCanonicalAssembler(step, index, domElement, wfForChain, outName) {
     var asm = requireGamCanonicalAssemblerLib();
     var workflow = wfForChain && typeof wfForChain === "object" ? wfForChain : resolveWorkflowForUpstreamArtefacts({});
@@ -33383,6 +34065,15 @@
     });
     text = applyLdInstructionalArchetypeRoutingToDraft(text, gamRecognition, workflow);
     text = applyMathSafeOutputContractToDraft(text, gamRecognition);
+    // I2 (S80-T-007 §14): GAM early-returns around ordinary assembly, so both
+    // Adjustments projections enter here. Appended after the canonical
+    // assembler's output so canonical ownership and NEUTRAL_POLICY_INGRESS are
+    // untouched — unlike I1, nothing may be inserted ahead of canonical text.
+    // Workflow parameters precede the instruction block to keep S2 above S3.
+    if (isWorkflowStepEligibleForWorkflowContextProjection(step)) {
+      text = appendEffectiveWorkflowContextBlockToPrompt(text, workflow, step);
+    }
+    text = appendStepAdditionalInstructionBlockToPrompt(text, step);
     text = [text, "", getPipelineExecutionCompletionDirective()]
       .filter(function (part) {
         return part != null && String(part).length > 0;
@@ -33444,6 +34135,22 @@
     lines.push(
       "This step is titled: " + (step.title || "Untitled step") + "."
     );
+
+    // I1 (S80-S2 §5): project effective workflow parameters into every
+    // model-driven step, so a step stays intelligible when copied on its own or
+    // run in a fresh Copilot conversation. Placed above the step's own content
+    // and above the subordinate Additional Instruction block, but it never
+    // relaxes an output contract. Deterministic steps are excluded.
+    var workflowContextBlockLineCount = 0;
+    if (isWorkflowStepEligibleForWorkflowContextProjection(step)) {
+      var effectiveWorkflowContextBlock = buildEffectiveWorkflowContextBlock(wfForChain, step);
+      if (effectiveWorkflowContextBlock) {
+        lines.push("");
+        lines.push(effectiveWorkflowContextBlock);
+        workflowContextBlockLineCount = 2;
+      }
+    }
+
     if (isWorkflowStepDesignEpisodePlanRow(step)) {
       lines.push("");
       if (isPageEnrichmentV2WorkflowEnabled(wfForChain)) {
@@ -33852,8 +34559,9 @@
     ) {
       promptBody = buildGenerateAssessmentItemsV2CopyAuthoringBrief();
     }
-    if (!promptBody && !step.notes && lines.length <= 3) {
-      // Not enough information to be useful.
+    if (!promptBody && !step.notes && lines.length - workflowContextBlockLineCount <= 3) {
+      // Not enough information to be useful. Projected workflow context is
+      // discounted here so S2 cannot turn a previously-empty prompt into text.
       return "";
     }
 
@@ -33976,6 +34684,13 @@
         wfForChain
       );
     }
+    // I1 (S80-T-007 §14): single ingress for every step reaching ordinary
+    // assembly, including the DA/GAI/LS bespoke-brief paths. Appended last so it
+    // sits after canonical requirements, output contracts and footer overrides.
+    assembledInstructions = appendStepAdditionalInstructionBlockToPrompt(
+      assembledInstructions,
+      step
+    );
     assembledInstructions = [
       assembledInstructions,
       "",
@@ -34385,6 +35100,635 @@
     return lines.join("\n");
   }
 
+  // ==========================================================================
+  // Sprint 80 S1 — Adjustments: typed workflow-parameter registry + resolver.
+  //
+  // Adjustments supersedes the historical Settings catalogue (S80-T-006). It has
+  // two deliberately separate mechanisms: typed workflow parameters (this
+  // section) and per-step Additional Instruction (buildStepAdditionalInstructionBlock).
+  //
+  // S1 delivered the declaration contract, the resolver and the persistence
+  // shape. S2 declares the first live parameter (Topic) plus the shared
+  // workflowContext projector. The `stepScoped` strategy is declared but not yet
+  // implemented, so a parameter using it stays inert.
+  //
+  // Registry entries are an explicit allowlist. They are never derived from the
+  // historical brief-factor vocabulary or the legacy Settings controls.
+  // Nothing here reads or writes [PRISM_STEP_PARAMS], and resolvedFactors is
+  // treated as read-only commissioning history.
+  // ==========================================================================
+
+  var ADJUSTMENTS_STATE_VERSION = 1;
+
+  var ADJUSTMENTS_PARAMETER_TYPES = { text: true, number: true, enum: true };
+
+  // Projection strategies are shared, so adding a parameter does not require a
+  // new propagation path (S80-T-007 §4 extensibility rule).
+  var ADJUSTMENTS_PROJECTION_STRATEGIES = { workflowContext: true, stepScoped: true };
+
+  var ADJUSTMENTS_PARAMETER_ID_PATTERN = /^[a-z][a-z0-9_]*$/;
+
+  /**
+   * Read the commissioned Topic (S80-S2 §3).
+   * `resolvedFactors.topic` is the authoritative commissioned source, with
+   * `workshop_subject` as the historical alias. Read-only: no second store is
+   * introduced for Adjustments, and resolvedFactors is never written.
+   */
+  function resolveCommissionedWorkflowTopic(wf) {
+    if (!wf || typeof wf !== "object") return "";
+    var resolution = wf.workflowBriefResolution;
+    if (!resolution || typeof resolution !== "object") return "";
+    var factors = resolution.resolvedFactors;
+    if (!factors || typeof factors !== "object") return "";
+    var raw = factors.topic != null ? factors.topic : factors.workshop_subject;
+    return String(raw == null ? "" : raw).trim();
+  }
+
+  /**
+   * Read the *commissioning* Goal — the frozen Create-time prose (S80-S5 §3).
+   *
+   * Deliberately reads only `workflowBriefResolution.initialBrief`, which is
+   * written once at Create and never mutated afterwards. The mutable
+   * `workflowOutputSpec.goal` is NOT consulted: it was the ungoverned runtime
+   * authority that caused D4, and using it here would reintroduce a second
+   * mutable Goal store behind the parameter's "commissioned" provenance.
+   *
+   * `designIntent` is the same frozen commissioning prose under the other key
+   * Create writes it to, so it is an honest second read, not a fallback to
+   * mutable state.
+   */
+  function resolveCommissionedWorkflowGoal(wf) {
+    if (!wf || typeof wf !== "object") return "";
+    var resolution = wf.workflowBriefResolution;
+    if (!resolution || typeof resolution !== "object") return "";
+    var initialBrief = resolution.initialBrief;
+    if (!initialBrief || typeof initialBrief !== "object") return "";
+    var raw = initialBrief.goal != null && String(initialBrief.goal).trim()
+      ? initialBrief.goal
+      : initialBrief.designIntent;
+    return String(raw == null ? "" : raw).trim();
+  }
+
+  /**
+   * Commissioning prose for *factor/scaffold derivation* (S80-S5 §10, D6 fix).
+   *
+   * Create-time interpretation must stay frozen, so anything that re-derives
+   * brief factors or selects cognition scaffolds at Run time reads this rather
+   * than the runtime Goal. Changing the runtime Goal therefore cannot silently
+   * re-derive typed factors.
+   *
+   * One documented legacy allowance: records with no `workflowBriefResolution`
+   * at all pre-date the frozen brief structure, so for those the
+   * `workflowOutputSpec` goal *is* the only commissioning record there has ever
+   * been. That field is no longer author-editable (S80-S5 §8), so reading it
+   * here is not a mutable-state read in practice.
+   */
+  function resolveCommissioningGoalProseForFactorDerivation(wf, fallbackProse) {
+    var frozen = resolveCommissionedWorkflowGoal(wf);
+    if (frozen) return frozen;
+    var hasFrozenBrief = !!(
+      wf &&
+      typeof wf === "object" &&
+      wf.workflowBriefResolution &&
+      typeof wf.workflowBriefResolution === "object"
+    );
+    if (!hasFrozenBrief) {
+      var legacy = "";
+      if (wf && typeof wf === "object") {
+        var spec = wf.workflowOutputSpec;
+        if (spec && typeof spec === "object" && spec.goal != null) {
+          legacy = String(spec.goal).trim();
+        }
+        if (!legacy && wf.goal != null) legacy = String(wf.goal).trim();
+      }
+      if (legacy) return legacy;
+    }
+    return String(fallbackProse == null ? "" : fallbackProse).trim();
+  }
+
+  var ADJUSTMENTS_DURATION_PARAMETER_ID = "duration_minutes";
+
+  /**
+   * Commissioned Duration (S80-S6 §3).
+   *
+   * The frozen Create-time resolved factor is the only authority. Two sources
+   * are deliberately *not* consulted:
+   *
+   *   - the runtime Goal prose. Create already parsed minutes out of the brief
+   *     into this factor; re-parsing prose at Run time would make Duration
+   *     depend on wording, which is exactly the ungoverned behaviour D4/D6
+   *     removed for Goal.
+   *   - the historical `duration_minutes` step parameter. D3 proved it never
+   *     reaches the model, so it is a stale store, not a commissioned record.
+   */
+  function resolveCommissionedWorkflowDurationMinutes(wf) {
+    if (!wf || typeof wf !== "object") return null;
+    var resolution = wf.workflowBriefResolution;
+    if (!resolution || typeof resolution !== "object") return null;
+    var factors = resolution.resolvedFactors;
+    if (!factors || typeof factors !== "object") return null;
+    var raw = factors.duration_minutes;
+    if (raw == null || raw === "") return null;
+    var minutes = Number(raw);
+    if (!isFinite(minutes) || minutes <= 0) return null;
+    return Math.round(minutes);
+  }
+
+  var ADJUSTMENTS_AUDIENCE_PARAMETER_ID = "audience";
+
+  /**
+   * Read the *commissioning* Audience — frozen Create-time prose (S80-S7 §1).
+   *
+   * Three reads, in descending order of how frozen they are. The mutable
+   * `workflowOutputSpec.audience` is deliberately NOT a general fallback: it is
+   * the D13 defect this slice retires, and using it behind the "commissioned"
+   * provenance label would relabel a possible post-Create edit as commissioning
+   * history.
+   *
+   *   1. `initialBrief.audience` — written once at Create from the author's
+   *      "Who is this for?" answer and never mutated. Same frozen record S5
+   *      established for Goal, and the only dependable source (S80-T-010 §14).
+   *
+   *   2. `resolvedFactors.audience` — also frozen. It is not written under the
+   *      learning-design pack, which is why it cannot be the primary read, but
+   *      where a config *does* declare an `audience` factor (the general
+   *      fallback and the research pack) this is a genuine frozen commissioning
+   *      record rather than a derived guess (S80-T-010 D24).
+   *
+   *   3. `workflowOutputSpec.audience`, and ONLY for records that have no
+   *      `workflowBriefResolution` at all. Those pre-date the frozen brief
+   *      structure, so this field is the only commissioning record that has
+   *      ever existed for them — the same narrow legacy allowance S5 documented
+   *      for Goal derivation. Crucially it is gated on the *absence* of a frozen
+   *      brief: when a frozen brief exists but records no audience, we return
+   *      empty rather than promoting a field that may have been edited after
+   *      Create. That gate is what makes S80-S7 §9's required proof hold —
+   *      a legacy "Senior executives" cannot outrank a commissioned audience.
+   */
+  function resolveCommissionedWorkflowAudience(wf) {
+    if (!wf || typeof wf !== "object") return "";
+    var resolution = wf.workflowBriefResolution;
+    var hasFrozenBrief = !!(resolution && typeof resolution === "object");
+    if (hasFrozenBrief) {
+      var initialBrief = resolution.initialBrief;
+      if (initialBrief && typeof initialBrief === "object" && initialBrief.audience != null) {
+        var brief = String(initialBrief.audience).trim();
+        if (brief) return brief;
+      }
+      var factors = resolution.resolvedFactors;
+      if (factors && typeof factors === "object" && factors.audience != null) {
+        var factor = String(factors.audience).trim();
+        if (factor) return factor;
+      }
+      return "";
+    }
+    var spec = wf.workflowOutputSpec;
+    if (spec && typeof spec === "object" && spec.audience != null) {
+      return String(spec.audience).trim();
+    }
+    return "";
+  }
+
+  // Declaration source. Deliberately allowlisted, one entry per authorised
+  // slice. Adding a row here is not sufficient to make it live: the declared
+  // projection strategy must also be implemented.
+  var ADJUSTMENTS_PARAMETER_DECLARATION_SOURCE = [
+    {
+      // S80-S2: subject matter of the run. Deterministic — no AI is needed to
+      // understand a replacement value, and it cannot change topology.
+      id: "topic",
+      label: "Topic",
+      help:
+        "The subject this workflow generates for. Leave blank to use the topic this workflow was created with.",
+      type: "text",
+      owner: "workflow_run_context",
+      projection: "workflowContext",
+      applicability: { always: true },
+      resolveCommissioned: resolveCommissionedWorkflowTopic
+      // S80-S5 §12 retires the S4 `supersedesCommissionedContextFields: ["goal"]`
+      // entry that used to live here. S4 needed Topic to delete the ungoverned
+      // commissioned Goal line because Goal had no governance of its own. Goal
+      // is now a declared parameter with its own commissioned/adjustment
+      // provenance, so Topic is no longer responsible for suppressing it, and
+      // Topic changing no longer discards the author's stated intent.
+    },
+    {
+      // S80-S5: workflow-wide natural-language intent for this run. Subject is
+      // Topic's job; this carries *purpose and emphasis*, which a concise label
+      // structurally cannot express.
+      //
+      // It is model-visible context only. It never reruns elicitation, never
+      // recomputes resolvedFactors, never changes topology, and is never parsed
+      // into typed parameters (S80-S5 §1, §10, §13).
+      id: "goal",
+      label: "Goal",
+      help:
+        "What you want this run of the workflow to achieve. Leave blank to use the goal this workflow was created with. This steers how the workflow writes; it does not change which stages run.",
+      type: "text",
+      // Prose, not a label: rendered as a textarea and projected as its own
+      // block rather than an inline `Label: value` line.
+      multiline: true,
+      owner: "workflow_run_context",
+      projection: "workflowContext",
+      applicability: { always: true },
+      resolveCommissioned: resolveCommissionedWorkflowGoal
+    },
+    {
+      // S80-S6: the author's available total time for this run. Deterministic —
+      // a number needs no interpretation, and it cannot change topology.
+      //
+      // Duration is a *constraint*, not an allocation. Learning Sequence
+      // remains the only stage that allocates time across activities; DLA
+      // receives this value as a target band so it stops asserting a
+      // hardcoded 60 (D1).
+      id: "duration_minutes",
+      label: "Duration",
+      help:
+        "The total time this run should fit. Leave blank to use the duration this workflow was created with.",
+      type: "number",
+      units: "minutes",
+      // Range inherited from the historical `duration_minutes` workflow
+      // parameter control (default 60). It is the only range this product has
+      // ever declared for this concept, and it is narrower than Create's brief
+      // extraction, which accepts any positive minute count.
+      min: 10,
+      max: 480,
+      owner: "workflow_run_context",
+      projection: "workflowContext",
+      applicability: { always: true },
+      resolveCommissioned: resolveCommissionedWorkflowDurationMinutes
+    },
+    {
+      // S80-S7: who this run is for, as author-written descriptive prose.
+      //
+      // Declared as single-line `text`, not `multiline`, which is a semantic
+      // choice rather than a layout one. Audience is a short descriptive label
+      // ("First-year undergraduate history students"), so it belongs in the
+      // *authoritative parameters* section of the projected block alongside
+      // Topic and Duration. That placement is what makes it structurally
+      // outrank Goal prose and per-step Additional Instruction with no new
+      // precedence wording (S80-S7 §7).
+      //
+      // Audience stays opaque prose: nothing parses it, and it never derives
+      // learner_level or any other typed factor. The learner-level vocabulary
+      // problem (D14) is deliberately untouched and remains separate debt.
+      //
+      // No `supersedesCommissionedContextFields` entry. Supersession only fires
+      // on provenance `adjustment`, which would leave the legacy step-1
+      // `Audience:` line as a competing authority whenever Audience was on
+      // Auto. That line is therefore retired outright in
+      // buildWorkflowRuntimeContextText, exactly as S5 retired the `Goal:`
+      // line — see the comment there.
+      id: "audience",
+      label: "Audience",
+      help:
+        "Who this run is for. Leave blank to use the audience this workflow was created for. This steers how the workflow writes; it does not change which stages run.",
+      type: "text",
+      owner: "workflow_run_context",
+      projection: "workflowContext",
+      applicability: { always: true },
+      resolveCommissioned: resolveCommissionedWorkflowAudience
+    }
+  ];
+
+  // Declarations are validated at load, so a malformed row cannot ship.
+  var ADJUSTMENTS_PARAMETER_REGISTRY = ADJUSTMENTS_PARAMETER_DECLARATION_SOURCE.map(
+    function (raw) {
+      return normalizeAdjustmentsParameterDeclaration(raw);
+    }
+  ).filter(Boolean);
+
+  // Capability-gated applicability fails closed until a slice registers a
+  // resolver (assessment capability arrives with S7).
+  var ADJUSTMENTS_CAPABILITY_RESOLVERS = {};
+
+  function getAdjustmentsParameterRegistry() {
+    return Array.isArray(ADJUSTMENTS_PARAMETER_REGISTRY)
+      ? ADJUSTMENTS_PARAMETER_REGISTRY.slice()
+      : [];
+  }
+
+  function normalizeAdjustmentsParameterOptions(raw) {
+    if (!Array.isArray(raw)) return [];
+    var out = [];
+    raw.forEach(function (row) {
+      if (row == null) return;
+      if (typeof row === "string" || typeof row === "number") {
+        var scalar = String(row).trim();
+        if (scalar) out.push({ value: scalar, label: scalar });
+        return;
+      }
+      if (typeof row !== "object") return;
+      var value = String(row.value != null ? row.value : "").trim();
+      if (!value) return;
+      out.push({ value: value, label: String(row.label || value).trim() || value });
+    });
+    return out;
+  }
+
+  function normalizeAdjustmentsApplicability(raw) {
+    if (!raw || typeof raw !== "object") return { always: true };
+    var capability = String(raw.requiresCapability || "").trim();
+    if (capability) return { requiresCapability: capability };
+    return { always: true };
+  }
+
+  /**
+   * Validate an Adjustments parameter declaration.
+   * Returns { ok, errors } so callers and tests can assert on specific failures.
+   */
+  function validateAdjustmentsParameterDeclaration(raw) {
+    var errors = [];
+    if (!raw || typeof raw !== "object") {
+      return { ok: false, errors: ["declaration must be an object"] };
+    }
+    var id = String(raw.id || "").trim();
+    if (!id) {
+      errors.push("id is required");
+    } else if (!ADJUSTMENTS_PARAMETER_ID_PATTERN.test(id)) {
+      errors.push("id must be lower_snake_case");
+    }
+    if (!String(raw.label || "").trim()) errors.push("label is required");
+    var type = String(raw.type || "").trim();
+    if (!type) {
+      errors.push("type is required");
+    } else if (!ADJUSTMENTS_PARAMETER_TYPES[type]) {
+      errors.push("unsupported type: " + type);
+    }
+    if (type === "enum" && !normalizeAdjustmentsParameterOptions(raw.options).length) {
+      errors.push("enum type requires options");
+    }
+    if (type === "number") {
+      var hasMin = raw.min != null && raw.min !== "";
+      var hasMax = raw.max != null && raw.max !== "";
+      if (hasMin && !isFinite(Number(raw.min))) errors.push("min must be numeric");
+      if (hasMax && !isFinite(Number(raw.max))) errors.push("max must be numeric");
+      if (hasMin && hasMax && isFinite(Number(raw.min)) && isFinite(Number(raw.max))) {
+        if (Number(raw.min) > Number(raw.max)) errors.push("min must not exceed max");
+      }
+    }
+    if (raw.units != null && raw.units !== "" && type !== "number") {
+      errors.push("units is only supported for number type");
+    }
+    if (!String(raw.owner || "").trim()) errors.push("owner is required");
+    var projection = String(raw.projection || "").trim();
+    if (!projection) {
+      errors.push("projection is required");
+    } else if (!ADJUSTMENTS_PROJECTION_STRATEGIES[projection]) {
+      errors.push("unsupported projection: " + projection);
+    }
+    if (raw.validate != null && typeof raw.validate !== "function") {
+      errors.push("validate must be a function when provided");
+    }
+    if (raw.resolveCommissioned != null && typeof raw.resolveCommissioned !== "function") {
+      errors.push("resolveCommissioned must be a function when provided");
+    }
+    return { ok: !errors.length, errors: errors };
+  }
+
+  function normalizeAdjustmentsParameterDeclaration(raw) {
+    if (!validateAdjustmentsParameterDeclaration(raw).ok) return null;
+    var type = String(raw.type).trim();
+    var row = {
+      id: String(raw.id).trim(),
+      label: String(raw.label).trim(),
+      help: String(raw.help || raw.description || "").trim(),
+      type: type,
+      options: type === "enum" ? normalizeAdjustmentsParameterOptions(raw.options) : [],
+      min: type === "number" && raw.min != null && raw.min !== "" ? Number(raw.min) : null,
+      max: type === "number" && raw.max != null && raw.max !== "" ? Number(raw.max) : null,
+      // Unit noun for display and projection ("30 minutes"), so neither the UI
+      // nor the prompt projector needs a per-parameter special case.
+      units: type === "number" ? String(raw.units || "").trim() : "",
+      applicability: normalizeAdjustmentsApplicability(raw.applicability),
+      // Prose parameters render as a textarea and project as a labelled block.
+      // Only meaningful for text: a number or enum is always a scalar.
+      multiline: type === "text" && raw.multiline === true,
+      owner: String(raw.owner).trim(),
+      projection: String(raw.projection).trim(),
+      validate: typeof raw.validate === "function" ? raw.validate : null,
+      resolveCommissioned:
+        typeof raw.resolveCommissioned === "function" ? raw.resolveCommissioned : null,
+      supersedesCommissionedContextFields: Array.isArray(
+        raw.supersedesCommissionedContextFields
+      )
+        ? raw.supersedesCommissionedContextFields
+            .map(function (field) {
+              return String(field || "").trim();
+            })
+            .filter(Boolean)
+        : []
+    };
+    return row;
+  }
+
+  function isAdjustmentsParameterApplicable(declaration, wf) {
+    if (!declaration) return false;
+    var applicability = declaration.applicability || { always: true };
+    if (applicability.always) return true;
+    var capability = String(applicability.requiresCapability || "").trim();
+    if (!capability) return true;
+    var resolver = ADJUSTMENTS_CAPABILITY_RESOLVERS[capability];
+    // Fail closed: an unregistered capability never exposes its parameters.
+    if (typeof resolver !== "function") return false;
+    return !!resolver(wf);
+  }
+
+  /**
+   * Coerce and validate a stored value against its declaration.
+   * Returns { ok, value, error }. An empty/absent value is not ok, because
+   * absence means Auto (keep commissioned behaviour) rather than a stored blank.
+   */
+  function validateAdjustmentsParameterValue(declaration, rawValue) {
+    if (!declaration) return { ok: false, value: null, error: "unknown parameter" };
+    if (rawValue == null) return { ok: false, value: null, error: "absent" };
+    // Reject non-primitives outright: coercing them yields junk such as
+    // "[object Object]", which S2 would project into a live prompt.
+    if (typeof rawValue === "object" || typeof rawValue === "function") {
+      return { ok: false, value: null, error: "not a scalar value" };
+    }
+    var value;
+    if (declaration.type === "number") {
+      if (rawValue === "" || !isFinite(Number(rawValue))) {
+        return { ok: false, value: null, error: "not a number" };
+      }
+      value = Number(rawValue);
+      if (declaration.min != null && value < declaration.min) {
+        return { ok: false, value: null, error: "below min" };
+      }
+      if (declaration.max != null && value > declaration.max) {
+        return { ok: false, value: null, error: "above max" };
+      }
+    } else {
+      value = String(rawValue).trim();
+      if (!value) return { ok: false, value: null, error: "empty" };
+      if (declaration.type === "enum") {
+        var allowed = (declaration.options || []).some(function (opt) {
+          return opt.value === value;
+        });
+        if (!allowed) return { ok: false, value: null, error: "not an allowed value" };
+      }
+    }
+    if (declaration.validate) {
+      var verdict = declaration.validate(value);
+      if (verdict === false) return { ok: false, value: null, error: "rejected by validator" };
+      if (verdict && typeof verdict === "object" && verdict.ok === false) {
+        return { ok: false, value: null, error: String(verdict.error || "rejected") };
+      }
+    }
+    return { ok: true, value: value, error: "" };
+  }
+
+  function getWorkflowAdjustmentsRecord(wf) {
+    if (!wf || typeof wf !== "object") return null;
+    var raw = wf.adjustments;
+    if (!raw || typeof raw !== "object") return null;
+    return raw;
+  }
+
+  function getWorkflowAdjustmentParameters(wf) {
+    var record = getWorkflowAdjustmentsRecord(wf);
+    if (!record) return {};
+    var params = record.parameters;
+    if (!params || typeof params !== "object") return {};
+    return params;
+  }
+
+  /**
+   * Normalize a persisted adjustments record.
+   * Returns null when nothing explicit is stored, so workflows with no
+   * Adjustments keep their existing serialized shape (no empty container).
+   */
+  function normalizeWorkflowAdjustments(raw) {
+    if (!raw || typeof raw !== "object") return null;
+    var params = raw.parameters && typeof raw.parameters === "object" ? raw.parameters : {};
+    var kept = {};
+    var keptAny = false;
+    // Only allowlisted, currently-declared parameters survive normalization.
+    // Unknown keys are dropped rather than retained as latent authority.
+    getAdjustmentsParameterRegistry().forEach(function (declaration) {
+      if (!Object.prototype.hasOwnProperty.call(params, declaration.id)) return;
+      var checked = validateAdjustmentsParameterValue(declaration, params[declaration.id]);
+      if (!checked.ok) return;
+      kept[declaration.id] = checked.value;
+      keptAny = true;
+    });
+    if (!keptAny) return null;
+    return { version: ADJUSTMENTS_STATE_VERSION, parameters: kept };
+  }
+
+  /**
+   * Set or clear one explicit Adjustments parameter value on a workflow record.
+   * A blank or invalid value clears the entry, because absence means Auto — no
+   * "AUTO" sentinel is stored. Returns true when the record changed.
+   */
+  function setWorkflowAdjustmentParameterValue(wf, parameterId, rawValue) {
+    if (!wf || typeof wf !== "object") return false;
+    var id = String(parameterId || "").trim();
+    if (!id) return false;
+    var declaration = null;
+    getAdjustmentsParameterRegistry().forEach(function (row) {
+      if (row.id === id) declaration = row;
+    });
+    if (!declaration) return false;
+
+    var existing = getWorkflowAdjustmentParameters(wf);
+    var next = {};
+    Object.keys(existing).forEach(function (key) {
+      next[key] = existing[key];
+    });
+
+    var checked = validateAdjustmentsParameterValue(declaration, rawValue);
+    if (checked.ok) {
+      next[id] = checked.value;
+    } else {
+      delete next[id];
+    }
+
+    var normalized = normalizeWorkflowAdjustments({
+      version: ADJUSTMENTS_STATE_VERSION,
+      parameters: next
+    });
+    var before = JSON.stringify(wf.adjustments == null ? null : wf.adjustments);
+    if (normalized) {
+      wf.adjustments = normalized;
+    } else {
+      delete wf.adjustments;
+    }
+    return before !== JSON.stringify(wf.adjustments == null ? null : wf.adjustments);
+  }
+
+  /**
+   * Deterministic effective-run-context resolver (S80-T-007 §6).
+   * Explicit Adjustments win within their declared scope; absence falls back to
+   * commissioned state. Performs no network or model call and mutates nothing.
+   */
+  function resolveEffectiveRunContext(wf) {
+    var record = wf && typeof wf === "object" ? wf : {};
+    var stored = getWorkflowAdjustmentParameters(record);
+    var out = {
+      version: ADJUSTMENTS_STATE_VERSION,
+      parameters: {},
+      provenance: {}
+    };
+    getAdjustmentsParameterRegistry().forEach(function (declaration) {
+      var id = declaration.id;
+      if (!isAdjustmentsParameterApplicable(declaration, record)) {
+        out.provenance[id] = "not_applicable";
+        return;
+      }
+      if (Object.prototype.hasOwnProperty.call(stored, id)) {
+        var checked = validateAdjustmentsParameterValue(declaration, stored[id]);
+        if (checked.ok) {
+          out.parameters[id] = checked.value;
+          out.provenance[id] = "adjustment";
+          return;
+        }
+      }
+      if (declaration.resolveCommissioned) {
+        var commissioned = declaration.resolveCommissioned(record);
+        if (commissioned != null && commissioned !== "") {
+          out.parameters[id] = commissioned;
+          out.provenance[id] = "commissioned";
+          return;
+        }
+      }
+      out.provenance[id] = "absent";
+    });
+    return out;
+  }
+
+  /**
+   * Effective authoritative Duration in minutes, or null when the workflow has
+   * neither an adjustment nor a commissioned duration (S80-S6 §3).
+   *
+   * Null is meaningful: consumers must then keep their existing default rather
+   * than invent a number. It is the one place the value is interpreted, so no
+   * stage derives its own duration.
+   */
+  function resolveEffectiveWorkflowDurationMinutes(wf) {
+    var context = resolveEffectiveRunContext(wf);
+    var value = context.parameters[ADJUSTMENTS_DURATION_PARAMETER_ID];
+    if (value == null || value === "") return null;
+    var minutes = Number(value);
+    if (!isFinite(minutes) || minutes <= 0) return null;
+    return Math.round(minutes);
+  }
+
+  /**
+   * Effective authoritative Audience prose, or "" when the workflow has neither
+   * an adjustment nor a commissioned audience (S80-S7 §10).
+   *
+   * One resolver, so the page artefact and the projected prompts cannot disagree
+   * about who a run is for. Empty is meaningful: the page carrier must then keep
+   * its existing fallback behaviour rather than invent an audience.
+   */
+  function resolveEffectiveWorkflowAudience(wf) {
+    var context = resolveEffectiveRunContext(wf);
+    var value = context.parameters[ADJUSTMENTS_AUDIENCE_PARAMETER_ID];
+    return String(value == null ? "" : value).trim();
+  }
+
   function normalizeWorkflowForV1(rawWorkflow, warningTarget) {
     // Import/load normalization owner:
     // translate legacy/variant workflow definitions into a runtime-compatible v1 shape
@@ -34421,6 +35765,18 @@
         s.prompt_bindings && typeof s.prompt_bindings === "object"
           ? JSON.parse(JSON.stringify(s.prompt_bindings))
           : null;
+      // Sprint 80 S3: Adjustments author steering. Stored in its own field so it
+      // never shares a string with the legacy notes param block. Empty means no
+      // steering, and the key is removed so existing records keep their shape.
+      var normalizedAdditionalInstruction = normalizeStepAdditionalInstruction(
+        s.additional_instruction != null ? s.additional_instruction : s.additionalInstruction
+      );
+      delete s.additionalInstruction;
+      if (normalizedAdditionalInstruction) {
+        s.additional_instruction = normalizedAdditionalInstruction;
+      } else {
+        delete s.additional_instruction;
+      }
       outputNameByStepId[s.id] = s.outputName || "";
       outputNameByStepIndex[index + 1] = s.outputName || "";
       normalizedSteps.push(s);
@@ -34558,6 +35914,16 @@
     delete wf.scopeAndConstraints;
     delete wf.description;
     wf.steps = normalizedSteps;
+
+    // Sprint 80 S1: Adjustments parameter state. Absent/empty means Auto, so the
+    // key is removed rather than stored as an empty container. Historical
+    // workflows without adjustments load unchanged.
+    var normalizedAdjustments = normalizeWorkflowAdjustments(wf.adjustments);
+    if (normalizedAdjustments) {
+      wf.adjustments = normalizedAdjustments;
+    } else {
+      delete wf.adjustments;
+    }
 
     // Workflow library metadata (My Workflows): tags, notes, timestamps — distinct from per-step `notes`.
     var tagsSource = wf.tags;
@@ -49066,8 +50432,13 @@
       wf && wf.workflowOutputSpec && typeof wf.workflowOutputSpec === "object"
         ? wf.workflowOutputSpec
         : normalizeWorkflowOutputSpec({});
+    // S80-S5 §10 (D6): page composition derives factors and scaffolds, so it
+    // reads the frozen commissioning prose rather than the runtime Goal.
     var base = {
-      goal: String(outputSpec.goal || (wf && wf.goal) || "").trim(),
+      goal: resolveCommissioningGoalProseForFactorDerivation(
+        wf,
+        (outputSpec && outputSpec.goal) || (wf && wf.goal) || ""
+      ),
       inputs: String((wf && wf.inputs) || "").trim(),
       desiredOutputs: String((wf && wf.desiredOutputs) || "").trim(),
       startingArtefact: String((wf && wf.startingArtefact) || "").trim()
@@ -54283,6 +55654,7 @@
     prismTestApi.countUnifiedWorkflowVisibleParameterControls =
       countUnifiedWorkflowVisibleParameterControls;
     prismTestApi.refreshWorkflowModeSettingsTabBadge = refreshWorkflowModeSettingsTabBadge;
+    prismTestApi.setWorkflowMode = setWorkflowMode;
     prismTestApi.setUnifiedWorkflowSettingsSaveHintVisible = setUnifiedWorkflowSettingsSaveHintVisible;
     prismTestApi.renderUnifiedWorkflowSettingsContentForTest = renderUnifiedWorkflowSettingsContent;
     prismTestApi.focusUnifiedWorkflowSettingsSection = focusUnifiedWorkflowSettingsSection;
@@ -54337,6 +55709,94 @@
     prismTestApi.workflowStepParamMapToSelectionRows = workflowStepParamMapToSelectionRows;
     prismTestApi.parseWorkflowStepParamBlock = parseWorkflowStepParamBlock;
     prismTestApi.upsertWorkflowStepParamBlock = upsertWorkflowStepParamBlock;
+    // Sprint 80 S1/S3 — Adjustments.
+    prismTestApi.validateAdjustmentsParameterDeclaration =
+      validateAdjustmentsParameterDeclaration;
+    prismTestApi.normalizeAdjustmentsParameterDeclaration =
+      normalizeAdjustmentsParameterDeclaration;
+    prismTestApi.validateAdjustmentsParameterValue = validateAdjustmentsParameterValue;
+    prismTestApi.isAdjustmentsParameterApplicable = isAdjustmentsParameterApplicable;
+    prismTestApi.normalizeWorkflowAdjustments = normalizeWorkflowAdjustments;
+    prismTestApi.getWorkflowAdjustmentParameters = getWorkflowAdjustmentParameters;
+    prismTestApi.resolveEffectiveRunContext = resolveEffectiveRunContext;
+    prismTestApi.getAdjustmentsParameterRegistry = getAdjustmentsParameterRegistry;
+    prismTestApi.ADJUSTMENTS_STATE_VERSION = ADJUSTMENTS_STATE_VERSION;
+    // Test-only registry override, so resolver and projection behaviour can be
+    // proven against sample declarations as well as the shipped allowlist.
+    prismTestApi.resetAdjustmentsRegistryForTest = function () {
+      ADJUSTMENTS_PARAMETER_REGISTRY = ADJUSTMENTS_PARAMETER_DECLARATION_SOURCE.map(
+        function (raw) {
+          return normalizeAdjustmentsParameterDeclaration(raw);
+        }
+      ).filter(Boolean);
+      return getAdjustmentsParameterRegistry();
+    };
+    prismTestApi.setAdjustmentsRegistryForTest = function (rows) {
+      var normalized = [];
+      (Array.isArray(rows) ? rows : []).forEach(function (row) {
+        var declaration = normalizeAdjustmentsParameterDeclaration(row);
+        if (declaration) normalized.push(declaration);
+      });
+      ADJUSTMENTS_PARAMETER_REGISTRY = normalized;
+      return getAdjustmentsParameterRegistry();
+    };
+    prismTestApi.setAdjustmentsCapabilityResolverForTest = function (capability, resolver) {
+      var key = String(capability || "").trim();
+      if (!key) return;
+      if (typeof resolver === "function") {
+        ADJUSTMENTS_CAPABILITY_RESOLVERS[key] = resolver;
+      } else {
+        delete ADJUSTMENTS_CAPABILITY_RESOLVERS[key];
+      }
+    };
+    // Sprint 80 S2 — Topic + shared workflowContext projection.
+    prismTestApi.resolveCommissionedWorkflowTopic = resolveCommissionedWorkflowTopic;
+    prismTestApi.setWorkflowAdjustmentParameterValue = setWorkflowAdjustmentParameterValue;
+    prismTestApi.buildEffectiveWorkflowContextLines = buildEffectiveWorkflowContextLines;
+    prismTestApi.buildEffectiveWorkflowContextBlock = buildEffectiveWorkflowContextBlock;
+    prismTestApi.resolveCommissionedWorkflowDurationMinutes =
+      resolveCommissionedWorkflowDurationMinutes;
+    prismTestApi.resolveEffectiveWorkflowDurationMinutes =
+      resolveEffectiveWorkflowDurationMinutes;
+    prismTestApi.formatAdjustmentsParameterValueForDisplay =
+      formatAdjustmentsParameterValueForDisplay;
+    prismTestApi.buildDlaCanonicalSlotContext = buildDlaCanonicalSlotContext;
+    prismTestApi.buildEffectiveWorkflowIntentEntries = buildEffectiveWorkflowIntentEntries;
+    prismTestApi.sanitizeAssessmentCuesForUpstreamContext =
+      sanitizeAssessmentCuesForUpstreamContext;
+    prismTestApi.resolveCommissionedWorkflowGoal = resolveCommissionedWorkflowGoal;
+    // Sprint 80 S7 — Audience.
+    prismTestApi.resolveCommissionedWorkflowAudience = resolveCommissionedWorkflowAudience;
+    prismTestApi.resolveEffectiveWorkflowAudience = resolveEffectiveWorkflowAudience;
+    prismTestApi.buildPageShellOptionsFromWorkflow = buildPageShellOptionsFromWorkflow;
+    prismTestApi.resolveCommissioningGoalProseForFactorDerivation =
+      resolveCommissioningGoalProseForFactorDerivation;
+    prismTestApi.resolveEffectiveWorkflowTopicForTitle = resolveEffectiveWorkflowTopicForTitle;
+    prismTestApi.resolvePedagogicCognitionBriefContextForPrompt =
+      resolvePedagogicCognitionBriefContextForPrompt;
+    prismTestApi.gatherWorkflowDetailFormData = gatherWorkflowDetailFormData;
+    prismTestApi.populateWorkflowDetail = populateWorkflowDetail;
+    prismTestApi.getSupersededCommissionedContextFields =
+      getSupersededCommissionedContextFields;
+    prismTestApi.buildWorkflowRuntimeContextText = buildWorkflowRuntimeContextText;
+    prismTestApi.appendEffectiveWorkflowContextBlockToPrompt =
+      appendEffectiveWorkflowContextBlockToPrompt;
+    prismTestApi.isWorkflowStepEligibleForWorkflowContextProjection =
+      isWorkflowStepEligibleForWorkflowContextProjection;
+    prismTestApi.isDerivedShellWorkflowStep = isDerivedShellWorkflowStep;
+    prismTestApi.isWorkflowStepEligibleForAdditionalInstruction =
+      isWorkflowStepEligibleForAdditionalInstruction;
+    prismTestApi.renderAdjustmentsWorkflowStepsSection = renderAdjustmentsWorkflowStepsSection;
+    prismTestApi.renderUnifiedWorkflowSettingsUI = renderUnifiedWorkflowSettingsUI;
+    prismTestApi.countExplicitWorkflowAdjustments = countExplicitWorkflowAdjustments;
+    prismTestApi.renderAdjustmentsWorkflowParametersSection =
+      renderAdjustmentsWorkflowParametersSection;
+    prismTestApi.normalizeStepAdditionalInstruction = normalizeStepAdditionalInstruction;
+    prismTestApi.stepSupportsAdditionalInstruction = stepSupportsAdditionalInstruction;
+    prismTestApi.getStepAdditionalInstruction = getStepAdditionalInstruction;
+    prismTestApi.buildStepAdditionalInstructionBlock = buildStepAdditionalInstructionBlock;
+    prismTestApi.appendStepAdditionalInstructionBlockToPrompt =
+      appendStepAdditionalInstructionBlockToPrompt;
     prismTestApi.stepHasBriefMappingTargets = stepHasBriefMappingTargets;
     prismTestApi.getWorkflowBriefFactorById = getWorkflowBriefFactorById;
     prismTestApi.formatWorkflowBriefFactorDisplayLabel = formatWorkflowBriefFactorDisplayLabel;

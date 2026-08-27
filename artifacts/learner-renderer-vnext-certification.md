@@ -6,8 +6,8 @@
 
 - Certification version: `s68-imp-020`
 - Corpus version: `s68-imp-020-v1`
-- Generated at: `2026-08-07T08:39:16.668Z`
-- Git revision: `e8f527201c877f7e0fb5b3bde8189db789d3ac52`
+- Generated at: `2026-08-27T15:31:45.961Z`
+- Git revision: `9cf0f1db21caad46b6b8b7a2c1dc009bb0a2b4a8`
 
 ## Corpus summary
 

@@ -201,7 +201,11 @@ test("M–P: Save handoff / Settings / Run / pack refinement retained", () => {
   assert.match(appSource, /setWorkflowMode\("run"\)/);
   assert.match(appSource, /function decorateWorkflowStepSettingsDiscoverability/);
   assert.match(appSource, /isWorkflowStepConfigurableInSettings/);
-  assert.match(appSource, /opts\.context === "design" \? "Tunable" : "Settings"/);
+  // S80-S4: the "Tunable"/"Settings" step badge advertised pack-declared
+  // Settings controls. Those controls are no longer a product surface, so the
+  // badge was removed rather than left pointing at a panel that cannot show
+  // them. The discoverability decorator and its predicate are still retained.
+  assert.doesNotMatch(appSource, /opts\.context === "design" \? "Tunable" : "Settings"/);
   assert.match(appSource, /post_generation_refinement/);
   assert.match(appSource, /stepRefinementProfiles/);
   assert.match(indexHtml, /id="promptVersionSelect"/);

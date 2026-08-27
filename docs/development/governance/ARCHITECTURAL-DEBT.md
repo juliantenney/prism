@@ -177,15 +177,47 @@ Keep distinct from pedagogical-diagram architecture.
 
 ---
 
-## D-010 — Settings
+## D-010 — Settings → Adjustments
 
-**State:** Active discovery — [Sprint 80 OPEN](../sprints/2026-08-26-sprint-80-settings-discovery-product-value-and-policy-architecture/SPRINT-80-START-HERE.md) (2026-08-26)
+**State:** Decided and partially implemented — [Sprint 80 OPEN](../sprints/2026-08-26-sprint-80-settings-discovery-product-value-and-policy-architecture/SPRINT-80-START-HERE.md) (updated 2026-08-27)
 
-Product capability under discovery/planning. Prior diagnostic verdict was redesign; Sprint 80 reassesses whether Settings should exist at all against current canonical DLA/GAM architecture.
+Discovery is complete. The S80-T-006 gate decided **Option C**: the historical
+41-control Settings catalogue is **superseded product design**, replaced by
+**Adjustments** — a small allowlisted set of typed workflow parameters plus an
+optional per-step natural-language author instruction. `[PRISM_STEP_PARAMS]` is
+demoted to legacy with no reachable route to a model.
 
-Do not treat pack-declared Settings as requirements to activate. Operator decision gate: S80-T-006.
+Implemented so far: **S1** (parameter registry, `resolveEffectiveRunContext`,
+`workflow.adjustments` persistence), **S3** (per-step
+`step.additional_instruction`, model-visible via two ingress points) and **S2**
+(the `topic` parameter, the shared `workflowContext` projector, and the
+Henry VIII → Elizabeth I vertical proof on one saved workflow). The architecture
+is now proven end to end. Slices S4–S10 are not started.
 
-Likely still Beta/v1.0 territory for any implementation that follows Sprint 80.
+Do not treat pack-declared Settings as requirements to activate, and do not declare
+a registry parameter live without implementing its projection and tests in the same
+slice — that recreates the persisted-but-inert failure this debt records.
+
+### Open sub-items introduced by S1/S3/S2/S4 (2026-08-27)
+
+| Item | Note |
+| ---- | ---- |
+| **D1** | Canonical DLA contains hardcoded `~60` / `50–70` timing text. **Blocks Duration (S5).** Recorded, not fixed. |
+| **D2** | Canonical DLA cognition block is bypassed. Recorded, not fixed. |
+| **D3** | Learning Sequence duration step parameter never reaches the model. Recorded, not fixed. |
+| ~~Stale first-step `Goal:` prose vs adjusted Topic~~ (S2) | **RESOLVED in S4.** Topic declares `supersedesCommissionedContextFields: ["goal"]`, and `buildWorkflowRuntimeContextText` omits a commissioned field when its typed parameter's provenance is `adjustment`. Unrelated commissioning context (audience, constraints, inputs, outputs) is retained, no prose is parsed or rewritten, and nothing changes while Topic is on Auto. |
+| `stepScoped` projection unimplemented | Only `workflowContext` is implemented (S2). A declaration using `stepScoped` would persist and resolve but project nothing. Guarded by an S1 test so it cannot ship looking live. |
+| ~~Duplicate instruction fields~~ | **RESOLVED in S4 as a UX distinction, not a merge.** The operator confirmed `step.notes` ("Instructions") is a **supported capability**, especially for hand-rolled workflows, and must not be migrated, merged or described as legacy. Both fields now carry distinct labels and help text. |
+| ~~Deterministic-step exclusion is one predicate~~ | **RESOLVED in S4.** Split into `isWorkflowStepEligibleForAdditionalInstruction` (steering) and `isWorkflowStepEligibleForWorkflowContextProjection` (projection, via `isDerivedShellWorkflowStep`). Episode Plan is now steerable per explicit operator correction, while still receiving no projected parameters as a derived shell. |
+| **Historical pack Settings code retained but inert** (new, S4) | S4 removed the pack-derived catalogue from the active UI but deliberately retained the parsing/aggregation/recovery code and all `[PRISM_STEP_PARAMS]` handling — `aggregateUnifiedWorkflowParameterSections`, `renderUnifiedWorkflowSettingsContent`, `syncUnifiedWorkflowSettingsToStepNotes`, `countUnifiedWorkflowVisibleParameterControls`, `isWorkflowStepConfigurableInSettings`, `recoverWorkflowBriefConfigForUnifiedSettings` and neighbours. Unreferenced from the Adjustments panel and still covered by 60+ passing unit tests, which is what makes retention safe. **Deeper retirement is separate work (S8);** the risk is future confusion, not live authority. |
+| **`NON_STEERABLE_CANONICAL_STEP_IDS` is empty** (new, S4) | Deliberate: every current workflow step emits an author-facing prompt, so every step is steerable. A future non-prompt operation must be registered there or it will silently gain a meaningless field. |
+| **Adjusted Topic drops commissioning nuance** (new, S4) | Omitting `Goal:` also drops any purpose/emphasis prose it carried, not only the stale subject. Authorised as the narrow fix, but a future Purpose/Intent parameter would let the useful part survive an adjusted Topic. |
+| **`step.notes` has two editors** (new, S4) | The Edit tab and the Adjustments panel both edit `step.notes`. The panel prefers the Edit-tab textarea on read and mirrors on write, so gather keeps one source of truth. Residual risk only if the Edit-tab step list is unrendered while Adjustments is open. Worth an integration test in S9. |
+| **Prompt Factory `Settings...` button** (new, S4) | An unrelated step-row button labelled `Settings...` seeds the Prompt Factory. Left untouched per S4 scope, but it now shares vocabulary with nothing else on screen. Small naming-clarity follow-up. |
+| Save/load normalization asymmetry | `handleSaveWorkflow` does not call `normalizeWorkflowForV1`, so Save-path and load-path normalization differ. S1 works around it in the gather path. Pre-existing. |
+| No capability resolvers | `applicability.requiresCapability` fails closed until S7 registers a detector. Intentional, but no parameter can be capability-gated until then. |
+
+Likely still Beta/v1.0 territory for the remaining slices.
 
 ---
 
@@ -216,6 +248,43 @@ Immediate value does not depend on agent implementation.
 Use LLM/Copilot artefact-grounded diagnostics to localise likely first loss, then use Cursor/repository inspection to verify bounded findings.
 
 Investigations should remain context-driven rather than forced into a rigid universal checklist.
+
+---
+
+## D-014 — Test-suite baseline instability and order dependence
+
+**State:** Newly recorded 2026-08-27 (observed during Sprint 80 S1/S3 verification)
+
+The full Node test suite does not run clean, and some failures depend on execution
+order rather than on the code under test.
+
+Measured at the Sprint 80 pre-implementation commit: **3785 tests, 3390 pass, 394
+fail**. The failures cluster in the learner-renderer, page-render and utility-render
+suites.
+
+Two files demonstrated order dependence across otherwise identical runs
+(`learner-renderer-vnext-non-renderable-material-types-phase3`,
+`learner-renderer-vnext-support-note-family-phase6`): each **passes in isolation**
+but flips verdict depending on what else runs, implying shared mutable state or
+shared fixtures across suites.
+
+Consequence for method: a raw pass/fail count cannot be used to judge a change.
+Every slice must diff its failing-test list against a baseline captured from the
+same commit — which is how S1/S3 established a zero-new-failure delta.
+
+The counts are not even stable between runs of the same commit: the S2
+verification measured **412** failures at the same pre-implementation commit that
+previously measured 394. The absolute number is therefore meaningless on its own;
+only a set difference of failing test locations is informative.
+
+**Recommended method (used by S2).** Create a pristine `git worktree` at the
+comparison commit, run the *identical* command in both trees, extract the failing
+locations (`^test at `) from each, and diff the two sets. Prefer a targeted
+serial run (`--test-concurrency=1`) over the whole suite, since concurrency
+amplifies the cross-contamination. S2 recorded zero new failing locations by both
+measures.
+
+Not fixed. Fixing it means isolating renderer fixture state, which is its own task.
 
 ---
 

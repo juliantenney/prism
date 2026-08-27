@@ -1088,10 +1088,10 @@
                     role="tab"
                     aria-selected="false"
                     aria-controls="unifiedWorkflowSettingsPanel"
-                    aria-label="Settings — workflow and step parameters"
-                    title="Tune pack-defined workflow and step parameters"
+                    aria-label="Adjustments — workflow parameters and step guidance"
+                    title="Reuse this workflow with different values, and add optional step guidance"
                   >
-                    Settings
+                    Adjustments
                     <span
                       id="workflowModeSettingsBadge"
                       class="workflow-mode-tab-badge hidden"
@@ -1115,19 +1115,19 @@
               <section
                 id="unifiedWorkflowSettingsPanel"
                 class="unified-workflow-settings-panel hidden"
-                aria-label="Workflow settings — pack parameters"
+                aria-label="Adjustments — workflow parameters and step guidance"
                 role="tabpanel"
               >
                 <p id="unifiedWorkflowSettingsHint" class="helper-text unified-workflow-settings-context-hint">
-                  Select a saved workflow, then open Settings to tune pack-defined parameters.
+                  Select a saved workflow to review its Adjustments.
                 </p>
                 <p
                   id="unifiedWorkflowSettingsSaveHint"
                   class="helper-text unified-workflow-settings-save-hint hidden"
                   role="status"
                 >
-                  Changes sync to workflow and step notes as you edit. Use <strong>Save</strong> in the
-                  workflow header to persist this workflow.
+                  Changes apply as you edit. Use <strong>Save</strong> in the workflow header to
+                  keep them.
                 </p>
                 <div id="unifiedWorkflowSettingsOptions" class="unified-workflow-settings-options"></div>
               </section>
@@ -1178,12 +1178,13 @@
                 </div>
               </div>
               <div class="form-group">
-                <label for="workflowGoal">Goal / outcome (learner-facing run)</label>
-                <p id="workflowGoalHint" class="helper-text">What the saved workflow should achieve for the learner-facing run (workflows orchestrate generation; they are not the primary learner artefact).</p>
+                <label for="workflowGoal">Goal this workflow was created with</label>
+                <p id="workflowGoalHint" class="helper-text">The original brief this workflow was built from. Read-only, because the stages and structure were designed around it. To change what a run should achieve, set Goal in the Adjustments tab.</p>
                 <textarea
                   id="workflowGoal"
                   rows="3"
-                  placeholder="What should the learner-facing output achieve?"
+                  readonly
+                  placeholder="No goal was recorded when this workflow was created."
                   autocomplete="off"
                 ></textarea>
               </div>
@@ -1198,12 +1199,13 @@
                 />
               </div>
               <div class="form-group">
-                <label for="workflowAudience">Audience (learner-facing run)</label>
-                <p id="workflowAudienceHint" class="helper-text">Primary end users or learners for the learner-facing output.</p>
+                <label for="workflowAudience">Audience this workflow was created for</label>
+                <p id="workflowAudienceHint" class="helper-text">Who this workflow was originally commissioned for. Read-only, because the stages and structure were designed around it. To change who a run is for, set Audience in the Adjustments tab.</p>
                 <input
                   type="text"
                   id="workflowAudience"
-                  placeholder="e.g. beginner learners, senior leaders"
+                  readonly
+                  placeholder="No audience was recorded when this workflow was created."
                   autocomplete="off"
                 />
               </div>

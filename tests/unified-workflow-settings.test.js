@@ -1043,7 +1043,12 @@ test("setWorkflowMode selects Settings Run and Edit without breaking mode state"
   assert.equal(workflowDetail.classList.contains("settings-mode"), false);
 });
 
-test("refreshWorkflowModeSettingsTabBadge reflects visible workflow and step controls", () => {
+// S80-S4 §13 (operator correction): the badge no longer counts pack-declared
+// Settings controls. Those controls were never runtime-effective and are no
+// longer a product surface, so a count of them was misleading. The badge is now
+// a semantic marker for "the author has set an Adjustment". The pack-counting
+// helper itself is retained and still asserted below.
+test("refreshWorkflowModeSettingsTabBadge no longer counts pack-declared controls", () => {
   const { api, badge } = loadPrismTestApiForWorkflowNavigation();
   const briefConfig = {
     workflowParameterControls: [
@@ -1083,10 +1088,17 @@ test("refreshWorkflowModeSettingsTabBadge reflects visible workflow and step con
   };
   api.setSelectedWorkflowIdForTest("wf-badge");
   api.setWorkflowsForTest([wf]);
+  // The legacy counter still works; it just no longer drives the badge.
   assert.equal(api.countUnifiedWorkflowVisibleParameterControls(wf, briefConfig), 2);
   api.refreshWorkflowModeSettingsTabBadge();
+  assert.equal(badge.classList.contains("hidden"), true);
+  assert.equal(badge.textContent, "");
+
+  // An explicit Adjustment does show the semantic marker.
+  wf.adjustments = { version: 1, parameters: { topic: "Elizabeth I" } };
+  api.refreshWorkflowModeSettingsTabBadge();
   assert.equal(badge.classList.contains("hidden"), false);
-  assert.equal(badge.textContent, "2");
+  assert.equal(badge.textContent, "Customised");
 });
 
 test("renderUnifiedWorkflowSettingsContent shows empty state when no controls apply", () => {

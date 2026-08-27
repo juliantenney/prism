@@ -179,11 +179,13 @@ Keep distinct from pedagogical-diagram architecture.
 
 ## D-010 — Settings
 
-**State:** Post-Alpha
+**State:** Active discovery — [Sprint 80 OPEN](../sprints/2026-08-26-sprint-80-settings-discovery-product-value-and-policy-architecture/SPRINT-80-START-HERE.md) (2026-08-26)
 
-Product capability, not current Alpha completion requirement.
+Product capability under discovery/planning. Prior diagnostic verdict was redesign; Sprint 80 reassesses whether Settings should exist at all against current canonical DLA/GAM architecture.
 
-Likely Beta/v1.0 territory depending on product roadmap.
+Do not treat pack-declared Settings as requirements to activate. Operator decision gate: S80-T-006.
+
+Likely still Beta/v1.0 territory for any implementation that follows Sprint 80.
 
 ---
 

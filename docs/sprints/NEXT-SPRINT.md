@@ -1,38 +1,39 @@
 # Next sprint — selection pointer
 
-**Status:** Sprint 79 **CLOSED** (2026-08-26). Sprint 78 **CLOSED** (2026-08-25).  
+**Status:** Sprint 80 **OPEN** (2026-08-26). Sprint 79 **CLOSED**. Sprint 78 **CLOSED**.  
 **Updated:** 2026-08-26
 
 ---
 
 ## Current programme
 
-No sprint is currently OPEN.
+**Active sprint:** Sprint 80 — Settings Discovery, Product Value and Policy Architecture.
 
-**Last closed:** Sprint 79 — GAM Architecture and Maintainability.
+**Pack:** [SPRINT-80-START-HERE.md](../development/sprints/2026-08-26-sprint-80-settings-discovery-product-value-and-policy-architecture/SPRINT-80-START-HERE.md) · **Status:** [STATUS.md](../development/sprints/2026-08-26-sprint-80-settings-discovery-product-value-and-policy-architecture/STATUS.md) · **Opening decision:** [S80-D01](../development/sprints/2026-08-26-sprint-80-settings-discovery-product-value-and-policy-architecture/decisions.md#s80-d01--open-sprint-80--settings-discovery-product-value-and-policy-architecture)
 
-**Pack:** [SPRINT-79-START-HERE.md](../development/sprints/2026-08-26-sprint-79-gam-architecture-and-maintainability/SPRINT-79-START-HERE.md) · **Closure:** [S79-T-009](../development/sprints/2026-08-26-sprint-79-gam-architecture-and-maintainability/S79-T-009-final-regression-and-sprint-closure-gate.md) · [sprint-79-closeout.md](sprint-79-closeout.md) · **Decision:** [S79-D07](../development/sprints/2026-08-26-sprint-79-gam-architecture-and-maintainability/decisions.md#s79-d07--close-sprint-79)
+**Current task:** Operator acceptance of **S80-T-005B** (and **S80-T-005** / **S80-T-005A** if still pending), then **S80-T-006** (human decision gate).  
+**Last completed deliverable:** S80-T-005B minimal runtime parameter contract diagnostic (Topic / Duration / Audience).  
+**Accepted:** S80-T-001 … S80-T-004.
 
-**Outcome:** One live canonical GAM normative assembly; temporary OLD rollback retired; Lagrangian **91/100** accepted as no material regression vs **94**; deterministic **203/203**.
+**Mode:** Discovery / planning — **no** Settings runtime implementation authorised.
 
 ### Protected closure state
 
 Sprint 78 remains **CLOSED**.  
-Sprint 79 is **CLOSED**.
+Sprint 79 remains **CLOSED**.  
+DLA Phase D retirement is **COMPLETE** (canonical-only DLA).  
+GAM remains canonical-only (S79 temporary rollback retired).
 
 ---
 
-## Exact next programme item (not opened)
+## After Sprint 80 (not opened)
 
-Per Sprint 79 T-001 §20 forward programme:
+Depends on **S80-T-006** operator decision (A/B/C/D). Possible follow-ons:
 
-1. **Settings architecture design sprint** — typed policy authority and Run consistency; **PB-FA-005** lane.  
-2. Then: Settings implementation sprint.  
-3. Then: Learner Workspace Surfaces planning sprint.  
-4. Then: Workspace Surfaces implementation sprint.  
-5. **Separate deferred:** DLA Phase D legacy cleanup.  
-6. **Also deferred from S79:** image-generation precision-fidelity diagnostic; final-render timing-badge regression; guided-review Node vs live VM drift.
+1. Settings **implementation** sprint (only if retained/redesigned).  
+2. Learner Workspace Surfaces planning.  
+3. Workspace Surfaces implementation.  
 
-Do **not** open the Settings sprint from this pointer alone without an explicit opening decision.
+Do **not** start those from this pointer without an explicit opening decision.
 
-**Backlog:** [PRODUCT-BACKLOG.md](../backlog/PRODUCT-BACKLOG.md)
+**Backlog:** [PRODUCT-BACKLOG.md](../backlog/PRODUCT-BACKLOG.md) · lane [PB-FA-005](../backlog/PRODUCT-BACKLOG.md#pb-fa-005--workflow-settings--parameterisation-source-of-truth-and-runtime-consistency) (re-scope after T-006; do not implement prematurely).

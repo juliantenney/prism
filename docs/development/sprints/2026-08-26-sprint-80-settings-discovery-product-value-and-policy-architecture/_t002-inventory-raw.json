@@ -1,0 +1,767 @@
+{
+  "workflowCount": 4,
+  "stepCount": 37,
+  "byStep": {
+    "step_design_page": 2,
+    "step_design_assessment": 7,
+    "step_generate_assessment_items": 10,
+    "step_normalize_content": 3,
+    "step_model_knowledge": 3,
+    "step_define_learning_outcomes": 4,
+    "step_design_learning_activities": 4,
+    "step_generate_activity_materials": 1,
+    "step_construct_learning_sequence": 3
+  },
+  "inventory": {
+    "workflow": [
+      {
+        "scope": "workflow",
+        "key": "delivery_context",
+        "label": "Delivery context",
+        "controlType": "select",
+        "default": "blended",
+        "options": [
+          "in_person",
+          "online_sync",
+          "online_async",
+          "blended",
+          "self_directed"
+        ],
+        "visible": true,
+        "advanced": false,
+        "elicitation": "settings-only",
+        "description": "How learners progress through the design (pedagogic delivery mode).",
+        "appHits": 20
+      },
+      {
+        "scope": "workflow",
+        "key": "design_scope",
+        "label": "Design scope",
+        "controlType": "select",
+        "default": "session",
+        "options": [
+          "single_activity",
+          "session",
+          "sequence",
+          "module"
+        ],
+        "visible": true,
+        "advanced": false,
+        "elicitation": "settings-only",
+        "description": "Breadth of the learning design (single activity through module).",
+        "appHits": 16
+      },
+      {
+        "scope": "workflow",
+        "key": "input_strategy",
+        "label": "Input strategy",
+        "controlType": "select",
+        "default": "generate_from_topic",
+        "options": [
+          "generate_from_topic",
+          "provided_source_content",
+          "mixed"
+        ],
+        "visible": true,
+        "advanced": false,
+        "elicitation": "settings-only",
+        "description": "Whether the workflow generates from a topic, uses uploaded material, or both.",
+        "appHits": 18
+      },
+      {
+        "scope": "workflow",
+        "key": "duration_minutes",
+        "label": "Session duration (minutes)",
+        "controlType": "number",
+        "default": "60",
+        "options": [],
+        "visible": true,
+        "advanced": false,
+        "elicitation": "settings-only",
+        "description": "Total session duration used for sequencing and workflow constraints.",
+        "appHits": 23
+      }
+    ],
+    "step": [
+      {
+        "scope": "step",
+        "canonicalStepId": "step_design_page",
+        "key": "page_profile",
+        "label": "Page profile",
+        "controlType": "select",
+        "default": "learner",
+        "options": [
+          "learner",
+          "facilitator",
+          "assessment"
+        ],
+        "visible": true,
+        "advanced": false,
+        "elicitation": "elicited",
+        "description": "Who the assembled page is primarily for.",
+        "appHits": 39
+      },
+      {
+        "scope": "step",
+        "canonicalStepId": "step_design_assessment",
+        "key": "activity_type",
+        "label": "Question strategy",
+        "controlType": "select",
+        "default": "mcq",
+        "options": [
+          "mcq",
+          "short_answer",
+          "essay",
+          "problem",
+          "case_study",
+          "mixed"
+        ],
+        "visible": true,
+        "advanced": false,
+        "elicitation": "elicited",
+        "description": "Assessment type for the blueprint (maps from brief assessment type).",
+        "appHits": 3
+      },
+      {
+        "scope": "step",
+        "canonicalStepId": "step_generate_assessment_items",
+        "key": "number_of_items",
+        "label": "Number of items",
+        "controlType": "number",
+        "default": "10",
+        "options": [],
+        "visible": true,
+        "advanced": false,
+        "elicitation": "settings-only",
+        "description": "How many assessment items to generate (inherits Design Assessment total_items by default).",
+        "appHits": 7
+      },
+      {
+        "scope": "step",
+        "canonicalStepId": "step_generate_assessment_items",
+        "key": "response_formats",
+        "label": "Allowed response formats",
+        "controlType": "select",
+        "default": "single_answer_mcq",
+        "options": [
+          "single_answer_mcq",
+          "multiple_answer_mcq",
+          "true_false",
+          "short_answer",
+          "essay",
+          "single_mcq_and_true_false",
+          "objective_mix_all",
+          "constructed_mix",
+          "all_formats_mix"
+        ],
+        "visible": true,
+        "advanced": true,
+        "elicitation": "settings-only",
+        "description": "Permitted item response formats (inherits from Design Assessment activity_type by default).",
+        "appHits": 6
+      },
+      {
+        "scope": "step",
+        "canonicalStepId": "step_generate_assessment_items",
+        "key": "difficulty_profile",
+        "label": "Difficulty profile",
+        "controlType": "select",
+        "default": "balanced",
+        "options": [
+          "foundational",
+          "balanced",
+          "higher_order"
+        ],
+        "visible": true,
+        "advanced": true,
+        "elicitation": "settings-only",
+        "description": "Item-set difficulty emphasis (inherits from Design Assessment by default).",
+        "appHits": 11
+      },
+      {
+        "scope": "step",
+        "canonicalStepId": "step_generate_assessment_items",
+        "key": "coverage_mode",
+        "label": "Coverage mode",
+        "controlType": "select",
+        "default": "balanced",
+        "options": [
+          "selected_themes",
+          "balanced",
+          "broad_coverage"
+        ],
+        "visible": true,
+        "advanced": true,
+        "elicitation": "settings-only",
+        "description": "Outcome/theme coverage for generated items (inherits from Design Assessment coverage_scope by default).",
+        "appHits": 3
+      },
+      {
+        "scope": "step",
+        "canonicalStepId": "step_generate_assessment_items",
+        "key": "composition_mode",
+        "label": "Composition mode",
+        "controlType": "select",
+        "default": "single_format",
+        "options": [
+          "single_format",
+          "mixed_set"
+        ],
+        "visible": true,
+        "advanced": true,
+        "elicitation": "settings-only",
+        "description": "Whether the item set uses a single format or a mixed set.",
+        "appHits": 3
+      },
+      {
+        "scope": "step",
+        "canonicalStepId": "step_generate_assessment_items",
+        "key": "stimulus_mode",
+        "label": "Stimulus mode",
+        "controlType": "select",
+        "default": "direct_questions",
+        "options": [
+          "direct_questions",
+          "scenario_based",
+          "problem_based",
+          "case_based"
+        ],
+        "visible": true,
+        "advanced": true,
+        "elicitation": "settings-only",
+        "description": "Whether items are direct questions or anchored to scenarios/problems/cases.",
+        "appHits": 2
+      },
+      {
+        "scope": "step",
+        "canonicalStepId": "step_generate_assessment_items",
+        "key": "scenario_scope",
+        "label": "Stimulus scope",
+        "controlType": "select",
+        "default": "shared_scenario_for_set",
+        "options": [
+          "shared_scenario_for_set",
+          "scenario_per_item"
+        ],
+        "visible": true,
+        "advanced": true,
+        "elicitation": "settings-only",
+        "description": "Shared vs per-item stimulus when using scenario/problem/case-based items.",
+        "appHits": 1
+      },
+      {
+        "scope": "step",
+        "canonicalStepId": "step_generate_assessment_items",
+        "key": "cognitive_emphasis",
+        "label": "Cognitive emphasis",
+        "controlType": "select",
+        "default": "mixed",
+        "options": [
+          "mixed",
+          "foundational",
+          "application",
+          "analysis"
+        ],
+        "visible": true,
+        "advanced": true,
+        "elicitation": "settings-only",
+        "description": "Dominant cognitive level emphasis across generated items.",
+        "appHits": 0
+      },
+      {
+        "scope": "step",
+        "canonicalStepId": "step_generate_assessment_items",
+        "key": "feedback_mode",
+        "label": "Item feedback mode",
+        "controlType": "select",
+        "default": "per_item",
+        "options": [
+          "none",
+          "per_item",
+          "aggregate",
+          "both"
+        ],
+        "visible": true,
+        "advanced": true,
+        "elicitation": "settings-only",
+        "description": "Learner-facing feedback included with generated items (distinct from Design Feedback step).",
+        "appHits": 0
+      },
+      {
+        "scope": "step",
+        "canonicalStepId": "step_generate_assessment_items",
+        "key": "question_style_mix",
+        "label": "Response mode mix",
+        "controlType": "select",
+        "default": "mixed_response_modes",
+        "options": [
+          "selected_response_only",
+          "constructed_response_only",
+          "mixed_response_modes",
+          "integrative_performance_oriented"
+        ],
+        "visible": true,
+        "advanced": false,
+        "elicitation": "settings-only",
+        "description": "Preferred mix of selected vs constructed response modes.",
+        "appHits": 6
+      },
+      {
+        "scope": "step",
+        "canonicalStepId": "step_design_page",
+        "key": "include_examples",
+        "label": "Include examples",
+        "controlType": "boolean",
+        "default": "true",
+        "options": [],
+        "visible": true,
+        "advanced": true,
+        "elicitation": "settings-only",
+        "description": "Whether the page should include illustrative examples.",
+        "appHits": 3
+      },
+      {
+        "scope": "step",
+        "canonicalStepId": "step_design_assessment",
+        "key": "total_items",
+        "label": "Total assessment items",
+        "controlType": "number",
+        "default": "10",
+        "options": [],
+        "visible": true,
+        "advanced": true,
+        "elicitation": "settings-only",
+        "description": "Total items/questions in the assessment blueprint.",
+        "appHits": 43
+      },
+      {
+        "scope": "step",
+        "canonicalStepId": "step_design_assessment",
+        "key": "coverage_scope",
+        "label": "Coverage scope",
+        "controlType": "select",
+        "default": "balanced",
+        "options": [
+          "selected_themes",
+          "balanced",
+          "broad_coverage"
+        ],
+        "visible": true,
+        "advanced": false,
+        "elicitation": "settings-only",
+        "description": "How broadly the assessment blueprint should cover outcomes/themes.",
+        "appHits": 7
+      },
+      {
+        "scope": "step",
+        "canonicalStepId": "step_design_assessment",
+        "key": "difficulty_profile",
+        "label": "Difficulty profile",
+        "controlType": "select",
+        "default": "balanced",
+        "options": [
+          "foundation_heavy",
+          "balanced",
+          "higher_order_heavy"
+        ],
+        "visible": true,
+        "advanced": false,
+        "elicitation": "settings-only",
+        "description": "Overall difficulty distribution for the assessment blueprint (maps from brief difficulty_profile).",
+        "appHits": 11
+      },
+      {
+        "scope": "step",
+        "canonicalStepId": "step_design_assessment",
+        "key": "cognitive_demand",
+        "label": "Cognitive demand profile",
+        "controlType": "select",
+        "default": "mixed",
+        "options": [
+          "recall_foundation",
+          "application_oriented",
+          "analysis_evaluation",
+          "mixed"
+        ],
+        "visible": true,
+        "advanced": true,
+        "elicitation": "settings-only",
+        "description": "Dominant thinking level targeted by assessment tasks.",
+        "appHits": 4
+      },
+      {
+        "scope": "step",
+        "canonicalStepId": "step_design_assessment",
+        "key": "assessment_cadence",
+        "label": "Assessment cadence",
+        "controlType": "select",
+        "default": "periodic_formative",
+        "options": [
+          "single_end_point",
+          "periodic_formative",
+          "mixed_formative_summative"
+        ],
+        "visible": true,
+        "advanced": true,
+        "elicitation": "settings-only",
+        "description": "How assessment is distributed across the broader learning scope.",
+        "appHits": 0
+      },
+      {
+        "scope": "step",
+        "canonicalStepId": "step_design_assessment",
+        "key": "feedback_display",
+        "label": "Feedback display",
+        "controlType": "select",
+        "default": "answer_grid_end",
+        "options": [
+          "none",
+          "answer_grid_end",
+          "answers_explanations",
+          "reflection_then_answers"
+        ],
+        "visible": true,
+        "advanced": true,
+        "elicitation": "settings-only",
+        "description": "How answers/feedback are planned in the blueprint (prompt-shaping; distinct from Design Feedback step).",
+        "appHits": 10
+      },
+      {
+        "scope": "step",
+        "canonicalStepId": "step_normalize_content",
+        "key": "structure_mode",
+        "label": "Structure mode",
+        "controlType": "select",
+        "default": "reorganise_into_sections",
+        "options": [
+          "preserve_original_structure",
+          "reorganise_into_sections"
+        ],
+        "visible": true,
+        "advanced": false,
+        "elicitation": "settings-only",
+        "description": "How normalized source content is structured.",
+        "appHits": 0
+      },
+      {
+        "scope": "step",
+        "canonicalStepId": "step_normalize_content",
+        "key": "detail_level",
+        "label": "Detail level",
+        "controlType": "select",
+        "default": "lightly_simplify_language",
+        "options": [
+          "preserve_full_detail",
+          "lightly_simplify_language"
+        ],
+        "visible": true,
+        "advanced": true,
+        "elicitation": "settings-only",
+        "description": "How much detail to preserve when normalizing content.",
+        "appHits": 0
+      },
+      {
+        "scope": "step",
+        "canonicalStepId": "step_normalize_content",
+        "key": "keep_examples",
+        "label": "Keep examples",
+        "controlType": "boolean",
+        "default": "true",
+        "options": [],
+        "visible": true,
+        "advanced": true,
+        "elicitation": "settings-only",
+        "description": "Whether to retain meaningful examples from the source.",
+        "appHits": 0
+      },
+      {
+        "scope": "step",
+        "canonicalStepId": "step_model_knowledge",
+        "key": "include_relationships",
+        "label": "Include concept relationships",
+        "controlType": "boolean",
+        "default": "true",
+        "options": [],
+        "visible": true,
+        "advanced": false,
+        "elicitation": "settings-only",
+        "description": "Include explicit relationships between concepts in the knowledge model.",
+        "appHits": 0
+      },
+      {
+        "scope": "step",
+        "canonicalStepId": "step_model_knowledge",
+        "key": "include_misconceptions",
+        "label": "Include misconceptions",
+        "controlType": "boolean",
+        "default": "true",
+        "options": [],
+        "visible": true,
+        "advanced": false,
+        "elicitation": "settings-only",
+        "description": "Include likely misconceptions when supported by the source.",
+        "appHits": 0
+      },
+      {
+        "scope": "step",
+        "canonicalStepId": "step_model_knowledge",
+        "key": "include_processes",
+        "label": "Include processes/workflows",
+        "controlType": "boolean",
+        "default": "true",
+        "options": [],
+        "visible": true,
+        "advanced": true,
+        "elicitation": "settings-only",
+        "description": "Include processes or workflows when present in the source.",
+        "appHits": 0
+      },
+      {
+        "scope": "step",
+        "canonicalStepId": "step_define_learning_outcomes",
+        "key": "learnerLevel",
+        "label": "Learner level",
+        "controlType": "select",
+        "default": "general_adult",
+        "options": [
+          "school",
+          "undergraduate",
+          "postgraduate",
+          "professional",
+          "general_adult"
+        ],
+        "visible": true,
+        "advanced": false,
+        "elicitation": "settings-only",
+        "description": "Target learner level for outcome wording (maps from brief learner level).",
+        "appHits": 6
+      },
+      {
+        "scope": "step",
+        "canonicalStepId": "step_define_learning_outcomes",
+        "key": "numberOfOutcomes",
+        "label": "Number of outcomes",
+        "controlType": "number",
+        "default": "6",
+        "options": [],
+        "visible": true,
+        "advanced": false,
+        "elicitation": "settings-only",
+        "description": "How many learning outcomes to generate.",
+        "appHits": 0
+      },
+      {
+        "scope": "step",
+        "canonicalStepId": "step_define_learning_outcomes",
+        "key": "cognitiveEmphasis",
+        "label": "Cognitive emphasis",
+        "controlType": "select",
+        "default": "mixed",
+        "options": [
+          "mixed",
+          "foundational",
+          "application",
+          "analysis"
+        ],
+        "visible": true,
+        "advanced": true,
+        "elicitation": "settings-only",
+        "description": "Cognitive emphasis across generated outcomes.",
+        "appHits": 0
+      },
+      {
+        "scope": "step",
+        "canonicalStepId": "step_define_learning_outcomes",
+        "key": "scope",
+        "label": "Outcome scope",
+        "controlType": "select",
+        "default": "module",
+        "options": [
+          "lesson",
+          "module",
+          "course"
+        ],
+        "visible": true,
+        "advanced": true,
+        "elicitation": "settings-only",
+        "description": "Scope framing for generated outcomes.",
+        "appHits": 163
+      },
+      {
+        "scope": "step",
+        "canonicalStepId": "step_design_learning_activities",
+        "key": "activity_pattern_mix",
+        "label": "Activity pattern mix",
+        "controlType": "select",
+        "default": "balanced",
+        "options": [
+          "guided",
+          "balanced",
+          "applied_collaborative"
+        ],
+        "visible": true,
+        "advanced": false,
+        "elicitation": "settings-only",
+        "description": "Balance of guided vs applied/collaborative activity patterns.",
+        "appHits": 0
+      },
+      {
+        "scope": "step",
+        "canonicalStepId": "step_design_learning_activities",
+        "key": "grouping_preference",
+        "label": "Grouping preference",
+        "controlType": "select",
+        "default": "mixed",
+        "options": [
+          "mixed",
+          "individual",
+          "pair",
+          "small_group",
+          "whole_group"
+        ],
+        "visible": true,
+        "advanced": true,
+        "elicitation": "settings-only",
+        "description": "Preferred learner grouping modes across activities.",
+        "appHits": 0
+      },
+      {
+        "scope": "step",
+        "canonicalStepId": "step_design_learning_activities",
+        "key": "difficulty_level",
+        "label": "Activity difficulty",
+        "controlType": "select",
+        "default": "moderate",
+        "options": [
+          "introductory",
+          "moderate",
+          "advanced"
+        ],
+        "visible": true,
+        "advanced": true,
+        "elicitation": "settings-only",
+        "description": "Challenge level for designed learning activities.",
+        "appHits": 1
+      },
+      {
+        "scope": "step",
+        "canonicalStepId": "step_design_learning_activities",
+        "key": "coverage_breadth",
+        "label": "Coverage breadth",
+        "controlType": "select",
+        "default": "balanced",
+        "options": [
+          "narrow",
+          "balanced",
+          "broad"
+        ],
+        "visible": true,
+        "advanced": true,
+        "elicitation": "settings-only",
+        "description": "How broadly activities should cover outcomes.",
+        "appHits": 1
+      },
+      {
+        "scope": "step",
+        "canonicalStepId": "step_generate_activity_materials",
+        "key": "session_materials",
+        "label": "Session materials",
+        "controlType": "select",
+        "default": "page",
+        "options": [
+          "page",
+          "slide_deck",
+          "page,slide_deck"
+        ],
+        "visible": true,
+        "advanced": false,
+        "elicitation": "settings-only",
+        "description": "Which session-level material types to generate.",
+        "appHits": 42
+      },
+      {
+        "scope": "step",
+        "canonicalStepId": "step_construct_learning_sequence",
+        "key": "duration_minutes",
+        "label": "Sequence duration (minutes)",
+        "controlType": "number",
+        "default": "60",
+        "options": [],
+        "visible": true,
+        "advanced": false,
+        "elicitation": "settings-only",
+        "description": "Total duration for the constructed learning sequence.",
+        "appHits": 23
+      },
+      {
+        "scope": "step",
+        "canonicalStepId": "step_construct_learning_sequence",
+        "key": "sequencing_granularity",
+        "label": "Sequencing granularity",
+        "controlType": "select",
+        "default": "standard",
+        "options": [
+          "lightweight",
+          "standard",
+          "detailed"
+        ],
+        "visible": true,
+        "advanced": false,
+        "elicitation": "settings-only",
+        "description": "How detailed the learning sequence plan should be.",
+        "appHits": 1
+      },
+      {
+        "scope": "step",
+        "canonicalStepId": "step_construct_learning_sequence",
+        "key": "sequencing_style",
+        "label": "Sequencing style",
+        "controlType": "select",
+        "default": "progressive_scaffold",
+        "options": [
+          "progressive_scaffold",
+          "spiral_revisit",
+          "assessment_anchored"
+        ],
+        "visible": true,
+        "advanced": true,
+        "elicitation": "settings-only",
+        "description": "Pedagogic sequencing style for the session plan.",
+        "appHits": 0
+      }
+    ]
+  },
+  "prismStepParamsHits": 6,
+  "prismParamsHits": 0,
+  "samples": {
+    "delivery_context": [
+      "Of : []; if (deliveryTerms.length) { var delivery = String(r.delivery_context || e.delivery_context || r.delivery_mode || e.delivery_mode || \"\") .toLowerCase() .trim(); if ",
+      "f (deliveryTerms.length) { var delivery = String(r.delivery_context || e.delivery_context || r.delivery_mode || e.delivery_mode || \"\") .toLowerCase() .trim(); if (!deliveryTerms.some(f",
+      "d && typeof resolved === \"object\" ? resolved : {}; var delivery = String(r.delivery_context || r.delivery_mode || \"\") .toLowerCase() .trim(); if ( delivery === \"in_person\" || del",
+      " false; if (profile === \"learner\") { var delivery = String(resolved.delivery_context || \"\") .toLowerCase() .trim(); if (delivery === \"in_person\" || delivery === \"online_sync\" || d",
+      "if (normalized === LD_CREATE_OUTPUT_TYPE_SELF_STUDY) { return { delivery_context: \"self_directed\", delivery_mode: \"async\", delivery_pattern: \"mostly_online\", page_profile: \"",
+      "E_WORKSHOP) { return { delivery_mode: \"live_workshop\", delivery_context: \"in_person\", delivery_pattern: \"face_to_face\", learning_environments: [\"classroom\"] }; }",
+      "ion resource)\\b/.test(text)) { return true; } } if (f.delivery_context === \"in_person\" || f.delivery_context === \"online_sync\") return true; return ( /\\b(workshop|seminar|live se",
+      " return true; } } if (f.delivery_context === \"in_person\" || f.delivery_context === \"online_sync\") return true; return ( /\\b(workshop|seminar|live session|peer instruction|think[- ]pair[-"
+    ],
+    "activity_pattern_mix": [],
+    "session_materials": [
+      "olved && typeof resolved === \"object\" ? resolved : {}; var sessionMats = r.session_materials; if (Array.isArray(sessionMats)) { sessionMats.forEach(function (mat) { bits.push(String(mat || \"\"",
+      "s: [] }; } if (parsed.sections || parsed.activity_materials || parsed.session_materials) { return { ok: false, errors: [\"unrecognized capture shape — use modern partial page artefact\"] }; } ",
+      "(parsed, baseline || null); } if (parsed.activity_materials || parsed.session_materials) { return { ok: false, errors: [\"unrecognized capture shape — use modern partial page artefact\"] }; } ",
+      " sourceTitle + '\":'); if (artKey === \"activity_materials\" || artKey === \"session_materials\") { lines.push( \" Authoritative GAM content binding: Material/Purpose/type are metadata only; acti",
+      "ct(step, \"activity_materials\") && !workflowStepProducesArtefact(step, \"session_materials\") ) { continue; } var sid = String(step.id || \"\").trim(); var raw = readWorkflowRu",
+      "tractSessionMaterialsFromBriefText(text); if (sessionMaterials.length) out.session_materials = sessionMaterials; var environments = extractLearningEnvironmentsFromBriefText(text); if (environments.lengt"
+    ],
+    "include_misconceptions": [],
+    "numberOfOutcomes": [],
+    "page_profile": [
+      "items\", \"activity_type\", \"total_items\", \"number_of_items\", \"page_profile\", \"tone_style\", \"depth_level\", \"include_examples\" ]; var WORKFLOW_PLANNING_ADEQUACY_SETTINGS_TAR",
+      "xamples\" ]; var WORKFLOW_PLANNING_ADEQUACY_SETTINGS_TARGETS = { ld_page_profile_facilitator_mismatch: { canonicalStepId: \"step_design_page\" }, ld_assessment_generate_step_missing: { canonicalSte",
+      "ity type\", total_items: \"Items\", number_of_items: \"Items\", page_profile: \"Page profile\", tone_style: \"Tone\", depth_level: \"Depth\", include_examples: \"Examples\" }; ",
+      " top-level keys: artifact_type \"page\", schema_version \"2.0.0\", title, audience, page_profile, assembly_state, page_synthesis {}, activities[], learning_outcomes[], episode_plans[], source_artefacts[], generation_",
+      "etype, beats[] }. Do not emit episode_plans rows without activity_id.\", \"page_profile must be an object { profile_type } — never a bare string.\", \"source_artefacts[] must be structured objects { art",
+      "e.\", \"Forbidden: activities[], materials[], shell fields (title/audience/page_profile/learning_outcomes/episode_plans), page_synthesis, and full-page replay.\", \"Do not reconstruct or preserve non-ow"
+    ]
+  }
+}

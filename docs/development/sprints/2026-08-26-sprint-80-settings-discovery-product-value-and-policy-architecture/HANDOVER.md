@@ -15,8 +15,8 @@ Sprint 80 is **CLOSED**. Operator accepted S5–S8 and T-008 on 2026-08-28. PRIS
 
 Remaining architectural debt is **post-alpha** and does **not** reopen Sprint 80.
 
-**Next immediate engineering task:** bounded investigation of **D-014**.  
-**Next substantive product programme after that:** **learner-page accessibility**.
+**Next immediate engineering task:** none under Sprint 80 — D-014 **RESOLVED**.  
+**Active successor:** **Sprint 81** — [Learner Workspace Investigation & Surface Architecture](../2026-08-28-sprint-81-learner-workspace-investigation-and-surface-architecture/SPRINT-81-START-HERE.md).
 
 ## Implementation state (final)
 
@@ -50,5 +50,5 @@ Focused S80 suite at close: **229/229**. Full-suite failing locations: **393** (
 
 ## Next programme
 
-1. **D-014** — bounded investigation of full-suite / order-dependent failing locations.  
-2. **Learner-page accessibility** — substantive product programme after D-014.
+1. **D-014** — **RESOLVED** (confidence gate `npm run test:first-class`).  
+2. **Sprint 81 ACTIVE** — [Learner Workspace Investigation & Surface Architecture](../2026-08-28-sprint-81-learner-workspace-investigation-and-surface-architecture/SPRINT-81-START-HERE.md). Accessibility remains a design constraint for future surfaces; not a Sprint 80 remediation programme.

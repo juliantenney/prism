@@ -25,7 +25,7 @@
 | Adjustments | Delivered S1–S8 (**all ACCEPTED**): Topic, Goal, Duration, Audience, CAI Quantity + Difficulty |
 | Remaining debt | **Post-alpha** — does **not** reopen Sprint 80 |
 | Next engineering | **D-014 RESOLVED** — `npm run test:first-class` ([diagnostic](../../governance/D-014-test-suite-confidence-diagnostic.md)) |
-| Next product programme | **Learner-page accessibility** |
+| Next product programme | **Sprint 81 CLOSED** — [Learner Workspace Investigation & Surface Architecture](../2026-08-28-sprint-81-learner-workspace-investigation-and-surface-architecture/SPRINT-81-START-HERE.md) (B shipped) |
 | Operator gate (historical) | **S80-T-006** — Option C (Adjustments) |
 
 Do **not** implement Sprint 80 debt fixes, Question Type, learner level, DA repair, or Settings cleanup as “finishing Sprint 80.”
@@ -36,8 +36,7 @@ Do **not** implement Sprint 80 debt fixes, Question Type, learner level, DA repa
 
 | Priority | Work |
 | -------- | ---- |
-| **Now** | **Learner-page accessibility** programme (D-014 confidence resolved) |
-| **Next** | **Learner-page accessibility** programme |
+| **Now** | See [NEXT-SPRINT.md](../../../sprints/NEXT-SPRINT.md) — Sprint 81 **CLOSED**; Maths Entry not opened |
 | **Do not** | Reopen Sprint 80; expand Adjustments; invent backlog from old S9–S11 labels |
 
 ---

@@ -1,39 +1,43 @@
 # Next sprint — selection pointer
 
-**Status:** Sprint 80 **OPEN** (2026-08-26). Sprint 79 **CLOSED**. Sprint 78 **CLOSED**.  
-**Updated:** 2026-08-26
+**Status:** Sprint 81 **CLOSED / COMPLETE** (2026-08-28). Sprint 80 **CLOSED**. Sprint 79 **CLOSED**.  
+**Updated:** 2026-08-28
 
 ---
 
 ## Current programme
 
-**Active sprint:** Sprint 80 — Settings Discovery, Product Value and Policy Architecture.
+**No active sprint.** Last closed: Sprint 81 — Learner Workspace Investigation & Surface Architecture (**B — TARGETED ENHANCEMENT**).
 
-**Pack:** [SPRINT-80-START-HERE.md](../development/sprints/2026-08-26-sprint-80-settings-discovery-product-value-and-policy-architecture/SPRINT-80-START-HERE.md) · **Status:** [STATUS.md](../development/sprints/2026-08-26-sprint-80-settings-discovery-product-value-and-policy-architecture/STATUS.md) · **Opening decision:** [S80-D01](../development/sprints/2026-08-26-sprint-80-settings-discovery-product-value-and-policy-architecture/decisions.md#s80-d01--open-sprint-80--settings-discovery-product-value-and-policy-architecture)
+**Pack:** [SPRINT-81-START-HERE.md](../development/sprints/2026-08-28-sprint-81-learner-workspace-investigation-and-surface-architecture/SPRINT-81-START-HERE.md) · **Closure:** [SPRINT-81-CLOSURE.md](../development/sprints/2026-08-28-sprint-81-learner-workspace-investigation-and-surface-architecture/SPRINT-81-CLOSURE.md) · **Status:** [STATUS.md](../development/sprints/2026-08-28-sprint-81-learner-workspace-investigation-and-surface-architecture/STATUS.md)
 
-**Current task:** Operator acceptance of **S80-T-005B** (and **S80-T-005** / **S80-T-005A** if still pending), then **S80-T-006** (human decision gate).  
-**Last completed deliverable:** S80-T-005B minimal runtime parameter contract diagnostic (Topic / Duration / Audience).  
-**Accepted:** S80-T-001 … S80-T-004.
-
-**Mode:** Discovery / planning — **no** Settings runtime implementation authorised.
+**Shipped under S81-D02:** asymmetric Check→Task navigation + R4 revision-pass accompaniment (compact reminder below sticky nav). Existing learner surfaces retained.
 
 ### Protected closure state
 
-Sprint 78 remains **CLOSED**.  
+Sprint 81 remains **CLOSED**.  
+Sprint 80 remains **CLOSED** (WORKING ALPHA).  
 Sprint 79 remains **CLOSED**.  
-DLA Phase D retirement is **COMPLETE** (canonical-only DLA).  
-GAM remains canonical-only (S79 temporary rollback retired).
+D-014 remains **RESOLVED** — first-class gate `npm run test:first-class` (last reported **339/339**).  
+Accessibility alpha baseline remains established.
 
 ---
 
-## After Sprint 80 (not opened)
+## Potential next investigation (not opened)
 
-Depends on **S80-T-006** operator decision (A/B/C/D). Possible follow-ons:
+```text
+Potential next investigation:
+mathematical learner input / maths entry
+```
 
-1. Settings **implementation** sprint (only if retained/redesigned).  
-2. Learner Workspace Surfaces planning.  
-3. Workspace Surfaces implementation.  
+Do **not** start Maths Entry architecture, library choice, MathQuill decisions, task decomposition, or implementation from this pointer. That requires an explicit opening decision.
 
-Do **not** start those from this pointer without an explicit opening decision.
+---
 
-**Backlog:** [PRODUCT-BACKLOG.md](../backlog/PRODUCT-BACKLOG.md) · lane [PB-FA-005](../backlog/PRODUCT-BACKLOG.md#pb-fa-005--workflow-settings--parameterisation-source-of-truth-and-runtime-consistency) (re-scope after T-006; do not implement prematurely).
+## Explicitly not implied by Sprint 81 close
+
+- Surface-family / widget-mapping architecture  
+- Criterion→field mapping or free-text/table diagnostic engine  
+- Reopening parked R3/R5/T5/C3 as active defects  
+
+**Backlog:** [PRODUCT-BACKLOG.md](../backlog/PRODUCT-BACKLOG.md)

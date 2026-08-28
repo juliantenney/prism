@@ -1,7 +1,7 @@
 # Sprint 80 — Index
 
 **Sprint:** 80 — Settings Discovery, Product Value and Policy Architecture  
-**Status:** OPEN  
+**Status:** CLOSED  
 **Entry:** [SPRINT-80-START-HERE.md](SPRINT-80-START-HERE.md)
 
 | Document | Role |

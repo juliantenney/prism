@@ -11,7 +11,7 @@ this file records **current status only**.
 
 1. **D-014** confidence issue **RESOLVED** (RC1/RC2; gate `npm run test:first-class`). See
    [governance D-014 §11](../../governance/D-014-test-suite-confidence-diagnostic.md).
-2. Next substantive product programme: **learner-page accessibility**.
+2. **Sprint 81 ACTIVE** — [Learner Workspace Investigation & Surface Architecture](../2026-08-28-sprint-81-learner-workspace-investigation-and-surface-architecture/SPRINT-81-START-HERE.md).
 
 Other open IDs remain recorded for later programmes; T-008 §16 is advisory only.
 

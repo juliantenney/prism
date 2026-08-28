@@ -22,7 +22,7 @@
 | Alpha boundary | Exactly as established by [S80-T-008](S80-T-008-working-alpha-boundary-audit-and-sprint-80-closeout.md) |
 | DLA Phase D | COMPLETE (canonical-only DLA) |
 | GAM | Canonical-only (S79) |
-| Current task | **None — sprint closed.** D-014 confidence **RESOLVED** (`npm run test:first-class`). Next product programme: **learner-page accessibility** |
+| Current task | **None — sprint closed.** Successor: **Sprint 81 ACTIVE** ([START HERE](../2026-08-28-sprint-81-learner-workspace-investigation-and-surface-architecture/SPRINT-81-START-HERE.md)). D-014 **RESOLVED**. |
 | Last completed | Formal closeout: S5–S8 **ACCEPTED**; T-008 **ACCEPTED**; Sprint 80 **CLOSED** |
 | Operator gate | **S80-T-006 PASSED** (Option C — Adjustments) |
 | Product direction A/B/C/D | **Option C — Settings → Adjustments** (delivered) |
@@ -71,10 +71,10 @@ All authorised Sprint 80 slices **S1–S8 are COMPLETE — ACCEPTED**. Sprint 80
 | **S7** | Audience governed workflow parameter (D13/D16 fixed) | **COMPLETE — ACCEPTED** | [S80-S7](S80-S7-audience-governed-workflow-parameter.md) |
 | **S8** | Assessment Adjustments v1 (Quantity + Difficulty; CAI-gated) | **COMPLETE — ACCEPTED** | [S80-S8](S80-S8-assessment-adjustments-quantity-difficulty.md) |
 
-**Post-alpha sequencing (operator, 2026-08-28 — does not reopen Sprint 80):**
+**Post-alpha sequencing (operator — does not reopen Sprint 80):**
 
-1. **D-014** confidence **RESOLVED** (RC1/RC2; gate `npm run test:first-class`). Record: [D-014 §11](../../governance/D-014-test-suite-confidence-diagnostic.md).
-2. Next substantive product programme: **learner-page accessibility**.
+1. **D-014** confidence **RESOLVED** (gate `npm run test:first-class`).  
+2. **Sprint 81 ACTIVE** — [Learner Workspace Investigation & Surface Architecture](../2026-08-28-sprint-81-learner-workspace-investigation-and-surface-architecture/SPRINT-81-START-HERE.md). Accessibility remains an alpha design constraint, not a separate remediation programme under Sprint 80.
 
 Former planned S9–S11 (Settings cleanup / regression / closure docs) and other T-008 §16 items remain **post-alpha** backlog candidates outside this sprint. They are not Sprint 80 work.
 
@@ -101,7 +101,7 @@ Focused S80 suite at closeout: **229/229**. Full-suite failing locations at S8: 
 - Do not expand Adjustments (Question Type, learner level, etc.) under a Sprint 80 label.
 - Do not treat historical Settings machinery cleanup as Sprint 80 unfinished work.
 - Next immediate engineering signal: `npm run test:first-class` (**D-014 resolved**).
-- Next substantive product programme: **learner-page accessibility**.
+- Next substantive programme: **Sprint 81** — [Learner Workspace Investigation & Surface Architecture](../2026-08-28-sprint-81-learner-workspace-investigation-and-surface-architecture/SPRINT-81-START-HERE.md).
 
 ---
 

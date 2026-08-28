@@ -179,7 +179,7 @@ Keep distinct from pedagogical-diagram architecture.
 
 ## D-010 — Settings → Adjustments
 
-**State:** Decided and partially implemented — [Sprint 80 OPEN](../sprints/2026-08-26-sprint-80-settings-discovery-product-value-and-policy-architecture/SPRINT-80-START-HERE.md) (updated 2026-08-27)
+**State:** Decided and delivered for governed Adjustments — [Sprint 80 CLOSED](../sprints/2026-08-26-sprint-80-settings-discovery-product-value-and-policy-architecture/SPRINT-80-START-HERE.md) (WORKING ALPHA; updated 2026-08-28)
 
 Discovery is complete. The S80-T-006 gate decided **Option C**: the historical
 41-control Settings catalogue is **superseded product design**, replaced by

@@ -7,14 +7,17 @@ const fs = require("node:fs");
 const path = require("node:path");
 
 const repoRoot = path.resolve(__dirname, "..");
-const outDir = path.join(
-  repoRoot,
-  "docs",
-  "development",
-  "sprints",
-  "2026-07-21-sprint-68-learning-coherence-narrative-flow",
-  "artefacts"
-);
+/** Default committed artefacts dir. Tests may override via PRISM_GAM_INVENTORY_OUT_DIR (D-014 RC2). */
+const outDir = process.env.PRISM_GAM_INVENTORY_OUT_DIR
+  ? path.resolve(String(process.env.PRISM_GAM_INVENTORY_OUT_DIR))
+  : path.join(
+      repoRoot,
+      "docs",
+      "development",
+      "sprints",
+      "2026-07-21-sprint-68-learning-coherence-narrative-flow",
+      "artefacts"
+    );
 const fixturesDir = path.join(repoRoot, "tests", "fixtures");
 
 const parseMaterial = require("../lib/learner-renderer-vnext/parse-material");

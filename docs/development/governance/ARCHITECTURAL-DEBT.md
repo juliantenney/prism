@@ -253,38 +253,18 @@ Investigations should remain context-driven rather than forced into a rigid univ
 
 ## D-014 — Test-suite baseline instability and order dependence
 
-**State:** Newly recorded 2026-08-27 (observed during Sprint 80 S1/S3 verification)
+**State:** **Confidence issue resolved** 2026-08-28 (bounded RC1/RC2 repair). Full write-up:
+[D-014-test-suite-confidence-diagnostic.md](D-014-test-suite-confidence-diagnostic.md) (§11 repair record).
 
-The full Node test suite does not run clean, and some failures depend on execution
-order rather than on the code under test.
+**Working-alpha impact:** None. Gate: `npm run test:first-class` (**339/339**, includes S80 **229/229**).
 
-Measured at the Sprint 80 pre-implementation commit: **3785 tests, 3390 pass, 394
-fail**. The failures cluster in the learner-renderer, page-render and utility-render
-suites.
+**Repair:**
 
-Two files demonstrated order dependence across otherwise identical runs
-(`learner-renderer-vnext-non-renderable-material-types-phase3`,
-`learner-renderer-vnext-support-note-family-phase6`): each **passes in isolation**
-but flips verdict depending on what else runs, implying shared mutable state or
-shared fixtures across suites.
+1. **RC1** — vm bootstrap auto-injects `PRISM_LEARNER_RENDERER_VNEXT` (test harness only; no production `app.js` fallback). True unavailable asserts eliminated.
+2. **RC2** — inventory builds use isolated temp dirs via `PRISM_GAM_INVENTORY_OUT_DIR` + test helper; ±1 flake eliminated.
+3. Historical full suite remains noisy (**419** stable failing locations post-repair) as **understood backlog** (RC3–RC8). Absolute count is not the confidence criterion.
 
-Consequence for method: a raw pass/fail count cannot be used to judge a change.
-Every slice must diff its failing-test list against a baseline captured from the
-same commit — which is how S1/S3 established a zero-new-failure delta.
-
-The counts are not even stable between runs of the same commit: the S2
-verification measured **412** failures at the same pre-implementation commit that
-previously measured 394. The absolute number is therefore meaningless on its own;
-only a set difference of failing test locations is informative.
-
-**Recommended method (used by S2).** Create a pristine `git worktree` at the
-comparison commit, run the *identical* command in both trees, extract the failing
-locations (`^test at `) from each, and diff the two sets. Prefer a targeted
-serial run (`--test-concurrency=1`) over the whole suite, since concurrency
-amplifies the cross-contamination. S2 recorded zero new failing locations by both
-measures.
-
-Not fixed. Fixing it means isolating renderer fixture state, which is its own task.
+**Disposition:** **A — D-014 CONFIDENCE ISSUE RESOLVED.** Sprint 80 stays **CLOSED**.
 
 ---
 

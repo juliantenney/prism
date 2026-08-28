@@ -22,7 +22,7 @@
 | Alpha boundary | Exactly as established by [S80-T-008](S80-T-008-working-alpha-boundary-audit-and-sprint-80-closeout.md) |
 | DLA Phase D | COMPLETE (canonical-only DLA) |
 | GAM | Canonical-only (S79) |
-| Current task | **None — sprint closed.** Next engineering: bounded **D-014** investigation (post-alpha). Next substantive product programme after that: **learner-page accessibility** |
+| Current task | **None — sprint closed.** D-014 confidence **RESOLVED** (`npm run test:first-class`). Next product programme: **learner-page accessibility** |
 | Last completed | Formal closeout: S5–S8 **ACCEPTED**; T-008 **ACCEPTED**; Sprint 80 **CLOSED** |
 | Operator gate | **S80-T-006 PASSED** (Option C — Adjustments) |
 | Product direction A/B/C/D | **Option C — Settings → Adjustments** (delivered) |
@@ -73,8 +73,8 @@ All authorised Sprint 80 slices **S1–S8 are COMPLETE — ACCEPTED**. Sprint 80
 
 **Post-alpha sequencing (operator, 2026-08-28 — does not reopen Sprint 80):**
 
-1. Immediate engineering: bounded investigation of **D-014** (full-suite / order instability).
-2. Next substantive product programme after that: **learner-page accessibility**.
+1. **D-014** confidence **RESOLVED** (RC1/RC2; gate `npm run test:first-class`). Record: [D-014 §11](../../governance/D-014-test-suite-confidence-diagnostic.md).
+2. Next substantive product programme: **learner-page accessibility**.
 
 Former planned S9–S11 (Settings cleanup / regression / closure docs) and other T-008 §16 items remain **post-alpha** backlog candidates outside this sprint. They are not Sprint 80 work.
 
@@ -100,8 +100,8 @@ Focused S80 suite at closeout: **229/229**. Full-suite failing locations at S8: 
 - Supported alpha boundary remains exactly [S80-T-008](S80-T-008-working-alpha-boundary-audit-and-sprint-80-closeout.md).
 - Do not expand Adjustments (Question Type, learner level, etc.) under a Sprint 80 label.
 - Do not treat historical Settings machinery cleanup as Sprint 80 unfinished work.
-- Next immediate engineering task: **D-014** investigation.
-- Next substantive product programme after D-014: **learner-page accessibility**.
+- Next immediate engineering signal: `npm run test:first-class` (**D-014 resolved**).
+- Next substantive product programme: **learner-page accessibility**.
 
 ---
 

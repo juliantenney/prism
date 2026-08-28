@@ -16,7 +16,7 @@ const path = require("node:path");
 
 const vm = require("node:vm");
 
-
+const { injectLearnerRendererVNextInSandbox } = require("./prism-vm-lib-bootstrap.js");
 
 const repoRoot = path.resolve(__dirname, "..");
 
@@ -157,6 +157,8 @@ function loadPrismTestApi() {
   windowStub.window = windowStub;
 
   vm.createContext(sandbox);
+
+  injectLearnerRendererVNextInSandbox(sandbox, repoRoot);
 
   vm.runInContext(source, sandbox, { filename: "app.js" });
 

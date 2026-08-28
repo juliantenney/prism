@@ -7,17 +7,8 @@ const test = require("node:test");
 const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const path = require("node:path");
-const { execFileSync } = require("node:child_process");
 
 const repoRoot = path.resolve(__dirname, "..");
-const artefactDir = path.join(
-  repoRoot,
-  "docs",
-  "development",
-  "sprints",
-  "2026-07-21-sprint-68-learning-coherence-narrative-flow",
-  "artefacts"
-);
 const fixturePath = path.join(
   repoRoot,
   "tests",
@@ -37,13 +28,20 @@ const vnext = require("../lib/learner-renderer-vnext");
 const { MATERIAL_RENDERER_TYPES } = require("../lib/learner-renderer-vnext/parse-material");
 const { renderMaterial } = require("../lib/learner-renderer-vnext/render-material");
 const { buildMaterialModel } = require("../lib/learner-renderer-vnext/parse-material");
+const {
+  buildGamRendererTypeInventoryIsolated
+} = require("./gam-renderer-inventory-test-helper.js");
 
-const INVENTORY_PATH = path.join(artefactDir, "gam-renderer-type-inventory.json");
-const SURFACE_MAP_PATH = path.join(artefactDir, "gam-type-to-surface-map.json");
-const UNSUPPORTED_PATH = path.join(artefactDir, "gam-unsupported-learner-interactions.json");
+let _isolatedInventory = null;
+function ensureInventoryBuild() {
+  if (!_isolatedInventory) {
+    _isolatedInventory = buildGamRendererTypeInventoryIsolated(repoRoot);
+  }
+  return _isolatedInventory;
+}
 
 function loadInventory() {
-  return JSON.parse(fs.readFileSync(INVENTORY_PATH, "utf8"));
+  return ensureInventoryBuild().inventory;
 }
 
 function loadKitchenSink() {
@@ -61,19 +59,16 @@ function collectIds(html) {
 }
 
 test("audit integrity: inventory is generated and type names are unique", () => {
-  execFileSync(process.execPath, [path.join(repoRoot, "scripts/build-gam-renderer-type-inventory.js")], {
-    cwd: repoRoot,
-    stdio: "pipe"
-  });
-  const inventory = loadInventory();
+  const built = ensureInventoryBuild();
+  const inventory = built.inventory;
   const types = inventory.material_types.map(function (entry) {
     return entry.type;
   });
   assert.equal(types.length, new Set(types).size, "canonical material type names must be unique");
   assert.ok(inventory.summary.canonical_material_types >= 45);
   assert.equal(inventory.summary.vnext_supported_material_types, MATERIAL_RENDERER_TYPES.length);
-  assert.ok(fs.existsSync(SURFACE_MAP_PATH));
-  assert.ok(fs.existsSync(UNSUPPORTED_PATH));
+  assert.ok(fs.existsSync(built.surfaceMapPath));
+  assert.ok(fs.existsSync(built.unsupportedPath));
 });
 
 test("audit integrity: every vNext type has evidence and fixture mapping", () => {
@@ -150,7 +145,7 @@ test("rendering: impact_table now uses shared table path (former unsupported exp
 });
 
 test("surface reuse: type-to-surface map lists table_entry and text_entry mappings", () => {
-  const map = JSON.parse(fs.readFileSync(SURFACE_MAP_PATH, "utf8"));
+  const map = ensureInventoryBuild().surfaceMap;
   assert.deepEqual(map.table_entry, [
     "analysis_table",
     "decision_table",
@@ -171,10 +166,7 @@ test("accessibility: kitchen-sink page has unique id attributes", () => {
 });
 
 test("regression: inventory maintenance rule detects new fixture types", () => {
-  execFileSync(process.execPath, [path.join(repoRoot, "scripts/build-gam-renderer-type-inventory.js")], {
-    cwd: repoRoot,
-    stdio: "pipe"
-  });
+  _isolatedInventory = null;
   const inventory = loadInventory();
   const observed = inventory.material_types.filter(function (entry) {
     return entry.observedInFixtures;

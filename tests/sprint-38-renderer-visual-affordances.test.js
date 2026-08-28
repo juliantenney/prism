@@ -7,6 +7,7 @@ const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const path = require("node:path");
 const vm = require("node:vm");
+const { injectLearnerRendererVNextInSandbox } = require("./prism-vm-lib-bootstrap.js");
 
 const repoRoot = path.resolve(__dirname, "..");
 const appJsPath = path.join(repoRoot, "app.js");
@@ -79,6 +80,7 @@ function loadPrismTestApi() {
   sandbox.window = windowStub;
   windowStub.window = windowStub;
   vm.createContext(sandbox);
+  injectLearnerRendererVNextInSandbox(sandbox, repoRoot);
   vm.runInContext(s38Source, sandbox, { filename: "sprint38-visual-affordances.js" });
   vm.runInContext(source, sandbox, { filename: "app.js" });
   return sandbox.window.__PRISM_TEST_API;

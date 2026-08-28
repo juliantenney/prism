@@ -9,7 +9,8 @@ this file records **current status only**.
 
 **Operator sequencing after close (do not reorder here):**
 
-1. Immediate engineering: bounded **D-014** investigation.
+1. **D-014** confidence issue **RESOLVED** (RC1/RC2; gate `npm run test:first-class`). See
+   [governance D-014 §11](../../governance/D-014-test-suite-confidence-diagnostic.md).
 2. Next substantive product programme: **learner-page accessibility**.
 
 Other open IDs remain recorded for later programmes; T-008 §16 is advisory only.
@@ -53,7 +54,7 @@ Primary sources:
 | **D29** | Create elicitation difficulty question override uses “introductory / balanced / challenging” while factor choices are `foundation_heavy\|balanced\|higher_order_heavy` | LOW–MEDIUM | T-012; untouched by S8 |
 | **D30** | `multiple_answer_mcq` is model-authorable but learner interactive path is single-select and resolves only singular `correct_answer`, not `correct_answers` | MEDIUM | T-012 — blocks full QT enum; untouched by S8 |
 | **D31** | `normalizeAssessmentItemCount` does not enforce declared max 200 | LOW | T-012; Adjustments commissioned path clamps 1–200 separately at S8 |
-| **D-014** | Pre-existing full-suite baseline instability (~393 failing locations at HEAD, unrelated to Sprint 80) | — | Every slice is measured as *new failing locations vs a captured baseline*, not as an absolute count |
+| **D-014** | Full-suite historical noise; confidence gate resolved | — | RC1/RC2 repaired. Gate: `npm run test:first-class`. Residual RC3–RC8 = backlog. Record: [D-014 diagnostic §11](../../governance/D-014-test-suite-confidence-diagnostic.md) |
 
 ## Pre-existing, noticed but out of scope
 

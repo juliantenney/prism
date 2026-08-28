@@ -4,7 +4,6 @@ const test = require("node:test");
 const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const path = require("node:path");
-const { execFileSync } = require("node:child_process");
 
 const vnext = require("../lib/learner-renderer-vnext");
 const parseMaterial = require("../lib/learner-renderer-vnext/parse-material");
@@ -16,19 +15,14 @@ const buildBeatModels = require("../lib/learner-renderer-vnext/build-beat-model"
 const buildCanonicalVariant =
   require("../lib/learner-renderer-vnext/archetype-canonical-binding")
     .buildCanonicalFunctionEnumVariant;
+const {
+  buildGamRendererTypeInventoryIsolated
+} = require("./gam-renderer-inventory-test-helper.js");
 
 const repoRoot = path.resolve(__dirname, "..");
 const KITCHEN_SINK_PATH = path.join(
   repoRoot,
   "tests/fixtures/page-render/renderer-kitchen-sink-page.json"
-);
-const INVENTORY_PATH = path.join(
-  repoRoot,
-  "docs/development/sprints/2026-07-21-sprint-68-learning-coherence-narrative-flow/artefacts/gam-renderer-type-inventory.json"
-);
-const UNSUPPORTED_PATH = path.join(
-  repoRoot,
-  "docs/development/sprints/2026-07-21-sprint-68-learning-coherence-narrative-flow/artefacts/gam-unsupported-learner-interactions.json"
 );
 
 const PHASE7_ALIASES = Object.freeze(["strategy_options", "strategy", "strategies"]);
@@ -262,12 +256,9 @@ test("phase7 compatibility: legacy materials map keeps strategy_options as field
 });
 
 test("phase7 inventory: strategy family removed from unsupported list", () => {
-  execFileSync(process.execPath, [path.join(repoRoot, "scripts/build-gam-renderer-type-inventory.js")], {
-    cwd: repoRoot,
-    stdio: "pipe"
-  });
-  const inventory = JSON.parse(fs.readFileSync(INVENTORY_PATH, "utf8"));
-  const unsupported = JSON.parse(fs.readFileSync(UNSUPPORTED_PATH, "utf8"));
+  const built = buildGamRendererTypeInventoryIsolated(repoRoot);
+  const inventory = built.inventory;
+  const unsupported = built.unsupported;
 
   ["strategy", "strategy_options"].forEach(function (type) {
     assert.equal(

@@ -24,8 +24,8 @@
 | DLA / GAM live paths | Canonical-only |
 | Adjustments | Delivered S1–S8 (**all ACCEPTED**): Topic, Goal, Duration, Audience, CAI Quantity + Difficulty |
 | Remaining debt | **Post-alpha** — does **not** reopen Sprint 80 |
-| Next engineering | Bounded investigation of **D-014** |
-| Next product programme | **Learner-page accessibility** (after D-014) |
+| Next engineering | **D-014 RESOLVED** — `npm run test:first-class` ([diagnostic](../../governance/D-014-test-suite-confidence-diagnostic.md)) |
+| Next product programme | **Learner-page accessibility** |
 | Operator gate (historical) | **S80-T-006** — Option C (Adjustments) |
 
 Do **not** implement Sprint 80 debt fixes, Question Type, learner level, DA repair, or Settings cleanup as “finishing Sprint 80.”
@@ -36,7 +36,7 @@ Do **not** implement Sprint 80 debt fixes, Question Type, learner level, DA repa
 
 | Priority | Work |
 | -------- | ---- |
-| **Now** | Bounded **D-014** investigation (full-suite / order instability) — outside Sprint 80 |
+| **Now** | **Learner-page accessibility** programme (D-014 confidence resolved) |
 | **Next** | **Learner-page accessibility** programme |
 | **Do not** | Reopen Sprint 80; expand Adjustments; invent backlog from old S9–S11 labels |
 

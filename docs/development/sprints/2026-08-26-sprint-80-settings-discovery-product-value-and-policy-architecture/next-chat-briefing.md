@@ -18,8 +18,8 @@
 | S80-S1 … S80-S8 | **COMPLETE — ACCEPTED** |
 | S80-T-008 | **ACCEPTED** |
 | Remaining debt | **Post-alpha** — does **not** reopen Sprint 80 |
-| Next engineering | Bounded **D-014** investigation |
-| Next product programme | **Learner-page accessibility** (after D-014) |
+| Next engineering | **D-014 RESOLVED** — use `npm run test:first-class` as post-alpha gate ([record](../../governance/D-014-test-suite-confidence-diagnostic.md)) |
+| Next product programme | **Learner-page accessibility** |
 | Legacy Settings runtime | Superseded and inert (S4); cleanup is post-alpha |
 | A/B/C/D | **DECIDED at T-006 — Option C (Adjustments)** — delivered |
 

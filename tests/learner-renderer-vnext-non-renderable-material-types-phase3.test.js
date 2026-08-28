@@ -4,22 +4,15 @@ const test = require("node:test");
 const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const path = require("node:path");
-const { execFileSync } = require("node:child_process");
 
 const vnext = require("../lib/learner-renderer-vnext");
 const parseMaterial = require("../lib/learner-renderer-vnext/parse-material");
 const beatRegistry = require("../lib/beat-material-registry");
+const {
+  buildGamRendererTypeInventoryIsolated
+} = require("./gam-renderer-inventory-test-helper.js");
 
 const repoRoot = path.resolve(__dirname, "..");
-const INVENTORY_PATH = path.join(
-  repoRoot,
-  "docs/development/sprints/2026-07-21-sprint-68-learning-coherence-narrative-flow/artefacts/gam-renderer-type-inventory.json"
-);
-const UNSUPPORTED_PATH = path.join(
-  repoRoot,
-  "docs/development/sprints/2026-07-21-sprint-68-learning-coherence-narrative-flow/artefacts/gam-unsupported-learner-interactions.json"
-);
-
 const PHASE3_TYPES = Object.freeze([
   "criteria_exposition",
   "discussion",
@@ -101,12 +94,9 @@ test("phase3 compatibility: structural usage in fixtures remains valid", () => {
 });
 
 test("phase3 inventory: five types are excluded from renderable material inventory", () => {
-  execFileSync(process.execPath, [path.join(repoRoot, "scripts/build-gam-renderer-type-inventory.js")], {
-    cwd: repoRoot,
-    stdio: "pipe"
-  });
-  const inventory = JSON.parse(fs.readFileSync(INVENTORY_PATH, "utf8"));
-  const unsupported = JSON.parse(fs.readFileSync(UNSUPPORTED_PATH, "utf8"));
+  const built = buildGamRendererTypeInventoryIsolated(repoRoot);
+  const inventory = built.inventory;
+  const unsupported = built.unsupported;
 
   PHASE3_TYPES.forEach(function (type) {
     assert.equal(

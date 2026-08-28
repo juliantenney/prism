@@ -3,6 +3,7 @@ const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const path = require("path");
 const vm = require("node:vm");
+const { injectLearnerRendererVNextInSandbox } = require("./prism-vm-lib-bootstrap.js");
 
 // Markdown block-level shapes: full page HTML semantics live in utility-page-render.test.js
 // (tests/fixtures/page-render/shape-*.json).
@@ -74,6 +75,7 @@ function loadPrismTestApi() {
   sandbox.window = windowStub;
   windowStub.window = windowStub;
   vm.createContext(sandbox);
+  injectLearnerRendererVNextInSandbox(sandbox, repoRoot);
   vm.runInContext(source, sandbox, { filename: "app.js" });
   const api = sandbox.window.__PRISM_TEST_API;
   assert.ok(api);

@@ -7,7 +7,9 @@
     "check:learner-renderer-vnext-browser": "node scripts/check-learner-renderer-vnext-browser.js",
     "pretest:learner-renderer-vnext": "node scripts/build-learner-renderer-vnext-browser.js",
     "build:gam-renderer-type-inventory": "node scripts/build-gam-renderer-type-inventory.js",
-    "build:learner-renderer-kitchen-sink-fixture": "node scripts/build-learner-renderer-kitchen-sink-fixture.js"
+    "build:learner-renderer-kitchen-sink-fixture": "node scripts/build-learner-renderer-kitchen-sink-fixture.js",
+    "test:first-class": "node --test --test-concurrency=1 tests/s80-s1-adjustments-parameter-registry.test.js tests/s80-s2-topic-workflow-parameter.test.js tests/s80-s3-step-additional-instruction.test.js tests/s80-s4-adjustments-ui-repurpose.test.js tests/s80-s5-goal-authority.test.js tests/s80-s6-duration-parameter.test.js tests/s80-s7-audience-parameter.test.js tests/s80-s8-assessment-adjustments.test.js tests/unified-workflow-settings.test.js tests/s75-authoring-assembly-learner-ready.test.js tests/s75-new-workflow-lifecycle.test.js tests/s75-run-capture-persistence.test.js tests/page-vnext-assemble.test.js tests/learner-renderer-vnext-browser-registration.test.js",
+    "test:full": "node --test tests/**/*.test.js"
   },
   "dependencies": {
     "fflate": "^0.8.2",

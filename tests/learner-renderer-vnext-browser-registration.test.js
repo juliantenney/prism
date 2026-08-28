@@ -123,7 +123,10 @@ function createBrowserSandbox() {
 
 function loadProductionBrowserRuntime() {
   const sandbox = createBrowserSandbox();
-  runPrismLibScriptsInSandbox(sandbox, repoRoot, PEDAGOGICAL_ICON_LIBS);
+  // D-014: skip Node inject — this suite proves the browser bundle alone registers vNext.
+  runPrismLibScriptsInSandbox(sandbox, repoRoot, PEDAGOGICAL_ICON_LIBS, {
+    skipLearnerRendererVNextInject: true
+  });
   loadLearnerRendererVNextBrowserInSandbox(sandbox, repoRoot);
   vm.runInContext(fs.readFileSync(appJsPath, "utf8"), sandbox, { filename: "app.js" });
   const api = sandbox.window.__PRISM_TEST_API;
@@ -202,7 +205,9 @@ test("browser registration: vnext validation failure does not fall back to obsol
 
 test("browser registration: bundle is loaded before page export can invoke vnext", () => {
   const sandbox = createBrowserSandbox();
-  runPrismLibScriptsInSandbox(sandbox, repoRoot, PEDAGOGICAL_ICON_LIBS);
+  runPrismLibScriptsInSandbox(sandbox, repoRoot, PEDAGOGICAL_ICON_LIBS, {
+    skipLearnerRendererVNextInject: true
+  });
   assert.equal(sandbox.window.PRISM_LEARNER_RENDERER_VNEXT, undefined);
   loadLearnerRendererVNextBrowserInSandbox(sandbox, repoRoot);
   assert.ok(sandbox.window.PRISM_LEARNER_RENDERER_VNEXT);

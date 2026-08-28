@@ -50,9 +50,26 @@ const DEFAULT_LIBS = [
   "lib/gam-canonical-assembler.js"
 ];
 
-function runPrismLibScriptsInSandbox(sandbox, repoRoot, libs) {
+/**
+ * Load PRISM lib scripts into a vm sandbox.
+ *
+ * D-014 RC1: by default also injects PRISM_LEARNER_RENDERER_VNEXT so app.js
+ * learner-export paths match the browser dependency (window.PRISM_LEARNER_RENDERER_VNEXT).
+ * Opt out with options.skipLearnerRendererVNextInject when a test intentionally
+ * exercises the unavailable-renderer branch.
+ *
+ * Signature: (sandbox, repoRoot, libs?, options?)
+ * libs may be omitted; pass options as the 3rd argument when no custom lib list.
+ */
+function runPrismLibScriptsInSandbox(sandbox, repoRoot, libs, options) {
   const root = repoRoot || path.resolve(__dirname, "..");
-  const list = Array.isArray(libs) && libs.length ? libs : DEFAULT_LIBS;
+  var opts = options && typeof options === "object" ? options : {};
+  var list = libs;
+  if (list && !Array.isArray(list) && typeof list === "object") {
+    opts = list;
+    list = opts.libs;
+  }
+  list = Array.isArray(list) && list.length ? list : DEFAULT_LIBS;
   list.forEach(function (rel) {
     const filePath = path.join(root, rel);
     vm.runInContext(fs.readFileSync(filePath, "utf8"), sandbox, { filename: rel });
@@ -102,6 +119,9 @@ function runPrismLibScriptsInSandbox(sandbox, repoRoot, libs) {
         sandbox.window[key] = sandbox[key];
       }
     });
+  }
+  if (!opts.skipLearnerRendererVNextInject) {
+    injectLearnerRendererVNextInSandbox(sandbox, root);
   }
 }
 
@@ -161,6 +181,133 @@ function injectLearnerRendererVNextInSandbox(sandbox, repoRoot) {
     sandbox.window.PRISM_VNEXT_EXPORT_RUNTIME_SOURCE =
       sandbox.PRISM_VNEXT_EXPORT_RUNTIME_SOURCE;
   }
+}
+
+function createPrismVmElementStub() {
+  return {
+    value: "",
+    textContent: "",
+    className: "",
+    classList: {
+      add: function () {},
+      remove: function () {},
+      contains: function () {
+        return false;
+      },
+      toggle: function () {
+        return false;
+      }
+    },
+    style: {},
+    dataset: {},
+    children: [],
+    appendChild: function () {},
+    removeChild: function () {},
+    setAttribute: function () {},
+    removeAttribute: function () {},
+    getAttribute: function () {
+      return null;
+    },
+    addEventListener: function () {},
+    removeEventListener: function () {},
+    focus: function () {},
+    click: function () {}
+  };
+}
+
+/**
+ * D-014 RC1 — canonical app.js vm harness for Node tests that exercise learner export.
+ * Creates document/window stubs, loads libs (injects vNext by default), runs app.js.
+ */
+function loadPrismAppJsTestApi(options) {
+  var opts = options && typeof options === "object" ? options : {};
+  var root = opts.repoRoot || path.resolve(__dirname, "..");
+  var appJsPath = path.join(root, "app.js");
+  var source = fs.readFileSync(appJsPath, "utf8");
+  var sandbox = {
+    console: console,
+    setTimeout: setTimeout,
+    clearTimeout: clearTimeout,
+    Promise: Promise,
+    _: {
+      debounce: function (fn) {
+        return fn;
+      }
+    }
+  };
+  var elementStore = new Map();
+  var documentStub = {
+    readyState: "complete",
+    addEventListener: function () {},
+    createElement: function () {
+      return createPrismVmElementStub();
+    },
+    getElementById: function (id) {
+      if (!elementStore.has(id)) elementStore.set(id, createPrismVmElementStub());
+      return elementStore.get(id);
+    },
+    querySelector: function () {
+      return createPrismVmElementStub();
+    },
+    querySelectorAll: function () {
+      return [];
+    },
+    body: {
+      appendChild: function () {},
+      removeChild: function () {}
+    }
+  };
+  var windowStub = {
+    document: documentStub,
+    addEventListener: function () {},
+    removeEventListener: function () {},
+    location: { hash: "", pathname: "/" },
+    _: sandbox._,
+    Utils: {
+      debounce: function (fn) {
+        return fn;
+      }
+    },
+    localStorage: {
+      getItem: function () {
+        return null;
+      },
+      setItem: function () {}
+    },
+    URL: {
+      createObjectURL: function () {
+        return "blob:test";
+      },
+      revokeObjectURL: function () {}
+    },
+    Blob: function Blob() {},
+    Library: {
+      importPromptsFromEntries: function () {
+        return Promise.resolve({ added: 0, updated: 0, skipped: 0 });
+      },
+      getAllPrompts: function () {
+        return Promise.resolve([]);
+      }
+    }
+  };
+  sandbox.document = documentStub;
+  sandbox.window = windowStub;
+  windowStub.window = windowStub;
+  vm.createContext(sandbox);
+  var libs =
+    Array.isArray(opts.libs) && opts.libs.length ? opts.libs.slice() : PEDAGOGICAL_ICON_LIBS.slice();
+  if (Array.isArray(opts.extraLibs) && opts.extraLibs.length) {
+    libs = libs.concat(opts.extraLibs);
+  }
+  runPrismLibScriptsInSandbox(sandbox, root, libs, {
+    skipLearnerRendererVNextInject: !!opts.skipLearnerRendererVNextInject
+  });
+  vm.runInContext(source, sandbox, { filename: "app.js" });
+  var api = sandbox.window.__PRISM_TEST_API;
+  if (!api) {
+    throw new Error("Expected window.__PRISM_TEST_API after loading app.js in test sandbox.");
+  }
+  return { api: api, sandbox: sandbox, window: sandbox.window };
 }
 
 function applyDlaIntellectualCoherenceBridgeForTests(page) {
@@ -311,6 +458,8 @@ module.exports = {
   wireBrowserGlobalThis,
   loadLearnerRendererVNextBrowserInSandbox,
   injectLearnerRendererVNextInSandbox,
+  loadPrismAppJsTestApi,
+  createPrismVmElementStub,
   applyDlaIntellectualCoherenceBridgeForTests,
   patchDlaEnrichBridgeForTests,
   wirePageVnextAssembleForTests,

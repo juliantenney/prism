@@ -4,22 +4,16 @@ const test = require("node:test");
 const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const path = require("node:path");
-const { execFileSync } = require("node:child_process");
 
 const vnext = require("../lib/learner-renderer-vnext");
 const parseMaterial = require("../lib/learner-renderer-vnext/parse-material");
 const beatRegistry = require("../lib/beat-material-registry");
 const normalizePageForRender = require("../lib/page-render-normalize").normalizePageForRender;
+const {
+  buildGamRendererTypeInventoryIsolated
+} = require("./gam-renderer-inventory-test-helper.js");
 
 const repoRoot = path.resolve(__dirname, "..");
-const INVENTORY_PATH = path.join(
-  repoRoot,
-  "docs/development/sprints/2026-07-21-sprint-68-learning-coherence-narrative-flow/artefacts/gam-renderer-type-inventory.json"
-);
-const UNSUPPORTED_PATH = path.join(
-  repoRoot,
-  "docs/development/sprints/2026-07-21-sprint-68-learning-coherence-narrative-flow/artefacts/gam-unsupported-learner-interactions.json"
-);
 
 const PHASE6_NON_RENDERABLE = Object.freeze(["support_note", "support_notes"]);
 const PHASE6_OBSOLETE = "support";
@@ -210,12 +204,9 @@ test("phase6 compatibility: unknown material behaviour remains unchanged", () =>
 });
 
 test("phase6 inventory: support family excluded from renderable material inventory", () => {
-  execFileSync(process.execPath, [path.join(repoRoot, "scripts/build-gam-renderer-type-inventory.js")], {
-    cwd: repoRoot,
-    stdio: "pipe"
-  });
-  const inventory = JSON.parse(fs.readFileSync(INVENTORY_PATH, "utf8"));
-  const unsupported = JSON.parse(fs.readFileSync(UNSUPPORTED_PATH, "utf8"));
+  const built = buildGamRendererTypeInventoryIsolated(repoRoot);
+  const inventory = built.inventory;
+  const unsupported = built.unsupported;
 
   ["support", "support_note", "support_notes"].forEach(function (type) {
     assert.equal(

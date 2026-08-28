@@ -373,9 +373,12 @@ test("S2: resolving the topic never mutates the workflow or resolvedFactors", ()
 
 test("S2: the shared projector is registry-driven, not Topic-specific", () => {
   const wf = buildWorkflow();
-  // Joined rather than deep-compared: arrays built inside the vm sandbox carry
-  // that realm's prototype.
-  assert.equal(api.buildEffectiveWorkflowContextLines(wf).join("|"), "Topic: " + HENRY);
+  const lines = api.buildEffectiveWorkflowContextLines(wf);
+  // Topic is commissioned; CAI capability also projects Quantity/Difficulty
+  // defaults (S80-S8) because this fixture includes Generate Assessment Items.
+  assert.ok(lines.includes("Topic: " + HENRY));
+  assert.ok(lines.includes("Generate exactly 10 assessment items."));
+  assert.ok(lines.includes("Use a Balanced difficulty profile."));
 
   // A second workflowContext parameter must appear with no prompt edits.
   api.setAdjustmentsRegistryForTest([
@@ -409,9 +412,11 @@ test("S2: the projected block is compact and asserts its own authority", () => {
   const block = api.buildEffectiveWorkflowContextBlock(buildWorkflow());
   assert.match(block, new RegExp(CONTEXT_HEADING.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
   assert.match(block, /Topic: Henry VIII/);
+  assert.match(block, /Generate exactly 10 assessment items\./);
   assert.match(block, new RegExp(SUPERSEDE_MARKER));
-  // Compact: a heading, the parameter lines and one supersession sentence only.
-  assert.ok(block.split("\n").length <= 5, "projected context must stay compact");
+  // Compact: heading, typed lines (Topic + CAI Quantity/Difficulty), blank,
+  // supersession sentence. Must not grow into a brief dump.
+  assert.ok(block.split("\n").length <= 8, "projected context must stay compact");
   // It must not duplicate the workflow brief.
   assert.doesNotMatch(block, /Goal:|Constraints:|Desired outputs:/);
 });
@@ -419,9 +424,19 @@ test("S2: the projected block is compact and asserts its own authority", () => {
 test("S2: no workflowContext value produces no block and no prompt change", () => {
   const wf = buildWorkflow();
   delete wf.workflowBriefResolution;
+  // Drop assessment-capable steps so S80-S8 legacy CAI defaults (10 / balanced)
+  // cannot invent a typed block when nothing is commissioned.
+  wf.steps = wf.steps.filter(
+    (step) =>
+      step.canonical_step_id !== "step_generate_assessment_items" &&
+      step.canonical_step_id !== "step_design_assessment"
+  );
   assert.equal(api.buildEffectiveWorkflowContextBlock(wf), "");
   const prompts = assembleAllSteps(api, wf);
-  MODEL_DRIVEN_STEP_IDS.forEach((id) => {
+  const remaining = MODEL_DRIVEN_STEP_IDS.filter(
+    (id) => id !== "gai_step" && id !== "da_step"
+  );
+  remaining.forEach((id) => {
     assert.doesNotMatch(prompts[id], new RegExp(CONTEXT_HEADING), id);
   });
 });

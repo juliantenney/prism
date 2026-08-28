@@ -1,6 +1,6 @@
 # S80-S6 — Duration parameter + D1 hardcoded DLA timing repair
 
-**Status:** IMPLEMENTED — awaiting operator review
+**Status:** COMPLETE — ACCEPTED (operator 2026-08-28)
 **Authorised scope:** Duration as a typed workflow parameter, plus the D1 canonical
 DLA timing repair only as far as required to make Duration truthful.
 **Explicitly out of scope and not done:** Audience, Assessment parameters, D2

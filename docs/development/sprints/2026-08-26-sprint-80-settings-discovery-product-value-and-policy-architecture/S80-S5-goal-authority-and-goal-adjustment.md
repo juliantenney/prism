@@ -1,6 +1,6 @@
 # S80-S5 — Goal authority repair + Goal Adjustment
 
-**Status:** IMPLEMENTED — awaiting operator review
+**Status:** COMPLETE — ACCEPTED (operator 2026-08-28)
 **Authoritative basis:** S80-T-009 ACCEPTED as evidence; operator adopted the **Option E** direction
 **Scope:** Goal authority only. No Duration/D1, no Audience, no Assessment parameters, no legacy cleanup, no topology change, no new elicitation, no AI.
 

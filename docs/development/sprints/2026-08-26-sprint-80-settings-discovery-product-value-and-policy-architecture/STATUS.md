@@ -1,9 +1,11 @@
 # Sprint 80 — Status
 
-**Last updated:** 2026-08-27  
-**Sprint status:** **OPEN**  
+**Last updated:** 2026-08-28  
+**Sprint status:** **CLOSED**  
 **Theme:** Settings Discovery, Product Value and Policy Architecture  
 **Opening decision:** [S80-D01](decisions.md#s80-d01--open-sprint-80--settings-discovery-product-value-and-policy-architecture)  
+**Closeout:** [S80-T-008](S80-T-008-working-alpha-boundary-audit-and-sprint-80-closeout.md) — **ACCEPTED** 2026-08-28  
+**Product status:** **WORKING ALPHA** (first-class self-study / workshop; boundary = T-008)  
 **Start here:** [SPRINT-80-START-HERE.md](SPRINT-80-START-HERE.md)
 
 ---
@@ -13,15 +15,17 @@
 | Field | Value |
 | ----- | ----- |
 | Objective | Decide whether Settings exist, what they are for, and how policy should work — against **current** PRISM architecture |
-| Sprint type | Discovery / planning, plus explicitly authorised implementation slices (S1, S3, S2, S4) |
+| Sprint type | Discovery / planning, plus authorised implementation slices S1–S8 |
 | Sprint 79 | CLOSED |
+| Sprint 80 | **CLOSED** (2026-08-28) |
+| Product | **WORKING ALPHA** — first-class self-study and workshop paths |
+| Alpha boundary | Exactly as established by [S80-T-008](S80-T-008-working-alpha-boundary-audit-and-sprint-80-closeout.md) |
 | DLA Phase D | COMPLETE (canonical-only DLA) |
 | GAM | Canonical-only (S79) |
-| Current task | **S80-S7 implemented** (Audience as the fourth governed workflow parameter) — awaiting operator review |
-| Last completed | **S80-S7**; S80-S6 and S80-S5 implemented; S80-T-009 / S80-T-010 ACCEPTED as evidence; S80-S1…S4 ACCEPTED |
-| Prior | T-001…T-004 ACCEPTED; T-005B.2 ACCEPTED; T-005 / T-005A / T-005B / T-005B.1 delivered (acceptance may still be pending) |
-| Operator gate | **S80-T-006 PASSED** (operator decision recorded 2026-08-27) |
-| Product direction A/B/C/D | **Option C — substantially redesign: Settings → Adjustments** |
+| Current task | **None — sprint closed.** Next engineering: bounded **D-014** investigation (post-alpha). Next substantive product programme after that: **learner-page accessibility** |
+| Last completed | Formal closeout: S5–S8 **ACCEPTED**; T-008 **ACCEPTED**; Sprint 80 **CLOSED** |
+| Operator gate | **S80-T-006 PASSED** (Option C — Adjustments) |
+| Product direction A/B/C/D | **Option C — Settings → Adjustments** (delivered) |
 
 ---
 
@@ -41,46 +45,40 @@
 | S80-T-006 | Operator product/architecture decision gate | **DECIDED** — Option C (Adjustments) |
 | S80-T-007 | Target architecture + implementation plan | **PLAN — ACCEPTED** |
 | S80-T-009 | Goal vs Topic runtime-authority diagnostic | **ACCEPTED** as evidence; operator adopted Option E |
-| S80-S5 | Goal authority repair + Goal Adjustment (D4/D5/D6 fixed) | **IMPLEMENTED** — awaiting review |
-| S80-S6 | Duration parameter + D1 hardcoded DLA timing repair | **IMPLEMENTED** — awaiting review |
+| S80-S5 | Goal authority repair + Goal Adjustment (D4/D5/D6 fixed) | **COMPLETE — ACCEPTED** |
+| S80-S6 | Duration parameter + D1 hardcoded DLA timing repair | **COMPLETE — ACCEPTED** |
 | S80-T-010 | Audience / learner-level runtime parameter diagnostic | **ACCEPTED** as evidence; operator authorised Audience as free text |
-| S80-S7 | Audience governed workflow parameter (D13/D16 fixed) | **IMPLEMENTED** — awaiting review |
-| S80-T-008 | Final review + discovery sprint closure | PENDING |
+| S80-S7 | Audience governed workflow parameter (D13/D16 fixed) | **COMPLETE — ACCEPTED** |
+| S80-T-011 | Design Assessment topology and CAI relationship diagnostic | **ACCEPTED** as evidence (CAI-first Assessment Adjustments) |
+| S80-T-012 | CAI Assessment Adjustment contract diagnostic | **ACCEPTED** as evidence; Option B delivered as S80-S8 |
+| S80-S8 | Assessment Adjustments v1 (Quantity + Difficulty) | **COMPLETE — ACCEPTED** |
+| S80-T-008 | Working-alpha boundary audit + Sprint 80 closeout | **COMPLETE — ACCEPTED** (WORKING ALPHA; sprint CLOSED) |
 
 ---
 
 ## Implementation slice board
 
-Authorised and implemented: S1, S3, S2, S4, S5, S6, S7. No other slice has been
-started.
-
-**Numbering note (S80-S6 §22, extended by S7).** T-007's plan labelled *Duration
-+ D1* as "S5" and *Audience* as "S6". Delivery order changed: the Goal authority
-repair took the S5 number, so **Duration + D1 is S80-S6** and **Audience is
-S80-S7**. There is exactly one S5 (Goal), one S6 (Duration) and one S7
-(Audience). The remaining planned slices are listed by name below rather than by
-their superseded T-007 numbers, so no number is used twice.
+All authorised Sprint 80 slices **S1–S8 are COMPLETE — ACCEPTED**. Sprint 80 does **not** reopen for remaining debt.
 
 | Slice | Title | Status | Record |
 | ----- | ----- | ------ | ------ |
 | **S1** | Minimal Adjustments parameter registry + persistence contract | **COMPLETE — ACCEPTED** | [S80-S1](S80-S1-adjustments-parameter-registry-and-persistence.md) |
 | **S2** | Topic vertical proof | **COMPLETE — ACCEPTED** | [S80-S2](S80-S2-topic-vertical-proof.md) |
 | **S3** | Generic per-step Additional Instruction | **COMPLETE — ACCEPTED** | [S80-S3](S80-S3-per-step-additional-instruction.md) |
-| **S4** | Adjustments UI repurpose | **COMPLETE** | [S80-S4](S80-S4-adjustments-ui-repurpose.md) |
-| **S5** | Goal authority repair + Goal Adjustment | **COMPLETE** | [S80-S5](S80-S5-goal-authority-and-goal-adjustment.md) |
-| **S6** | Duration parameter + D1 timing repair | **COMPLETE** | [S80-S6](S80-S6-duration-parameter-and-d1-timing-repair.md) |
-| **S7** | Audience governed workflow parameter (D13/D16 fixed) | **COMPLETE** | [S80-S7](S80-S7-audience-governed-workflow-parameter.md) |
-| Assessment | Assessment minimal parameter set (T-007 planned slice "S7") | NOT STARTED | — |
-| S8 | Remove/hide superseded Settings controls | NOT STARTED | — |
-| S9 | Behavioural regression/extension tests | NOT STARTED | — |
-| S10 | Closure / documentation | NOT STARTED | — |
+| **S4** | Adjustments UI repurpose | **COMPLETE — ACCEPTED** | [S80-S4](S80-S4-adjustments-ui-repurpose.md) |
+| **S5** | Goal authority repair + Goal Adjustment | **COMPLETE — ACCEPTED** | [S80-S5](S80-S5-goal-authority-and-goal-adjustment.md) |
+| **S6** | Duration parameter + D1 timing repair | **COMPLETE — ACCEPTED** | [S80-S6](S80-S6-duration-parameter-and-d1-timing-repair.md) |
+| **S7** | Audience governed workflow parameter (D13/D16 fixed) | **COMPLETE — ACCEPTED** | [S80-S7](S80-S7-audience-governed-workflow-parameter.md) |
+| **S8** | Assessment Adjustments v1 (Quantity + Difficulty; CAI-gated) | **COMPLETE — ACCEPTED** | [S80-S8](S80-S8-assessment-adjustments-quantity-difficulty.md) |
 
-**S1 + S2 + S3 + S4 test totals:** 83 tests added (16 + 20 + 19 + 28), all
-passing. Focused set including the affected settings-UI suites: **155/155**.
-Measured against a pristine worktree at the pre-implementation commit `9cf0f1d`:
-**zero new failing locations** (full suite 3785/412 fail → 3840/**393 fail**;
-targeted serial set 72 → **55** failing locations). The large absolute count is
-pre-existing **D-014** baseline instability, identical at HEAD.
+**Post-alpha sequencing (operator, 2026-08-28 — does not reopen Sprint 80):**
+
+1. Immediate engineering: bounded investigation of **D-014** (full-suite / order instability).
+2. Next substantive product programme after that: **learner-page accessibility**.
+
+Former planned S9–S11 (Settings cleanup / regression / closure docs) and other T-008 §16 items remain **post-alpha** backlog candidates outside this sprint. They are not Sprint 80 work.
+
+**Numbering note (S80-S6 §22, extended by S7/S8).** Goal = S5, Duration = S6, Audience = S7, Assessment Adjustments = S8. T-007's earlier slice numbers for Duration/Audience/Assessment are superseded.
 
 ### Live behaviour introduced
 
@@ -90,45 +88,35 @@ pre-existing **D-014** baseline instability, identical at HEAD.
 | S2 | **Yes.** Topic is model-visible in all 8 model-driven steps and overridable per run without regenerating the workflow. |
 | S3 | **Yes.** A per-step author instruction is model-visible when that step runs. Byte-identical when unset. |
 | S4 | **Yes, narrowly.** The panel became Adjustments (no prompt effect). Two authorised model-visible changes only: Episode Plan now consumes an Additional Instruction, and step 1 omits the commissioned `Goal:` when Topic is explicitly adjusted. |
+| S5–S8 | **Yes.** Goal, Duration, Audience, and (when CAI present) Number of items + Difficulty are governed Adjustments parameters. |
 
-**S2 prompt delta (intended, per T-006):** Topic moved from first-step-only to
-every model-driven step. 8 prompts gain a compact authoritative-parameter block;
-Episode Plan gains nothing; no other model-visible text changed; no goldens
-refreshed.
+Focused S80 suite at closeout: **229/229**. Full-suite failing locations at S8: **393** (zero new vs prior baseline; **D-014**).
 
 ---
 
-## Non-negotiables
+## Closeout non-negotiables (binding after CLOSED)
+
+- Sprint 80 is **CLOSED**. Remaining architectural debt is **post-alpha** and does **not** reopen this sprint.
+- Supported alpha boundary remains exactly [S80-T-008](S80-T-008-working-alpha-boundary-audit-and-sprint-80-closeout.md).
+- Do not expand Adjustments (Question Type, learner level, etc.) under a Sprint 80 label.
+- Do not treat historical Settings machinery cleanup as Sprint 80 unfinished work.
+- Next immediate engineering task: **D-014** investigation.
+- Next substantive product programme after D-014: **learner-page accessibility**.
+
+---
+
+## Historical non-negotiables (from delivery; retained for archive)
 
 - No Settings runtime activation “because the control exists.”
-- No DLA / GAM / PEL / Design Page redesign or retune.
-- No schema migration / validator changes.
-- No Workspace Surfaces work.
-- Existing catalogue is **not** assumed authoritative — now **superseded product design** (T-006).
-- A/B/C/D is **closed**: Option C (Adjustments) adopted at T-006.
+- A/B/C/D is **closed**: Option C (Adjustments) adopted at T-006 and delivered.
 - Adjustments' two mechanisms (typed parameters / per-step instruction) must **not** be merged into one catalogue.
-- No parameter ships until its declared runtime contract is actually honoured — no repeat of persisted-but-inert.
+- No parameter ships until its declared runtime contract is actually honoured.
 - Author instructions must **not** override schemas, validators, typed parameters, upstream artefacts, topology or canonical requirements.
-- **No new AI interpretation call** for Adjustments; structured parameters editable without model capability.
+- **No new AI interpretation call** for Adjustments.
 - Parameters must **not** alter workflow topology or capability.
-- **Defect D1 (hardcoded DLA timing text) must be resolved before Duration ships.**
-- T-007 is design/planning; implementation requires explicit slice authorisation. **S1, S3, S2 and S4 are authorised and complete; every other slice still requires authorisation.**
-- The registry is a deliberate allowlist. It currently declares **`topic`, `goal`, `duration_minutes` and `audience`**, and the shipped contents are asserted exactly. Adding a declaration is not the same as authorising its projection.
-- Only the **`workflowContext`** projection strategy is implemented (S2). A `stepScoped` declaration would persist and resolve but project nothing — guarded by test.
-- **S4 split the eligibility predicate.** `isWorkflowStepEligibleForAdditionalInstruction` governs steering (**every** step, Episode Plan included); `isWorkflowStepEligibleForWorkflowContextProjection` governs typed-parameter projection (Episode Plan still excluded as a derived shell). "Deterministic" is no longer a steering disqualifier.
-- The historical pack-derived Settings catalogue is **removed from the active UI** (S4) but its parsing/storage code is **deliberately retained** and unreferenced. Deeper retirement is separate work.
-- `step.notes` (**Instructions**) is a **supported capability**, not legacy. It must not be merged into or migrated to `step.additional_instruction`.
-- Topic projection must stay **compact**. The block is asserted at ≤ 5 lines and must not restate the workflow brief.
-- Precedence is structural and asserted: typed workflow parameters (S2) always precede and outrank per-step Additional Instruction (S3). No AI conflict detection.
-- **T-006 §17C is superseded by T-007 §1.1:** the projection chokepoint is `buildWorkflowStepInstructions` (`app.js:33394`) + `buildLiveGamV2CopyPromptViaCanonicalAssembler` (`33293`) — **not** `applyWorkflowStepRuntimePromptAugmentations` (`15990`).
-- Do **not** revive `selectedOptions` / `{{option:}}` (`app.js:5373`, `6104`) to activate assessment parameters — Create-time bake path and legacy plumbing.
-- ~~Episode Plan gets **no** Additional Instruction field (deterministic derive).~~ **SUPERSEDED by operator correction at S4:** Episode Plan **must** support Additional Instruction, through the same generic storage and shared block helper.
-- Audience ships as **free text** in v1 (delivered at S7); the learner-level enum is deferred and its vocabulary debt stays open.
-- **S7 removed the step-1 `Audience:` line outright** rather than declaring `supersedesCommissionedContextFields: ["audience"]`. Supersession fires only on provenance `adjustment`, so it could not close D13 for workflows with Audience on Auto. This follows the S5 `Goal:` precedent; the generic supersession mechanism remains live and is proven against `constraints`.
-- **`page.audience` now reads the effective governed Audience** (S7, D16). It is still not rendered, so this is metadata correctness.
-- The canonical `"audience": "Learners"` shell exemplar is **deliberately retained** (D22). S7 evidence: the field is built deterministically by code, and the exemplar is followed by the authoritative return-verbatim shell embed.
-- T-005A / T-005B / T-005B.1 do **not** authorise parameterisation implementation.
-- T-005B's provisional v1 parameter surface is **evidence for T-006**, not an approved design.
-- T-005B.1's parameterisation-relevance classification is **evidence only** — **superseded by T-006 §8** for the v1 candidate set.
-- T-005B.2 is **diagnostic only**. Its two recorded defects (canonical-DLA cognition bypass; hardcoded DLA duration literals) remain **recorded, not fixed** — scheduled as T-007 slices S12 and S1.
-- T-005B.2's "candidate for Adjustments" column did not choose the surface — **T-006 §2–§8 is now authoritative**.
+- Registry allowlist at close: `topic`, `goal`, `duration_minutes`, `audience`, `assessment_item_count`, `assessment_difficulty_profile` (last two CAI-gated).
+- Only the **`workflowContext`** projection strategy is implemented.
+- Historical pack Settings catalogue removed from active UI (S4); code retained inert — cleanup is post-alpha.
+- `step.notes` (**Instructions**) remains a supported capability distinct from `step.additional_instruction`.
+- Audience is free text; learner level deferred (D14).
+- Assessment Adjustments are CAI-first; DA not required for ordinary first-class resources (T-011/T-012/S8).

@@ -1,6 +1,6 @@
 # S80-S7 — Audience as the fourth governed workflow parameter
 
-**Status:** IMPLEMENTED — awaiting operator review
+**Status:** COMPLETE — ACCEPTED (operator 2026-08-28)
 **Date:** 2026-08-27
 **Authority:** operator authorisation of a bounded implementation slice, on the
 basis of accepted diagnostic [S80-T-010](S80-T-010-audience-learner-level-runtime-parameter-diagnostic.md)

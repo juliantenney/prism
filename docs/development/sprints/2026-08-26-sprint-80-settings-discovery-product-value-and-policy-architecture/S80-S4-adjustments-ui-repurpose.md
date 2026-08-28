@@ -1,6 +1,6 @@
 # S80-S4 — Adjustments UI repurpose
 
-**Status:** COMPLETE — awaiting operator review
+**Status:** COMPLETE — ACCEPTED (operator closeout 2026-08-28; delivered earlier in sprint)
 **Slice:** S4 of the S80-T-007 implementation plan
 **Authoritative basis:** S80-T-006 (decided), S80-T-007 (accepted), S1/S2/S3 (accepted)
 

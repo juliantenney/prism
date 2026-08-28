@@ -4,10 +4,23 @@ Debt discovered during Sprint 80 discovery and its disposition across the
 implemented slices. Definitions live in the diagnostics that found each item;
 this file records **current status only**.
 
+**Sprint 80 is CLOSED (2026-08-28).** Open items below are **post-alpha**. They do
+**not** reopen Sprint 80.
+
+**Operator sequencing after close (do not reorder here):**
+
+1. Immediate engineering: bounded **D-014** investigation.
+2. Next substantive product programme: **learner-page accessibility**.
+
+Other open IDs remain recorded for later programmes; T-008 §16 is advisory only.
+
 Primary sources:
 
 - [S80-T-009](S80-T-009-goal-vs-topic-runtime-authority-diagnostic.md) — Goal vs Topic (D4–D6)
 - [S80-T-010](S80-T-010-audience-learner-level-runtime-parameter-diagnostic.md) — Audience / learner level (D13–D24)
+- [S80-T-011](S80-T-011-design-assessment-topology-and-cai-relationship-diagnostic.md) — DA vs CAI topology (D25–D27)
+- [S80-T-012](S80-T-012-cai-assessment-adjustment-contract-diagnostic.md) — CAI Adjustment contracts (D28–D31)
+- [S80-T-008](S80-T-008-working-alpha-boundary-audit-and-sprint-80-closeout.md) — working-alpha closeout (ACCEPTED)
 
 ---
 
@@ -33,6 +46,13 @@ Primary sources:
 | **D20** | `learner_level` is taken from the *first* level token in a seven-field concatenated blob, so a level in `designIntent` overrides an explicit audience field | LOW–MEDIUM | Unchanged by S7 |
 | **D22** | The canonical page-shell prompt exemplar shows `"audience": "Learners"` to the model | LOW | **Investigated at S7 and deliberately retained.** Evidence: `page.audience` is built deterministically by code, the exemplar is explicitly shape-only guidance, and it is followed by the authoritative return-verbatim shell embed. Editing canonical text would risk golden churn for no behavioural gain |
 | **D24** | `audience` is a declared brief factor in the general fallback and the research pack but **not** in the learning-design pack, so identical author input persists differently by domain | MEDIUM | Root cause of D16. The *consequence* is fixed at the consumer by S7; the declaration asymmetry itself remains |
+| **D25** | `keepDesignAssessmentStep` is evaluated before `assessmentBlueprintRequested` / `assessmentItemsRequested` are assigned — the blueprint keep arm is dead (T-007 “var-hoisting bug”) | HIGH for DA honesty | Proven in [S80-T-011](S80-T-011-design-assessment-topology-and-cai-relationship-diagnostic.md). Does **not** block CAI-first Assessment Adjustments |
+| **D26** | Natural “assessment blueprint / assessment design” wording sets `assessment_required` via the bare `"assessment"` token, then default `assessment_total_items: 10`, which engages DA pruning — blueprint-only DA is unreachable in natural Create | MEDIUM | T-011 |
+| **D27** | In V2 partial mode, CAI does not embed upstream `assessment_blueprint`; DA→CAI contract is param inheritance + page merge only, while PF prose still describes blueprint-guided generation | MEDIUM | T-011 |
+| **D28** | CAI pack `userOptions` never reach live Run via `selectedOptions = []` | HIGH historically | **Partially resolved / superseded for governed Quantity + Difficulty** by [S80-S8](S80-S8-assessment-adjustments-quantity-difficulty.md) via `workflowContext` projection. Other CAI userOptions remain inert at Run |
+| **D29** | Create elicitation difficulty question override uses “introductory / balanced / challenging” while factor choices are `foundation_heavy\|balanced\|higher_order_heavy` | LOW–MEDIUM | T-012; untouched by S8 |
+| **D30** | `multiple_answer_mcq` is model-authorable but learner interactive path is single-select and resolves only singular `correct_answer`, not `correct_answers` | MEDIUM | T-012 — blocks full QT enum; untouched by S8 |
+| **D31** | `normalizeAssessmentItemCount` does not enforce declared max 200 | LOW | T-012; Adjustments commissioned path clamps 1–200 separately at S8 |
 | **D-014** | Pre-existing full-suite baseline instability (~393 failing locations at HEAD, unrelated to Sprint 80) | — | Every slice is measured as *new failing locations vs a captured baseline*, not as an absolute count |
 
 ## Pre-existing, noticed but out of scope

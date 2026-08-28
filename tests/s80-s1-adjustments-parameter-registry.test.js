@@ -212,14 +212,21 @@ test("S1: enum and number values are validated against their declaration", () =>
   assert.equal(api.validateAdjustmentsParameterValue(numberDeclaration, "abc").ok, false);
 });
 
-// S2 declares the first live parameter. The registry stays a deliberate
-// allowlist, so this asserts the exact shipped set rather than a count.
-test("S1: shipped registry is a deliberate allowlist", () => {
+  // S2 declares the first live parameter. The registry stays a deliberate
+  // allowlist, so this asserts the exact shipped set rather than a count.
+  test("S1: shipped registry is a deliberate allowlist", () => {
   const fresh = loadPrismTestApi();
   const ids = fresh.api.getAdjustmentsParameterRegistry().map((row) => row.id);
-  // S80-S5 adds Goal; S80-S6 adds Duration, the first number-typed parameter;
-  // S80-S7 adds Audience.
-  assert.deepEqual(plain(ids), ["topic", "goal", "duration_minutes", "audience"]);
+  // S80-S5 adds Goal; S80-S6 adds Duration; S80-S7 adds Audience;
+  // S80-S8 adds capability-gated assessment Quantity + Difficulty.
+  assert.deepEqual(plain(ids), [
+    "topic",
+    "goal",
+    "duration_minutes",
+    "audience",
+    "assessment_item_count",
+    "assessment_difficulty_profile"
+  ]);
   // A workflow with no commissioned topic and no adjustment resolves nothing.
   assert.deepEqual(plain(fresh.api.resolveEffectiveRunContext({ id: "wf" }).parameters), {});
 });

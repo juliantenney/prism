@@ -361,9 +361,16 @@ test("S7 §1: audience is single-line text, so it lands in the authoritative sec
   assert.ok(declaration.max == null, "audience has no numeric bound");
 });
 
-test("S7 §1: the registry now declares exactly four parameters", () => {
+test("S7 §1: the registry declares the always-on parameters plus capability-gated assessment ones", () => {
   const { api } = loadPrismTestApi();
-  assert.deepEqual(registryIds(api), ["audience", "duration_minutes", "goal", "topic"]);
+  assert.deepEqual(registryIds(api), [
+    "assessment_difficulty_profile",
+    "assessment_item_count",
+    "audience",
+    "duration_minutes",
+    "goal",
+    "topic"
+  ]);
 });
 
 // ---------------------------------------------------------------------------
@@ -459,14 +466,15 @@ test("S7 §4: there is no AUTO sentinel and no second store", () => {
 // §2 / §3 Audience stays opaque; learner level stays out
 // ---------------------------------------------------------------------------
 
-test("S7 §3: learner level is NOT registered and no enum control was introduced", () => {
+test("S7 §3: learner level is NOT registered; Audience stays free text", () => {
   const { api } = loadPrismTestApi();
   const ids = api.getAdjustmentsParameterRegistry().map((d) => d.id);
   ["learner_level", "learnerLevel", "audience_level", "educational_stage"].forEach((banned) => {
     assert.ok(!ids.includes(banned), banned + " must not be declared");
   });
-  const types = api.getAdjustmentsParameterRegistry().map((d) => d.type);
-  assert.ok(!types.includes("enum"), "no enum parameter should ship in this slice");
+  const audience = findDeclaration(api, "audience");
+  assert.equal(audience.type, "text");
+  assert.ok(!audience.options || !audience.options.length, "audience must not become an enum");
 });
 
 test("S7 §2/§3: adjusting Audience never derives learner_level or any typed factor", () => {
@@ -966,7 +974,14 @@ test("S7 §16: a further text parameter projects with no prompt-builder edits", 
   const text = assembleAllSteps(api, wf).mk_step;
   assert.ok(text.includes("Register: Formal academic register"));
   api.resetAdjustmentsRegistryForTest();
-  assert.deepEqual(registryIds(api), ["audience", "duration_minutes", "goal", "topic"]);
+  assert.deepEqual(registryIds(api), [
+    "assessment_difficulty_profile",
+    "assessment_item_count",
+    "audience",
+    "duration_minutes",
+    "goal",
+    "topic"
+  ]);
 });
 
 // ---------------------------------------------------------------------------

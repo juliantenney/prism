@@ -3362,10 +3362,25 @@
       // S80-S5 §14: prose parameters get a textarea so a multi-sentence Goal is
       // visibly a different kind of thing from a short subject label. Driven by
       // the declaration, not by a special case for Goal.
+      // S80-S8: enum parameters get a select so Difficulty cannot accept free
+      // text outside the closed CAI vocabulary.
       var input;
+      var isEnum = declaration.type === "enum";
       if (declaration.multiline) {
         input = document.createElement("textarea");
         input.rows = 3;
+      } else if (isEnum) {
+        input = document.createElement("select");
+        var blank = document.createElement("option");
+        blank.value = "";
+        blank.textContent = "Auto";
+        input.appendChild(blank);
+        (declaration.options || []).forEach(function (opt) {
+          var option = document.createElement("option");
+          option.value = String(opt.value);
+          option.textContent = String(opt.label || opt.value);
+          input.appendChild(option);
+        });
       } else {
         input = document.createElement("input");
         input.type = declaration.type === "number" ? "number" : "text";
@@ -3389,9 +3404,17 @@
           : "";
       // Absence is Auto: show the inherited value as the placeholder rather than
       // prefilling it, so blank keeps meaning "use the commissioned value".
-      input.placeholder = commissioned
-        ? "Auto — " + formatAdjustmentsParameterValueForDisplay(declaration, commissioned)
-        : "Auto";
+      // Enum selects have no placeholder attribute; the blank option label carries
+      // the Auto hint instead.
+      if (isEnum) {
+        blank.textContent = commissioned
+          ? "Auto — " + formatAdjustmentsParameterValueForDisplay(declaration, commissioned)
+          : "Auto";
+      } else {
+        input.placeholder = commissioned
+          ? "Auto — " + formatAdjustmentsParameterValueForDisplay(declaration, commissioned)
+          : "Auto";
+      }
 
       // A number with a declared unit gets the unit rendered beside the field
       // rather than inside the label, so the control reads "Duration [60]
@@ -3433,11 +3456,13 @@
       }
       refreshStatus();
 
-      input.addEventListener("input", function () {
+      function onParameterInput() {
         setWorkflowAdjustmentParameterValue(wf, declaration.id, input.value);
         refreshStatus();
         setUnifiedWorkflowSettingsSaveHintVisible(true);
-      });
+      }
+      input.addEventListener("input", onParameterInput);
+      if (isEnum) input.addEventListener("change", onParameterInput);
 
       if (declaration.help) {
         var help = document.createElement("div");
@@ -33737,9 +33762,12 @@
   // ==========================================================================
 
   /**
-   * Typed (scalar) workflowContext parameters, as inline `Label: value` lines.
-   * Prose parameters are excluded — they carry newlines and would break the
-   * one-value-per-line contract this block relies on.
+   * Typed (scalar) workflowContext parameters.
+   *
+   * Default form is `Label: value`. When a declaration sets
+   * `promptInstructionTemplate`, that pack-facing sentence is emitted instead
+   * so Quantity / Difficulty carry the existing CAI contract without a second
+   * authority store (S80-S8 §F). Prose (multiline) parameters are excluded.
    */
   function buildEffectiveWorkflowContextLines(wf) {
     var context = resolveEffectiveRunContext(wf);
@@ -33750,20 +33778,59 @@
       if (!Object.prototype.hasOwnProperty.call(context.parameters, declaration.id)) return;
       var value = context.parameters[declaration.id];
       if (value == null || String(value) === "") return;
-      lines.push(declaration.label + ": " + formatAdjustmentsParameterValueForDisplay(declaration, value));
+      var template = String(declaration.promptInstructionTemplate || "").trim();
+      if (template) {
+        lines.push(
+          renderAdjustmentsPromptInstructionTemplate(declaration, value, template)
+        );
+        return;
+      }
+      lines.push(
+        declaration.label + ": " + formatAdjustmentsParameterValueForDisplay(declaration, value)
+      );
     });
     return lines;
   }
 
   /**
-   * Render a resolved parameter value with its declared unit noun, so
-   * "Duration: 30 minutes" is produced by the shared projector rather than by
-   * timing-specific prose in each prompt builder (S80-S6 §9).
+   * Expand a declaration's promptInstructionTemplate with {{value}} / {{label}}.
+   * {{label}} resolves from the matching enum option label when present.
+   */
+  function renderAdjustmentsPromptInstructionTemplate(declaration, value, template) {
+    var text = String(template || "");
+    var valueText = String(value == null ? "" : value);
+    var labelText = valueText;
+    if (declaration && declaration.type === "enum" && Array.isArray(declaration.options)) {
+      var i;
+      for (i = 0; i < declaration.options.length; i += 1) {
+        if (String(declaration.options[i].value) === valueText) {
+          labelText = String(declaration.options[i].label || valueText);
+          break;
+        }
+      }
+    }
+    return text
+      .replace(/\{\{\s*value\s*\}\}/gi, valueText)
+      .replace(/\{\{\s*label\s*\}\}/gi, labelText);
+  }
+
+  /**
+   * Render a resolved parameter value for UI / default `Label: value` projection.
+   * Numbers append declared units; enums use the option label when known.
    */
   function formatAdjustmentsParameterValueForDisplay(declaration, value) {
     var text = String(value == null ? "" : value);
+    if (!text) return text;
+    if (declaration && declaration.type === "enum" && Array.isArray(declaration.options)) {
+      var i;
+      for (i = 0; i < declaration.options.length; i += 1) {
+        if (String(declaration.options[i].value) === text) {
+          return String(declaration.options[i].label || text);
+        }
+      }
+    }
     var units = declaration && declaration.units ? String(declaration.units) : "";
-    if (!units || !text) return text;
+    if (!units) return text;
     return text + " " + units;
   }
 
@@ -35289,6 +35356,100 @@
     return "";
   }
 
+  var ADJUSTMENTS_ASSESSMENT_ITEM_COUNT_ID = "assessment_item_count";
+  var ADJUSTMENTS_ASSESSMENT_DIFFICULTY_PROFILE_ID = "assessment_difficulty_profile";
+  var ADJUSTMENTS_GENERATE_ASSESSMENT_ITEMS_CAPABILITY = "generate_assessment_items";
+
+  /**
+   * Frozen Create-time CAI stepParamPatch row (S80-S8). Used only as a narrow
+   * commissioned fallback when the brief factor is absent — never reads live
+   * Studio option UI or prompt_bindings.selectedOptions.
+   */
+  function readFrozenGenerateAssessmentItemsStepParamPatch(wf) {
+    if (!wf || typeof wf !== "object") return null;
+    var resolution = wf.workflowBriefResolution;
+    if (!resolution || typeof resolution !== "object") return null;
+    var mapped = resolution.mappedBindings;
+    if (!mapped || typeof mapped !== "object") return null;
+    var patch = mapped.stepParamPatch;
+    if (!patch || typeof patch !== "object") return null;
+    var genId = normalizeCanonicalStepId("step_generate_assessment_items");
+    var row = patch[genId];
+    if (!row || typeof row !== "object") return null;
+    return row;
+  }
+
+  /**
+   * Commissioned assessment item count (S80-S8 §C).
+   *
+   * Preferred: frozen `resolvedFactors.assessment_total_items`.
+   * Narrow fallback: frozen mappedBindings CAI `number_of_items`.
+   * Legacy CAI default when neither is recoverable: 10 (pack / Create default).
+   *
+   * Called only for workflows where the generate_assessment_items capability
+   * already applies, so returning 10 cannot leak into non-CAI workflows.
+   */
+  function resolveCommissionedAssessmentItemCount(wf) {
+    if (!wf || typeof wf !== "object") return null;
+    function finalize(raw) {
+      var normalized = normalizeAssessmentItemCount(raw);
+      if (!normalized) return null;
+      var n = Number(normalized);
+      if (!isFinite(n) || n < 1) return null;
+      // Apply the Adjustments registry contract (1–200). D31's helper remains
+      // unclamped for Create/topology paths; this clamp is Adjustments-only.
+      if (n > 200) n = 200;
+      return Math.round(n);
+    }
+    var resolution = wf.workflowBriefResolution;
+    if (resolution && typeof resolution === "object") {
+      var factors = resolution.resolvedFactors;
+      if (factors && typeof factors === "object") {
+        var fromFactor = finalize(factors.assessment_total_items);
+        if (fromFactor != null) return fromFactor;
+      }
+      var genPatch = readFrozenGenerateAssessmentItemsStepParamPatch(wf);
+      if (genPatch) {
+        var fromPatch = finalize(genPatch.number_of_items);
+        if (fromPatch != null) return fromPatch;
+      }
+    }
+    return 10;
+  }
+
+  /**
+   * Commissioned CAI set-level difficulty profile (S80-S8 §E).
+   *
+   * Preferred: frozen `resolvedFactors.difficulty_profile`, mapped through the
+   * existing CAI difficulty mapper (foundation_heavy → foundational, etc.).
+   * Narrow fallback: frozen CAI stepParamPatch.difficulty_profile (also mapped).
+   * Legacy CAI default: balanced.
+   *
+   * Per-item difficulty_level (recall/comprehension/application/analysis) is
+   * deliberately never read or projected here.
+   */
+  function resolveCommissionedAssessmentDifficultyProfile(wf) {
+    if (!wf || typeof wf !== "object") return "";
+    var resolution = wf.workflowBriefResolution;
+    if (resolution && typeof resolution === "object") {
+      var factors = resolution.resolvedFactors;
+      if (factors && typeof factors === "object" && factors.difficulty_profile != null) {
+        var fromFactor = mapDesignAssessmentDifficultyToItemsDifficultyProfile(
+          factors.difficulty_profile
+        );
+        if (fromFactor) return fromFactor;
+      }
+      var genPatch = readFrozenGenerateAssessmentItemsStepParamPatch(wf);
+      if (genPatch && genPatch.difficulty_profile != null) {
+        var fromPatch = mapDesignAssessmentDifficultyToItemsDifficultyProfile(
+          genPatch.difficulty_profile
+        );
+        if (fromPatch) return fromPatch;
+      }
+    }
+    return "balanced";
+  }
+
   // Declaration source. Deliberately allowlisted, one entry per authorised
   // slice. Adding a row here is not sufficient to make it live: the declared
   // projection strategy must also be implemented.
@@ -35388,6 +35549,51 @@
       projection: "workflowContext",
       applicability: { always: true },
       resolveCommissioned: resolveCommissionedWorkflowAudience
+    },
+    {
+      // S80-S8: CAI set size for this run. Prompt-authoritative only — the CAI
+      // validator still checks envelope presence, not item count (T-012 Q4).
+      // Capability-gated: hidden unless the saved topology contains CAI/GAI.
+      id: "assessment_item_count",
+      label: "Number of items",
+      help:
+        "How many assessment items this run should generate. Leave blank to use the count this workflow was created with.",
+      type: "number",
+      min: 1,
+      max: 200,
+      owner: "workflow_run_context",
+      projection: "workflowContext",
+      applicability: {
+        requiresCapability: "generate_assessment_items"
+      },
+      // Existing CAI pack contract (domain-learning-design-step-patterns.md
+      // number_of_items.promptInstructionTemplate). Projected as an imperative
+      // instruction so Quantity outranks contradicting Goal / Additional
+      // Instruction prose without reviving selectedOptions.
+      promptInstructionTemplate: "Generate exactly {{value}} assessment items.",
+      resolveCommissioned: resolveCommissionedAssessmentItemCount
+    },
+    {
+      // S80-S8: CAI set-level difficulty profile. Not per-item difficulty_level.
+      id: "assessment_difficulty_profile",
+      label: "Difficulty",
+      help:
+        "How difficult the assessment set should emphasise. Leave blank to use the profile this workflow was created with.",
+      type: "enum",
+      options: [
+        { value: "foundational", label: "Foundational-heavy" },
+        { value: "balanced", label: "Balanced" },
+        { value: "higher_order", label: "Higher-order-heavy" }
+      ],
+      owner: "workflow_run_context",
+      projection: "workflowContext",
+      applicability: {
+        requiresCapability: "generate_assessment_items"
+      },
+      // Pack semantics (difficulty_profile promptInstruction), with the
+      // existing option label so the projected sentence matches the UI.
+      promptInstructionTemplate: "Use a {{label}} difficulty profile.",
+      resolveCommissioned: resolveCommissionedAssessmentDifficultyProfile
     }
   ];
 
@@ -35398,9 +35604,18 @@
     }
   ).filter(Boolean);
 
-  // Capability-gated applicability fails closed until a slice registers a
-  // resolver (assessment capability arrives with S7).
-  var ADJUSTMENTS_CAPABILITY_RESOLVERS = {};
+  // Capability-gated applicability. Unregistered capabilities fail closed
+  // (isAdjustmentsParameterApplicable). S80-S8 registers CAI/GAI presence.
+  var ADJUSTMENTS_CAPABILITY_RESOLVERS = {
+    generate_assessment_items: function (wf) {
+      var steps = wf && Array.isArray(wf.steps) ? wf.steps : [];
+      var i;
+      for (i = 0; i < steps.length; i += 1) {
+        if (isWorkflowStepGenerateAssessmentItemsRow(steps[i])) return true;
+      }
+      return false;
+    }
+  };
 
   function getAdjustmentsParameterRegistry() {
     return Array.isArray(ADJUSTMENTS_PARAMETER_REGISTRY)
@@ -35504,6 +35719,11 @@
       // Prose parameters render as a textarea and project as a labelled block.
       // Only meaningful for text: a number or enum is always a scalar.
       multiline: type === "text" && raw.multiline === true,
+      // Optional CAI/pack-facing imperative sentence. When set, the shared
+      // workflowContext projector emits this instead of `Label: value` so a
+      // typed parameter can carry an existing pack contract (S80-S8 Quantity /
+      // Difficulty) without reviving selectedOptions or editing pack templates.
+      promptInstructionTemplate: String(raw.promptInstructionTemplate || "").trim(),
       owner: String(raw.owner).trim(),
       projection: String(raw.projection).trim(),
       validate: typeof raw.validate === "function" ? raw.validate : null,
@@ -55769,6 +55989,17 @@
     prismTestApi.resolveCommissionedWorkflowAudience = resolveCommissionedWorkflowAudience;
     prismTestApi.resolveEffectiveWorkflowAudience = resolveEffectiveWorkflowAudience;
     prismTestApi.buildPageShellOptionsFromWorkflow = buildPageShellOptionsFromWorkflow;
+    // Sprint 80 S8 — Assessment Adjustments (Quantity + Difficulty).
+    prismTestApi.resolveCommissionedAssessmentItemCount =
+      resolveCommissionedAssessmentItemCount;
+    prismTestApi.resolveCommissionedAssessmentDifficultyProfile =
+      resolveCommissionedAssessmentDifficultyProfile;
+    prismTestApi.renderAdjustmentsPromptInstructionTemplate =
+      renderAdjustmentsPromptInstructionTemplate;
+    prismTestApi.isWorkflowStepGenerateAssessmentItemsRow =
+      isWorkflowStepGenerateAssessmentItemsRow;
+    prismTestApi.ADJUSTMENTS_GENERATE_ASSESSMENT_ITEMS_CAPABILITY =
+      ADJUSTMENTS_GENERATE_ASSESSMENT_ITEMS_CAPABILITY;
     prismTestApi.resolveCommissioningGoalProseForFactorDerivation =
       resolveCommissioningGoalProseForFactorDerivation;
     prismTestApi.resolveEffectiveWorkflowTopicForTitle = resolveEffectiveWorkflowTopicForTitle;

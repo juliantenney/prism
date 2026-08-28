@@ -1,6 +1,6 @@
 # Sprint 80 — Decision Log
 
-**Sprint status:** OPEN  
+**Sprint status:** CLOSED (2026-08-28)  
 **Format:** ID · Decision · Status · Rationale · Consequences
 
 ---
@@ -115,9 +115,28 @@
 
 ---
 
+## S80-D07 — Close Sprint 80 — WORKING ALPHA
+
+- **Decision:** Formally **CLOSE Sprint 80**. Accept S80-S5, S80-S6, S80-S7, S80-S8, and S80-T-008. Record PRISM first-class self-study and workshop paths as **WORKING ALPHA** under the T-008 boundary. Remaining debt is **post-alpha** and does not reopen Sprint 80.
+
+- **Status:** **Accepted** (2026-08-28)
+
+- **Rationale:** T-008 found no ALPHA_BLOCKER under the strict Create → Save → Adjust → Run → learner-resource standard. Adjustments architecture (S1–S8) is delivered and accepted. Continuing Sprint 80 for historical debt would violate the closeout rule (keep open only for Adjustments-architecture blockers).
+
+- **Consequences:**
+  - Sprint status = **CLOSED**; product status = **WORKING ALPHA**.
+  - Alpha boundary remains exactly T-008 (CAI-first assessment; Quantity + Difficulty governed; Question Type / learner level / DA not required for alpha).
+  - Immediate next engineering: bounded **D-014** investigation.
+  - Next substantive product programme after D-014: **learner-page accessibility**.
+  - Do not manufacture new Sprint 80 backlog; do not implement debt under a Sprint 80 label.
+
+---
+
 ## Guardrails carried by opening decisions
 
 - Sprint 79 remains CLOSED.
+- Sprint 80 is **CLOSED** (S80-D07).
 - DLA Phase D remains COMPLETE; do not reopen DLA dual-path work.
-- No production Settings behaviour change in Sprint 80 unless a later task explicitly re-authorises scope (default: none).
+- No production Settings behaviour change under a Sprint 80 label; historical Settings remain superseded and inert.
 - ~~Outcomes A/B/C/D are all legitimate until T-006.~~ **Superseded by S80-D06:** Option C adopted 2026-08-27.
+- ~~Sprint 80 remains open for Adjustments delivery.~~ **Superseded by S80-D07:** CLOSED 2026-08-28; WORKING ALPHA.

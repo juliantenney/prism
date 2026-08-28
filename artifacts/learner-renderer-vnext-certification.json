@@ -1,8 +1,8 @@
 {
   "certificationVersion": "s68-imp-020",
   "corpusVersion": "s68-imp-020-v1",
-  "generatedAt": "2026-08-27T15:31:45.961Z",
-  "gitRevision": "9cf0f1db21caad46b6b8b7a2c1dc009bb0a2b4a8",
+  "generatedAt": "2026-08-28T08:17:44.210Z",
+  "gitRevision": "5cc8d132ffa40bb4af2e6ce9e45b8b30c1d5d269",
   "summary": {
     "status": "fail",
     "certificationState": "NOT CERTIFIED",
@@ -1771,7 +1771,7 @@
   ],
   "corpus": {
     "corpusVersion": "s68-imp-020-v1",
-    "generatedAt": "2026-08-27T15:31:45.961Z",
+    "generatedAt": "2026-08-28T08:17:44.210Z",
     "workflows": [
       {
         "id": "videotranscripttest",

@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "fflate": "^0.8.2",
-    "lucide": "^1.22.0"
+    "lucide": "^1.22.0",
+    "mathlive": "^0.110.0"
   }
 }

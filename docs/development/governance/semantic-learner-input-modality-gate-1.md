@@ -67,6 +67,8 @@ DLA required_materials[].response_fields[]
   → ResponsePart.inputModality
 ```
 
+Gate 2 (learner interaction) is tracked under [Sprint 82](../sprints/2026-09-01-sprint-82-maths-entry-and-alpha-completion/SPRINT-82-START-HERE.md). Diagnostic: [Gate 2 record](semantic-learner-input-modality-gate-2-diagnostic.md).
+
 ## Defaults and failure behaviour
 
 - `response_fields` absent → unchanged legacy behaviour (`inputModality: text`).

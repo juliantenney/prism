@@ -8,6 +8,7 @@ const vm = require("node:vm");
 const DEFAULT_LIBS = [
   "lib/sprint38-visual-affordances.js",
   "lib/visual-planning-contract.js",
+  "lib/prism-visual-material-role-grounding.js",
   "lib/prism-visual-jobs-planner.js",
   "lib/prism-house-visual-language.js",
   "lib/prism-image-precision-fidelity.js",
@@ -107,6 +108,7 @@ function runPrismLibScriptsInSandbox(sandbox, repoRoot, libs, options) {
       "PRISM_GAM_CANONICAL_ASSEMBLER",
       "PRISM_SPRINT38_VISUAL_AFFORDANCES",
       "PRISM_VISUAL_PLANNING_CONTRACT",
+      "PRISM_VISUAL_MATERIAL_ROLE_GROUNDING",
       "PRISM_VISUAL_JOBS_PLANNER",
       "PRISM_IMAGE_BRIEF_COMPILER",
       "PRISM_VISUAL_ASSETS",

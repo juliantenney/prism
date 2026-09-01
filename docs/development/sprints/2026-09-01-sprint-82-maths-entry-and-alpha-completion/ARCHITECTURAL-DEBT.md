@@ -18,11 +18,11 @@ Debt relevant to Sprint 82 scope. Definitions live in diagnostics; this file rec
 
 | ID | Finding | Notes |
 | -- | ------- | ----- |
-| **S82-D-001** | `ResponsePart.inputModality` propagation | G2A scaffolding in place; **G2B** hardens for production |
-| **S82-D-002** | Maths `text_entry` interaction gap | **ADDRESSED (alpha)** — MathLive accepted ([S82-D02](decisions.md#s82-d02--gate-2a-outcome-go-alpha-mathlive)); G2B ships |
+| **S82-D-001** | `ResponsePart.inputModality` propagation | **RESOLVED (G2B)** — production `normalizeInputModality` + renderer seam |
+| **S82-D-002** | Maths `text_entry` interaction gap | **ADDRESSED (alpha)** — MathLive production adapter ([G2B](S82-G2B-production-hardening.md)) |
 | **S82-D-003** | Gate 2 treatment choice | **RESOLVED** — A GO ALPHA MATHLIVE ([S82-D02](decisions.md#s82-d02--gate-2a-outcome-go-alpha-mathlive)) |
 | **S82-D-004** | MathJax learner-package CDN/offline dependency | Known debt; not Sprint 82 redesign blocker |
-| **S82-D-005** | Maths editor dependency | **RESOLVED (spike)** — `mathlive@0.110.0` in `lib/mathlive-spike/`; G2B production packaging |
+| **S82-D-005** | Maths editor dependency | **RESOLVED (G2B)** — `mathlive@0.110.0` in `lib/mathlive/`; conditional learner-package copy |
 
 ## Carried from Sprint 81 (backlog unless encountered)
 

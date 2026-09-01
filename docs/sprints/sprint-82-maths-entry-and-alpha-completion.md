@@ -13,7 +13,7 @@ Close the honesty/functionality gap between **commissioned mathematical learner 
 
 ## Immediate next work
 
-> **S82-G2B** — implement alpha MathLive treatment. [S82-D02](../development/sprints/2026-09-01-sprint-82-maths-entry-and-alpha-completion/decisions.md#s82-d02--gate-2a-outcome-go-alpha-mathlive) accepted. See [PLAN.md](../development/sprints/2026-09-01-sprint-82-maths-entry-and-alpha-completion/PLAN.md) §S82-G2B.
+> **S82-G3** — realistic Lagrangian colleague validation. G2B complete — [record](../development/sprints/2026-09-01-sprint-82-maths-entry-and-alpha-completion/S82-G2B-production-hardening.md).
 
 ## Gate overview
 
@@ -22,7 +22,7 @@ Close the honesty/functionality gap between **commissioned mathematical learner 
 | S82-G1 | Semantic input modality | **COMPLETE** |
 | S82-G2 | Learner interaction diagnostic | **COMPLETE** |
 | S82-G2A | MathLive spike | **COMPLETE** |
-| S82-G2B | Implement alpha MathLive | **NEXT / AUTHORISED** |
-| S82-G3 | Lagrangian validation | Not started |
+| S82-G2B | Production MathLive hardening | **COMPLETE** |
+| S82-G3 | Realistic Lagrangian validation | **NEXT** |
 | S82-G4 | A11y / keyboard / persistence | Not started |
 | S82-G5 | Engineering gate + closeout | Not started |

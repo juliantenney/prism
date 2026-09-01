@@ -21,7 +21,7 @@
 | D-014 | **RESOLVED** |
 | Sprint 81 | **CLOSED** — B shipped (revision loop); do not reopen |
 | Sprint 82 | **OPEN** — bounded maths-entry alpha completion |
-| Current gate | **S82-G2B** — implement alpha MathLive treatment (**AUTHORISED**) |
+| Current gate | **S82-G3** — realistic Lagrangian colleague validation |
 | S82-G2A | **COMPLETE** — [evidence](S82-G2A-spike-evidence.md) · [S82-D02](decisions.md#s82-d02--gate-2a-outcome-go-alpha-mathlive) accepted |
 | S82-G1 | **COMPLETE** — semantic input modality ([Gate 1](../../governance/semantic-learner-input-modality-gate-1.md)) |
 | S82-G2 | **COMPLETE** — [T-001](S82-T-001-maths-entry-gate-2-learner-interaction-diagnostic.md) |
@@ -35,7 +35,7 @@ Do **not** reopen Sprint 81 surface-family architecture, criterion→field mappi
 
 | Priority | Work |
 | -------- | ---- |
-| **Now** | **S82-G2B** — implement and harden alpha MathLive treatment ([PLAN.md](PLAN.md) §S82-G2B) |
+| **Now** | **S82-G3** — realistic Lagrangian colleague validation ([PLAN.md](PLAN.md) §S82-G3) |
 | **Then** | G3 Lagrangian validation · G4 a11y/keyboard · G5 closeout |
 | **Do not** | Rich mixed editor; CAS; table maths (unless live validation forces it); Graphics redesign |
 

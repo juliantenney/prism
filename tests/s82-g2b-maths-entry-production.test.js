@@ -1,6 +1,5 @@
 /**
- * S82-G2A — bounded MathLive interaction spike tests (historical evidence).
- * Production behaviour is asserted in s82-g2b-maths-entry-production.test.js.
+ * S82-G2B — production MathLive maths-entry hardening tests.
  */
 "use strict";
 
@@ -11,17 +10,18 @@ const vm = require("node:vm");
 const fs = require("node:fs");
 
 const repoRoot = path.resolve(__dirname, "..");
-const sync = require(path.join(
-  repoRoot,
-  "lib",
-  "learner-renderer-vnext",
-  "math-entry-sync.js"
-));
+const sync = require(path.join(repoRoot, "lib", "learner-renderer-vnext", "math-entry-sync.js"));
 const mathEntryRuntime = require(path.join(
   repoRoot,
   "lib",
   "learner-renderer-vnext",
   "math-entry-runtime.js"
+));
+const mathEntryPackageAssets = require(path.join(
+  repoRoot,
+  "lib",
+  "learner-renderer-vnext",
+  "math-entry-package-assets.js"
 ));
 const learnerSurfaceRegistry = require(path.join(
   repoRoot,
@@ -53,26 +53,31 @@ const adapters = require(path.join(
   "learner-renderer-vnext",
   "learner-draft-adapters.js"
 ));
+const learnerPackage = require(path.join(repoRoot, "lib", "learner-package.js"));
+
 const { getMathEntryRuntimeScript } = mathEntryRuntime;
 
 const LAGRANGIAN =
   "\\mathcal{L}(x,y,\\lambda) = 4xy + \\lambda(2x + y - 20)";
 const FOC = "\\frac{\\partial \\mathcal{L}}{\\partial x} = 4y + 2\\lambda = 0";
 
-function mathPart(activityId) {
-  return {
-    responsePartId: activityId + "-template-section-lagrangian-1",
-    sourceKind: types.SOURCE_KIND.TEMPLATE_SECTION,
-    sourceId: "A3-M1-section-lagrangian",
-    label: "Lagrangian",
-    prompt: "Record the Lagrangian.",
-    surfaceKind: types.SURFACE_KIND.TEXT_ENTRY,
-    inputModality: types.INPUT_MODALITY.MATH,
-    order: 2,
-    provenance: {},
-    sourceStepNumber: null,
-    rows: 6
-  };
+function mathPart(activityId, overrides) {
+  return Object.assign(
+    {
+      responsePartId: activityId + "-template-section-lagrangian-1",
+      sourceKind: types.SOURCE_KIND.TEMPLATE_SECTION,
+      sourceId: "A3-M1-section-lagrangian",
+      label: "Lagrangian",
+      prompt: "Record the Lagrangian.",
+      surfaceKind: types.SURFACE_KIND.TEXT_ENTRY,
+      inputModality: types.INPUT_MODALITY.MATH,
+      order: 2,
+      provenance: {},
+      sourceStepNumber: null,
+      rows: 6
+    },
+    overrides || {}
+  );
 }
 
 function textPart(activityId) {
@@ -268,8 +273,7 @@ function createMathWorkspaceDom() {
   MockMathfield.prototype.addEventListener = function (type, fn) {
     this._onInput = fn;
   };
-  MockMathfield.prototype.getValue = function (format) {
-    void format;
+  MockMathfield.prototype.getValue = function () {
     return this.value;
   };
   MockMathfield.prototype.setValue = function (v) {
@@ -317,68 +321,65 @@ function createMathWorkspaceDom() {
 
   return {
     workspace: workspace,
+    label: label,
     textarea: textarea,
     mount: mount,
     sandbox: sandbox,
-    MockMathfield: MockMathfield
+    fieldId: fieldId,
+    labelId: labelId
   };
 }
 
-test("1: workspaceFromResponsePart propagates inputModality math", () => {
-  const mapped = learnerSurfaceRegistry.workspaceFromResponsePart(mathPart("A3"));
+test("1: missing modality defaults to text", () => {
+  const part = mathPart("A3");
+  delete part.inputModality;
+  const mapped = learnerSurfaceRegistry.workspaceFromResponsePart(part);
   assert.equal(mapped.ok, true);
-  assert.equal(mapped.workspace.inputModality, "math");
-  assert.equal(mapped.workspace.capability, "text_entry");
+  assert.equal(mapped.workspace.inputModality, "text");
+  assert.equal(sync.normalizeInputModality(undefined), "text");
 });
 
-test("2: text modality workspace has no math spike attributes in HTML", () => {
+test("2: text modality renders ordinary textarea without maths enhancement", () => {
   const mapped = learnerSurfaceRegistry.workspaceFromResponsePart(textPart("A3"));
   const html = renderComposedMoment.renderLearnerWorkspace(mapped.workspace, "A3");
   assert.doesNotMatch(html, /data-input-modality="math"/);
+  assert.doesNotMatch(html, /data-math-entry/);
   assert.match(html, /<textarea class="util-learner-workspace__input"/);
-  assert.doesNotMatch(html, /data-math-entry-mount/);
+  assert.doesNotMatch(html, /util-learner-workspace__input--canonical/);
 });
 
-test("3: math modality renders production scaffold and canonical textarea", () => {
+test("3: math modality renders production maths enhancement markup", () => {
   const html = buildMathWorkspaceHtml("A3");
   assert.match(html, /data-input-modality="math"/);
   assert.match(html, /data-math-entry="true"/);
+  assert.match(html, /util-learner-workspace--math-entry/);
   assert.match(html, /data-math-entry-mount/);
+  assert.match(html, /maths keyboard for symbols/);
+});
+
+test("4: canonical textarea remains present for maths fields", () => {
+  const html = buildMathWorkspaceHtml("A3");
   assert.match(html, /util-learner-workspace__input--canonical/);
   assert.match(html, /data-workspace-kind="text_entry"/);
 });
 
-test("4: sync helpers round-trip Lagrangian and FOC TeX through mock mathfield", () => {
-  function MockField() {
-    this._v = "";
-  }
-  MockField.prototype.getValue = function () {
-    return this._v;
-  };
-  MockField.prototype.setValue = function (v) {
-    this._v = String(v);
-  };
-  const mf = new MockField();
-  const textarea = { value: "" };
-  assert.equal(sync.writeLatexToMathfield(mf, LAGRANGIAN), true);
-  assert.equal(sync.syncLatexFromMathfield(mf, textarea), true);
-  assert.equal(textarea.value, LAGRANGIAN);
-  textarea.value = FOC;
-  assert.equal(sync.syncLatexToMathfield(textarea, mf), true);
-  assert.equal(mf.getValue(), FOC);
-});
-
-test("5: runtime enhances math workspace and syncs MathLive input to textarea", () => {
+test("5: MathLive edits sync to canonical textarea", () => {
   const dom = createMathWorkspaceDom();
   dom.sandbox.window.PRISM_MATH_ENTRY.boot();
-  assert.ok(dom.workspace.classList.contains("util-learner-workspace--math-enhanced"));
   const mf = dom.workspace.__prismMathfield;
   assert.ok(mf);
   mf.simulateInput(LAGRANGIAN);
   assert.equal(dom.textarea.value, LAGRANGIAN);
 });
 
-test("6: restored textarea value rehydrates MathLive on resync", () => {
+test("6: textarea value initializes MathLive on enhance", () => {
+  const dom = createMathWorkspaceDom();
+  dom.textarea.value = FOC;
+  dom.sandbox.window.PRISM_MATH_ENTRY.boot();
+  assert.equal(dom.workspace.__prismMathfield.getValue(), FOC);
+});
+
+test("7: restored draft resynchronises MathLive", () => {
   const dom = createMathWorkspaceDom();
   dom.sandbox.window.PRISM_MATH_ENTRY.boot();
   dom.textarea.value = FOC;
@@ -386,59 +387,113 @@ test("6: restored textarea value rehydrates MathLive on resync", () => {
   assert.equal(dom.workspace.__prismMathfield.getValue(), FOC);
 });
 
-test("7: draft adapter still serializes canonical textarea string", () => {
+test("8: subsequent maths edit persists through textarea", () => {
   const dom = createMathWorkspaceDom();
-  dom.textarea.value = LAGRANGIAN;
+  dom.sandbox.window.PRISM_MATH_ENTRY.boot();
+  dom.workspace.__prismMathfield.simulateInput(LAGRANGIAN);
   const state = adapters.serializeWorkspaceState(dom.workspace);
-  assert.equal(state.state.kind, "text_entry");
   assert.equal(state.state.value.text, LAGRANGIAN);
+  dom.textarea.value = FOC;
+  dom.sandbox.window.PRISM_MATH_ENTRY.resyncAll();
+  dom.workspace.__prismMathfield.simulateInput(LAGRANGIAN);
+  assert.equal(adapters.serializeWorkspaceState(dom.workspace).state.value.text, LAGRANGIAN);
 });
 
-test("8: two maths fields render independently", () => {
+test("9: two maths fields remain independent", () => {
   const html =
     buildMathWorkspaceHtml("A3", "Lagrangian") +
-    buildMathWorkspaceHtml("A3", "First-order condition with respect to x");
-  const ids = html.match(/data-workspace-id="([^"]+)"/g) || [];
-  assert.ok(ids.length >= 2);
-  const mathMounts = html.match(/data-math-entry-mount/g) || [];
-  assert.equal(mathMounts.length, 2);
+    buildMathWorkspaceHtml("A3", "First-order condition");
+  const mounts = html.match(/data-math-entry-mount/g) || [];
+  assert.equal(mounts.length, 2);
+  const fieldIds = html.match(/data-math-field-id="([^"]+)"/g) || [];
+  assert.ok(fieldIds.length >= 2);
 });
 
-test("9: initialization failure leaves usable textarea fallback", () => {
+test("10: text and maths fields coexist in composed HTML", () => {
+  const textHtml = renderComposedMoment.renderLearnerWorkspace(
+    learnerSurfaceRegistry.workspaceFromResponsePart(textPart("A1")).workspace,
+    "A1"
+  );
+  const mathHtml = buildMathWorkspaceHtml("A1", "Objective function");
+  const combined = textHtml + mathHtml;
+  assert.match(combined, /data-input-modality="math"/);
+  assert.match(combined, /<textarea class="util-learner-workspace__input"/);
+  assert.doesNotMatch(textHtml, /data-math-entry/);
+});
+
+test("11: enhancement failure restores usable labelled textarea", () => {
   const dom = createMathWorkspaceDom();
   dom.sandbox.window.__PRISM_MATH_ENTRY_DISABLE__ = true;
   dom.sandbox.window.PRISM_MATH_ENTRY.boot();
   assert.ok(dom.workspace.classList.contains("util-learner-workspace--math-fallback"));
   assert.notEqual(dom.textarea.getAttribute("aria-hidden"), "true");
+  assert.equal(dom.textarea.id, dom.fieldId);
+  assert.equal(dom.label.getAttribute("for"), dom.fieldId);
   dom.textarea.value = LAGRANGIAN;
   assert.equal(dom.textarea.value, LAGRANGIAN);
 });
 
-test("10: MathLive unavailable leaves textarea fallback", () => {
+test("12: enhanced field associates label with math-field control", () => {
   const dom = createMathWorkspaceDom();
-  dom.sandbox.window.MathLive = null;
   dom.sandbox.window.PRISM_MATH_ENTRY.boot();
-  assert.ok(dom.workspace.classList.contains("util-learner-workspace--math-fallback"));
+  const mf = dom.workspace.__prismMathfield;
+  assert.equal(mf.id, dom.fieldId);
+  assert.equal(dom.label.getAttribute("for"), dom.fieldId);
+  assert.equal(mf.getAttribute("aria-labelledby"), dom.labelId);
+  assert.equal(dom.textarea.getAttribute("id"), null);
+  assert.equal(dom.textarea.getAttribute("aria-hidden"), "true");
 });
 
-test("11: production assets and version are pinned", () => {
-  assert.equal(mathEntryRuntime.MATHLIVE_VERSION, "0.110.0");
-  assert.match(mathEntryRuntime.MATHLIVE_SCRIPT, /lib\/mathlive\/mathlive\.min\.js/);
-  const stat = fs.statSync(path.join(repoRoot, mathEntryRuntime.MATHLIVE_SCRIPT));
-  assert.ok(stat.size > 500000, "expected bundled mathlive.min.js in lib/mathlive");
+test("13: maths learner package includes MathLive assets", () => {
+  const html = buildMathWorkspaceHtml("A3");
+  const built = learnerPackage.buildLearnerPackage({
+    html: "<html><body>" + html + "</body></html>",
+    visualAssetManifest: { assets: [] },
+    repoRoot: repoRoot
+  });
+  assert.equal(built.ok, true);
+  const paths = built.package.assets.map((a) => a.path);
+  assert.ok(paths.includes("lib/mathlive/mathlive.min.js"));
+  assert.ok(paths.includes("lib/mathlive/mathlive-fonts.css"));
+  assert.ok(paths.some((p) => p.indexOf("lib/mathlive/fonts/") === 0));
 });
 
-test("12: composed response part still carries math modality from template commission", () => {
+test("14: non-maths learner package has no MathLive assets", () => {
+  const mapped = learnerSurfaceRegistry.workspaceFromResponsePart(textPart("A4"));
+  const html = renderComposedMoment.renderLearnerWorkspace(mapped.workspace, "A4");
+  const built = learnerPackage.buildLearnerPackage({
+    html: "<html><body>" + html + "</body></html>",
+    visualAssetManifest: { assets: [] },
+    repoRoot: repoRoot
+  });
+  assert.equal(built.ok, true);
+  const paths = built.package.assets.map((a) => a.path);
+  assert.equal(paths.filter((p) => p.indexOf("lib/mathlive/") === 0).length, 0);
+  assert.doesNotMatch(built.package.html, /lib\/mathlive\//);
+});
+
+test("15: learner TeX evidence is not routed through Markdown", () => {
+  const dom = createMathWorkspaceDom();
+  dom.textarea.value = LAGRANGIAN;
+  const serialized = adapters.serializeWorkspaceState(dom.workspace);
+  assert.equal(serialized.state.value.text, LAGRANGIAN);
+  assert.doesNotMatch(serialized.state.value.text, /<em>/);
+  assert.doesNotMatch(serialized.state.value.text, /&lt;/);
+});
+
+test("16: historical workspaces without inputModality remain text_entry text", () => {
+  const part = mathPart("A5");
+  delete part.inputModality;
   const collected = collectResponseParts.collectResponseParts({
-    activityId: "A3",
+    activityId: "A5",
     momentKind: "do",
     items: [
       {
         kind: "material",
         material: {
-          id: "A3-M1",
+          id: "A5-M1",
           type: "template",
-          body: "**Lagrangian:**\nRecord the Lagrangian.\n"
+          body: "**Conclusion:**\nSummarise.\n"
         }
       }
     ],
@@ -447,15 +502,48 @@ test("12: composed response part still carries math modality from template commi
       sourceActivity: {
         required_materials: [
           {
-            material_id: "A3-M1",
+            material_id: "A5-M1",
             material_type: "template",
-            response_fields: [{ label: "Lagrangian", input_modality: "math" }]
+            response_fields: [{ label: "Conclusion" }]
           }
         ]
       }
     }
   });
-  const part = collected.parts.find((p) => p.label === "Lagrangian");
-  assert.ok(part);
-  assert.equal(part.inputModality, "math");
+  const partNoModality = collected.parts.find((p) => p.label === "Conclusion");
+  assert.ok(partNoModality);
+  assert.equal(partNoModality.inputModality, "text");
+  const mapped = learnerSurfaceRegistry.workspaceFromResponsePart(partNoModality);
+  const html = renderComposedMoment.renderLearnerWorkspace(mapped.workspace, "A5");
+  assert.doesNotMatch(html, /data-input-modality="math"/);
+});
+
+test("production: MathLive version, license, and VK policy are pinned", () => {
+  assert.equal(mathEntryRuntime.MATHLIVE_VERSION, "0.110.0");
+  assert.equal(sync.MATHLIVE_LICENSE, "MIT");
+  assert.equal(mathEntryRuntime.VIRTUAL_KEYBOARD_MODE, "manual");
+  assert.match(mathEntryRuntime.MATHLIVE_SCRIPT, /lib\/mathlive\/mathlive\.min\.js/);
+  const stat = fs.statSync(path.join(repoRoot, mathEntryRuntime.MATHLIVE_SCRIPT));
+  assert.ok(stat.size > 500000);
+});
+
+test("production: maths pages require MathLive head markup; text pages do not", () => {
+  const mathHtml = buildMathWorkspaceHtml("A3");
+  const textHtml = renderComposedMoment.renderLearnerWorkspace(
+    learnerSurfaceRegistry.workspaceFromResponsePart(textPart("A4")).workspace,
+    "A4"
+  );
+  assert.equal(mathEntryPackageAssets.pageHtmlNeedsMathEntry(mathHtml), true);
+  assert.match(mathEntryRuntime.getMathEntryHeadMarkup(), /lib\/mathlive\/mathlive\.min\.js/);
+  assert.match(mathEntryRuntime.getMathEntryRuntimeScript(), /PRISM_MATH_ENTRY/);
+  assert.equal(mathEntryPackageAssets.pageHtmlNeedsMathEntry(textHtml), false);
+});
+
+test("production: package asset collector lists all required MathLive files", () => {
+  const assets = mathEntryPackageAssets.collectMathLivePackageAssets({ repoRoot });
+  assert.equal(assets.length, mathEntryPackageAssets.MATHLIVE_PACKAGE_FILES.length);
+  assets.forEach((asset) => {
+    assert.ok(asset.bytes && asset.bytes.length > 0);
+    assert.match(asset.path, /^lib\/mathlive\//);
+  });
 });

@@ -18,7 +18,7 @@ const types = require(path.join(
 ));
 const mathRt = require(path.join(
   repo,
-  "lib/learner-renderer-vnext/math-entry-spike-runtime.js"
+  "lib/learner-renderer-vnext/math-entry-runtime.js"
 ));
 const draftRt = require(path.join(
   repo,
@@ -59,12 +59,12 @@ const html =
   "<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"utf-8\">" +
   "<meta name=\"viewport\" content=\"width=1024\">" +
   "<title>S82-G2A browser validation</title>" +
-  '<link rel="stylesheet" href="../lib/mathlive-spike/mathlive-fonts.css">' +
-  '<script src="../lib/mathlive-spike/mathlive.min.js"></script>' +
+  '<link rel="stylesheet" href="../lib/mathlive/mathlive-fonts.css">' +
+  '<script src="../lib/mathlive/mathlive.min.js"></script>' +
   "<style>body{font-family:system-ui,sans-serif;max-width:48rem;margin:1rem auto;padding:0 1rem}" +
   "main{border:1px solid #ccc;padding:1rem;border-radius:8px}" +
   ".util-learner-workspace{margin-bottom:2rem}" +
-  mathRt.getMathEntrySpikePresentationCss() +
+  mathRt.getMathEntryPresentationCss() +
   "</style></head><body>" +
   "<h1>S82-G2A manual validation</h1>" +
   '<main class="util-learner-renderer-vnext" data-persistence-page-key="s82-g2a-browser-validation" data-persistence-storage-key="s82-g2a-browser-validation">' +
@@ -76,13 +76,13 @@ const html =
   "</div>" +
   '<button type="button" id="after-maths">Next control (Tab target)</button>' +
   '<p id="debug" aria-live="polite"></p></main>' +
-  '<script>if(location.search.indexOf("fallback=1")>=0)window.__PRISM_MATH_ENTRY_SPIKE_DISABLE__=true;</script>' +
+  '<script>if(location.search.indexOf("fallback=1")>=0)window.__PRISM_MATH_ENTRY_DISABLE__=true;</script>' +
   '<script src="../lib/learner-renderer-vnext-browser.js"></script>' +
   "<script>" +
   draftRt.getLearnerDraftRuntimeScript() +
   "</script>" +
   "<script>" +
-  mathRt.getMathEntrySpikeRuntimeScript() +
+  mathRt.getMathEntryRuntimeScript() +
   "</script>" +
   "<script>" +
   "window.addEventListener('input',function(){" +

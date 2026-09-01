@@ -14,8 +14,8 @@ Gate IDs: `S82-G#`. Task/decision IDs: `S82-T-###`, `S82-D##`.
 S82-G1   Semantic learner input modality          COMPLETE (pre-sprint)
 S82-G2   Learner interaction diagnostic           COMPLETE (T-001)
 S82-G2A  MathLive interaction spike               COMPLETE (D02 accepted)
-S82-G2B  Implement alpha MathLive treatment       NEXT / AUTHORISED
-S82-G3   Realistic Lagrangian learner validation  NOT STARTED
+S82-G2B  Production MathLive hardening              COMPLETE
+S82-G3   Realistic Lagrangian learner validation  NEXT
 S82-G4   Focused a11y / keyboard / persistence    NOT STARTED
 S82-G5   First-class gate + sprint closeout       NOT STARTED
 ```
@@ -46,28 +46,15 @@ Gate 2A outcome recorded ([S82-D02](decisions.md#s82-d02--gate-2a-outcome-go-alp
 - **Record:** [S82-G2A-mathlive-interaction-spike.md](S82-G2A-mathlive-interaction-spike.md) · [evidence](S82-G2A-spike-evidence.md)  
 - **Outcome:** **A — GO ALPHA MATHLIVE** — [S82-D02](decisions.md#s82-d02--gate-2a-outcome-go-alpha-mathlive) **accepted** (2026-09-01)
 
-### S82-G2B — Implement alpha MathLive treatment
+### S82-G2B — Production MathLive hardening
 
-- **Status:** **NEXT / AUTHORISED**
-- **Decision:** [S82-D02](decisions.md#s82-d02--gate-2a-outcome-go-alpha-mathlive) — MathLive for `inputModality: math` on `text_entry`
-- **Scope:**
-  - Promote/harden `inputModality` propagation (G2A scaffolding → production behaviour)
-  - Ship MathLive enhancement with canonical textarea authority and fallback unchanged
-  - Remove spike-only naming/assets (`math-entry-spike`, `lib/mathlive-spike/` path strategy → production naming/packaging)
-  - **From G2A evidence — bounded hardening (not retroactively passed):**
-    - Label / `math-field` focus association (`for` vs primary control)
-    - Keyboard Tab / Shift+Tab exit behaviour
-    - Virtual-keyboard policy (on-focus vs icon; learner discoverability)
-    - Accessibility-tree / duplicate-control review
-    - 200% zoom/reflow check
-    - Learner-package MathLive asset copying and path verification
-    - Realistic generated Lagrangian workflow validation (construction without TeX typing)
-  - Focused automated tests; do not add custom PRISM keyboard or rich-text editor
-- **Does not change:** draft envelope, DLA, GAM, `surfaceKind`, assessment architecture
+- **Status:** **COMPLETE** — [record](S82-G2B-production-hardening.md)
+- **Delivered:** production `math-entry-*` adapter, `lib/mathlive/` assets, conditional learner-package inclusion, label/focus fix, VK manual policy, 19 focused tests + 339/339 first-class
+- **Bounded deferrals:** Tab exit automation, 200% zoom, AT tree duplication, physical-keyboard non-TeX entry → G3/G4
 
 ### S82-G3 — Realistic Lagrangian learner validation
 
-- **Status:** **NOT STARTED**  
+- **Status:** **NEXT**  
 - **Intent:** End-to-end completion of commissioned maths fields in realistic Lagrangian activity  
 
 ### S82-G4 — Focused verification

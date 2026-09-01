@@ -13,10 +13,10 @@
 | Field | Value |
 | ----- | ----- |
 | Product | **WORKING ALPHA** |
-| First-class gate | `npm run test:first-class` → **339/339** (last reported) |
+| First-class gate | `npm run test:first-class` → **339/339** (G2B verified) |
 | D-014 | **RESOLVED** |
 | Sprint 81 | **CLOSED** |
-| Current gate | **S82-G2B** — **AUTHORISED** |
+| Current gate | **S82-G3** — realistic Lagrangian colleague validation |
 | Gate 2 treatment | **A — GO ALPHA MATHLIVE** ([S82-D02](decisions.md#s82-d02--gate-2a-outcome-go-alpha-mathlive)) |
 | Sprint close | **Not satisfied** |
 
@@ -29,8 +29,8 @@
 | **S82-G1** | Semantic learner input modality | **COMPLETE** (pre-sprint formalisation) |
 | **S82-G2** | Learner interaction diagnostic | **COMPLETE** — [T-001](S82-T-001-maths-entry-gate-2-learner-interaction-diagnostic.md) |
 | **S82-G2A** | MathLive interaction spike | **COMPLETE** — [evidence](S82-G2A-spike-evidence.md) · [S82-D02 accepted](decisions.md#s82-d02--gate-2a-outcome-go-alpha-mathlive) |
-| **S82-G2B** | Implement alpha MathLive treatment | **NEXT / AUTHORISED** |
-| **S82-G3** | Realistic Lagrangian learner validation | **NOT STARTED** |
+| **S82-G2B** | Production MathLive hardening | **COMPLETE** — [record](S82-G2B-production-hardening.md) |
+| **S82-G3** | Realistic Lagrangian learner validation | **NEXT** |
 | **S82-G4** | Focused a11y / keyboard / persistence verification | **NOT STARTED** |
 | **S82-G5** | First-class gate + sprint closeout | **NOT STARTED** |
 
@@ -46,6 +46,6 @@
 
 ## Immediate next action
 
-**S82-G2B** — implement and harden alpha MathLive treatment for `inputModality: math` ([PLAN.md](PLAN.md) §S82-G2B).
+**S82-G3** — mathematically knowledgeable colleague validates realistic Lagrangian learner run ([PLAN.md](PLAN.md) §S82-G3).
 
-G2A spike code remains in place; production hardening and spike-name removal are G2B scope. Do **not** skip G3–G4 verification before sprint close.
+Do **not** close Sprint 82 until G3–G5 exit criteria are satisfied.

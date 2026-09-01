@@ -26,9 +26,9 @@
 
 **Objective:** When PRISM commissions dedicated mathematical learner evidence, provide a first-class interaction for producing it while preserving existing evidence and persistence architecture.
 
-**Current gate:** **S82-G2B** — implement alpha MathLive treatment  
+**Current gate:** **S82-G3** — realistic Lagrangian colleague validation  
 **Treatment:** [S82-D02](decisions.md#s82-d02--gate-2a-outcome-go-alpha-mathlive) — **A — GO ALPHA MATHLIVE** (accepted)  
-**G2A record:** [S82-G2A-mathlive-interaction-spike.md](S82-G2A-mathlive-interaction-spike.md) · [evidence](S82-G2A-spike-evidence.md)
+**G2B record:** [S82-G2B-production-hardening.md](S82-G2B-production-hardening.md)
 
 ---
 
@@ -45,7 +45,7 @@
 | Rich mixed prose+math | **Not required** — structured multi-field templates |
 | Sprint 81 learner architecture | **Closed** — do not reopen surface-family redesign |
 
-**Renderer gap (G2B):** G2A added minimal `inputModality` propagation as spike scaffolding. G2B must promote/harden before production sign-off.
+**Renderer (G2B):** `inputModality` production-propagated; MathLive enhances `text_entry` + `math`; canonical `textarea` authority preserved.
 
 ---
 
@@ -56,7 +56,8 @@
 | Maths Entry Gate 1 | **COMPLETE** | [semantic-learner-input-modality-gate-1.md](../../governance/semantic-learner-input-modality-gate-1.md) — 11/11 tests |
 | Gate 2 diagnostic | **COMPLETE** | [S82-T-001](S82-T-001-maths-entry-gate-2-learner-interaction-diagnostic.md) |
 | Graphics material-role grounding | **CLOSED** (pre-S82) | 7/7 + related slices green at last check |
-| Gate 2A MathLive spike | **COMPLETE** | [S82-G2A](S82-G2A-mathlive-interaction-spike.md) · [evidence](S82-G2A-spike-evidence.md) · [S82-D02](decisions.md#s82-d02--gate-2a-outcome-go-alpha-mathlive) accepted |
+| Gate 2A MathLive spike | **COMPLETE** | [S82-G2A](S82-G2A-mathlive-interaction-spike.md) · [evidence](S82-G2A-spike-evidence.md) |
+| Gate 2B production hardening | **COMPLETE** | [S82-G2B](S82-G2B-production-hardening.md) |
 
 ---
 
@@ -107,8 +108,8 @@ Table maths is **not** required to close unless live validation shows commission
 
 ## H. Next prompt / task
 
-**S82-G2B** — implement and harden alpha MathLive treatment ([PLAN.md](PLAN.md) §S82-G2B).
+**S82-G3** — realistic Lagrangian colleague validation ([PLAN.md](PLAN.md) §S82-G3).
 
-Spike implementation remains in tree; rename/remove spike markers and complete G2B hardening checklist before G3 sign-off.
+Production maths-entry is in tree (`lib/mathlive/`, `math-entry-*.js`). Do **not** coach the tester on symbol locations.
 
 Do **not** reopen Sprint 81.

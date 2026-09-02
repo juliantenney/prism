@@ -2,7 +2,7 @@
 
 This directory contains the active documentation for **how PRISM is developed**, the canonical sprint history, and the programme-level Governance layer.
 
-PRISM is currently in **pre-Alpha hardening**.
+PRISM is in **alpha development complete** status (recorded 2026-09-02 — [S82-D04](sprints/2026-09-01-sprint-82-maths-entry-and-alpha-completion/decisions.md#s82-d04--alpha-development-complete)). Post-alpha work proceeds via backlog and future opening decisions — see [NEXT-SPRINT.md](../sprints/NEXT-SPRINT.md).
 
 ---
 

@@ -1,56 +1,49 @@
 # Next sprint — active programme
 
-**Status:** Sprint 82 **OPEN** (2026-09-01). Sprint 81 **CLOSED**. Sprint 80 **CLOSED**.  
-**Updated:** 2026-09-01
+**Status:** **Alpha development complete** (2026-09-02). Sprint 82 **CLOSED**. Sprint 81 **CLOSED**. Sprint 80 **CLOSED**.  
+**Updated:** 2026-09-02
 
 ---
 
 ## Current programme
 
-**Active sprint:** Sprint 82 — Maths Entry & Alpha Completion
+**Active sprint:** *(none opened)*
 
-**Pack:** [SPRINT-82-START-HERE.md](../development/sprints/2026-09-01-sprint-82-maths-entry-and-alpha-completion/SPRINT-82-START-HERE.md) · **Handover:** [HANDOVER.md](../development/sprints/2026-09-01-sprint-82-maths-entry-and-alpha-completion/HANDOVER.md) · **Status:** [STATUS.md](../development/sprints/2026-09-01-sprint-82-maths-entry-and-alpha-completion/STATUS.md)
+**Last closed sprint:** Sprint 82 — Maths Entry & Alpha Completion — **COMPLETE / CLOSED**
 
-**Current gate:** **S82-G2B** — implement alpha MathLive treatment (**AUTHORISED**)
+**Closure:** [SPRINT-82-CLOSURE.md](../development/sprints/2026-09-01-sprint-82-maths-entry-and-alpha-completion/SPRINT-82-CLOSURE.md) · [S82-D04](../development/sprints/2026-09-01-sprint-82-maths-entry-and-alpha-completion/decisions.md#s82-d04--alpha-development-complete)
 
-**Treatment:** [S82-D02](../development/sprints/2026-09-01-sprint-82-maths-entry-and-alpha-completion/decisions.md#s82-d02--gate-2a-outcome-go-alpha-mathlive) — **A — GO ALPHA MATHLIVE** (accepted)
+### Alpha milestone (authoritative wording)
 
-**Objective:** Close the interaction gap for commissioned mathematical learner evidence while preserving `text_entry` persistence and Sprint 81 learner architecture.
+> **Alpha development complete.** First-class journeys have been manually exercised and engineering-gated; known remaining issues and deferred capabilities are documented for post-alpha work.
 
-### Protected state
+**Not claimed:** production-ready · formally WCAG conformant · bug-free · feature-complete for every future product/output type.
+
+### Protected state at close
 
 | Item | State |
 | ---- | ----- |
-| Product | **WORKING ALPHA** |
-| First-class gate | `npm run test:first-class` → **339/339** (last reported) |
+| First-class gate | `npm run test:first-class` → **339/339** |
 | D-014 | **RESOLVED** |
-| Sprint 81 | **CLOSED** — do not reopen surface-family architecture |
-| Gate 1 modality | **COMPLETE** |
-| Gate 2 diagnostic | **COMPLETE** |
-| Gate 2A spike | **COMPLETE** — [evidence](../development/sprints/2026-09-01-sprint-82-maths-entry-and-alpha-completion/S82-G2A-spike-evidence.md) |
+| Maths entry | MathLive (evidence) + MathJax (display); local offline packaging |
+| Workshop first-class path | Production regression **PASS** (facilitated semantics; 60-min duration) |
+| Sprint 81 / 82 | **CLOSED** — do not reopen without new opening decision |
 
 ---
 
-## Immediate next task
+## Post-alpha work selection
 
-**S82-G2B** — implement and harden alpha MathLive treatment for `inputModality: math`.
+Choose the next tranche from [PRODUCT-BACKLOG.md](../backlog/PRODUCT-BACKLOG.md). Deferred items **remain deferred** — not retroactive alpha blockers:
 
-See [PLAN.md](../development/sprints/2026-09-01-sprint-82-maths-entry-and-alpha-completion/PLAN.md) §S82-G2B.
+- RC3–RC8 historical full-suite cleanup  
+- Slideshow / output extensibility (PB-FA-008)  
+- Broader alpha hardening lifecycle  
+- Sprint 81 carried architectural debt  
 
----
-
-## Explicitly not Sprint 82
-
-- Rich mixed prose+math editor; CAS; symbolic checking  
-- Table maths (unless live validation blocks sprint close)  
-- Graphics redesign (pre-S82 fix closed)  
-- Sprint 81 architecture reopen  
-- Alpha hardening export-import lifecycle (post-Sprint 82)  
-
-**Backlog:** [PRODUCT-BACKLOG.md](../backlog/PRODUCT-BACKLOG.md)
+Open a **new sprint** only via an explicit opening decision — do not assume Sprint 83 from this file.
 
 ---
 
 ## Previous sprint
 
-Sprint 81 — Learner Workspace Investigation & Surface Architecture — **CLOSED** ([closure](../development/sprints/2026-08-28-sprint-81-learner-workspace-investigation-and-surface-architecture/SPRINT-81-CLOSURE.md))
+Sprint 82 — Maths Entry & Alpha Completion — **CLOSED** ([closure](../development/sprints/2026-09-01-sprint-82-maths-entry-and-alpha-completion/SPRINT-82-CLOSURE.md) · [closeout](sprint-82-closeout.md))

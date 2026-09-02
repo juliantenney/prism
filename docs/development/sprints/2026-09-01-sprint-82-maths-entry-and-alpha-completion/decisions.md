@@ -1,6 +1,6 @@
 # Sprint 82 — Decision Log
 
-**Sprint status:** **OPEN** (opened 2026-09-01)  
+**Sprint status:** **CLOSED / COMPLETE** (opened 2026-09-01; closed 2026-09-02)  
 **Format:** ID · Decision · Status · Rationale · Consequences
 
 ---
@@ -27,11 +27,58 @@
 
 ---
 
+## S82-D03 — Close Sprint 82
+
+- **Decision:** Close Sprint 82 — Maths Entry & Alpha Completion as **COMPLETE / CLOSED** (2026-09-02).
+
+- **Status:** **Accepted** (2026-09-02)
+
+- **Rationale:**
+  - All gates G1–G5 satisfied.
+  - First-class engineering gate **339/339**.
+  - Realistic Lagrangian production validation **Excellent / High confidence** with no confirmed Moderate-or-higher production defects.
+  - Workshop production regression **PASS** (93/100; facilitated semantics + correct 60-minute duration).
+  - Workflow Adjustment persistence exercised without material defect on the alpha path.
+  - Duration trace correction recorded — prior 90-minute Workshop LS defect classification withdrawn.
+
+- **Evidence:** [SPRINT-82-CLOSURE.md](SPRINT-82-CLOSURE.md)
+
+- **Consequences:**
+  - Sprint 82 pack status → **CLOSED**.
+  - Programme pointer updated — no automatic Sprint 83 opened.
+  - Alpha milestone recorded separately as [S82-D04](#s82-d04--alpha-development-complete).
+
+---
+
+## S82-D04 — Alpha development complete
+
+- **Decision:** Record **alpha development complete** as the programme milestone concluding Sprint 82.
+
+- **Status:** **Accepted** (2026-09-02)
+
+- **Wording (authoritative):**
+
+  > **Alpha development complete.** First-class journeys have been manually exercised and engineering-gated; known remaining issues and deferred capabilities are documented for post-alpha work.
+
+- **Explicitly not claimed:**
+  - Production-ready
+  - Formally WCAG conformant
+  - Bug-free
+  - Feature-complete for every future product/output type
+
+- **Accessibility:** Bounded to established **alpha baseline** — not formal conformance.
+
+- **Consequences:**
+  - Post-alpha work proceeds via backlog and future opening decisions.
+  - Deferred items (RC3–RC8, slideshow extensibility, etc.) remain deferred — see [SPRINT-82-CLOSURE.md](SPRINT-82-CLOSURE.md) §5.
+
+---
+
 ## Pending decisions
 
 | ID | Decision | Status |
 | -- | -------- | ------ |
-| S82-D03 | Close Sprint 82 | **Not satisfied** |
+| — | *(none)* | Sprint 82 closed |
 
 ---
 
@@ -65,8 +112,3 @@
   - Separate learner MathJax preview **not required** when MathLive is active.
   - Spike naming/assets (`math-entry-spike`, `lib/mathlive-spike/`) removed in G2B, not retroactively.
 
----
-
-## S82-D03 — Close Sprint 82
-
-- **Status:** **Not satisfied**

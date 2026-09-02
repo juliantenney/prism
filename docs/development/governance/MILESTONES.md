@@ -7,13 +7,17 @@
 
 # Current milestone — Alpha v1.0
 
+**Programme status (2026-09-02):** **Alpha development complete** — [S82-D04](../sprints/2026-09-01-sprint-82-maths-entry-and-alpha-completion/decisions.md#s82-d04--alpha-development-complete) · [SPRINT-82-CLOSURE](../sprints/2026-09-01-sprint-82-maths-entry-and-alpha-completion/SPRINT-82-CLOSURE.md)
+
+First-class journeys have been manually exercised and engineering-gated (`npm run test:first-class` → **339/339**). Known remaining issues and deferred capabilities are documented for post-alpha work. This is **not** a claim of production-ready, formally WCAG conformant, bug-free, or feature-complete status for every future output type.
+
 ## Milestone intent
 
 Alpha v1.0 is the point at which Prism's existing core product architecture can repeatedly produce complete, operational and instructionally credible learner resources through the intended workflow, with failures exposed safely enough for continued controlled development.
 
 Alpha is **not** the point at which every planned product feature exists.
 
-The current phase is **pre-Alpha hardening**.
+The current phase was **pre-Alpha hardening** until Sprint 82 close (2026-09-02). **Alpha development is now complete** — see programme status above.
 
 ---
 

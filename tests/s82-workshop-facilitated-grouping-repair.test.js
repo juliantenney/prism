@@ -221,7 +221,8 @@ test("grouping on workshop page renders util-badge-group and session labels", ()
   assert.equal(modelResult.model.sessionFraming.kind, "facilitated_session");
 
   const html = renderPage(modelResult.model);
-  assert.match(html, /class="util-badge util-badge-group">small_group</);
+  assert.match(html, /class="util-badge util-badge-group">Small group</);
+  assert.doesNotMatch(html, /util-badge-group">small_group</);
   assert.match(html, /By the end of this session, you should be able to:/);
   assert.match(html, /How this session progresses/);
   assert.doesNotMatch(html, /By the end of this lesson, you should be able to:/);

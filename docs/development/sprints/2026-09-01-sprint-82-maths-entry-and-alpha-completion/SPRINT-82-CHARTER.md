@@ -1,7 +1,8 @@
 # Sprint 82 — Charter
 
 **Sprint:** 82 — Maths Entry & Alpha Completion  
-**Status:** **OPEN** (2026-09-01)  
+**Status:** **CLOSED / COMPLETE** (opened 2026-09-01 · closed 2026-09-02)  
+**Closure:** [SPRINT-82-CLOSURE.md](SPRINT-82-CLOSURE.md)
 **Type:** Bounded alpha-completion — semantic commissioning already done; learner interaction + validation  
 **Predecessor:** Sprint 81 — CLOSED; WORKING ALPHA; D-014 RESOLVED  
 **Start here:** [SPRINT-82-START-HERE.md](SPRINT-82-START-HERE.md)  

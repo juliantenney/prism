@@ -24,7 +24,7 @@
 | Shipped | Asymmetric R1 (Check→Task) + R4 revision accompaniment + compact reminder |
 | Gate | `npm run test:first-class` → **339/339** |
 | D-014 | **RESOLVED** — not reopened |
-| Maths Entry | **Sprint 82 OPEN** — [successor pack](../../2026-09-01-sprint-82-maths-entry-and-alpha-completion/SPRINT-82-START-HERE.md) |
+| Maths Entry | **Sprint 82 CLOSED** — [closure pack](../../2026-09-01-sprint-82-maths-entry-and-alpha-completion/SPRINT-82-CLOSURE.md) · Alpha development complete |
 
 Do **not** reopen Sprint 81 to add surface families, criterion→field mapping, dual-pane, or free-text diagnosis.
 
@@ -34,8 +34,8 @@ Do **not** reopen Sprint 81 to add surface families, criterion→field mapping, 
 
 | Priority | Work |
 | -------- | ---- |
-| **Now** | Continue WORKING ALPHA; next investigation only with explicit open decision |
-| **Possible next** | Mathematical learner input / maths entry — **opened as [Sprint 82](../../2026-09-01-sprint-82-maths-entry-and-alpha-completion/SPRINT-82-START-HERE.md)** |
+| **Now** | **Alpha development complete** — see [NEXT-SPRINT.md](../../../sprints/NEXT-SPRINT.md) and [PRODUCT-BACKLOG.md](../../../backlog/PRODUCT-BACKLOG.md) |
+| **Closed successor** | Maths Entry — [Sprint 82 CLOSED](../../2026-09-01-sprint-82-maths-entry-and-alpha-completion/SPRINT-82-CLOSURE.md) |
 | **Do not** | Treat parked R3/R5/T5/C3 as active defects; invent widget architecture from S81 |
 
 ---

@@ -65,6 +65,8 @@ test("T-047 activity HUMAN prompt retains strengthened Concept boundary", () => 
     prompt,
     /Scientifically or disciplinarily plausible extras that are not authorised by this brief must still be omitted/i
   );
+  assert.match(prompt, /Do not strengthen qualified or conditional claims/i);
+  assert.match(prompt, /Subject and context are commissioning cues only/i);
 });
 
 test("T-047 synthesis HUMAN prompt includes compact authorised evidence from resolved anchors", () => {

@@ -412,17 +412,16 @@ test("Slice 5: instruction has stable labelled section order and required conten
   const markers = [
     "1. Educational objective",
     "2. Representation",
-    "3. Subject",
-    "4. Context",
+    "3. Claim boundaries",
+    "4. Commissioning cues (subordinate)",
     "5. Evidence basis",
     "6. Required content",
     "7. Excluded content",
-    "8. Claim boundaries",
-    "9. Spoiler boundary",
-    "10. Discipline guidance",
-    "11. Caption guidance",
-    "12. Resource visual language",
-    "13. Learner-facing figure copy"
+    "8. Spoiler boundary",
+    "9. Discipline guidance",
+    "10. Caption guidance",
+    "11. Resource visual language",
+    "12. Learner-facing figure copy"
   ];
   let last = -1;
   markers.forEach((marker) => {
@@ -435,6 +434,9 @@ test("Slice 5: instruction has stable labelled section order and required conten
   assert.match(text, /classification/);
   assert.match(text, /Inflation mechanism classification cues/);
   assert.match(text, /demand-pull pathway cues/);
+  assert.match(text, /Do not strengthen qualified or conditional claims/);
+  assert.match(text, /Commissioning cues \(subordinate\)/);
+  assert.match(text, /Subject and context are commissioning cues only/);
   assert.match(text, /scenario answer key/);
   assert.match(text, /Different causal mechanisms/);
   assert.match(text, /anti_spoiler: true/);

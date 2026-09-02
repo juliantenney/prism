@@ -170,7 +170,7 @@ test("T-048 prompts do not reference sibling image bytes or prior assets", () =>
 
 test("T-048 canonical generation_instruction mirrors the same house-style lines", () => {
   const instr = synthesisBrief.generation_instruction;
-  assert.match(instr, /12\. Resource visual language/);
+  assert.match(instr, /11\. Resource visual language/);
   houseVisual.getHouseVisualLanguageLines().forEach((line) => {
     assert.match(instr, new RegExp(line.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
   });

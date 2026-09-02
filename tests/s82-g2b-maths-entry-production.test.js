@@ -54,8 +54,10 @@ const adapters = require(path.join(
   "learner-draft-adapters.js"
 ));
 const learnerPackage = require(path.join(repoRoot, "lib", "learner-package.js"));
+const zipApi = require(path.join(repoRoot, "lib", "learner-package-zip.js"));
+const fflate = require("fflate");
 
-const { getMathEntryRuntimeScript } = mathEntryRuntime;
+const { getMathEntryRuntimeScript, getMathEntryHeadMarkup } = mathEntryRuntime;
 
 const LAGRANGIAN =
   "\\mathcal{L}(x,y,\\lambda) = 4xy + \\lambda(2x + y - 20)";
@@ -94,6 +96,36 @@ function textPart(activityId) {
     sourceStepNumber: null,
     rows: 6
   };
+}
+
+function buildProductionMathsExportHtml(workspaceCount) {
+  const count = workspaceCount == null ? 1 : workspaceCount;
+  let body = "";
+  for (let i = 0; i < count; i += 1) {
+    body += buildMathWorkspaceHtml("A3", "Lagrangian " + String(i + 1));
+  }
+  return (
+    "<!doctype html><html><head>" +
+    getMathEntryHeadMarkup() +
+    "</head><body>" +
+    body +
+    "</body></html>"
+  );
+}
+
+function buildAndUnzipLearnerPackage(buildOpts) {
+  const built = learnerPackage.buildLearnerPackage(buildOpts);
+  assert.equal(built.ok, true, built.error && built.error.message);
+  const zipped = zipApi.serializeLearnerPackageToZip(built.package);
+  assert.equal(zipped.ok, true, zipped.error && zipped.error.message);
+  const entries = fflate.unzipSync(zipped.bytes);
+  return { built, zipped, entries };
+}
+
+function expectedMathLiveZipPaths() {
+  return mathEntryPackageAssets.MATHLIVE_PACKAGE_FILES.map(
+    (rel) => mathEntryPackageAssets.MATHLIVE_ASSET_ROOT + "/" + rel.replace(/\\/g, "/")
+  );
 }
 
 function buildMathWorkspaceHtml(activityId, label) {
@@ -445,30 +477,80 @@ test("12: enhanced field associates label with math-field control", () => {
 });
 
 test("13: maths learner package includes MathLive assets", () => {
-  const html = buildMathWorkspaceHtml("A3");
-  const built = learnerPackage.buildLearnerPackage({
-    html: "<html><body>" + html + "</body></html>",
+  const html = buildProductionMathsExportHtml(1);
+  const { built, entries } = buildAndUnzipLearnerPackage({
+    html,
     visualAssetManifest: { assets: [] },
-    repoRoot: repoRoot
+    repoRoot
   });
-  assert.equal(built.ok, true);
   const paths = built.package.assets.map((a) => a.path);
-  assert.ok(paths.includes("lib/mathlive/mathlive.min.js"));
-  assert.ok(paths.includes("lib/mathlive/mathlive-fonts.css"));
-  assert.ok(paths.some((p) => p.indexOf("lib/mathlive/fonts/") === 0));
+  expectedMathLiveZipPaths().forEach((expectedPath) => {
+    assert.ok(paths.includes(expectedPath), "missing package asset: " + expectedPath);
+    assert.ok(entries[expectedPath], "missing ZIP entry: " + expectedPath);
+    assert.ok(entries[expectedPath].length > 0, "empty ZIP entry: " + expectedPath);
+  });
+});
+
+test("13b: maths learner package ZIP matches HTML lib/mathlive references", () => {
+  const html = buildProductionMathsExportHtml(17);
+  const { built, entries } = buildAndUnzipLearnerPackage({
+    html,
+    visualAssetManifest: { assets: [] },
+    repoRoot
+  });
+  assert.match(built.package.html, /lib\/mathlive\/mathlive\.min\.js/);
+  assert.match(built.package.html, /lib\/mathlive\/mathlive-fonts\.css/);
+  const zipPaths = Object.keys(entries);
+  assert.ok(zipPaths.includes("learner-page.html"));
+  assert.equal(
+    zipPaths.filter((p) => p.indexOf("lib/mathlive/") === 0).length,
+    mathEntryPackageAssets.MATHLIVE_PACKAGE_FILES.length
+  );
+  const htmlInZip = fflate.strFromU8(entries["learner-page.html"]);
+  assert.match(htmlInZip, /data-input-modality="math"/);
+  assert.match(htmlInZip, /lib\/mathlive\/mathlive\.min\.js/);
+});
+
+test("13c: browser export path supplies MathLive assets via mathLivePackageAssets option", () => {
+  const html = buildProductionMathsExportHtml(2);
+  const mathLiveAssets = mathEntryPackageAssets.collectMathLivePackageAssets({ repoRoot }).map(
+    (asset) => ({
+      path: asset.path,
+      bytes: new Uint8Array(asset.bytes),
+      mime: asset.mime
+    })
+  );
+  const { entries } = buildAndUnzipLearnerPackage({
+    html,
+    visualAssetManifest: { assets: [] },
+    mathLivePackageAssets: mathLiveAssets
+  });
+  expectedMathLiveZipPaths().forEach((expectedPath) => {
+    assert.ok(entries[expectedPath], "browser-path ZIP missing: " + expectedPath);
+  });
+});
+
+test("13d: maths packaging fails closed when MathLive assets are not supplied", () => {
+  const html = buildProductionMathsExportHtml(1);
+  const built = learnerPackage.buildLearnerPackage({
+    html,
+    visualAssetManifest: { assets: [] },
+    mathLivePackageAssets: []
+  });
+  assert.equal(built.ok, false);
+  assert.equal(built.error && built.error.code, "mathlive_assets_missing");
 });
 
 test("14: non-maths learner package has no MathLive assets", () => {
   const mapped = learnerSurfaceRegistry.workspaceFromResponsePart(textPart("A4"));
   const html = renderComposedMoment.renderLearnerWorkspace(mapped.workspace, "A4");
-  const built = learnerPackage.buildLearnerPackage({
+  const { built, entries } = buildAndUnzipLearnerPackage({
     html: "<html><body>" + html + "</body></html>",
-    visualAssetManifest: { assets: [] },
-    repoRoot: repoRoot
+    visualAssetManifest: { assets: [] }
   });
-  assert.equal(built.ok, true);
   const paths = built.package.assets.map((a) => a.path);
   assert.equal(paths.filter((p) => p.indexOf("lib/mathlive/") === 0).length, 0);
+  assert.equal(Object.keys(entries).filter((p) => p.indexOf("lib/mathlive/") === 0).length, 0);
   assert.doesNotMatch(built.package.html, /lib\/mathlive\//);
 });
 
@@ -546,4 +628,19 @@ test("production: package asset collector lists all required MathLive files", ()
     assert.ok(asset.bytes && asset.bytes.length > 0);
     assert.match(asset.path, /^lib\/mathlive\//);
   });
+});
+
+test("production: index.html loads MathLive package asset collector before learner-package", () => {
+  const indexHtml = fs.readFileSync(path.join(repoRoot, "index.html"), "utf8");
+  const assetsIdx = indexHtml.indexOf("math-entry-package-assets.js");
+  const packageIdx = indexHtml.indexOf("lib/learner-package.js");
+  assert.ok(assetsIdx >= 0);
+  assert.ok(packageIdx >= 0);
+  assert.ok(assetsIdx < packageIdx);
+});
+
+test("production: app.js browser export fetches MathLive before ZIP build", () => {
+  const appSource = fs.readFileSync(path.join(repoRoot, "app.js"), "utf8");
+  assert.match(appSource, /fetchMathLivePackageAssets/);
+  assert.match(appSource, /mathLivePackageAssets:\s*mathLiveAssets/);
 });

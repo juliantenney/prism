@@ -245,3 +245,16 @@ test("S78-T-009: §7/§8/§10/§11 remain mutually consistent on P02", () => {
   assert.match(examples, /"evidence_requirement": \{/);
   assert.match(examples, /"provider_material_ids": \["A1-M1"\]/);
 });
+
+test("P02: separate_provider providers must not be transfer_prompt; transfer stays in production rows", () => {
+  const assembled = dlaContract.assembleDlaCanonicalContract();
+  const providers = assembled.sections.providers;
+  const commissioning = assembled.sections.commissioning;
+  const production = assembled.sections.production;
+  assert.match(providers, /separate_provider closure/i);
+  assert.match(providers, /not transfer_prompt, consolidation_summary, checklist, or teaching text alone/i);
+  assert.match(providers, /do not attach evidence_requirement to transfer_prompt/i);
+  assert.match(providers, /Transfer pedagogy belongs in learner_task and expected_output/i);
+  assert.match(commissioning, /If evidence_decision\.required is true with separate_provider, the inspectable evidence provider must be a distinct scenario or task_card row/i);
+  assert.match(production, /When evidence_decision\.required is true with separate_provider, commission inspectable particulars on scenario or task_card—not on transfer_prompt/i);
+});

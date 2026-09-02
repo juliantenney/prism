@@ -522,3 +522,123 @@ test("P03 fail: provider row with evidence_requirement but empty specification",
     /\.specification required/
   );
 });
+
+function lagrangianA5EvidenceRequirement() {
+  return {
+    kind: "learner_evidence",
+    purpose:
+      "Provide the changed economic particulars from which the learner must formulate and interpret the constrained optimisation relationship.",
+    learner_action:
+      "Inspect the firm objective, production constraint and input prices and use them to derive and interpret the regular interior tangency relationship.",
+    observable_features: [
+      "the cost objective",
+      "the required-output equality constraint",
+      "the two production inputs",
+      "the two input prices"
+    ],
+    provenance: "system_generated_simulation",
+    evidence_layout: "separate_provider"
+  };
+}
+
+function lagrangianA5SupportMaterials() {
+  return [
+    {
+      material_id: "A5-M2",
+      material_type: "text",
+      purpose: "Consolidate the conceptual connection between gradients, tangency and economic marginal trade-offs.",
+      specification:
+        "Explain gradient parallelism and tangency without deriving or stating the completed response for A5-M1."
+    },
+    {
+      material_id: "A5-M3",
+      material_type: "template",
+      purpose: "Provide the structured response surface for the culminating transfer production.",
+      specification:
+        "Create successive sections authored as **Objective and constraint:**, **Lagrangian:**, **Tangency relationship:**, and **Economic interpretation:**. Leave every response location blank.",
+      response_fulfilment: {
+        kind: "learner_workspace",
+        response_kind: "table_complete",
+        binds_production_steps: [2, 3, 4, 5]
+      }
+    },
+    {
+      material_id: "A5-M4",
+      material_type: "checklist",
+      purpose: "Support diagnostic review of the culminating transfer response.",
+      specification:
+        "Four diagnostic quality dimensions covering objective, Lagrangian, tangency and interpretation.",
+      diagnostic_review: { covers_response_material_ids: ["A5-M3"] }
+    }
+  ];
+}
+
+function lagrangianA5ActivityBase(overrides) {
+  return activityDefaults(
+    Object.assign(
+      {
+        activity_id: "A5",
+        title: "Connect Tangency and Choice",
+        learner_task:
+          "1. Inspect the supplied cost-minimisation transfer problem. 2. Identify the objective and production constraint. 3. Formulate the corresponding Lagrangian structure. 4. Use the regular interior tangency condition to connect parallel gradients with the equality between the marginal rate of technical substitution and relative input prices. 5. Complete the structured transfer workspace, including the economic interpretation field.",
+        expected_output:
+          "A compact transfer response that correctly identifies the cost objective and production constraint, formulates the Lagrangian structure, connects parallel gradients and tangency to the appropriate marginal trade-off, and interprets the resulting condition as a regular interior cost-minimising relationship.",
+        task_material_decision: {
+          separate_inputs_required: true,
+          task_input_material_ids: ["A5-M1"]
+        },
+        evidence_decision: {
+          required: true,
+          reason:
+            "The culminating interpretation depends on inspecting the firm's objective, constraint and input-price particulars as grounds for the derived economic relationship.",
+          provider_material_ids: ["A5-M1"]
+        },
+        episode_plan: { archetype: "apply", beats: [{ function: "transfer" }] }
+      },
+      overrides || {}
+    )
+  );
+}
+
+test("P02 fail: Lagrangian A5 transfer_prompt with evidence_requirement fails provider-role closure", () => {
+  assertBoth(
+    lagrangianA5ActivityBase({
+      required_materials: [
+        {
+          material_id: "A5-M1",
+          material_type: "transfer_prompt",
+          purpose:
+            "Require application of the page's core constrained-optimisation reasoning in a changed firm cost-minimisation context.",
+          specification:
+            "Provide one compact firm problem in which cost is minimised subject to a required-output equality constraint. Supply the contextual meaning of L, K, w, r and qbar, but do not provide a worked Lagrangian, first-order conditions, gradient relationship, MRTS condition or answer. Require the learner to identify the optimisation structure, formulate the Lagrangian, connect regular interior tangency to F_L/F_K=w/r, and interpret that equality economically. Introduce no new theory beyond the cost-minimisation context already established in the learning content.",
+          evidence_requirement: lagrangianA5EvidenceRequirement()
+        },
+        ...lagrangianA5SupportMaterials()
+      ]
+    }),
+    false,
+    "A5 transfer_prompt evidence provider",
+    /provider-role closure/
+  );
+});
+
+test("P02 pass: Lagrangian A5 scenario evidence provider with template transfer production", () => {
+  assertBoth(
+    lagrangianA5ActivityBase({
+      required_materials: [
+        {
+          material_id: "A5-M1",
+          material_type: "scenario",
+          purpose:
+            "Provide the changed firm cost-minimisation particulars the learner must inspect before transfer production.",
+          specification:
+            "Provide one compact firm scenario in which cost wL+rK is minimised subject to a required-output equality constraint F(L,K)=qbar. Supply the contextual meaning of L, K, w, r and qbar and state the cost objective, production constraint, input symbols and input prices as inspectable particulars. Do not provide a worked Lagrangian, first-order conditions, gradient relationship, MRTS condition or answer. Do not add new theory beyond the cost-minimisation context already established in the learning content.",
+          evidence_requirement: lagrangianA5EvidenceRequirement()
+        },
+        ...lagrangianA5SupportMaterials()
+      ]
+    }),
+    true,
+    "A5 scenario evidence provider"
+  );
+});

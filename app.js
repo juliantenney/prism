@@ -55043,6 +55043,80 @@
     });
   }
 
+  function getUtilitiesLearnerPackageAssetBaseUrl() {
+    if (typeof window === "undefined" || !window.location || !window.location.href) {
+      return "./";
+    }
+    try {
+      return new URL("./", window.location.href).href;
+    } catch (_err) {
+      return "./";
+    }
+  }
+
+  function finalizeUtilitiesLearnerPackageDownload(exportHtml, manifest, additionalResourceAssets, mathLiveAssets) {
+    var packageApi =
+      (typeof globalThis !== "undefined" && globalThis.PRISM_LEARNER_PACKAGE) ||
+      (typeof window !== "undefined" && window.PRISM_LEARNER_PACKAGE) ||
+      null;
+    var zipApi =
+      (typeof globalThis !== "undefined" && globalThis.PRISM_LEARNER_PACKAGE_ZIP) ||
+      (typeof window !== "undefined" && window.PRISM_LEARNER_PACKAGE_ZIP) ||
+      null;
+    if (
+      !packageApi ||
+      typeof packageApi.buildLearnerPackage !== "function" ||
+      !zipApi ||
+      typeof zipApi.serializeLearnerPackageToZip !== "function"
+    ) {
+      showToast("Learner package export is unavailable.", "error");
+      return;
+    }
+
+    var built = packageApi.buildLearnerPackage({
+      html: exportHtml,
+      visualAssetManifest: manifest,
+      additionalResourceAssets: additionalResourceAssets,
+      mathLivePackageAssets: mathLiveAssets,
+      pageSlug: String(state.utilitiesLastFileName || "rendered-output").replace(/\.html$/i, ""),
+      builtAt: new Date().toISOString()
+    });
+    if (!built || !built.ok || !built.package) {
+      showToast(
+        (built && built.error && built.error.message) || "Could not build learner package.",
+        "error"
+      );
+      return;
+    }
+
+    var zipped = zipApi.serializeLearnerPackageToZip(built.package);
+    if (!zipped || !zipped.ok || !zipped.bytes) {
+      showToast(
+        (zipped && zipped.error && zipped.error.message) ||
+          "Could not serialize learner package ZIP.",
+        "error"
+      );
+      return;
+    }
+
+    var zipName = getUtilityLearnerPackageZipName(
+      state.utilitiesLastFileName || "rendered-output"
+    );
+    if (Array.isArray(state.utilitiesDownloadTestLog)) {
+      state.utilitiesDownloadTestLog.push("zip");
+    }
+    triggerBinaryDownload(zipped.bytes, zipName, "application/zip");
+
+    if (built.warnings && built.warnings.length) {
+      showToast(
+        "Learner package downloaded with " + String(built.warnings.length) + " warning(s).",
+        "warning"
+      );
+    } else {
+      showToast("Learner package downloaded.", "success");
+    }
+  }
+
   function handleUtilitiesDownloadLearnerPackage() {
     resolveUtilitiesExportHtmlForDownload().then(function (resolved) {
       if (!resolved || !resolved.ok || !resolved.html) {
@@ -55054,24 +55128,6 @@
       }
       var htmlText = String(resolved.html || "").trim();
 
-      var packageApi =
-        (typeof globalThis !== "undefined" && globalThis.PRISM_LEARNER_PACKAGE) ||
-        (typeof window !== "undefined" && window.PRISM_LEARNER_PACKAGE) ||
-        null;
-      var zipApi =
-        (typeof globalThis !== "undefined" && globalThis.PRISM_LEARNER_PACKAGE_ZIP) ||
-        (typeof window !== "undefined" && window.PRISM_LEARNER_PACKAGE_ZIP) ||
-        null;
-      if (
-        !packageApi ||
-        typeof packageApi.buildLearnerPackage !== "function" ||
-        !zipApi ||
-        typeof zipApi.serializeLearnerPackageToZip !== "function"
-      ) {
-        showToast("Learner package export is unavailable.", "error");
-        return;
-      }
-
       var exportHtml = utilityEnhanceExportHtmlWithMathJax(htmlText);
       var manifest = getUtilitiesVisualAssetManifestForExport();
       var additionalResourceAssets =
@@ -55080,47 +55136,51 @@
         Array.isArray(state.utilitiesOutputWorkspace.additionalResourceProjection.items)
           ? state.utilitiesOutputWorkspace.additionalResourceProjection.items.slice()
           : [];
-      var built = packageApi.buildLearnerPackage({
-        html: exportHtml,
-        visualAssetManifest: manifest,
-        additionalResourceAssets: additionalResourceAssets,
-        pageSlug: String(state.utilitiesLastFileName || "rendered-output").replace(/\.html$/i, ""),
-        builtAt: new Date().toISOString()
-      });
-      if (!built || !built.ok || !built.package) {
-        showToast(
-          (built && built.error && built.error.message) || "Could not build learner package.",
-          "error"
-        );
+
+      var mathAssetsApi =
+        (typeof globalThis !== "undefined" && globalThis.PRISM_MATH_ENTRY_PACKAGE_ASSETS) ||
+        (typeof window !== "undefined" && window.PRISM_MATH_ENTRY_PACKAGE_ASSETS) ||
+        null;
+      var needsMathLive =
+        exportHtml.indexOf('data-input-modality="math"') >= 0 ||
+        exportHtml.indexOf("lib/mathlive/") >= 0;
+
+      if (
+        needsMathLive &&
+        mathAssetsApi &&
+        typeof mathAssetsApi.fetchMathLivePackageAssets === "function"
+      ) {
+        mathAssetsApi
+          .fetchMathLivePackageAssets(getUtilitiesLearnerPackageAssetBaseUrl())
+          .then(function (mathLiveAssets) {
+            finalizeUtilitiesLearnerPackageDownload(
+              exportHtml,
+              manifest,
+              additionalResourceAssets,
+              mathLiveAssets
+            );
+          })
+          .catch(function (err) {
+            showToast(
+              "Could not load MathLive assets for learner package: " +
+                String((err && err.message) || err || "fetch failed"),
+              "error"
+            );
+          });
         return;
       }
 
-      var zipped = zipApi.serializeLearnerPackageToZip(built.package);
-      if (!zipped || !zipped.ok || !zipped.bytes) {
-        showToast(
-          (zipped && zipped.error && zipped.error.message) ||
-            "Could not serialize learner package ZIP.",
-          "error"
-        );
+      if (needsMathLive) {
+        showToast("MathLive packaging is unavailable for this maths-enabled learner page.", "error");
         return;
       }
 
-      var zipName = getUtilityLearnerPackageZipName(
-        state.utilitiesLastFileName || "rendered-output"
+      finalizeUtilitiesLearnerPackageDownload(
+        exportHtml,
+        manifest,
+        additionalResourceAssets,
+        null
       );
-      if (Array.isArray(state.utilitiesDownloadTestLog)) {
-        state.utilitiesDownloadTestLog.push("zip");
-      }
-      triggerBinaryDownload(zipped.bytes, zipName, "application/zip");
-
-      if (built.warnings && built.warnings.length) {
-        showToast(
-          "Learner package downloaded with " + String(built.warnings.length) + " warning(s).",
-          "warning"
-        );
-      } else {
-        showToast("Learner package downloaded.", "success");
-      }
     });
   }
 

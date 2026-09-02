@@ -28,6 +28,77 @@ const fflate = require("fflate");
 const CDN_SRC = mathJaxPackageAssets.MATHJAX_CDN_LOADER_SRC;
 const LOCAL_LOADER = mathJaxPackageAssets.MATHJAX_PACKAGE_LOADER_PATH;
 
+/**
+ * Exact bootstrap shape emitted by app.js utilityBuildMathJaxExportBootstrap().
+ */
+function buildProductionAppJsBootstrapHtml(body, headPrefix) {
+  const bootstrap = [
+    "<!-- " + mathJaxPackageAssets.MATHJAX_EXPORT_BOOTSTRAP_MARKER + " -->",
+    "<script>",
+    "(function(){",
+    "  var cfg = window.MathJax && typeof window.MathJax === 'object' ? window.MathJax : {};",
+    "  cfg.tex = Object.assign({}, cfg.tex || {}, {",
+    "    inlineMath: [['\\\\(','\\\\)']],",
+    "    displayMath: [['\\\\[','\\\\]']]",
+    "  });",
+    "  window.MathJax = cfg;",
+    "})();",
+    "</script>",
+    '<script id="' +
+      mathJaxPackageAssets.MATHJAX_EXPORT_LOADER_ID +
+      '" async src="' +
+      CDN_SRC +
+      '"></script>'
+  ].join("");
+  return (
+    "<!doctype html><html><head>" +
+    (headPrefix || "") +
+    bootstrap +
+    "</head><body>" +
+    String(body || "") +
+    "</body></html>"
+  );
+}
+
+function browserFetchedMathJaxAssets() {
+  return mathJaxPackageAssets.collectMathJaxPackageAssets({ repoRoot }).map((asset) => ({
+    path: asset.path,
+    bytes: new Uint8Array(asset.bytes),
+    mime: asset.mime
+  }));
+}
+
+function loadBrowserOnlyLearnerPackageApi() {
+  const vm = require("node:vm");
+  const sandbox = {
+    module: { exports: {} },
+    exports: {},
+    globalThis: null,
+    Buffer,
+    Uint8Array,
+    Array,
+    Object,
+    String,
+    Number,
+    Date,
+    RegExp,
+    Error,
+    Math,
+    JSON
+  };
+  sandbox.globalThis = sandbox;
+  vm.createContext(sandbox);
+  vm.runInContext(
+    fs.readFileSync(
+      path.join(repoRoot, "lib", "learner-renderer-vnext", "mathjax-package-assets.js"),
+      "utf8"
+    ),
+    sandbox
+  );
+  vm.runInContext(fs.readFileSync(path.join(repoRoot, "lib", "learner-package.js"), "utf8"), sandbox);
+  return sandbox.module.exports;
+}
+
 function buildMathJaxBootstrapHtml(body) {
   return (
     "<!doctype html><html><head>" +
@@ -255,13 +326,7 @@ test("G: existing non-maths learner package behaviour unchanged", () => {
 
 test("browser export path supplies MathJax assets via mathJaxPackageAssets option", () => {
   const html = buildMathJaxBootstrapHtml("<p>\\(x\\)</p>");
-  const mathJaxAssets = mathJaxPackageAssets.collectMathJaxPackageAssets({ repoRoot }).map(
-    (asset) => ({
-      path: asset.path,
-      bytes: new Uint8Array(asset.bytes),
-      mime: asset.mime
-    })
-  );
+  const mathJaxAssets = browserFetchedMathJaxAssets();
   const { entries } = buildAndUnzipLearnerPackage({
     html,
     visualAssetManifest: { assets: [] },
@@ -270,6 +335,58 @@ test("browser export path supplies MathJax assets via mathJaxPackageAssets optio
   expectedMathJaxZipPaths().forEach((expectedPath) => {
     assert.ok(entries[expectedPath], "browser-path ZIP missing: " + expectedPath);
   });
+  const htmlInZip = fflate.strFromU8(entries["learner-page.html"]);
+  assert.match(htmlInZip, new RegExp(LOCAL_LOADER.replace(/\//g, "\\/")));
+  assert.doesNotMatch(htmlInZip, /cdn\.jsdelivr\.net\/npm\/mathjax/i);
+});
+
+test("production app.js bootstrap: browser-only build rewrites CDN in ZIP learner-page.html", () => {
+  const exportHtml = buildProductionAppJsBootstrapHtml(
+    "<p>Constraint \\( g(x,y)=c \\).</p>"
+  );
+  assert.match(exportHtml, /cdn\.jsdelivr\.net\/npm\/mathjax@3\.2\.2\/es5\/tex-chtml\.js/);
+
+  const browserPackageApi = loadBrowserOnlyLearnerPackageApi();
+  const built = browserPackageApi.buildLearnerPackage({
+    html: exportHtml,
+    visualAssetManifest: { assets: [] },
+    mathJaxPackageAssets: browserFetchedMathJaxAssets()
+  });
+  assert.equal(built.ok, true, built.error && built.error.message);
+
+  const zipped = zipApi.serializeLearnerPackageToZip(built.package);
+  assert.equal(zipped.ok, true);
+  const entries = fflate.unzipSync(zipped.bytes);
+  const htmlInZip = fflate.strFromU8(entries["learner-page.html"]);
+
+  assert.match(htmlInZip, new RegExp(LOCAL_LOADER.replace(/\//g, "\\/")));
+  assert.doesNotMatch(htmlInZip, /cdn\.jsdelivr\.net\/npm\/mathjax/i);
+  assert.equal(
+    Object.keys(entries).filter((p) => p.indexOf("lib/mathjax/") === 0).length,
+    mathJaxPackageAssets.MATHJAX_PACKAGE_FILES.length
+  );
+});
+
+test("production app.js bootstrap: fail closed when CDN reference survives rewrite", () => {
+  const exportHtml = buildProductionAppJsBootstrapHtml("<p>\\(x\\)</p>").replace(
+    CDN_SRC,
+    "https://cdn.jsdelivr.net/npm/mathjax@9.9.9/es5/tex-chtml.js"
+  );
+  const built = learnerPackage.buildLearnerPackage({
+    html: exportHtml,
+    visualAssetManifest: { assets: [] },
+    mathJaxPackageAssets: browserFetchedMathJaxAssets(),
+    mathJaxPackageAssetsApi: null
+  });
+  assert.equal(built.ok, false);
+  assert.equal(built.error && built.error.code, "mathjax_cdn_reference_remaining");
+});
+
+test("inline CDN rewrite works when mathJaxPackageAssetsApi is unavailable", () => {
+  const exportHtml = buildProductionAppJsBootstrapHtml("<p>\\(x\\)</p>");
+  const rewritten = learnerPackage.rewriteMathJaxLoaderInPackageHtml(exportHtml, null);
+  assert.match(rewritten, new RegExp(LOCAL_LOADER.replace(/\//g, "\\/")));
+  assert.doesNotMatch(rewritten, /cdn\.jsdelivr\.net\/npm\/mathjax/i);
 });
 
 test("vendored MathJax asset manifest matches on-disk files", () => {

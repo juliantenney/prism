@@ -55079,12 +55079,18 @@
       return;
     }
 
+    var mathJaxPackageAssetsApi =
+      (typeof globalThis !== "undefined" && globalThis.PRISM_MATHJAX_PACKAGE_ASSETS) ||
+      (typeof window !== "undefined" && window.PRISM_MATHJAX_PACKAGE_ASSETS) ||
+      null;
+
     var built = packageApi.buildLearnerPackage({
       html: exportHtml,
       visualAssetManifest: manifest,
       additionalResourceAssets: additionalResourceAssets,
       mathLivePackageAssets: mathLiveAssets,
       mathJaxPackageAssets: mathJaxAssets,
+      mathJaxPackageAssetsApi: mathJaxPackageAssetsApi,
       pageSlug: String(state.utilitiesLastFileName || "rendered-output").replace(/\.html$/i, ""),
       builtAt: new Date().toISOString()
     });

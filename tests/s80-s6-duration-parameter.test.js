@@ -806,13 +806,14 @@ test("S6: Duration survives normalization, and out-of-range stored values are dr
 test("S6 extensibility: Duration needs no per-prompt-builder timing prose", () => {
   const appSrc = fs.readFileSync(path.join(repoRoot, "app.js"), "utf8");
 
-  // The one and only consumer-specific read of the effective duration is the
-  // bounded D1 owner. If this count grows, stages are interpreting duration
-  // independently again.
+  // Allowed call-shaped sites: definition, DLA workbook overlay (D1), and LS
+  // capture compliance (S82 — rejects LS totals that contradict effective duration).
+  // If this count grows beyond these bounded consumers, stages are interpreting
+  // duration independently again.
   const reads = appSrc.match(/resolveEffectiveWorkflowDurationMinutes\(/g) || [];
   assert.equal(
     reads.length,
-    2,
-    "expected exactly two call-shaped sites: the definition and the D1 caller"
+    3,
+    "expected definition + DLA overlay + LS compliance callers only"
   );
 });

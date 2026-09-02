@@ -8627,6 +8627,19 @@
     return isLearnerPageFocusedOutputForMaterialShapeScaffold(context, resolved, base);
   }
 
+  function isAuthoritativeFacilitatedDeliveryFromResolvedFactors(resolved) {
+    var r = resolved && typeof resolved === "object" ? resolved : {};
+    var ctx = String(r.delivery_context || "")
+      .toLowerCase()
+      .trim();
+    var mode = String(r.delivery_mode || "")
+      .toLowerCase()
+      .trim();
+    if (ctx === "in_person" || ctx === "online_sync") return true;
+    if (mode === "live_workshop" || mode === "seminar") return true;
+    return false;
+  }
+
   function isFacilitatedLearnerPageFramingContext(context, resolved, base) {
     if (!shouldApplyLearnerPagePedagogicFramingScaffold(context, resolved, base)) return false;
     return !isSelfDirectedDeliveryForMaterialShapeScaffold(resolved, context, base);
@@ -8634,15 +8647,18 @@
 
   function resolveFacilitatedDeliveryForWorkflow(wf, context) {
     var briefCtx = resolvePedagogicCognitionBriefContextForPrompt(context || {});
-    var resolved =
-      briefCtx && briefCtx.resolved && typeof briefCtx.resolved === "object"
-        ? briefCtx.resolved
-        : wf &&
-          wf.workflowBriefResolution &&
-          wf.workflowBriefResolution.resolvedFactors &&
-          typeof wf.workflowBriefResolution.resolvedFactors === "object"
+    var resolvedFromWorkflow =
+      wf &&
+      wf.workflowBriefResolution &&
+      wf.workflowBriefResolution.resolvedFactors &&
+      typeof wf.workflowBriefResolution.resolvedFactors === "object"
         ? wf.workflowBriefResolution.resolvedFactors
-        : {};
+        : null;
+    var resolved =
+      resolvedFromWorkflow ||
+      (briefCtx && briefCtx.resolved && typeof briefCtx.resolved === "object"
+        ? briefCtx.resolved
+        : {});
     var base = {
       goal: String(
         (context && context.workflowGoal) ||
@@ -8656,19 +8672,11 @@
           ""
       ).trim()
     };
+    if (isAuthoritativeFacilitatedDeliveryFromResolvedFactors(resolved)) {
+      return true;
+    }
     if (context && typeof context === "object") {
       return isFacilitatedLearnerPageFramingContext(context, resolved, base);
-    }
-    var delivery = String(resolved.delivery_context || resolved.delivery_mode || "")
-      .toLowerCase()
-      .trim();
-    if (
-      delivery === "in_person" ||
-      delivery === "online_sync" ||
-      delivery === "live_workshop" ||
-      delivery === "seminar"
-    ) {
-      return true;
     }
     return false;
   }
@@ -8681,6 +8689,82 @@
       options.facilitatedDelivery = true;
     }
     return options;
+  }
+
+  function buildLearningSequencePartialValidationOptions(workflow) {
+    var options = {};
+    var minutes = resolveEffectiveWorkflowDurationMinutes(workflow);
+    if (minutes != null) {
+      options.effectiveDurationMinutes = minutes;
+    }
+    return options;
+  }
+
+  function parseLearningSequenceDurationMinutes(value) {
+    if (value == null || value === "") return null;
+    var minutes = Number(value);
+    if (!isFinite(minutes)) return null;
+    return Math.round(minutes);
+  }
+
+  function parseLearningSequenceTimelineEntryMinutes(entry) {
+    if (!entry || typeof entry !== "object" || Array.isArray(entry)) return null;
+    var fromDuration = parseLearningSequenceDurationMinutes(entry.duration_minutes);
+    if (fromDuration != null) return fromDuration;
+    return parseLearningSequenceDurationMinutes(entry.estimated_minutes);
+  }
+
+  function sumLearningSequenceTimelineMinutes(sequence) {
+    if (!sequence || !Array.isArray(sequence.timeline)) return null;
+    var total = 0;
+    var saw = false;
+    sequence.timeline.forEach(function (entry) {
+      var minutes = parseLearningSequenceTimelineEntryMinutes(entry);
+      if (minutes == null) return;
+      total += minutes;
+      saw = true;
+    });
+    return saw ? total : null;
+  }
+
+  function appendLearningSequenceDurationComplianceErrors(parsed, options, errors) {
+    var opts = options && typeof options === "object" ? options : {};
+    var authoritative = opts.effectiveDurationMinutes;
+    if (authoritative == null || authoritative === "") return;
+    var authMinutes = parseLearningSequenceDurationMinutes(authoritative);
+    if (authMinutes == null || authMinutes <= 0) return;
+    var sequence =
+      parsed &&
+      parsed.learning_sequence &&
+      typeof parsed.learning_sequence === "object" &&
+      !Array.isArray(parsed.learning_sequence)
+        ? parsed.learning_sequence
+        : null;
+    if (!sequence) return;
+    var totalDeclared = parseLearningSequenceDurationMinutes(sequence.total_duration_minutes);
+    if (totalDeclared == null) {
+      totalDeclared = parseLearningSequenceDurationMinutes(sequence.total_estimated_minutes);
+    }
+    var timelineSum = sumLearningSequenceTimelineMinutes(sequence);
+    if (totalDeclared != null && timelineSum != null && totalDeclared !== timelineSum) {
+      errors.push(
+        "learning_sequence.total_duration_minutes (" +
+          totalDeclared +
+          ") must equal sum of timeline activity durations (" +
+          timelineSum +
+          ")"
+      );
+    }
+    var lsTotal = totalDeclared != null ? totalDeclared : timelineSum;
+    if (lsTotal != null && lsTotal !== authMinutes) {
+      errors.push(
+        "learning_sequence total duration (" +
+          lsTotal +
+          " min) must match authoritative effective workflow duration (" +
+          authMinutes +
+          " min)"
+      );
+    }
   }
 
   function shouldApplySelfDirectedLearnerPageScaffoldBase(context, resolved, base) {
@@ -10745,7 +10829,10 @@
       }
     }
     if (stage === "learning_sequence") {
-      return validateLearningSequencePartialPageCapture(parsed);
+      return validateLearningSequencePartialPageCapture(
+        parsed,
+        buildLearningSequencePartialValidationOptions(workflow)
+      );
     }
     if (stage === "design_page") {
       return validateDesignPagePartialPageCapture(parsed);
@@ -11318,7 +11405,10 @@
         (resolvePartialPageCaptureStageFromStep(step) === "learning_sequence" ||
           (!step && partialMode))
       ) {
-        return validateLearningSequencePartialPageCapture(parsed);
+        return validateLearningSequencePartialPageCapture(
+          parsed,
+          buildLearningSequencePartialValidationOptions(workflow)
+        );
       }
       var errors = [];
       if (
@@ -11368,7 +11458,7 @@
     return { ok: false, errors: ["unrecognized Learning Sequence capture shape"] };
   }
 
-  function validateLearningSequencePartialPageCapture(parsed) {
+  function validateLearningSequencePartialPageCapture(parsed, options) {
     if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
       return { ok: false, errors: ["invalid capture object"] };
     }
@@ -11389,6 +11479,7 @@
     ) {
       errors.push("learning_sequence object required");
     }
+    appendLearningSequenceDurationComplianceErrors(parsed, options, errors);
     return errors.length ? { ok: false, errors: errors } : { ok: true, errors: [] };
   }
 
@@ -56147,6 +56238,9 @@
     prismTestApi.formatAdjustmentsParameterValueForDisplay =
       formatAdjustmentsParameterValueForDisplay;
     prismTestApi.buildDlaCanonicalSlotContext = buildDlaCanonicalSlotContext;
+    prismTestApi.resolveFacilitatedDeliveryForWorkflow = resolveFacilitatedDeliveryForWorkflow;
+    prismTestApi.buildLearningSequencePartialValidationOptions =
+      buildLearningSequencePartialValidationOptions;
     prismTestApi.buildEffectiveWorkflowIntentEntries = buildEffectiveWorkflowIntentEntries;
     prismTestApi.sanitizeAssessmentCuesForUpstreamContext =
       sanitizeAssessmentCuesForUpstreamContext;

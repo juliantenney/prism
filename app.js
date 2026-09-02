@@ -8632,6 +8632,57 @@
     return !isSelfDirectedDeliveryForMaterialShapeScaffold(resolved, context, base);
   }
 
+  function resolveFacilitatedDeliveryForWorkflow(wf, context) {
+    var briefCtx = resolvePedagogicCognitionBriefContextForPrompt(context || {});
+    var resolved =
+      briefCtx && briefCtx.resolved && typeof briefCtx.resolved === "object"
+        ? briefCtx.resolved
+        : wf &&
+          wf.workflowBriefResolution &&
+          wf.workflowBriefResolution.resolvedFactors &&
+          typeof wf.workflowBriefResolution.resolvedFactors === "object"
+        ? wf.workflowBriefResolution.resolvedFactors
+        : {};
+    var base = {
+      goal: String(
+        (context && context.workflowGoal) ||
+          (briefCtx && briefCtx.explicit && briefCtx.explicit.goal) ||
+          (wf && wf.workflowOutputSpec && wf.workflowOutputSpec.goal) ||
+          ""
+      ).trim(),
+      desiredOutputs: String(
+        (context && context.desiredOutputs) ||
+          (briefCtx && briefCtx.explicit && briefCtx.explicit.desiredOutputs) ||
+          ""
+      ).trim()
+    };
+    if (context && typeof context === "object") {
+      return isFacilitatedLearnerPageFramingContext(context, resolved, base);
+    }
+    var delivery = String(resolved.delivery_context || resolved.delivery_mode || "")
+      .toLowerCase()
+      .trim();
+    if (
+      delivery === "in_person" ||
+      delivery === "online_sync" ||
+      delivery === "live_workshop" ||
+      delivery === "seminar"
+    ) {
+      return true;
+    }
+    return false;
+  }
+
+  function buildDlaPartialValidationOptions(workflow, context) {
+    var options = {};
+    var baseline = tryParseWorkflowArtefactJson(resolvePageShellJsonForDlaCopy(workflow) || "");
+    if (baseline) options.baseline = baseline;
+    if (resolveFacilitatedDeliveryForWorkflow(workflow, context)) {
+      options.facilitatedDelivery = true;
+    }
+    return options;
+  }
+
   function shouldApplySelfDirectedLearnerPageScaffoldBase(context, resolved, base) {
     if (!isSelfDirectedDeliveryForMaterialShapeScaffold(resolved, context, base)) return false;
     return isLearnerPageFocusedOutputForMaterialShapeScaffold(context, resolved, base);
@@ -10604,8 +10655,10 @@
             durationMinutes: resolveEffectiveWorkflowDurationMinutes(wf)
           })
         : "";
+    var facilitatedDelivery = resolveFacilitatedDeliveryForWorkflow(wf, context);
     return {
       workbookOverlay: overlayOn,
+      facilitatedDelivery: facilitatedDelivery,
       overlayText: overlayText,
       includeExamples: true,
       productionSlot: productionParts.filter(Boolean).join("\n"),
@@ -10678,7 +10731,7 @@
             resolvedPartial,
             dlaBaseline || null
           ),
-          { baseline: dlaBaseline || null }
+          buildDlaPartialValidationOptions(workflow, null)
         );
       }
     }
@@ -10999,7 +11052,7 @@
         var resolvedDlaPartial = resolveDlaPartialCaptureForValidation(parsed, baseline || null);
         return dlaMod.validateDlaPartialPageCapture(
           repairDlaPartialPageCaptureForValidation(resolvedDlaPartial, baseline || null),
-          { baseline: baseline || null }
+          buildDlaPartialValidationOptions(workflow, buildWorkflowStepIdentityContextFromRow(step))
         );
       }
       if (
@@ -11011,7 +11064,7 @@
         var resolvedDlaByStage = resolveDlaPartialCaptureForValidation(parsed, baseline || null);
         return dlaMod.validateDlaPartialPageCapture(
           repairDlaPartialPageCaptureForValidation(resolvedDlaByStage, baseline || null),
-          { baseline: baseline || null }
+          buildDlaPartialValidationOptions(workflow, buildWorkflowStepIdentityContextFromRow(step))
         );
       }
       if (

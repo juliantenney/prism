@@ -55054,7 +55054,13 @@
     }
   }
 
-  function finalizeUtilitiesLearnerPackageDownload(exportHtml, manifest, additionalResourceAssets, mathLiveAssets) {
+  function finalizeUtilitiesLearnerPackageDownload(
+    exportHtml,
+    manifest,
+    additionalResourceAssets,
+    mathLiveAssets,
+    mathJaxAssets
+  ) {
     var packageApi =
       (typeof globalThis !== "undefined" && globalThis.PRISM_LEARNER_PACKAGE) ||
       (typeof window !== "undefined" && window.PRISM_LEARNER_PACKAGE) ||
@@ -55078,6 +55084,7 @@
       visualAssetManifest: manifest,
       additionalResourceAssets: additionalResourceAssets,
       mathLivePackageAssets: mathLiveAssets,
+      mathJaxPackageAssets: mathJaxAssets,
       pageSlug: String(state.utilitiesLastFileName || "rendered-output").replace(/\.html$/i, ""),
       builtAt: new Date().toISOString()
     });
@@ -55141,46 +55148,62 @@
         (typeof globalThis !== "undefined" && globalThis.PRISM_MATH_ENTRY_PACKAGE_ASSETS) ||
         (typeof window !== "undefined" && window.PRISM_MATH_ENTRY_PACKAGE_ASSETS) ||
         null;
+      var mathJaxAssetsApi =
+        (typeof globalThis !== "undefined" && globalThis.PRISM_MATHJAX_PACKAGE_ASSETS) ||
+        (typeof window !== "undefined" && window.PRISM_MATHJAX_PACKAGE_ASSETS) ||
+        null;
       var needsMathLive =
         exportHtml.indexOf('data-input-modality="math"') >= 0 ||
         exportHtml.indexOf("lib/mathlive/") >= 0;
+      var needsMathJax =
+        mathJaxAssetsApi &&
+        typeof mathJaxAssetsApi.pageHtmlNeedsMathJaxDisplay === "function" &&
+        mathJaxAssetsApi.pageHtmlNeedsMathJaxDisplay(exportHtml);
+
+      var assetBaseUrl = getUtilitiesLearnerPackageAssetBaseUrl();
+      var mathLivePromise = Promise.resolve(null);
+      var mathJaxPromise = Promise.resolve(null);
 
       if (
         needsMathLive &&
         mathAssetsApi &&
         typeof mathAssetsApi.fetchMathLivePackageAssets === "function"
       ) {
-        mathAssetsApi
-          .fetchMathLivePackageAssets(getUtilitiesLearnerPackageAssetBaseUrl())
-          .then(function (mathLiveAssets) {
-            finalizeUtilitiesLearnerPackageDownload(
-              exportHtml,
-              manifest,
-              additionalResourceAssets,
-              mathLiveAssets
-            );
-          })
-          .catch(function (err) {
-            showToast(
-              "Could not load MathLive assets for learner package: " +
-                String((err && err.message) || err || "fetch failed"),
-              "error"
-            );
-          });
-        return;
-      }
-
-      if (needsMathLive) {
+        mathLivePromise = mathAssetsApi.fetchMathLivePackageAssets(assetBaseUrl);
+      } else if (needsMathLive) {
         showToast("MathLive packaging is unavailable for this maths-enabled learner page.", "error");
         return;
       }
 
-      finalizeUtilitiesLearnerPackageDownload(
-        exportHtml,
-        manifest,
-        additionalResourceAssets,
-        null
-      );
+      if (
+        needsMathJax &&
+        mathJaxAssetsApi &&
+        typeof mathJaxAssetsApi.fetchMathJaxPackageAssets === "function"
+      ) {
+        mathJaxPromise = mathJaxAssetsApi.fetchMathJaxPackageAssets(assetBaseUrl);
+      } else if (needsMathJax) {
+        showToast("MathJax packaging is unavailable for this display-maths learner page.", "error");
+        return;
+      }
+
+      Promise.all([mathLivePromise, mathJaxPromise])
+        .then(function (assetRows) {
+          finalizeUtilitiesLearnerPackageDownload(
+            exportHtml,
+            manifest,
+            additionalResourceAssets,
+            assetRows[0],
+            assetRows[1]
+          );
+        })
+        .catch(function (err) {
+          showToast(
+            "Could not load maths runtime assets for learner package: " +
+              String((err && err.message) || err || "fetch failed"),
+            "error"
+          );
+        });
+      return;
     });
   }
 

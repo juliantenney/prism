@@ -220,6 +220,7 @@ test("Test C — precision fidelity section when formal claims exist", () => {
   assert.match(prompt, /Precision-critical fidelity:/i);
   assert.match(prompt, /Preserve authorised equations/i);
   assert.match(prompt, /Do NOT derive, invent, substitute/i);
+  assert.match(prompt, /Do not reparameterise, normalise, rearrange, or substitute/i);
   assert.match(prompt, /represent the connection qualitatively/i);
   const diag = workspace.diagnoseHumanPrompt(prompt, brief);
   assert.equal(diag.precision_fidelity_section_present, true);

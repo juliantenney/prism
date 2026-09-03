@@ -39,13 +39,14 @@ Debt relevant to Sprint 82 scope. Definitions live in diagnostics; this file rec
 
 ## Explicitly deferred post-alpha (preserved — not alpha blockers)
 
-- Historical **RC3–RC8** full-suite cleanup — [D-014](../../governance/D-014-test-suite-confidence-diagnostic.md)  
-- Table per-cell `input_modality: math`  
-- Rich mixed prose+math editor  
-- CAS / symbolic correctness  
-- Alpha hardening export-import lifecycle programme (broader than exercised Adjustment path)  
-- **Slideshow / output extensibility** — [PB-FA-008](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-008--first-class-slideshow-product--architecture-extensibility-test)  
-- Other explicitly deferred capabilities in [PRODUCT-BACKLOG.md](../../../backlog/PRODUCT-BACKLOG.md)
+Historical notes only — **canonical planning authority:** [PRODUCT-BACKLOG.md](../../../backlog/PRODUCT-BACKLOG.md).
+
+- Historical **RC3–RC8** full-suite residue — [D-014](../../governance/D-014-test-suite-confidence-diagnostic.md) (not a planning programme)  
+- Future maths capabilities (mixed prose+math; per-cell table maths; CAS) — [PB-M-001](../../../backlog/PRODUCT-BACKLOG.md#pb-m-001--future-maths-capabilities)  
+- Significant post-alpha candidates include Expository Resource ([PB-FA-011](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-011--expository-resource)) — not automatic next work  
+- Sprint 81 debt S81-D-001…D-007 remains in the [S81 ledger](../2026-08-28-sprint-81-learner-workspace-investigation-and-surface-architecture/ARCHITECTURAL-DEBT.md) (not promoted to product backlog)  
+
+Former PB-FA-008 Slideshow-as-architecture-test is **superseded**; Presentation remains a lightweight idea only.
 
 ## Engineering record — withdrawn finding
 

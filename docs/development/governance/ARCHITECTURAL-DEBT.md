@@ -5,13 +5,15 @@
 
 ---
 
-# A. Active / pre-Alpha debt
+# A. Open architectural questions (post-alpha)
+
+**Programme note (2026-09-03):** Alpha development is **complete**. Items below are **not** retroactive Alpha blockers and are **not** automatically product-backlog planning obligations. Current planning authority: [PRODUCT-BACKLOG.md](../../backlog/PRODUCT-BACKLOG.md). Handle evidenced defects from alpha use; do not invent work from historical debt alone.
 
 ## D-001 — Episode Plan → DLA lineage status
 
-**Priority:** High  
-**State:** Requires bounded repository verification  
-**Milestone relevance:** Alpha
+**Priority:** High (if reopened)  
+**State:** Historical open verification question — not a current planning item unless alpha use evidences a lineage defect  
+**Milestone relevance:** Post-alpha (was Alpha-facing pre-close)
 
 Historical Sprint 38S implemented explicit beat → DLA obligation traceability and anti-collapse rules.
 
@@ -45,9 +47,9 @@ Then identify what current mechanism, if any, preserves the same guarantee.
 
 ## D-002 — Episode Plan selection adequacy
 
-**Priority:** High  
-**State:** Open generation/quality question  
-**Milestone relevance:** Alpha
+**Priority:** Medium  
+**State:** Open generation/quality observation — promote only with fresh evidence  
+**Milestone relevance:** Post-alpha
 
 Recent runs show materially different Episode Plan richness.
 
@@ -66,9 +68,9 @@ Assess whether the selected journey is appropriate to the learning outcome and a
 
 ## D-003 — Whole-resource conformance and lineage validation
 
-**Priority:** High  
-**State:** Required design/implementation work  
-**Milestone relevance:** Alpha blocker candidate
+**Priority:** Medium  
+**State:** Historical design question — not standing product work; address evidenced conformance defects if they arise in use  
+**Milestone relevance:** Post-alpha (was Alpha-facing pre-close)
 
 Need deterministic evidence that required instructional obligations:
 
@@ -96,9 +98,9 @@ It should be capable of detecting, where evidence permits:
 
 ## D-004 — GAM malformed-output E2 family
 
-**Priority:** High while recurring  
-**State:** Open / intermittent  
-**Milestone relevance:** Alpha if repeatable enough to undermine safe generation
+**Priority:** Medium while recurring  
+**State:** Open / intermittent — fail-closed policy retained; not a standing backlog programme  
+**Milestone relevance:** Post-alpha operational observation
 
 Known malformed-output family.
 
@@ -114,9 +116,9 @@ Continue narrowing provenance between generation, capture and other tooling.
 
 ## D-005 — Temporary operational-suitability verifier
 
-**Priority:** Medium  
-**State:** Temporary instrumentation  
-**Milestone relevance:** Alpha evidence support
+**Priority:** Low  
+**State:** Temporary instrumentation — retire/reduce when no longer useful  
+**Milestone relevance:** Post-alpha
 
 Useful for identifying systemic GAM failure classes.
 
@@ -128,9 +130,9 @@ Retire or reduce once failure classes are understood and generation is reliably 
 
 ## D-006 — Release packaging
 
-**Priority:** High  
-**State:** Required  
-**Milestone relevance:** Alpha release prerequisite
+**Priority:** High (post-alpha planning)  
+**State:** Genuine future requirement — canonical planning item **[PB-S-005](../../backlog/PRODUCT-BACKLOG.md#pb-s-005--release--deployment-packaging)**  
+**Milestone relevance:** Post-alpha (was Alpha release prerequisite framing pre-close)
 
 Need a reproducible method for producing a deployment package/folder from known-good project source rather than deploying directly from the working project folder.
 
@@ -142,7 +144,7 @@ The release process should establish what is shipped and from which verified sta
 
 ## D-007 — Activity/session timing
 
-**State:** Queued; not currently promoted to Alpha
+**State:** Historical queued note; session-level Duration Adjustments delivered in Sprint 80; further per-activity timing only if alpha use evidences a concrete need
 
 Duration may exist upstream without explicit per-activity allocation.
 
@@ -179,55 +181,23 @@ Keep distinct from pedagogical-diagram architecture.
 
 ## D-010 — Settings → Adjustments
 
-**State:** Decided and delivered for governed Adjustments — [Sprint 80 CLOSED](../sprints/2026-08-26-sprint-80-settings-discovery-product-value-and-policy-architecture/SPRINT-80-START-HERE.md) (WORKING ALPHA; updated 2026-08-28)
+**State:** **Architectural question answered** — Sprint 80 delivered **Adjustments** as the supported variability model and closed WORKING ALPHA ([Sprint 80 CLOSED](../sprints/2026-08-26-sprint-80-settings-discovery-product-value-and-policy-architecture/SPRINT-80-START-HERE.md)).
 
-Discovery is complete. The S80-T-006 gate decided **Option C**: the historical
-41-control Settings catalogue is **superseded product design**, replaced by
-**Adjustments** — a small allowlisted set of typed workflow parameters plus an
-optional per-step natural-language author instruction. `[PRISM_STEP_PARAMS]` is
-demoted to legacy with no reachable route to a model.
+The S80-T-006 gate decided **Option C**: the historical 41-control Settings catalogue is **superseded product design**, replaced by **Adjustments** — a small allowlisted set of typed workflow parameters plus an optional per-step natural-language author instruction. `[PRISM_STEP_PARAMS]` is demoted to legacy with no reachable route to a model.
 
-Implemented so far: **S1** (parameter registry, `resolveEffectiveRunContext`,
-`workflow.adjustments` persistence), **S3** (per-step
-`step.additional_instruction`, model-visible via two ingress points) and **S2**
-(the `topic` parameter, the shared `workflowContext` projector, and the
-Henry VIII → Elizabeth I vertical proof on one saved workflow). The architecture
-is now proven end to end. Slices S4–S10 are not started.
+**Delivered in Sprint 80 (accepted):** parameter registry and resolution (`resolveEffectiveRunContext`), `workflow.adjustments` persistence, per-step Additional Instruction, Topic / Duration / Audience / Assessment Quantity+Difficulty and related governed Adjustments slices through closeout (S1–S8 as accepted). Historical pack Settings UI removed from the active surface; inert parsing retained safely under tests.
 
-Do not treat pack-declared Settings as requirements to activate, and do not declare
-a registry parameter live without implementing its projection and tests in the same
-slice — that recreates the persisted-but-inert failure this debt records.
+**Planning disposition (2026-09-03):** Former product-backlog **PB-FA-005** is **retired**. Do **not** preserve a generic “remaining parameterisation” programme. Add a concrete Adjustment only when alpha use evidences a specific need. Residual observations in the Sprint 80 architectural-debt ledger remain **historical** — not canonical planning obligations.
 
-### Open sub-items introduced by S1/S3/S2/S4 (2026-08-27)
-
-| Item | Note |
-| ---- | ---- |
-| **D1** | Canonical DLA contains hardcoded `~60` / `50–70` timing text. **Blocks Duration (S5).** Recorded, not fixed. |
-| **D2** | Canonical DLA cognition block is bypassed. Recorded, not fixed. |
-| **D3** | Learning Sequence duration step parameter never reaches the model. Recorded, not fixed. |
-| ~~Stale first-step `Goal:` prose vs adjusted Topic~~ (S2) | **RESOLVED in S4.** Topic declares `supersedesCommissionedContextFields: ["goal"]`, and `buildWorkflowRuntimeContextText` omits a commissioned field when its typed parameter's provenance is `adjustment`. Unrelated commissioning context (audience, constraints, inputs, outputs) is retained, no prose is parsed or rewritten, and nothing changes while Topic is on Auto. |
-| `stepScoped` projection unimplemented | Only `workflowContext` is implemented (S2). A declaration using `stepScoped` would persist and resolve but project nothing. Guarded by an S1 test so it cannot ship looking live. |
-| ~~Duplicate instruction fields~~ | **RESOLVED in S4 as a UX distinction, not a merge.** The operator confirmed `step.notes` ("Instructions") is a **supported capability**, especially for hand-rolled workflows, and must not be migrated, merged or described as legacy. Both fields now carry distinct labels and help text. |
-| ~~Deterministic-step exclusion is one predicate~~ | **RESOLVED in S4.** Split into `isWorkflowStepEligibleForAdditionalInstruction` (steering) and `isWorkflowStepEligibleForWorkflowContextProjection` (projection, via `isDerivedShellWorkflowStep`). Episode Plan is now steerable per explicit operator correction, while still receiving no projected parameters as a derived shell. |
-| **Historical pack Settings code retained but inert** (new, S4) | S4 removed the pack-derived catalogue from the active UI but deliberately retained the parsing/aggregation/recovery code and all `[PRISM_STEP_PARAMS]` handling — `aggregateUnifiedWorkflowParameterSections`, `renderUnifiedWorkflowSettingsContent`, `syncUnifiedWorkflowSettingsToStepNotes`, `countUnifiedWorkflowVisibleParameterControls`, `isWorkflowStepConfigurableInSettings`, `recoverWorkflowBriefConfigForUnifiedSettings` and neighbours. Unreferenced from the Adjustments panel and still covered by 60+ passing unit tests, which is what makes retention safe. **Deeper retirement is separate work (S8);** the risk is future confusion, not live authority. |
-| **`NON_STEERABLE_CANONICAL_STEP_IDS` is empty** (new, S4) | Deliberate: every current workflow step emits an author-facing prompt, so every step is steerable. A future non-prompt operation must be registered there or it will silently gain a meaningless field. |
-| **Adjusted Topic drops commissioning nuance** (new, S4) | Omitting `Goal:` also drops any purpose/emphasis prose it carried, not only the stale subject. Authorised as the narrow fix, but a future Purpose/Intent parameter would let the useful part survive an adjusted Topic. |
-| **`step.notes` has two editors** (new, S4) | The Edit tab and the Adjustments panel both edit `step.notes`. The panel prefers the Edit-tab textarea on read and mirrors on write, so gather keeps one source of truth. Residual risk only if the Edit-tab step list is unrendered while Adjustments is open. Worth an integration test in S9. |
-| **Prompt Factory `Settings...` button** (new, S4) | An unrelated step-row button labelled `Settings...` seeds the Prompt Factory. Left untouched per S4 scope, but it now shares vocabulary with nothing else on screen. Small naming-clarity follow-up. |
-| Save/load normalization asymmetry | `handleSaveWorkflow` does not call `normalizeWorkflowForV1`, so Save-path and load-path normalization differ. S1 works around it in the gather path. Pre-existing. |
-| No capability resolvers | `applicability.requiresCapability` fails closed until S7 registers a detector. Intentional, but no parameter can be capability-gated until then. |
-
-Likely still Beta/v1.0 territory for the remaining slices.
+Do not treat pack-declared Settings as requirements to activate, and do not declare a registry parameter live without implementing its projection and tests in the same slice.
 
 ---
 
-## D-011 — Slideshow / narrated MP4 workflow
+## D-011 — Slideshow / narrated MP4 / Presentation
 
-**State:** Post-Alpha new capability
+**State:** Lightweight future product idea only — see [PRODUCT-BACKLOG](../../backlog/PRODUCT-BACKLOG.md) § Lightweight future product ideas. Former PB-FA-008 “Slideshow as architecture extensibility test” is **superseded**.
 
-Concept: generate narrated video from slides/stills using TTS.
-
-Potentially valuable, but not Alpha hardening.
+Concept notes (historical): narrated video from slides/stills using TTS may be valuable later; not a current architecture programme.
 
 ---
 

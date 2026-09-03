@@ -127,16 +127,16 @@ D-014 not reopened.
 
 ## 5. Deferred / post-alpha work (preserved)
 
-Deferred capabilities remain **backlog / post-alpha** — not alpha blockers:
+Deferred capabilities remain discoverable — **not** alpha blockers and **not** automatic next work. Canonical planning authority: [PRODUCT-BACKLOG.md](../../../backlog/PRODUCT-BACKLOG.md).
 
-- Historical **RC3–RC8** full-suite cleanup ([D-014](../../governance/D-014-test-suite-confidence-diagnostic.md))
-- **Slideshow / output extensibility** ([PB-FA-008](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-008--first-class-slideshow-product--architecture-extensibility-test))
-- Alpha hardening export-import lifecycle programme (broader than exercised Adjustment path)
-- Table per-cell `input_modality: math`; rich mixed prose+math editor; CAS / symbolic checking
-- Sprint 81 carried debt (S81-D-001…D-007) — see [S81 ARCHITECTURAL-DEBT](../2026-08-28-sprint-81-learner-workspace-investigation-and-surface-architecture/ARCHITECTURAL-DEBT.md)
-- Other explicitly deferred investigation items in [PRODUCT-BACKLOG.md](../../../backlog/PRODUCT-BACKLOG.md)
+- Historical **RC3–RC8** full-suite residue ([D-014](../../governance/D-014-test-suite-confidence-diagnostic.md)) — not a planning programme  
+- Future maths capabilities ([PB-M-001](../../../backlog/PRODUCT-BACKLOG.md#pb-m-001--future-maths-capabilities))  
+- Sprint 81 carried debt (S81-D-001…D-007) — [S81 ARCHITECTURAL-DEBT](../2026-08-28-sprint-81-learner-workspace-investigation-and-surface-architecture/ARCHITECTURAL-DEBT.md)  
+- Significant post-alpha candidates (e.g. Expository Resource PB-FA-011) — selected deliberately when opening future work  
 
-Do **not** convert deferred capabilities into alpha blockers retroactively.
+Former Slideshow-as-architecture-test (PB-FA-008) and Settings/QA productisation themes are **retired/superseded** in the reconciled backlog. Presentation/Podcast remain lightweight ideas only.
+
+Do **not** convert historical debt into alpha blockers retroactively.
 
 ---
 

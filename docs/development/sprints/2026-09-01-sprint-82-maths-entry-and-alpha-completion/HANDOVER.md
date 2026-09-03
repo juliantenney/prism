@@ -50,13 +50,13 @@
 
 ## D. Deferred / post-alpha (preserved)
 
-- Historical **RC3–RC8** — [D-014](../../governance/D-014-test-suite-confidence-diagnostic.md)  
-- **Slideshow / output extensibility** — [PB-FA-008](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-008--first-class-slideshow-product--architecture-extensibility-test)  
-- Alpha hardening export-import lifecycle (beyond exercised Adjustment path)  
-- Table per-cell maths; rich mixed editor; CAS  
-- Sprint 81 debt S81-D-001…D-007 — [S81 ARCHITECTURAL-DEBT](../2026-08-28-sprint-81-learner-workspace-investigation-and-surface-architecture/ARCHITECTURAL-DEBT.md)  
+Canonical planning: [PRODUCT-BACKLOG.md](../../../backlog/PRODUCT-BACKLOG.md). Historical engineering debt stays in its ledgers — not automatic next work.
 
-See [ARCHITECTURAL-DEBT.md](ARCHITECTURAL-DEBT.md) · [PRODUCT-BACKLOG.md](../../../backlog/PRODUCT-BACKLOG.md)
+- Future maths capabilities — [PB-M-001](../../../backlog/PRODUCT-BACKLOG.md#pb-m-001--future-maths-capabilities)  
+- Sprint 81 debt S81-D-001…D-007 — [S81 ARCHITECTURAL-DEBT](../2026-08-28-sprint-81-learner-workspace-investigation-and-surface-architecture/ARCHITECTURAL-DEBT.md)  
+- RC3–RC8 — [D-014](../../governance/D-014-test-suite-confidence-diagnostic.md)  
+
+See [ARCHITECTURAL-DEBT.md](ARCHITECTURAL-DEBT.md) · [NEXT-SPRINT.md](../../../sprints/NEXT-SPRINT.md)
 
 ---
 

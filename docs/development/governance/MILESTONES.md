@@ -144,61 +144,41 @@ The release process must make the shipped state explicit.
 
 ---
 
-## Alpha v1.0 — currently excluded by default
+## Alpha v1.0 — historically excluded by default (pre-close framing)
 
-The following are not Alpha requirements unless new evidence shows they materially block Alpha quality/usability.
+The following were **not** Alpha requirements at declaration time. They are retained as historical programme notes — **not** a current “must do next” list. Current planning authority: [PRODUCT-BACKLOG.md](../../backlog/PRODUCT-BACKLOG.md).
 
-### Settings
+### Settings / Adjustments
 
-Deferred to Beta/v1.0 territory.
+Historical Settings catalogue was superseded by **Adjustments** in Sprint 80 (WORKING ALPHA). Further typed Adjustments are added only when use evidences a concrete need — not as a standing Settings programme.
 
 ### Image consistency
 
-Post-Alpha by default. Promote only if benchmark evidence shows it invalidates Alpha.
+Post-Alpha by default. Promote only if benchmark evidence shows it invalidates Alpha quality/usability.
 
 ### GAM restructure
 
-Post-Alpha by default. Promote only if current architecture is proven to block Alpha or the value proposition becomes overwhelming.
+Post-Alpha by default. Promote only if current architecture is proven to block reliability or the value proposition becomes overwhelming.
 
-### Slideshow / narrated MP4 workflow
+### Slideshow / narrated MP4 / Presentation
 
-New capability; post-Alpha.
+Lightweight future product ideas only — see PRODUCT-BACKLOG. Not an architecture-extensibility programme.
 
-### Full product integration of Governance
+### Full product integration of Governance / Generation Forensics
 
-Governance can operate as prompts/workflows and curated artefacts during Alpha.
-
-### Full product integration of Generation Forensics
-
-Forensics can operate as an investigative method using Copilot/LLM diagnosis plus bounded Cursor verification.
+Methods may operate as curated prompts/workflows before any Prism-integrated feature.
 
 ---
 
-## Alpha v1.0 — evidence still required
+## Alpha decision rule (satisfied)
 
-Current priority evidence:
-
-1. repository verification of S38S → current EP/DLA lineage;
-2. representative conformance validation across several resources/domains;
-3. fresh evidence for remaining GAM malformed-output/operational-suitability issues;
-4. QA corpus sufficient to make a defensible "good enough for Alpha" judgement;
-5. working release-package process.
-
----
-
-## Alpha decision rule
-
-Alpha should be declared when the evidence supports:
+Alpha was declared when the evidence supported:
 
 > **Prism substantially does what the current product vision says it does, through the intended architecture, repeatedly enough to be a credible Alpha rather than a successful demonstration.**
 
-Known limitations may remain if they are:
+Known limitations may remain if they are explicit, non-destructive, non-blocking, diagnostically visible, and appropriate for Alpha maturity.
 
-- explicit;
-- non-destructive;
-- non-blocking;
-- diagnostically visible;
-- appropriate for Alpha maturity.
+**Pre-declaration evidence checklist (historical):** EP→DLA lineage verification, representative conformance, GAM malformed-output classes, QA corpus judgement, and release packaging were tracked as Alpha-facing evidence concerns. Alpha development is now **complete**; remaining items (e.g. release packaging) are **post-alpha planning candidates** where still listed in PRODUCT-BACKLOG — not unresolved Alpha blockers.
 
 ---
 
@@ -210,15 +190,14 @@ Beta should move beyond proving the core product toward broader usability, confi
 
 Likely candidates include:
 
-- Settings/configuration;
-- stronger image consistency if still required;
-- more mature release/deployment process;
+- more mature release/deployment process ([PB-S-005](../../backlog/PRODUCT-BACKLOG.md#pb-s-005--release--deployment-packaging));
+- significant new products/investigations from the canonical backlog (e.g. Expository Resource);
 - broader workflow coverage;
 - reduced need for diagnostic instrumentation;
 - improved operational polish;
 - stronger repeatability across domains/use cases.
 
-Do not treat this list as committed scope until Alpha evidence informs the milestone.
+Do not treat this list as committed scope. Select work deliberately from [PRODUCT-BACKLOG.md](../../backlog/PRODUCT-BACKLOG.md) and/or evidenced alpha-use findings.
 
 ---
 

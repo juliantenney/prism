@@ -1,13 +1,15 @@
 # Next sprint — active programme
 
 **Status:** **Alpha development complete** (2026-09-02). Sprint 82 **CLOSED**. Sprint 81 **CLOSED**. Sprint 80 **CLOSED**.  
-**Updated:** 2026-09-02
+**Updated:** 2026-09-03 (post-alpha backlog reconciliation)
 
 ---
 
 ## Current programme
 
 **Active sprint:** *(none opened)*
+
+**Phase:** **Alpha-use period** — observe real use; do not invent engineering work from historical debt alone.
 
 **Last closed sprint:** Sprint 82 — Maths Entry & Alpha Completion — **COMPLETE / CLOSED**
 
@@ -24,21 +26,28 @@
 | Item | State |
 | ---- | ----- |
 | First-class gate | `npm run test:first-class` → **339/339** |
-| D-014 | **RESOLVED** |
+| D-014 | **RESOLVED** (confidence); RC3–RC8 remain historical suite residue |
 | Maths entry | MathLive (evidence) + MathJax (display); local offline packaging |
 | Workshop first-class path | Production regression **PASS** (facilitated semantics; 60-min duration) |
 | Sprint 81 / 82 | **CLOSED** — do not reopen without new opening decision |
 
 ---
 
-## Post-alpha work selection
+## Selecting future work
 
-Choose the next tranche from [PRODUCT-BACKLOG.md](../backlog/PRODUCT-BACKLOG.md). Deferred items **remain deferred** — not retroactive alpha blockers:
+**Canonical planning authority:** [PRODUCT-BACKLOG.md](../backlog/PRODUCT-BACKLOG.md)
 
-- RC3–RC8 historical full-suite cleanup  
-- Slideshow / output extensibility (PB-FA-008)  
-- Broader alpha hardening lifecycle  
-- Sprint 81 carried architectural debt  
+Choose the next tranche **deliberately** from that backlog and/or from **evidenced alpha-use findings**.
+
+Notable candidates (not ordered; not automatic “next”):
+
+- **PB-FA-011** Expository Resource — significant post-alpha investigation  
+- **PB-FA-002** Programming / code learning-resource support  
+- **PB-S-005** Release / deployment packaging  
+
+Do **not** treat Expository Resource, Slideshow, or historical debt lists as automatically next.
+
+Historical engineering debt (Sprint 81 ledger, RC3–RC8, Group F, older governance D-IDs) remains discoverable in its records — **not** a standing obligation to reopen work.
 
 Open a **new sprint** only via an explicit opening decision — do not assume Sprint 83 from this file.
 

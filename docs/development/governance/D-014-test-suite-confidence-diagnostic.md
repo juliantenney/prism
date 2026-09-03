@@ -252,7 +252,7 @@ Did **not:** reopen Sprint 80; redesign Adjustments; clean Settings/factors; fix
 
 ## 10. Recommended next task (operator) — SUPERSEDED
 
-Bounded RC1/RC2 repair authorised and completed — see §11. Do **not** open RC3–RC8 cleanup from this record. Next product programme remains **learner-page accessibility**.
+Bounded RC1/RC2 repair authorised and completed — see §11. Do **not** open RC3–RC8 cleanup from this record. **Historical sequencing note:** an earlier draft pointed “next product programme” at learner-page accessibility; that is **not** current programme direction. After Sprint 82, Alpha development is complete; current planning authority is [PRODUCT-BACKLOG.md](../../backlog/PRODUCT-BACKLOG.md) (alpha-use period; no automatic next sprint).
 
 ---
 

@@ -1,20 +1,19 @@
 # Next sprint — active programme
 
-**Status:** **Sprint 84 OPEN** — Expository Resource Planning (2026-09-21). Sprint 83 **CLOSED**. Sprint 82 **CLOSED**. Alpha development **complete**.  
+**Status:** **No sprint OPEN.** Sprint 84 **CLOSED** — Expository Resource Planning accepted (2026-09-21). Sprint 83 **CLOSED**. Sprint 82 **CLOSED**. Alpha development **complete**.  
 **Updated:** 2026-09-21
 
 ---
 
 ## Current programme
 
-**Active sprint:** [Sprint 84 — Expository Resource Planning](../development/sprints/2026-09-21-sprint-84-expository-resource-planning/SPRINT-84-START-HERE.md) — **OPEN**
+**Active sprint:** *None* — last closed: [Sprint 84 — Expository Resource Planning](../development/sprints/2026-09-21-sprint-84-expository-resource-planning/SPRINT-84-CLOSURE.md) — **COMPLETE / CLOSED**
 
-**Type:** Planning — **not** implementation  
-**Opening decision:** [S84-D01](../development/sprints/2026-09-21-sprint-84-expository-resource-planning/decisions.md#s84-d01--open-sprint-84--expository-resource-planning)  
-**Backlog:** [PB-FA-011](../backlog/PRODUCT-BACKLOG.md#pb-fa-011--expository-resource)  
-**Binding constraint:** [S83-D04](../development/sprints/2026-09-21-sprint-83-expository-resource-investigation/decisions.md#s83-d04--planning-handoff--sibling-prompt-family--protected-baseline) — sibling prompt-family · protected Interactive baseline
-
-**Last closed sprint:** Sprint 83 — Expository Resource Investigation — **COMPLETE / CLOSED**
+**Type (last closed):** Planning — **not** implementation  
+**Close decision:** [S84-D12](../development/sprints/2026-09-21-sprint-84-expository-resource-planning/decisions.md#s84-d12--accept-refined-planning-design-and-close-sprint-84)  
+**Accepted design:** [S84-EXPOSITORY-RESOURCE-DESIGN.md](../development/sprints/2026-09-21-sprint-84-expository-resource-planning/S84-EXPOSITORY-RESOURCE-DESIGN.md)  
+**Backlog:** [PB-FA-011](../backlog/PRODUCT-BACKLOG.md#pb-fa-011--expository-resource) remains the relevant product item  
+**Binding constraints:** [S83-D04](../development/sprints/2026-09-21-sprint-83-expository-resource-investigation/decisions.md#s83-d04--planning-handoff--sibling-prompt-family--protected-baseline) · accepted S84 design (S84-D03…D11)
 
 ### Alpha milestone (still authoritative)
 
@@ -29,21 +28,18 @@
 | First-class gate at alpha close | `npm run test:first-class` → **339/339** |
 | Sprint 82 | **CLOSED** — historical |
 | Sprint 83 | **CLOSED** — investigation accepted; do not reopen |
-| Sprint 84 Planning brief | **Pending** — do not invent tasks ahead of it |
+| Sprint 84 | **CLOSED** — Planning design accepted; do not reopen |
 | Expository implementation | **Not authorised** |
+| Implementation sprint | **Not opened** |
 | Interactive prompt family | **Protected baseline** (S83-D04) |
 
 ---
 
-## Sprint 84 posture
+## Intended next programme action
 
-Turn accepted Sprint 83 evidence into the smallest coherent **design** for a first-class Expository Resource.
+**Expository Resource implementation sprint** under [PB-FA-011](../backlog/PRODUCT-BACKLOG.md#pb-fa-011--expository-resource), using the accepted [S84 design](../development/sprints/2026-09-21-sprint-84-expository-resource-planning/S84-EXPOSITORY-RESOURCE-DESIGN.md).
 
-**Authoritative inputs:** [SPRINT-83-CLOSURE.md](../development/sprints/2026-09-21-sprint-83-expository-resource-investigation/SPRINT-83-CLOSURE.md) · [S83-INVESTIGATION-REPORT.md](../development/sprints/2026-09-21-sprint-83-expository-resource-investigation/S83-INVESTIGATION-REPORT.md) · [S83-D04](../development/sprints/2026-09-21-sprint-83-expository-resource-investigation/decisions.md#s83-d04--planning-handoff--sibling-prompt-family--protected-baseline) · [PB-FA-011](../backlog/PRODUCT-BACKLOG.md#pb-fa-011--expository-resource)
-
-**Immediate next:** accept the separate detailed Planning brief, then begin Planning under that brief.
-
-Implementation sprint is **not** opened.
+**Must be opened separately** by explicit operator decision. Do not invent implementation tasks from this file. Do not begin production work without that opening.
 
 Canonical planning authority remains [PRODUCT-BACKLOG.md](../backlog/PRODUCT-BACKLOG.md).
 
@@ -51,5 +47,6 @@ Canonical planning authority remains [PRODUCT-BACKLOG.md](../backlog/PRODUCT-BAC
 
 ## Previous sprints
 
+- Sprint 84 — Expository Resource Planning — **CLOSED** ([closure](../development/sprints/2026-09-21-sprint-84-expository-resource-planning/SPRINT-84-CLOSURE.md) · [closeout](sprint-84-closeout.md))  
 - Sprint 83 — Expository Resource Investigation — **CLOSED** ([closure](../development/sprints/2026-09-21-sprint-83-expository-resource-investigation/SPRINT-83-CLOSURE.md) · [closeout](sprint-83-closeout.md))  
 - Sprint 82 — Maths Entry & Alpha Completion — **CLOSED** ([closure](../development/sprints/2026-09-01-sprint-82-maths-entry-and-alpha-completion/SPRINT-82-CLOSURE.md) · [closeout](sprint-82-closeout.md))

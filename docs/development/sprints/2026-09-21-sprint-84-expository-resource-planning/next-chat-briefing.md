@@ -1,33 +1,27 @@
 # Sprint 84 — Next-chat briefing
 
-**Sprint status:** **OPEN** (2026-09-21)  
-**Type:** Planning — **not** implementation  
-**Entry:** [SPRINT-84-START-HERE.md](SPRINT-84-START-HERE.md) · **Charter:** [SPRINT-84-CHARTER.md](SPRINT-84-CHARTER.md)
+**Sprint status:** **CLOSED / COMPLETE** (2026-09-21)  
+**Closure:** [SPRINT-84-CLOSURE.md](SPRINT-84-CLOSURE.md)  
+**Accepted design:** [S84-EXPOSITORY-RESOURCE-DESIGN.md](S84-EXPOSITORY-RESOURCE-DESIGN.md)
 
 ---
 
 ## One-liner
 
-Sprint 84 pack is open for **Expository Resource Planning** (PB-FA-011). Sprint 83 investigation is closed and accepted. Detailed Planning brief is **pending**. S83-D04 (sibling prompt-family · protected Interactive baseline) is **binding**. Do not implement; do not invent Planning tasks yet.
-
-## Load order
-
-1. [SPRINT-84-START-HERE.md](SPRINT-84-START-HERE.md)  
-2. [SPRINT-84-CHARTER.md](SPRINT-84-CHARTER.md)  
-3. [S83-INVESTIGATION-REPORT.md](../2026-09-21-sprint-83-expository-resource-investigation/S83-INVESTIGATION-REPORT.md)  
-4. [S83-D04](../2026-09-21-sprint-83-expository-resource-investigation/decisions.md#s83-d04--planning-handoff--sibling-prompt-family--protected-baseline)  
-5. [STATUS.md](STATUS.md) · [decisions.md](decisions.md)
+Sprint 84 Planning closed and accepted ([S84-D12](decisions.md#s84-d12--accept-refined-planning-design-and-close-sprint-84)). Authoritative handoff is the Expository Resource design. Intended next: implementation sprint under PB-FA-011 — **not opened**. No implementation authorised.
 
 ## Do not
 
-- Begin detailed Planning before the separate brief is accepted  
-- Implement Expository or change production behaviour  
+- Implement Expository or change production behaviour from this pack  
 - Modify Interactive prompts to enable Expository  
-- Treat S83 findings as already-decided topology/schemas/prompt text  
-- Reopen Sprint 83  
+- Reopen Sprint 84 architecture  
+- Assume an implementation sprint is open without an explicit opening decision  
 
-## Reference
+## Load for implementation (when opened)
 
-- Backlog: [PB-FA-011](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-011--expository-resource)  
-- S83 closure: [SPRINT-83-CLOSURE.md](../2026-09-21-sprint-83-expository-resource-investigation/SPRINT-83-CLOSURE.md)  
-- Programme: [NEXT-SPRINT.md](../../../sprints/NEXT-SPRINT.md)
+1. [SPRINT-84-CLOSURE.md](SPRINT-84-CLOSURE.md)  
+2. [S84-EXPOSITORY-RESOURCE-DESIGN.md](S84-EXPOSITORY-RESOURCE-DESIGN.md)  
+3. [decisions.md](decisions.md) — esp. S84-D10, S84-D11, S84-D12  
+4. [S83-D04](../2026-09-21-sprint-83-expository-resource-investigation/decisions.md#s83-d04--planning-handoff--sibling-prompt-family--protected-baseline)  
+
+Programme: [NEXT-SPRINT.md](../../../sprints/NEXT-SPRINT.md)

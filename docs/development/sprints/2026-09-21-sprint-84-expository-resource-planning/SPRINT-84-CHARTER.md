@@ -1,12 +1,15 @@
 # Sprint 84 — Charter
 
 **Sprint:** 84 — Expository Resource Planning  
-**Status:** **OPEN** (2026-09-21)  
+**Status:** **COMPLETE / CLOSED** (2026-09-21)  
+**Closure:** [SPRINT-84-CLOSURE.md](SPRINT-84-CLOSURE.md)  
 **Type:** Planning — not implementation  
 **Predecessor:** Sprint 83 — CLOSED ([SPRINT-83-CLOSURE.md](../2026-09-21-sprint-83-expository-resource-investigation/SPRINT-83-CLOSURE.md))  
 **Backlog item:** [PB-FA-011 — Expository Resource](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-011--expository-resource)  
 **Start here:** [SPRINT-84-START-HERE.md](SPRINT-84-START-HERE.md)  
-**Opening decision:** [S84-D01](decisions.md#s84-d01--open-sprint-84--expository-resource-planning)
+**Opening decision:** [S84-D01](decisions.md#s84-d01--open-sprint-84--expository-resource-planning)  
+**Close decision:** [S84-D12](decisions.md#s84-d12--accept-refined-planning-design-and-close-sprint-84)  
+**Accepted design:** [S84-EXPOSITORY-RESOURCE-DESIGN.md](S84-EXPOSITORY-RESOURCE-DESIGN.md)
 
 ---
 

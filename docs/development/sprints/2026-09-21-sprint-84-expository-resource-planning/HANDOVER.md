@@ -1,9 +1,11 @@
 # Sprint 84 — Handover
 
-**Kind:** Open-sprint continuity / startup handover  
-**Sprint status:** **OPEN**  
+**Kind:** Closed-sprint Planning handoff  
+**Sprint status:** **COMPLETE / CLOSED**  
 **Type:** Planning — not implementation  
-**Dashboard:** [STATUS.md](STATUS.md) · **Entry:** [SPRINT-84-START-HERE.md](SPRINT-84-START-HERE.md)
+**Closure:** [SPRINT-84-CLOSURE.md](SPRINT-84-CLOSURE.md)  
+**Dashboard:** [STATUS.md](STATUS.md) · **Entry:** [SPRINT-84-START-HERE.md](SPRINT-84-START-HERE.md)  
+**Design:** [S84-EXPOSITORY-RESOURCE-DESIGN.md](S84-EXPOSITORY-RESOURCE-DESIGN.md) — **ACCEPTED**
 
 ---
 
@@ -14,38 +16,33 @@
 | Alpha development | **Complete** |
 | First-class gate at alpha close | **339/339** |
 | Sprint 83 | **CLOSED** — do not reopen |
-| Sprint 84 | **OPEN** — Expository Resource Planning |
+| Sprint 84 | **COMPLETE / CLOSED** — Planning design accepted ([S84-D12](decisions.md#s84-d12--accept-refined-planning-design-and-close-sprint-84)) |
 | Canonical backlog | [PRODUCT-BACKLOG.md](../../../backlog/PRODUCT-BACKLOG.md) |
 | Active backlog item | **PB-FA-011** |
+| Implementation | **Not authorised** |
+| Implementation sprint | **Not opened** |
+| Production changes | **None** |
 
 ---
 
-## B. Authoritative Sprint 83 inputs
+## B. Authoritative handoff
 
-1. [SPRINT-83-CLOSURE.md](../2026-09-21-sprint-83-expository-resource-investigation/SPRINT-83-CLOSURE.md)  
-2. [S83-INVESTIGATION-REPORT.md](../2026-09-21-sprint-83-expository-resource-investigation/S83-INVESTIGATION-REPORT.md) — accepted findings; **not** implementation decisions  
-3. [S83-D04](../2026-09-21-sprint-83-expository-resource-investigation/decisions.md#s83-d04--planning-handoff--sibling-prompt-family--protected-baseline) — **binding** sibling prompt-family · protected Interactive baseline  
-4. [PB-FA-011](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-011--expository-resource)
-
----
-
-## C. What Sprint 84 is for
-
-Produce the smallest coherent **design** for first-class Expository Resource: product definition, topology, prompt-family responsibilities, contract boundaries, richness authority, continuity ownership, materials/representation, page/assembly implications, naming, and quality/acceptance criteria for a later implementation sprint.
-
-**Detailed Planning brief:** pending separate supply and acceptance. Planning execution has **not** begun.
+1. [SPRINT-84-CLOSURE.md](SPRINT-84-CLOSURE.md)  
+2. [S84-EXPOSITORY-RESOURCE-DESIGN.md](S84-EXPOSITORY-RESOURCE-DESIGN.md) — accepted Planning design  
+3. [decisions.md](decisions.md) — S84-D01…D12  
+4. [S83-D04](../2026-09-21-sprint-83-expository-resource-investigation/decisions.md#s83-d04--planning-handoff--sibling-prompt-family--protected-baseline) — binding sibling / protected Interactive baseline  
+5. [PB-FA-011](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-011--expository-resource)
 
 ---
 
-## D. Explicitly not authorised yet
+## C. What was established (summary)
 
-Implementation; production changes; production Expository prompt authoring; detailed task invention ahead of the brief; Expository→Interactive / Podcast / Presentation / Research Synthesis final resolution as blockers.
+Expository Resource as first-class Create product; protected Interactive baseline; sibling pedagogical family; capability preservation; LC richness spine + MK conceptual graph; topology LC→MK→LO→EJP→XD→XM→Design Page→assembly→renderer; EP/DLA/GAM/LS bypass; instructional-design north star; EJP/XD/XM ownership; ordered sections; commission lock; thin Design Page; judgement-based acceptance; implementation handoff without authorising implementation.
 
 ---
 
-## E. Next action
+## D. Next action
 
-1. Operator supplies / accepts the detailed Sprint 84 Planning brief.  
-2. Record acceptance in [decisions.md](decisions.md).  
-3. Populate [PLAN.md](PLAN.md) with bounded Planning tasks from that brief.  
-4. Only then begin Planning decisions.
+**Intended next:** Expository Resource **implementation** sprint — open only via separate operator decision ([NEXT-SPRINT.md](../../../sprints/NEXT-SPRINT.md)).
+
+Do **not** implement from this pack. Do **not** modify Interactive prompts. Do **not** reopen Sprint 84 architecture.

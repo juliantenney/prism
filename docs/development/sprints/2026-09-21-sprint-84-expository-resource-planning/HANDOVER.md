@@ -19,8 +19,8 @@
 | Sprint 84 | **COMPLETE / CLOSED** — Planning design accepted ([S84-D12](decisions.md#s84-d12--accept-refined-planning-design-and-close-sprint-84)) |
 | Canonical backlog | [PRODUCT-BACKLOG.md](../../../backlog/PRODUCT-BACKLOG.md) |
 | Active backlog item | **PB-FA-011** |
-| Implementation | **Not authorised** |
-| Implementation sprint | **Not opened** |
+| Implementation | **Authorised in Sprint 85** (not in this closed pack) |
+| Implementation sprint | **OPEN** — [Sprint 85](../2026-09-21-sprint-85-expository-resource-implementation/SPRINT-85-START-HERE.md) |
 | Production changes | **None** |
 
 ---
@@ -43,6 +43,6 @@ Expository Resource as first-class Create product; protected Interactive baselin
 
 ## D. Next action
 
-**Intended next:** Expository Resource **implementation** sprint — open only via separate operator decision ([NEXT-SPRINT.md](../../../sprints/NEXT-SPRINT.md)).
+**Successor opened:** [Sprint 85 — Expository Resource Implementation](../2026-09-21-sprint-85-expository-resource-implementation/SPRINT-85-START-HERE.md) ([S85-D01](../2026-09-21-sprint-85-expository-resource-implementation/decisions.md#s85-d01--open-sprint-85--expository-resource-implementation)).
 
-Do **not** implement from this pack. Do **not** modify Interactive prompts. Do **not** reopen Sprint 84 architecture.
+Continue from the Sprint 85 pack. Do **not** reopen Sprint 84 architecture. Do **not** modify Interactive prompts from this pack.

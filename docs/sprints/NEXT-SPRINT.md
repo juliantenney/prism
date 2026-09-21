@@ -1,19 +1,21 @@
 # Next sprint — active programme
 
-**Status:** **No sprint OPEN.** Sprint 84 **CLOSED** — Expository Resource Planning accepted (2026-09-21). Sprint 83 **CLOSED**. Sprint 82 **CLOSED**. Alpha development **complete**.  
+**Status:** **Sprint 85 OPEN** — Expository Resource Implementation (2026-09-21). Sprint 84 **CLOSED**. Sprint 83 **CLOSED**. Sprint 82 **CLOSED**. Alpha development **complete**.  
 **Updated:** 2026-09-21
 
 ---
 
 ## Current programme
 
-**Active sprint:** *None* — last closed: [Sprint 84 — Expository Resource Planning](../development/sprints/2026-09-21-sprint-84-expository-resource-planning/SPRINT-84-CLOSURE.md) — **COMPLETE / CLOSED**
+**Active sprint:** [Sprint 85 — Expository Resource Implementation](../development/sprints/2026-09-21-sprint-85-expository-resource-implementation/SPRINT-85-START-HERE.md) — **OPEN**
 
-**Type (last closed):** Planning — **not** implementation  
-**Close decision:** [S84-D12](../development/sprints/2026-09-21-sprint-84-expository-resource-planning/decisions.md#s84-d12--accept-refined-planning-design-and-close-sprint-84)  
-**Accepted design:** [S84-EXPOSITORY-RESOURCE-DESIGN.md](../development/sprints/2026-09-21-sprint-84-expository-resource-planning/S84-EXPOSITORY-RESOURCE-DESIGN.md)  
-**Backlog:** [PB-FA-011](../backlog/PRODUCT-BACKLOG.md#pb-fa-011--expository-resource) remains the relevant product item  
-**Binding constraints:** [S83-D04](../development/sprints/2026-09-21-sprint-83-expository-resource-investigation/decisions.md#s83-d04--planning-handoff--sibling-prompt-family--protected-baseline) · accepted S84 design (S84-D03…D11)
+**Type:** Implementation  
+**Opening decision:** [S85-D01](../development/sprints/2026-09-21-sprint-85-expository-resource-implementation/decisions.md#s85-d01--open-sprint-85--expository-resource-implementation)  
+**Backlog:** [PB-FA-011](../backlog/PRODUCT-BACKLOG.md#pb-fa-011--expository-resource)  
+**Authoritative design:** [S84-EXPOSITORY-RESOURCE-DESIGN.md](../development/sprints/2026-09-21-sprint-84-expository-resource-planning/S84-EXPOSITORY-RESOURCE-DESIGN.md)  
+**Binding constraints:** [S83-D04](../development/sprints/2026-09-21-sprint-83-expository-resource-investigation/decisions.md#s83-d04--planning-handoff--sibling-prompt-family--protected-baseline) · accepted S84 design (S84-D03…D12)
+
+**Last closed sprint:** Sprint 84 — Expository Resource Planning — **COMPLETE / CLOSED**
 
 ### Alpha milestone (still authoritative)
 
@@ -25,21 +27,25 @@
 
 | Item | State |
 | ---- | ----- |
-| First-class gate at alpha close | `npm run test:first-class` → **339/339** |
+| First-class gate at alpha close | `npm run test:first-class` → **339/339** — Interactive gate must remain green |
 | Sprint 82 | **CLOSED** — historical |
 | Sprint 83 | **CLOSED** — investigation accepted; do not reopen |
-| Sprint 84 | **CLOSED** — Planning design accepted; do not reopen |
-| Expository implementation | **Not authorised** |
-| Implementation sprint | **Not opened** |
+| Sprint 84 | **CLOSED** — Planning design accepted; do not reopen architecture |
+| Sprint 85 implementation brief | **Pending** — do not invent tasks ahead of it |
+| Production implementation | **Authorised within Sprint 85 scope** after brief acceptance |
 | Interactive prompt family | **Protected baseline** (S83-D04) |
 
 ---
 
-## Intended next programme action
+## Sprint 85 posture
 
-**Expository Resource implementation sprint** under [PB-FA-011](../backlog/PRODUCT-BACKLOG.md#pb-fa-011--expository-resource), using the accepted [S84 design](../development/sprints/2026-09-21-sprint-84-expository-resource-planning/S84-EXPOSITORY-RESOURCE-DESIGN.md).
+Implement the accepted Sprint 84 design for a first-class Expository Resource.
 
-**Must be opened separately** by explicit operator decision. Do not invent implementation tasks from this file. Do not begin production work without that opening.
+**Authoritative inputs:** [S84 design](../development/sprints/2026-09-21-sprint-84-expository-resource-planning/S84-EXPOSITORY-RESOURCE-DESIGN.md) · [SPRINT-84-CLOSURE.md](../development/sprints/2026-09-21-sprint-84-expository-resource-planning/SPRINT-84-CLOSURE.md) · [S84 decisions](../development/sprints/2026-09-21-sprint-84-expository-resource-planning/decisions.md) · [S83-D04](../development/sprints/2026-09-21-sprint-83-expository-resource-investigation/decisions.md#s83-d04--planning-handoff--sibling-prompt-family--protected-baseline) · [PB-FA-011](../backlog/PRODUCT-BACKLOG.md#pb-fa-011--expository-resource)
+
+**Immediate next:** accept the separate detailed implementation brief, then begin bounded implementation under that brief.
+
+Production work and production Expository prompt authoring have **not** begun in the opening step.
 
 Canonical planning authority remains [PRODUCT-BACKLOG.md](../backlog/PRODUCT-BACKLOG.md).
 

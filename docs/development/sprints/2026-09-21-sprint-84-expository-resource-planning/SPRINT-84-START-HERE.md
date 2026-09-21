@@ -15,7 +15,7 @@
 
 ## If you are starting a new session
 
-> **Sprint 84 is closed.** Read [SPRINT-84-CLOSURE.md](SPRINT-84-CLOSURE.md), then the accepted [S84-EXPOSITORY-RESOURCE-DESIGN.md](S84-EXPOSITORY-RESOURCE-DESIGN.md). Intended next programme step: **Expository Resource implementation** — not opened ([NEXT-SPRINT.md](../../../sprints/NEXT-SPRINT.md)).
+> **Sprint 84 is closed.** Read [SPRINT-84-CLOSURE.md](SPRINT-84-CLOSURE.md), then the accepted [S84-EXPOSITORY-RESOURCE-DESIGN.md](S84-EXPOSITORY-RESOURCE-DESIGN.md). Active programme: **Sprint 85 — Expository Resource Implementation** ([SPRINT-85-START-HERE.md](../2026-09-21-sprint-85-expository-resource-implementation/SPRINT-85-START-HERE.md)).
 
 | Fact | State |
 | ---- | ----- |
@@ -23,8 +23,8 @@
 | First-class gate at alpha close | **339/339** |
 | Sprint 83 | **CLOSED** — investigation accepted |
 | Sprint 84 | **COMPLETE / CLOSED** — Planning design accepted |
-| Implementation | **Not authorised** |
-| Implementation sprint | **Not opened** |
+| Implementation | **Authorised in Sprint 85 only** (not from this closed Planning pack) |
+| Implementation sprint | **OPEN** — [Sprint 85](../2026-09-21-sprint-85-expository-resource-implementation/SPRINT-85-START-HERE.md) |
 | Binding constraint | [S83-D04](../2026-09-21-sprint-83-expository-resource-investigation/decisions.md#s83-d04--planning-handoff--sibling-prompt-family--protected-baseline) |
 
 ---
@@ -47,7 +47,7 @@ Turn accepted Sprint 83 evidence into the **smallest coherent design** for a fir
 
 ## Immediate next step
 
-Open an Expository Resource **implementation** sprint only via separate operator decision. Do **not** implement from this pack.
+Continue in [Sprint 85](../2026-09-21-sprint-85-expository-resource-implementation/SPRINT-85-START-HERE.md). Do **not** implement from this closed Planning pack.
 
 ---
 

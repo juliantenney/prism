@@ -94,9 +94,9 @@ Architecture detail: [decisions.md](decisions.md) · [S84-EXPOSITORY-RESOURCE-DE
 
 ## 5. Successor programme
 
-**Intended next:** Expository Resource **implementation** sprint under [PB-FA-011](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-011--expository-resource) — **not opened** by this closure.
+**Successor:** [Sprint 85 — Expository Resource Implementation](../2026-09-21-sprint-85-expository-resource-implementation/SPRINT-85-START-HERE.md) — **OPEN** ([S85-D01](../2026-09-21-sprint-85-expository-resource-implementation/decisions.md#s85-d01--open-sprint-85--expository-resource-implementation)).
 
-Open only via an explicit operator opening decision. Do not invent implementation tasks from this file. Do not begin production work from Planning artefacts alone.
+Do not reopen Sprint 84 architecture. Do not invent implementation tasks from this Planning pack.
 
 Programme pointer: [NEXT-SPRINT.md](../../../sprints/NEXT-SPRINT.md)
 

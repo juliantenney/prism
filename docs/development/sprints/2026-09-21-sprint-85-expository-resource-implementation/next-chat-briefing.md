@@ -1,33 +1,29 @@
-# Sprint 85 — Next-chat briefing
-
-**Sprint status:** **OPEN** (2026-09-21)  
-**Type:** Implementation  
-**Entry:** [SPRINT-85-START-HERE.md](SPRINT-85-START-HERE.md) · **Charter:** [SPRINT-85-CHARTER.md](SPRINT-85-CHARTER.md)
-
----
-
-## One-liner
-
-Sprint 85 pack is open for **Expository Resource Implementation** (PB-FA-011) under the accepted Sprint 84 design. Detailed implementation brief is **pending**. S83-D04 (sibling · protected Interactive) and S84 design are **binding**. Do not invent tasks yet; do not reopen S84 architecture; do not change production in this opening step.
-
-## Load order
-
-1. [SPRINT-85-START-HERE.md](SPRINT-85-START-HERE.md)  
-2. [SPRINT-85-CHARTER.md](SPRINT-85-CHARTER.md)  
-3. [S84-EXPOSITORY-RESOURCE-DESIGN.md](../2026-09-21-sprint-84-expository-resource-planning/S84-EXPOSITORY-RESOURCE-DESIGN.md)  
-4. [S83-D04](../2026-09-21-sprint-83-expository-resource-investigation/decisions.md#s83-d04--planning-handoff--sibling-prompt-family--protected-baseline)  
-5. [STATUS.md](STATUS.md) · [decisions.md](decisions.md)
-
-## Do not
-
-- Begin detailed implementation before the separate brief is accepted  
-- Invent implementation task lists ahead of the brief  
-- Modify Interactive prompts to enable Expository  
-- Reopen settled Sprint 84 architecture for field-name convenience  
-- Treat Research Synthesis / Podcast / Presentation as blockers  
-
-## Reference
-
-- Backlog: [PB-FA-011](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-011--expository-resource)  
-- Sprint 84 close: [SPRINT-84-CLOSURE.md](../2026-09-21-sprint-84-expository-resource-planning/SPRINT-84-CLOSURE.md)  
-- Programme: [NEXT-SPRINT.md](../../../sprints/NEXT-SPRINT.md)
+# Sprint 85 — Next-chat briefing
+
+**Sprint status:** **OPEN** — WP1+WP2 complete; WP3 **not started**  
+**Brief:** [S85-D02](decisions.md#s85-d02--accept-detailed-sprint-85-implementation-brief) **accepted**  
+**Extent:** [S85-D05](decisions.md#s85-d05--expository-scale--scope--explanatory-attention-extent-wp2) **accepted**
+
+---
+
+## One-liner
+
+WP2 gate complete: EJP/XD/XM contracts, Expository extent normalisation (S85-D05), native capture wiring, section-primary assembly. Ready for WP3 pedagogical prompts when authorised. Do not commit unless instructed.
+
+## Verified
+
+- Extent: Scale/scope preserved; Expository-only words / 200 wpm / qualitative normalisation → EJP `extent`
+- Capture: native `expository_*` artefacts normalize/validate on Run sync
+- Assembly: EJP→XD→XM → ordered `sections[]`, `activities: []`
+- Focused: `tests/s85-wp2-expository-contracts.test.js` + WP1 + page-vnext-assemble
+
+## Next
+
+Authorise WP3 sibling prompt authoring (EJP extent/depth semantics already scaffolded).
+
+## Do not
+
+- Reopen S84 architecture / redesign Create form  
+- Change Interactive scale/scope semantics  
+- Commit without operator instruction  
+

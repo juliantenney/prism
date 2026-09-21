@@ -9879,6 +9879,41 @@
       capturesRaw: capturesRaw,
       preferRaw: true
     });
+    var ejpRaw = readWorkflowStepCaptureByCanonicalId(workflow, "step_expository_journey_plan", {
+      captures: captures,
+      capturesRaw: capturesRaw,
+      preferRaw: true
+    });
+    if (!String(epRaw || "").trim() && String(ejpRaw || "").trim()) {
+      var expoPartials = {};
+      var expoStageSpecs = [
+        { stage: "expository_journey_plan", canonicalId: "step_expository_journey_plan" },
+        { stage: "expository_development", canonicalId: "step_expository_development" },
+        { stage: "expository_materials", canonicalId: "step_expository_materials" },
+        { stage: "design_page", canonicalId: "step_design_page" }
+      ];
+      expoStageSpecs.forEach(function (spec) {
+        var rawExpo = readWorkflowStepCaptureByCanonicalId(workflow, spec.canonicalId, {
+          captures: captures,
+          capturesRaw: capturesRaw,
+          preferRaw: true
+        });
+        if (!String(rawExpo || "").trim()) return;
+        var parsedExpo = tryParseWorkflowArtefactJson(rawExpo);
+        if (!parsedExpo) {
+          throw new Error("Invalid JSON capture for " + spec.stage + " assembly stage");
+        }
+        expoPartials[spec.stage] = parsedExpo;
+      });
+      if (!expoPartials.expository_journey_plan) {
+        throw new Error("Missing required Expository Journey Plan capture for assembly");
+      }
+      var expoAssembled = assembleMod.assembleVNextPageFromPartials(expoPartials, opts);
+      if (!expoAssembled || !expoAssembled.ok || !expoAssembled.page) {
+        throw new Error("Expository page assembly failed");
+      }
+      return attachLearnerPageIdentityFromWorkflow(expoAssembled.page, workflow);
+    }
     if (!String(epRaw || "").trim()) {
       throw new Error("Missing required episode plan page shell capture for assembly");
     }
@@ -10051,6 +10086,26 @@
       if (roots[i] && roots[i].PRISM_PAGE_VNEXT_ASSEMBLE) {
         return roots[i].PRISM_PAGE_VNEXT_ASSEMBLE;
       }
+    }
+    return null;
+  }
+
+  function resolveExpositoryContractsLib() {
+    var roots = [];
+    var w = ldTableFidelityGlobalRoot();
+    if (w) roots.push(w);
+    if (typeof globalThis !== "undefined" && globalThis !== w) roots.push(globalThis);
+    if (typeof window !== "undefined") roots.push(window);
+    var i;
+    for (i = 0; i < roots.length; i += 1) {
+      if (roots[i] && roots[i].PrismExpositoryContracts) {
+        return roots[i].PrismExpositoryContracts;
+      }
+    }
+    if (typeof require === "function") {
+      try {
+        return require("./lib/expository-contracts.js");
+      } catch (_err) {}
     }
     return null;
   }
@@ -10789,6 +10844,133 @@
     if (isWorkflowStepGenerateAssessmentItems(ctx)) return "assessment_items";
     if (isWorkflowStepDesignPageRow(step)) return "design_page";
     return "";
+  }
+
+  function resolveExpositoryArtefactKindFromStep(step) {
+    if (!step || typeof step !== "object") return "";
+    var canonicalId = String(step.canonical_step_id || step.canonicalStepId || "")
+      .trim()
+      .toLowerCase();
+    var outputName = String(step.outputName || "")
+      .trim()
+      .toLowerCase()
+      .replace(/\s+/g, "_");
+    if (
+      canonicalId === "step_expository_journey_plan" ||
+      outputName === "expository_journey_plan"
+    ) {
+      return "expository_journey_plan";
+    }
+    if (
+      canonicalId === "step_expository_development" ||
+      outputName === "expository_development"
+    ) {
+      return "expository_development";
+    }
+    if (
+      canonicalId === "step_expository_materials" ||
+      outputName === "expository_materials"
+    ) {
+      return "expository_materials";
+    }
+    var title = String(step.title || "")
+      .trim()
+      .toLowerCase();
+    if (title.indexOf("expository journey") !== -1) return "expository_journey_plan";
+    if (title.indexOf("expository development") !== -1) return "expository_development";
+    if (title.indexOf("expository material") !== -1) return "expository_materials";
+    return "";
+  }
+
+  function parseExpositoryArtefactCaptureForStorage(raw, kindHint) {
+    var kind = String(kindHint || "").trim().toLowerCase();
+    var contracts = resolveExpositoryContractsLib();
+    if (!contracts || typeof contracts.validateExpositoryArtefactShape !== "function") {
+      return {
+        ok: false,
+        errors: ["expository_contracts_unavailable"],
+        message: "Expository contracts module unavailable"
+      };
+    }
+    var initial = String(raw || "");
+    var fencedWhole = /^\s*```json\s*\r?\n[\s\S]*\r?\n```\s*$/i.test(initial);
+    var sanitized = fencedWhole ? initial : sanitizePrismRunCapturedOutput(initial);
+    var trimmed = String(sanitized || "").trim();
+    if (!trimmed) {
+      return { ok: false, errors: ["empty_capture"], message: "Expository artefact capture is empty" };
+    }
+    var body = trimmed;
+    if (/```/.test(trimmed)) {
+      var fenced = extractSingleFencedJsonBody(trimmed);
+      if (!fenced.ok) {
+        return {
+          ok: false,
+          errors: ["invalid_fenced_block"],
+          message: "Expository artefact capture must be raw JSON or exactly one fenced ```json block"
+        };
+      }
+      body = fenced.body;
+    }
+    var parsed = null;
+    try {
+      parsed = JSON.parse(body);
+    } catch (_err) {
+      return {
+        ok: false,
+        errors: ["invalid_json"],
+        message: "Expository artefact capture must be valid JSON"
+      };
+    }
+    var check = contracts.validateExpositoryArtefactShape(parsed, kind);
+    if (!check.ok) {
+      return {
+        ok: false,
+        errors: check.errors || ["invalid_expository_artefact"],
+        message: (check.errors || []).join("; ")
+      };
+    }
+    var normalized = check.normalized;
+    return {
+      ok: true,
+      errors: [],
+      kind: check.kind,
+      parsed: normalized,
+      json: JSON.stringify(normalized, null, 2)
+    };
+  }
+
+  function attachExpositoryExtentFromFactors(ejp, factors) {
+    if (!ejp || typeof ejp !== "object") return ejp;
+    if (ejp.extent && typeof ejp.extent === "object") return ejp;
+    var contracts = resolveExpositoryContractsLib();
+    if (!contracts || typeof contracts.normalizeExpositoryScopeExtent !== "function") return ejp;
+    var extentFactor =
+      factors && factors.expository_extent && typeof factors.expository_extent === "object"
+        ? factors.expository_extent
+        : null;
+    if (extentFactor) {
+      ejp.extent = contracts.normalizeExpositoryScopeExtent(
+        extentFactor.scope_text || factors.scope_scale || ""
+      );
+      if (extentFactor.words_equivalent != null) {
+        ejp.extent.words_equivalent = extentFactor.words_equivalent;
+        ejp.extent.interpretation = extentFactor.interpretation || ejp.extent.interpretation;
+      }
+      if (extentFactor.reading_minutes != null) {
+        ejp.extent.reading_minutes = extentFactor.reading_minutes;
+      }
+      if (extentFactor.qualitative_hint) {
+        ejp.extent.qualitative_hint = String(extentFactor.qualitative_hint);
+      }
+      return ejp;
+    }
+    var scopeText = String((factors && factors.scope_scale) || "").trim();
+    if (!scopeText) return ejp;
+    var derived = contracts.normalizeExpositoryScopeExtent(scopeText);
+    if (derived.scope_text || derived.words_equivalent != null || derived.qualitative_hint) {
+      ejp.extent = derived;
+    }
+    return ejp;
   }
 
   function validatePartialPageCaptureForStep(parsed, step, wf) {
@@ -13795,6 +13977,24 @@
       return "learning_outcomes";
     }
     if (
+      oname === "expository_journey_plan" ||
+      canonicalId === "step_expository_journey_plan"
+    ) {
+      return "expository_journey_plan";
+    }
+    if (
+      oname === "expository_development" ||
+      canonicalId === "step_expository_development"
+    ) {
+      return "expository_development";
+    }
+    if (
+      oname === "expository_materials" ||
+      canonicalId === "step_expository_materials"
+    ) {
+      return "expository_materials";
+    }
+    if (
       oname === "episode_plans" ||
       oname === "page" ||
       canonicalId === "step_design_episode_plan"
@@ -13833,6 +14033,9 @@
     if (kind === "learning_sequence") return "Learning Sequence";
     if (kind === "learning_outcomes") return "Learning Outcomes";
     if (kind === "episode_plans") return "Design Episode Plan";
+    if (kind === "expository_journey_plan") return "Expository Journey Plan";
+    if (kind === "expository_development") return "Expository Development";
+    if (kind === "expository_materials") return "Expository Materials";
     return "Step";
   }
 
@@ -14011,6 +14214,21 @@
     }
     var kind = resolveStrictJsonWorkflowStepKind(step, workflow);
     if (!kind) return { ok: true, skipped: true, errors: [] };
+    if (
+      kind === "expository_journey_plan" ||
+      kind === "expository_development" ||
+      kind === "expository_materials"
+    ) {
+      var expoCheck = parseExpositoryArtefactCaptureForStorage(raw, kind);
+      if (!expoCheck.ok) {
+        return {
+          ok: false,
+          errors: expoCheck.errors || ["invalid_expository_capture"],
+          message: expoCheck.message || (expoCheck.errors || []).join("; ")
+        };
+      }
+      return { ok: true, errors: [], parsed: expoCheck.parsed, json: expoCheck.json };
+    }
     var strictMod = resolveWorkflowArtefactJsonStrictLib();
     if (
       !strictMod ||
@@ -18986,18 +19204,30 @@
     );
   }
 
-  /** Sprint 75 C-06 — Create-time LD product choice only (not a persisted output-type schema). */
+  /** Sprint 75 C-06 / Sprint 85 — Create-time LD product choice only (not a persisted output-type schema). */
   var LD_CREATE_OUTPUT_TYPE_SELF_STUDY = "self_study_resource";
   var LD_CREATE_OUTPUT_TYPE_WORKSHOP = "workshop";
+  var LD_CREATE_OUTPUT_TYPE_EXPOSITORY = "expository_resource";
   var LD_CREATE_OUTPUT_TYPE_CHOICES = [
     { value: LD_CREATE_OUTPUT_TYPE_SELF_STUDY, label: "Self-study resource" },
-    { value: LD_CREATE_OUTPUT_TYPE_WORKSHOP, label: "Workshop" }
+    { value: LD_CREATE_OUTPUT_TYPE_WORKSHOP, label: "Workshop" },
+    { value: LD_CREATE_OUTPUT_TYPE_EXPOSITORY, label: "Expository Resource" }
   ];
 
   function normalizeLdCreateOutputType(raw) {
     var v = String(raw == null ? "" : raw).trim();
-    if (v === LD_CREATE_OUTPUT_TYPE_SELF_STUDY || v === LD_CREATE_OUTPUT_TYPE_WORKSHOP) return v;
+    if (
+      v === LD_CREATE_OUTPUT_TYPE_SELF_STUDY ||
+      v === LD_CREATE_OUTPUT_TYPE_WORKSHOP ||
+      v === LD_CREATE_OUTPUT_TYPE_EXPOSITORY
+    ) {
+      return v;
+    }
     return "";
+  }
+
+  function isLdCreateExpositoryResource(kind) {
+    return normalizeLdCreateOutputType(kind) === LD_CREATE_OUTPUT_TYPE_EXPOSITORY;
   }
 
   function getSelectedLdCreateOutputTypeFromUi() {
@@ -19014,6 +19244,9 @@
     }
     if (normalized === LD_CREATE_OUTPUT_TYPE_WORKSHOP) {
       return focus ? "Create a workshop: " + focus : "Create a workshop";
+    }
+    if (normalized === LD_CREATE_OUTPUT_TYPE_EXPOSITORY) {
+      return focus ? "Create an Expository Resource: " + focus : "Create an Expository Resource";
     }
     return focus;
   }
@@ -19034,6 +19267,17 @@
         delivery_context: "in_person",
         delivery_pattern: "face_to_face",
         learning_environments: ["classroom"]
+      };
+    }
+    // Expository: reading/viewing learner page — not Interactive activity-chain cues.
+    if (normalized === LD_CREATE_OUTPUT_TYPE_EXPOSITORY) {
+      return {
+        delivery_context: "self_directed",
+        delivery_mode: "async",
+        delivery_pattern: "mostly_online",
+        page_profile: "learner",
+        activities_required: false,
+        materials_required: false
       };
     }
     return null;
@@ -19075,13 +19319,24 @@
     var mats = Array.isArray(out.session_materials) ? out.session_materials.slice() : [];
     if (mats.indexOf("page") === -1) mats.unshift("page");
     out.session_materials = mats;
-    if (kind === LD_CREATE_OUTPUT_TYPE_SELF_STUDY) {
+    if (kind === LD_CREATE_OUTPUT_TYPE_SELF_STUDY || kind === LD_CREATE_OUTPUT_TYPE_EXPOSITORY) {
       var envs = Array.isArray(out.learning_environments) ? out.learning_environments.slice() : [];
       envs = envs.filter(function (e) {
         return String(e || "").toLowerCase() !== "classroom";
       });
       if (!envs.length) envs = ["vle"];
       out.learning_environments = envs;
+    }
+    // Expository-only: derive approximate content extent from Scale/scope for EJP.
+    // Interactive scale/scope semantics unchanged.
+    if (kind === LD_CREATE_OUTPUT_TYPE_EXPOSITORY) {
+      var scopeText = String(out.scope_scale || (base && base.scopeScale) || "").trim();
+      if (scopeText) {
+        var extentContracts = resolveExpositoryContractsLib();
+        if (extentContracts && typeof extentContracts.normalizeExpositoryScopeExtent === "function") {
+          out.expository_extent = extentContracts.normalizeExpositoryScopeExtent(scopeText);
+        }
+      }
     }
     return out;
   }
@@ -21762,6 +22017,42 @@
     briefLines.push("Goal / outcome: " + (goal || designIntent));
     if (audience) briefLines.push("Audience: " + audience);
     if (scopeScale) briefLines.push("Scope / scale: " + scopeScale);
+    if (
+      normalizeLdCreateOutputType(base && base.ldCreateOutputType) === LD_CREATE_OUTPUT_TYPE_EXPOSITORY &&
+      scopeScale
+    ) {
+      var briefExtentContracts = resolveExpositoryContractsLib();
+      var briefExtent =
+        resolvedState &&
+        resolvedState.resolvedFactors &&
+        resolvedState.resolvedFactors.expository_extent
+          ? resolvedState.resolvedFactors.expository_extent
+          : briefExtentContracts && briefExtentContracts.normalizeExpositoryScopeExtent
+          ? briefExtentContracts.normalizeExpositoryScopeExtent(scopeScale)
+          : null;
+      if (briefExtent) {
+        var extentParts = [];
+        if (briefExtent.words_equivalent != null) {
+          extentParts.push(
+            "approx " + briefExtent.words_equivalent + " words-equivalent (planning constraint, not prose quota)"
+          );
+        }
+        if (briefExtent.reading_minutes != null) {
+          extentParts.push("~" + briefExtent.reading_minutes + " min reading-time intent");
+        }
+        if (briefExtent.qualitative_hint) {
+          extentParts.push("qualitative: " + briefExtent.qualitative_hint);
+        }
+        if (briefExtent.interpretation === "qualitative" && !briefExtent.words_equivalent) {
+          extentParts.push("qualitative extent only — do not invent false numeric precision");
+        }
+        if (extentParts.length) {
+          briefLines.push(
+            "Expository extent (EJP owns explanatory-attention allocation): " + extentParts.join("; ")
+          );
+        }
+      }
+    }
     if (inputs) briefLines.push("Inputs / artefacts: " + inputs);
     if (effectiveStartingArtefact) briefLines.push("Starting artefact: " + effectiveStartingArtefact);
     if (desiredOutputs) briefLines.push("Desired outputs: " + desiredOutputs);
@@ -21848,7 +22139,9 @@
             workflowPolicy: workflowPolicy,
             explicitBriefFactors: extractWorkflowBriefExplicitFactors(base),
             resolvedBriefFactors: resolvedState ? resolvedState.resolvedFactors : {},
-            mappedBindings: resolvedState ? resolvedState.mappedBindings : {}
+            mappedBindings: resolvedState ? resolvedState.mappedBindings : {},
+            ldCreateOutputType: normalizeLdCreateOutputType(base && base.ldCreateOutputType),
+            workflowBriefConfig: configForPostRefinement || null
           }
         );
       })
@@ -22070,7 +22363,10 @@
     }
     var ldCreateOutputType = isLearningDesign ? getSelectedLdCreateOutputTypeFromUi() : "";
     if (isLearningDesign && !ldCreateOutputType) {
-      showToast("Choose what you are creating: Self-study resource or Workshop.", "error");
+      showToast(
+        "Choose what you are creating: Self-study resource, Workshop, or Expository Resource.",
+        "error"
+      );
       // Ensure the required selector is visible even if a prior sync missed the live DOM.
       syncWorkflowFactoryLdCreateOutputTypeUi("learning-design");
       if (els.wfLdCreateOutputTypeGroup) {
@@ -23329,6 +23625,13 @@
     }
     var activitiesRequired =
       activitiesRequiredFactor || explicitActivityPedagogyRequested;
+    if (
+      isLdCreateExpositoryResource(h.ldCreateOutputType) ||
+      /\bcreate an?\s+expository\s+resource\b/i.test(String(h.goal || ""))
+    ) {
+      // Expository is not Interactive activity pedagogy — do not force EP/DLA/GAM.
+      activitiesRequired = false;
+    }
     if (cognitionOrchestration.cognitionAwareAssessmentFlow === true) {
       discussionOrientedAssessmentWorkflow = true;
     }
@@ -23579,6 +23882,19 @@
         return bestScore >= 0.5 ? best : "";
       }
 
+      // Sprint 85 — Expository Resource product topology (accepted S84 design).
+      // Product selection drives workflow construction; bypass Interactive EP/DLA/GAM/LS.
+      var ldCreateOutputTypeForHeuristics = normalizeLdCreateOutputType(h.ldCreateOutputType);
+      if (
+        !ldCreateOutputTypeForHeuristics &&
+        /\bcreate an?\s+expository\s+resource\b/i.test(String(h.goal || ""))
+      ) {
+        ldCreateOutputTypeForHeuristics = LD_CREATE_OUTPUT_TYPE_EXPOSITORY;
+      }
+      var isExpositoryResourceWorkflow = isLdCreateExpositoryResource(
+        ldCreateOutputTypeForHeuristics
+      );
+
       function matchesResolvedFactorRules(ruleObj) {
         if (!ruleObj || typeof ruleObj !== "object") return true;
         if (!Object.keys(ruleObj).length) return true;
@@ -23683,6 +23999,7 @@
       var requestedDeliverySteps = buildRequestedDeliverySteps(sessionMaterialsForInclusion);
       var explicitDeliveryOverride = explicitSessionMaterials.length > 0;
       var selfDirectedPageNeedsSequence =
+        !isExpositoryResourceWorkflow &&
         String((resolvedBriefFactors && resolvedBriefFactors.delivery_context) || "").toLowerCase().trim() === "self_directed" &&
         sessionMaterialsForInclusion.indexOf("page") !== -1;
       var selfDirectedSessionAssessmentIntent =
@@ -24057,7 +24374,7 @@
           }
         }
       }
-      if (workshopRichWorkflowIntent) {
+      if (workshopRichWorkflowIntent && !isExpositoryResourceWorkflow) {
         [
           "Generate Learning Content",
           "Define Learning Outcomes",
@@ -24074,7 +24391,7 @@
           if (!exists) out.steps.push({ title: canonical, role: "" });
         });
       }
-      if (activitiesRequired) {
+      if (activitiesRequired && !isExpositoryResourceWorkflow) {
         var activityPedagogySteps = ["Define Learning Outcomes", "Design Learning Activities"];
         if (learnerFacingMaterialsRequested) {
           activityPedagogySteps.push("Generate Activity Materials");
@@ -24088,7 +24405,7 @@
           if (!exists) out.steps.push({ title: canonical, role: "" });
         });
       }
-      if (cognitionTopologyRequired) {
+      if (cognitionTopologyRequired && !isExpositoryResourceWorkflow) {
         cognitionOrchestration.preservedCognitionStages.forEach(function (stageTitle) {
           var canonical = canonicalizeFromPolicy(stageTitle);
           if (!canonical) return;
@@ -24475,7 +24792,7 @@
           explicitlyRequiredStepSet[k] = true;
         });
       }
-      if (activitiesRequired) {
+      if (activitiesRequired && !isExpositoryResourceWorkflow) {
         var activityChainTargets = ["Design Episode Plan", "Design Learning Activities"];
         if (learnerFacingMaterialsRequested) {
           activityChainTargets.push("Generate Activity Materials");
@@ -24491,7 +24808,11 @@
           explicitlyRequiredStepSet[k] = true;
         });
       }
-      if (cognitionTopologyRequired && cognitionOrchestration.preserveLearningActivityChain) {
+      if (
+        cognitionTopologyRequired &&
+        cognitionOrchestration.preserveLearningActivityChain &&
+        !isExpositoryResourceWorkflow
+      ) {
         var cognitionProtectedSet = collectRequiredStepsClosure(
           cognitionOrchestration.preservedCognitionStages
         );
@@ -24985,6 +25306,54 @@
       if (mkIdx === -1 || hasGlc || hasNorm) return;
       out.steps.splice(mkIdx, 0, { title: glcTitle, role: "" });
     })();
+
+      // Sprint 85 — replace Interactive middle with Expository sibling stages.
+      if (isExpositoryResourceWorkflow) {
+        var exoTitles = [];
+        function resolveExpositoryCanonicalTitle(title) {
+          var want = String(title || "").toLowerCase().trim();
+          if (!want) return "";
+          var found = "";
+          (policy.canonicalSteps || []).forEach(function (c) {
+            if (String(c || "").toLowerCase().trim() === want) found = c;
+          });
+          return found || String(title || "").trim();
+        }
+        function pushExpositoryStep(title) {
+          var canonical = resolveExpositoryCanonicalTitle(title);
+          if (!canonical) return;
+          var key = canonical.toLowerCase();
+          if (
+            exoTitles.some(function (t) {
+              return String(t || "").toLowerCase() === key;
+            })
+          ) {
+            return;
+          }
+          exoTitles.push(canonical);
+        }
+        var keepNormalize =
+          out.steps.some(function (s) {
+            return String((s && s.title) || "").toLowerCase().trim() === "normalize content";
+          }) ||
+          (typeof shouldIncludeNormalizeForSourcePosture === "function" &&
+            shouldIncludeNormalizeForSourcePosture());
+        if (keepNormalize && !generateFromTopic) {
+          pushExpositoryStep("Normalize Content");
+        }
+        [
+          "Generate Learning Content",
+          "Model Knowledge",
+          "Define Learning Outcomes",
+          "Expository Journey Plan",
+          "Expository Development",
+          "Expository Materials",
+          "Design Page"
+        ].forEach(pushExpositoryStep);
+        out.steps = exoTitles.map(function (title) {
+          return { title: title, role: "" };
+        });
+      }
     }
 
     // Research (I9.1): uploaded-source Factory path should not keep "Generate Research Content"
@@ -25030,7 +25399,7 @@
       }
     })();
 
-    if (selfDirectedSessionAssessmentIntent) {
+    if (selfDirectedSessionAssessmentIntent && !isLdCreateExpositoryResource(h.ldCreateOutputType)) {
       ["Design Learning Activities", "Generate Activity Materials", "Design Page"].forEach(function (title) {
         var canonical = title;
         if (!canonical) return;
@@ -26323,6 +26692,39 @@
         delete state.workflowRunEpisodePlanValidation[sid];
         ta.value = pageCapture.json;
         raw = pageCapture.json;
+      }
+    } else if (storesArtefact && !pageStructureStep && String(raw || "").trim()) {
+      var expoKind = resolveExpositoryArtefactKindFromStep(stepRow || {});
+      if (expoKind) {
+        var expoCapture = parseExpositoryArtefactCaptureForStorage(raw, expoKind);
+        if (!expoCapture.ok) {
+          state.workflowRunStrictJsonValidation = state.workflowRunStrictJsonValidation || {};
+          state.workflowRunStrictJsonValidation[sid] = String(
+            expoCapture.message || "Invalid Expository artefact JSON"
+          );
+          if (state.workflowRunStepCompleted[sid]) {
+            delete state.workflowRunStepCompleted[sid];
+          }
+        } else if (expoCapture.json) {
+          if (state.workflowRunStrictJsonValidation) {
+            delete state.workflowRunStrictJsonValidation[sid];
+          }
+          var expoParsed = expoCapture.parsed;
+          if (expoKind === "expository_journey_plan") {
+            var wfFactors =
+              (wf &&
+                wf.workflowOutputSpec &&
+                wf.workflowOutputSpec.constraints &&
+                typeof wf.workflowOutputSpec.constraints === "object" &&
+                wf.workflowOutputSpec.constraints) ||
+              (wf && wf.resolvedFactors) ||
+              {};
+            expoParsed = attachExpositoryExtentFromFactors(expoParsed, wfFactors);
+            expoCapture.json = JSON.stringify(expoParsed, null, 2);
+          }
+          ta.value = expoCapture.json;
+          raw = expoCapture.json;
+        }
       }
     } else if (!String(raw || "").trim() && sid) {
       if (state.workflowRunPageValidation) {
@@ -56079,6 +56481,8 @@
     prismTestApi.LD_CREATE_OUTPUT_TYPE_CHOICES = LD_CREATE_OUTPUT_TYPE_CHOICES;
     prismTestApi.LD_CREATE_OUTPUT_TYPE_SELF_STUDY = LD_CREATE_OUTPUT_TYPE_SELF_STUDY;
     prismTestApi.LD_CREATE_OUTPUT_TYPE_WORKSHOP = LD_CREATE_OUTPUT_TYPE_WORKSHOP;
+    prismTestApi.LD_CREATE_OUTPUT_TYPE_EXPOSITORY = LD_CREATE_OUTPUT_TYPE_EXPOSITORY;
+    prismTestApi.isLdCreateExpositoryResource = isLdCreateExpositoryResource;
     prismTestApi.extractWorkflowBriefExplicitFactors = extractWorkflowBriefExplicitFactors;
     prismTestApi.normalizeWorkflowBriefConfig = normalizeWorkflowBriefConfig;
     prismTestApi.applyWorkflowBriefInferenceRules = applyWorkflowBriefInferenceRules;
@@ -57459,6 +57863,10 @@
     prismTestApi.validatePartialPageCaptureForStep = validatePartialPageCaptureForStep;
     prismTestApi.shouldInjectUpstreamCaptureIntoPrompt = shouldInjectUpstreamCaptureIntoPrompt;
     prismTestApi.resolvePageVnextAssembleLib = resolvePageVnextAssembleLib;
+    prismTestApi.resolveExpositoryContractsLib = resolveExpositoryContractsLib;
+    prismTestApi.resolveExpositoryArtefactKindFromStep = resolveExpositoryArtefactKindFromStep;
+    prismTestApi.parseExpositoryArtefactCaptureForStorage = parseExpositoryArtefactCaptureForStorage;
+    prismTestApi.attachExpositoryExtentFromFactors = attachExpositoryExtentFromFactors;
     prismTestApi.validateEpisodePlanOrPageShellCapture = validateEpisodePlanOrPageShellCapture;
     prismTestApi.deriveDesignLearningActivitiesCaptureJson = deriveDesignLearningActivitiesCaptureJson;
     prismTestApi.validateDlaOrPageCapture = validateDlaOrPageCapture;

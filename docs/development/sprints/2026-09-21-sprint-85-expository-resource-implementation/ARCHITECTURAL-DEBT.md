@@ -38,7 +38,9 @@ Debt relevant to Sprint 85 scope. This file records **current status only**.
 
 | ID | Finding | Notes |
 | -- | ------- | ----- |
-| — | *(none yet)* | Implementation not started |
+| S85-AD-006 | Domain-pack guidance consumption in sibling **prompts** | Create/design context preserved; verifiable only after WP3 prompt authoring |
+| S85-AD-007 | `expository_extent` factor persistence beyond resolved factors / EJP artefact | WP2 stamps EJP `extent` on capture when factors available; full WOS mapsTo optional later if needed |
+| S85-AD-008 | Zero-workspace renderer / export for Expository pages | WP5 |
 
 ## Explicitly out of sprint (at open / until brief)
 
@@ -46,3 +48,4 @@ Debt relevant to Sprint 85 scope. This file records **current status only**.
 - Production changes in the opening step  
 - Reopening Sprint 83 or Sprint 84 architecture  
 - Solving Expository→Interactive / Podcast / Presentation / Research Synthesis as blockers  
+- Generic token-budget / content-budget frameworks (S85-D05)  

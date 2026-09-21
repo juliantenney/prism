@@ -76,7 +76,7 @@ test("A: Learning Design shows a select, not radio buttons", () => {
   assert.doesNotMatch(indexHtml, /id="wfLdCreateOutputTypeSelfStudy"|id="wfLdCreateOutputTypeWorkshop"/);
 });
 
-test("B: Select contains exactly placeholder + Self-study + Workshop", () => {
+test("B: Select contains placeholder + Self-study + Workshop + Expository Resource", () => {
   const selectMatch = indexHtml.match(
     /<select[^>]*id="wfLdCreateOutputType"[^>]*>([\s\S]*?)<\/select>/
   );
@@ -84,23 +84,27 @@ test("B: Select contains exactly placeholder + Self-study + Workshop", () => {
   const options = [...selectMatch[1].matchAll(/<option[^>]*value="([^"]*)"[^>]*>([\s\S]*?)<\/option>/g)].map(
     (m) => ({ value: m[1], label: m[2].replace(/\s+/g, " ").trim() })
   );
-  assert.equal(options.length, 3);
+  assert.equal(options.length, 4);
   assert.equal(options[0].value, "");
   assert.match(options[0].label, /Select what you are creating/);
   assert.equal(options[1].value, "self_study_resource");
   assert.equal(options[1].label, "Self-study resource");
   assert.equal(options[2].value, "workshop");
   assert.equal(options[2].label, "Workshop");
-  assert.equal(api.LD_CREATE_OUTPUT_TYPE_CHOICES.length, 2);
+  assert.equal(options[3].value, "expository_resource");
+  assert.equal(options[3].label, "Expository Resource");
+  assert.equal(api.LD_CREATE_OUTPUT_TYPE_CHOICES.length, 3);
 });
 
-test("C: Internal values remain self_study_resource / workshop", () => {
+test("C: Internal values remain self_study_resource / workshop / expository_resource", () => {
   assert.equal(api.LD_CREATE_OUTPUT_TYPE_SELF_STUDY, "self_study_resource");
   assert.equal(api.LD_CREATE_OUTPUT_TYPE_WORKSHOP, "workshop");
+  assert.equal(api.LD_CREATE_OUTPUT_TYPE_EXPOSITORY, "expository_resource");
   assert.ok(
     api.LD_CREATE_OUTPUT_TYPE_CHOICES.some((c) => c.value === "self_study_resource")
   );
   assert.ok(api.LD_CREATE_OUTPUT_TYPE_CHOICES.some((c) => c.value === "workshop"));
+  assert.ok(api.LD_CREATE_OUTPUT_TYPE_CHOICES.some((c) => c.value === "expository_resource"));
   assert.match(source, /function getSelectedLdCreateOutputTypeFromUi/);
   assert.match(
     source,
@@ -113,7 +117,7 @@ test("D: Default placeholder is invalid for Design workflow", () => {
   assert.match(indexHtml, /id="wfLdCreateOutputType"[\s\S]*?<option value="">Select what you are creating/);
   assert.match(
     source,
-    /isLearningDesign && !ldCreateOutputType[\s\S]{0,80}Choose what you are creating/
+    /isLearningDesign && !ldCreateOutputType[\s\S]{0,120}Choose what you are creating/
   );
 });
 
@@ -221,7 +225,7 @@ test("K: Research → Learning Design sync shows/populates the dropdown immediat
   assert.equal(typeof api.refreshWfLdCreateOutputTypeElementRefs, "function");
   assert.match(
     source,
-    /Choose what you are creating: Self-study resource or Workshop[\s\S]{0,250}syncWorkflowFactoryLdCreateOutputTypeUi\("learning-design"\)/
+    /Choose what you are creating: Self-study resource, Workshop, or Expository Resource[\s\S]{0,250}syncWorkflowFactoryLdCreateOutputTypeUi\("learning-design"\)/
   );
   assert.match(source, /els\.wfLdCreateOutputType\.focus/);
 });
@@ -235,7 +239,7 @@ test("L: Prompt Studio #outputType remains unchanged", () => {
   assert.match(psSelect[1], /value="image"/);
   assert.match(psSelect[1], /value="code"/);
   assert.match(psSelect[1], /value="structured"/);
-  assert.doesNotMatch(psSelect[1], /self_study_resource|workshop/);
+  assert.doesNotMatch(psSelect[1], /self_study_resource|workshop|expository_resource/);
   assert.ok(indexHtml.indexOf('id="outputTypeGroup"') < indexHtml.indexOf('id="wfLdCreateOutputTypeGroup"'));
 });
 
@@ -297,5 +301,35 @@ test("N: Supporting fields, legacy briefs, and topology helpers remain intact", 
   assert.match(source, /out = applyLdCreateOutputTypePrimaryFactors\(out, b\)/);
   assert.doesNotMatch(source, /supportedOutputs|outputKinds|ldOutputTypeEnum/);
   assert.match(indexHtml, /wf-layout-spacer/);
-  assert.match(indexHtml, /app\.js\?v=20260812-s75-ps-progressive/);
+  assert.match(indexHtml, /app\.js\?v=/);
+});
+
+test("O: Expository Resource Create choice and factor seed", () => {
+  assert.equal(
+    api.normalizeLdCreateOutputType("expository_resource"),
+    api.LD_CREATE_OUTPUT_TYPE_EXPOSITORY
+  );
+  assert.equal(
+    api.composeLdCreateDesignIntent(api.LD_CREATE_OUTPUT_TYPE_EXPOSITORY, "Photosynthesis"),
+    "Create an Expository Resource: Photosynthesis"
+  );
+  const brief = {
+    designIntent: "Create an Expository Resource: Photosynthesis",
+    goal: "Create an Expository Resource: Photosynthesis",
+    audience: "year 10 students",
+    scopeScale: "one chapter",
+    inputs: "",
+    selectedDomains: ["learning-design"],
+    ldCreateOutputType: api.LD_CREATE_OUTPUT_TYPE_EXPOSITORY
+  };
+  const resolved = resolveBrief(api, ldBriefConfig, brief);
+  assert.equal(resolved.delivery_context, "self_directed");
+  assert.equal(resolved.delivery_mode, "async");
+  assert.equal(resolved.page_profile, "learner");
+  assert.ok(resolved.session_materials.includes("page"));
+  assert.equal(resolved.activities_required, false);
+  const envs = Array.isArray(resolved.learning_environments)
+    ? resolved.learning_environments
+    : [resolved.learning_environments];
+  assert.ok(!envs.includes("classroom"));
 });

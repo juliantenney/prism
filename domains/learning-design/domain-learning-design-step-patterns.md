@@ -41,6 +41,9 @@ They provide a consistent way to structure workflows and ensure that learning de
       "Design Episode Plan",
       "Design Learning Activities",
       "Generate Activity Materials",
+      "Expository Journey Plan",
+      "Expository Development",
+      "Expository Materials",
       "Design Page",
       "Generate Slide Deck",
       "Generate VLE Structure",
@@ -60,6 +63,9 @@ They provide a consistent way to structure workflows and ensure that learning de
       "Design Episode Plan": 1,
       "Design Learning Activities": 1,
       "Generate Activity Materials": 1,
+      "Expository Journey Plan": 1,
+      "Expository Development": 1,
+      "Expository Materials": 1,
       "Design Page": 1,
       "Generate Slide Deck": 1,
       "Generate VLE Structure": 1,
@@ -79,7 +85,10 @@ They provide a consistent way to structure workflows and ensure that learning de
       "Design Episode Plan": { "requires": ["learning_outcomes"], "produces": ["page"] },
       "Design Learning Activities": { "requires": ["learning_outcomes", "page"], "produces": ["learning_activities"] },
       "Generate Activity Materials": { "requires": ["learning_activities"], "produces": ["activity_materials", "session_materials"] },
-      "Design Page": { "requiresAnyOf": ["knowledge_model", "activity_materials", "assessment_items", "learning_sequence", "learning_content"], "optionalRequires": ["learning_outcomes", "learning_activities", "activity_materials", "episode_plans", "learning_sequence", "assessment_items", "feedback_pack", "marking_rubric", "assessment_blueprint"], "produces": ["page"] },
+      "Expository Journey Plan": { "requires": ["learning_outcomes"], "produces": ["expository_journey_plan"] },
+      "Expository Development": { "requires": ["expository_journey_plan"], "produces": ["expository_development"] },
+      "Expository Materials": { "requires": ["expository_development"], "produces": ["expository_materials"] },
+      "Design Page": { "requiresAnyOf": ["knowledge_model", "activity_materials", "assessment_items", "learning_sequence", "learning_content", "expository_materials", "expository_development"], "optionalRequires": ["learning_outcomes", "learning_activities", "activity_materials", "episode_plans", "learning_sequence", "assessment_items", "feedback_pack", "marking_rubric", "assessment_blueprint", "expository_journey_plan", "expository_development", "expository_materials"], "produces": ["page"] },
       "Generate Slide Deck": { "requires": ["learning_outcomes", "learning_activities", "activity_materials", "learning_sequence"], "produces": ["slide_deck"] },
       "Generate VLE Structure": { "requires": ["learning_outcomes", "learning_activities", "activity_materials", "learning_sequence"], "produces": ["vle_structure"] },
       "Generate Learning Object Set": { "requires": ["learning_outcomes", "learning_activities", "activity_materials"], "produces": ["learning_object_set"] },
@@ -104,6 +113,12 @@ They provide a consistent way to structure workflows and ensure that learning de
       ["Design Episode Plan", "Design Learning Activities"],
       ["Design Learning Activities", "Generate Activity Materials"],
       ["Generate Activity Materials", "Construct Learning Sequence"],
+      ["Define Learning Outcomes", "Expository Journey Plan"],
+      ["Expository Journey Plan", "Expository Development"],
+      ["Expository Development", "Expository Materials"],
+      ["Expository Materials", "Design Page"],
+      ["Expository Journey Plan", "Design Page"],
+      ["Expository Development", "Design Page"],
       ["Generate Learning Content", "Design Page"],
       ["Model Knowledge", "Design Page"],
       ["Define Learning Outcomes", "Design Page"],
@@ -331,6 +346,9 @@ They provide a consistent way to structure workflows and ensure that learning de
       "Design Episode Plan": "Episode planning — derive frozen Episode Plan V1 (archetype + ordered instructional-function beats) from learning outcomes for downstream population.",
       "Design Learning Activities": "Design runnable learning tasks with explicit learner actions, facilitation moves, and delivery-ready outputs.",
       "Generate Activity Materials": "Generate complete, facilitator-ready teaching materials from activity material specifications.",
+      "Expository Journey Plan": "Plan the whole-resource intellectual journey across ordered learner-facing exposition sections — progressive construction of understanding, not Interactive activity choreography.",
+      "Expository Development": "Develop each planned exposition section's explanatory treatment and commission supporting intellectual materials without replanning the chapter.",
+      "Expository Materials": "Realise commissioned intellectual material bodies under commission lock — not Interactive activity materials.",
       "Construct Learning Sequence": "Build a timed facilitation-ready session flow with transitions, learner actions, and facilitator actions.",
       "Design Page": "Transport upstream artefacts into a self-contained page container — wrapper structure only; activity.materials.* are archival copy-only payloads from GAM Content:.",
       "Generate Slide Deck": "Assemble a presentation-support deck without replacing materials or redesigning pedagogy.",
@@ -3214,6 +3232,135 @@ learning_sequence
       ]
     }
   ]
+}
+```
+
+---
+
+## 11A. Expository Journey Plan
+
+### Type
+Pedagogical planning (Expository sibling)
+
+### Input
+learning_outcomes, knowledge_model, learning_content
+
+### Output
+expository_journey_plan
+
+### Purpose
+- Own the whole-resource intellectual journey across ordered learner-facing exposition sections
+- Progressive construction of understanding (north star) — not a table of contents and not Interactive episode beats
+- Plan section ordering, conceptual purpose, dependencies, connections, recurrence, qualification, synthesis
+
+### Aliases
+- Design Expository Journey Plan
+- Expository Chapter Plan
+
+### Prompt Factory
+```json
+{
+  "configurationMode": "none",
+  "askForCustomSchema": false,
+  "defaultPromptStrategy": "default_template",
+  "executionMode": "llm",
+  "structureStyle": "schema_structured",
+  "canonical_step_id": "step_expository_journey_plan",
+  "promptTemplate": "Sprint 85 scaffolding: Plan an Expository Journey Plan for a reading/viewing Expository Resource.\n\nNorth star: progressively construct a coherent mental model — connected, discriminating, qualified, usable understanding. Do NOT emit Interactive activity beats, workspaces, evidence requirements, or material bodies.\n\nExtent: Scope / scale expresses desired content extent. Translate available extent into an allocation of explanatory attention across the intellectual journey (conceptual territory, section emphasis, elaboration, examples/representations/evidence/synthesis). Treat any words-equivalent as an approximate planning constraint — not a prose quota and not a pad/truncate target. Non-prose representations also consume learner attention.\n\nGoverning question: What intellectual journey will allow this audience to construct the understanding represented by these Learning Outcomes?\n\nReturn ONLY one markdown fenced JSON block (artifact_type \"expository_journey_plan\") with ordered sections[] each having section_id, title, purpose, knowledge_focus, and optional progression notes; include extent when scope provides interpretable planning signal. After the fence emit: STEP N OUTPUT: expository_journey_plan",
+  "preferredOutputFormat": "json",
+  "defaultPromptNotes": "Sprint 85: EJP owns progressive construction of understanding across ordered sections and explanatory-attention allocation from Scale/scope. Full pedagogical prompt authoring in WP3.",
+  "runnerInstructions": {
+    "what_this_step_does": "Plans the Expository Resource intellectual journey across ordered exposition sections."
+  },
+  "defaultOutputStructure": {
+    "keys": ["artifact_type", "schema_version", "title", "audience", "extent", "sections", "learning_outcomes", "generation_notes"]
+  }
+}
+```
+
+---
+
+## 11B. Expository Development
+
+### Type
+Pedagogical development (Expository sibling)
+
+### Input
+expository_journey_plan, learning_outcomes, learning_content, knowledge_model
+
+### Output
+expository_development
+
+### Purpose
+- Develop each planned section's explanatory treatment for the intended conceptual move
+- Commission supporting intellectual materials (judgement, not checklist)
+- Do not replan the whole-resource journey
+
+### Aliases
+- Design Expository Development
+- Develop Exposition Sections
+
+### Prompt Factory
+```json
+{
+  "configurationMode": "none",
+  "askForCustomSchema": false,
+  "defaultPromptStrategy": "default_template",
+  "executionMode": "llm",
+  "structureStyle": "schema_structured",
+  "canonical_step_id": "step_expository_development",
+  "promptTemplate": "Sprint 85 scaffolding: Develop each Expository Journey Plan section without replanning the chapter.\n\nInherit EJP section-level extent implications: relative emphasis, where deeper explanation is warranted, and how much elaboration/examples/contrasts/evidence/representations/synthesis the available extent affords. Do not expand resource scope beyond the EJP allocation.\n\nFor each section, decide the explanatory treatment and commission supporting intellectual materials needed for the intended conceptual move. Do NOT require Interactive evidence, workspaces, or learner_task/expected_output.\n\nReturn ONLY one markdown fenced JSON block (artifact_type \"expository_development\") with sections[] matching journey section_ids, each with explanation_intent and materials_commission[]. After the fence emit: STEP N OUTPUT: expository_development",
+  "preferredOutputFormat": "json",
+  "defaultPromptNotes": "Sprint 85: XD per-section explanatory treatment + commissions; inherits EJP extent allocation. Full pedagogical prompt authoring in WP3.",
+  "runnerInstructions": {
+    "what_this_step_does": "Develops each exposition section and commissions supporting intellectual materials."
+  },
+  "defaultOutputStructure": {
+    "keys": ["artifact_type", "schema_version", "sections", "generation_notes"]
+  }
+}
+```
+
+---
+
+## 11C. Expository Materials
+
+### Type
+Material realisation (Expository sibling)
+
+### Input
+expository_development, learning_content
+
+### Output
+expository_materials
+
+### Purpose
+- Realise commissioned intellectual material bodies under commission lock
+- Preserve grounding, formal fidelity, recurrence consistency
+- Do not invent Interactive tasks or uncommissioned material rows
+
+### Aliases
+- Generate Expository Materials
+- Realise Exposition Materials
+
+### Prompt Factory
+```json
+{
+  "configurationMode": "none",
+  "askForCustomSchema": false,
+  "defaultPromptStrategy": "default_template",
+  "executionMode": "llm",
+  "structureStyle": "schema_structured",
+  "canonical_step_id": "step_expository_materials",
+  "promptTemplate": "Sprint 85 scaffolding: Realise Expository Materials commissioned by Expository Development.\n\nCommission lock: realise each commission 1:1 — do not invent, delete, or reassign commissions. Realise within the EJP/XD extent allocation — do not independently expand resource scope or mechanically pad/truncate to a word target. Do not invent Interactive activities or workspaces.\n\nReturn ONLY one markdown fenced JSON block (artifact_type \"expository_materials\") with materials[] rows (material_id, section_id, kind, body). After the fence emit: STEP N OUTPUT: expository_materials",
+  "preferredOutputFormat": "json",
+  "defaultPromptNotes": "Sprint 85: XM commission lock within EJP/XD extent constraints. Full pedagogical prompt authoring in WP3; GAM machinery reuse decision in WP4.",
+  "runnerInstructions": {
+    "what_this_step_does": "Realises commissioned intellectual material bodies for exposition sections."
+  },
+  "defaultOutputStructure": {
+    "keys": ["artifact_type", "schema_version", "materials", "generation_notes"]
+  }
 }
 ```
 

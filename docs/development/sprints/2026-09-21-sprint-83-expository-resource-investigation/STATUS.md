@@ -1,10 +1,10 @@
 # Sprint 83 — Status
 
 **Last updated:** 2026-09-21  
-**Sprint status:** **OPEN**  
-**Opening decision:** [S83-D01](decisions.md#s83-d01--open-sprint-83--expository-resource-investigation)  
-**Start here:** [SPRINT-83-START-HERE.md](SPRINT-83-START-HERE.md)  
-**Charter:** [SPRINT-83-CHARTER.md](SPRINT-83-CHARTER.md)
+**Sprint status:** **COMPLETE / CLOSED**  
+**Closure:** [SPRINT-83-CLOSURE.md](SPRINT-83-CLOSURE.md) · [S83-D03](decisions.md#s83-d03--accept-investigation-report-and-close-sprint-83) · [S83-D04](decisions.md#s83-d04--planning-handoff--sibling-prompt-family--protected-baseline)  
+**Authoritative output:** [S83-INVESTIGATION-REPORT.md](S83-INVESTIGATION-REPORT.md)  
+**Start here:** [SPRINT-83-START-HERE.md](SPRINT-83-START-HERE.md)
 
 ---
 
@@ -12,34 +12,31 @@
 
 | Field | Value |
 | ----- | ----- |
-| Product programme | Post-alpha — **alpha-use period** with first product investigation opened |
-| Alpha | **Development complete** ([S82-D04](../2026-09-01-sprint-82-maths-entry-and-alpha-completion/decisions.md#s82-d04--alpha-development-complete)) |
-| First-class gate at alpha close | `npm run test:first-class` → **339/339** |
-| Sprint 82 | **CLOSED** |
-| Sprint 83 | **OPEN** — administration complete; investigation brief **pending** |
-| Backlog item | [PB-FA-011](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-011--expository-resource) |
+| Alpha | **Development complete** (unchanged) |
+| First-class gate at alpha close | **339/339** |
+| Sprint 83 | **CLOSED** (2026-09-21) |
+| Investigation report | **Accepted** — authoritative Planning handoff |
+| S83-T-001…T-012 | **COMPLETE** |
 | Implementation authorised? | **No** |
+| Planning sprint | **Not opened** — intended next programme step |
+| Backlog | [PB-FA-011](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-011--expository-resource) |
 
 ---
 
-## Board
+## Board (final)
 
 | Item | Status |
 | ---- | ------ |
-| Sprint pack established | **COMPLETE** |
-| Opening decision S83-D01 | **Accepted** |
-| Detailed investigation brief | **Pending** (supplied separately) |
-| Investigation work | **Not started** |
-| Implementation | **Not authorised** |
-
----
-
-## Boundaries (reminder)
-
-No production prompt, schema, Create UI, renderer, or Expository implementation work under this sprint until a later authorised phase. See [SPRINT-83-CHARTER.md](SPRINT-83-CHARTER.md).
+| S83-D01 Open | **Accepted** |
+| S83-D02 Investigation brief | **Accepted** |
+| S83-T-001…T-012 | **COMPLETE** |
+| Investigation report operator acceptance | **Accepted** (S83-D03) |
+| Sibling / protected-baseline principles | **Accepted** (S83-D04) |
+| Sprint close | **COMPLETE / CLOSED** |
+| Implementation | **Not authorised / not performed** |
 
 ---
 
 ## Programme pointer
 
-[NEXT-SPRINT.md](../../../sprints/NEXT-SPRINT.md)
+[NEXT-SPRINT.md](../../../sprints/NEXT-SPRINT.md) — intended next: Expository Resource Planning (not opened)

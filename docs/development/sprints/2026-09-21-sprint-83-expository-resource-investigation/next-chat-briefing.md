@@ -1,32 +1,26 @@
 # Sprint 83 — Next-chat briefing
 
-**Sprint status:** **OPEN** (2026-09-21)  
-**Type:** Investigation — **not** implementation  
-**Entry:** [SPRINT-83-START-HERE.md](SPRINT-83-START-HERE.md) · **Charter:** [SPRINT-83-CHARTER.md](SPRINT-83-CHARTER.md)
+**Sprint status:** **CLOSED / COMPLETE** (2026-09-21)  
+**Closure:** [SPRINT-83-CLOSURE.md](SPRINT-83-CLOSURE.md)  
+**Findings (accepted):** [S83-INVESTIGATION-REPORT.md](S83-INVESTIGATION-REPORT.md)
 
 ---
 
 ## One-liner
 
-Sprint 83 pack is open for **Expository Resource Investigation** (PB-FA-011). Alpha is complete (339/339 at close). Detailed investigation brief is **pending** — do not implement and do not invent investigation tasks yet.
-
-## Load order
-
-1. [SPRINT-83-START-HERE.md](SPRINT-83-START-HERE.md)  
-2. [SPRINT-83-CHARTER.md](SPRINT-83-CHARTER.md)  
-3. [HANDOVER.md](HANDOVER.md)  
-4. [STATUS.md](STATUS.md) · [decisions.md](decisions.md)
+Sprint 83 investigation closed and accepted. Authoritative handoff is the investigation report plus sibling prompt-family / protected Interactive-baseline principles (S83-D04). Planning sprint intended next — **not opened**. No implementation authorised.
 
 ## Do not
 
-- Begin Expository investigation before the separate brief is accepted  
-- Change production prompts, schemas, Create UI, or renderer  
-- Implement Expository Resource, Podcast, Presentation, or Expository→Interactive transform  
-- Reopen settled alpha architecture without evidence  
-- Treat historical debt / pruned backlog as active Sprint 83 work  
+- Implement Expository or change production behaviour from this pack  
+- Modify Interactive prompts to enable Expository  
+- Treat findings as decided topology/schemas/prompt text  
+- Assume Planning is open without an explicit opening decision  
 
-## Reference
+## Load for Planning (when opened)
 
-- Backlog: [PB-FA-011](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-011--expository-resource)  
-- Alpha close: [SPRINT-82-CLOSURE.md](../2026-09-01-sprint-82-maths-entry-and-alpha-completion/SPRINT-82-CLOSURE.md)  
-- Programme: [NEXT-SPRINT.md](../../../sprints/NEXT-SPRINT.md)
+1. [SPRINT-83-CLOSURE.md](SPRINT-83-CLOSURE.md)  
+2. [S83-INVESTIGATION-REPORT.md](S83-INVESTIGATION-REPORT.md)  
+3. [S83-D04](decisions.md#s83-d04--planning-handoff--sibling-prompt-family--protected-baseline)  
+
+Programme: [NEXT-SPRINT.md](../../../sprints/NEXT-SPRINT.md)

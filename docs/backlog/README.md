@@ -4,7 +4,7 @@
 
 **Programme status:** **Alpha development complete** (2026-09-02). Current phase is the **alpha-use period**.
 
-**Active sprint:** [Sprint 83 — Expository Resource Investigation](../development/sprints/2026-09-21-sprint-83-expository-resource-investigation/SPRINT-83-START-HERE.md) — **OPEN** (investigation only; not implementation).
+**Active sprint:** *(none)*. Intended next: Expository Resource Planning — **not opened** ([NEXT-SPRINT.md](../sprints/NEXT-SPRINT.md)). Last closed: [Sprint 83](../development/sprints/2026-09-21-sprint-83-expository-resource-investigation/SPRINT-83-CLOSURE.md).
 
 [PRODUCT-BACKLOG.md](PRODUCT-BACKLOG.md) is the **current planning authority**. It answers what PRISM might deliberately choose to work on next. It does **not** catalogue every historical deferred observation.
 
@@ -29,7 +29,7 @@ Do **not** promote historical sprint architectural-debt ledgers wholesale into t
 
 ## Navigation
 
-- Programme pointer: [NEXT-SPRINT.md](../sprints/NEXT-SPRINT.md) — **Sprint 83 OPEN** · alpha-use period  
+- Programme pointer: [NEXT-SPRINT.md](../sprints/NEXT-SPRINT.md) — **no active sprint** · intended next: Expository Resource Planning (not opened)  
 
 - Alpha close: [SPRINT-82-CLOSURE.md](../development/sprints/2026-09-01-sprint-82-maths-entry-and-alpha-completion/SPRINT-82-CLOSURE.md)  
 - Sprint index: [docs/sprints/README.md](../sprints/README.md)  

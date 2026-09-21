@@ -1,19 +1,19 @@
 # Next sprint — active programme
 
-**Status:** **Sprint 83 OPEN** — Expository Resource Investigation (2026-09-21). Sprint 82 **CLOSED**. Alpha development **complete**.  
-**Updated:** 2026-09-21
+**Status:** **Alpha development complete**. Sprint 83 **CLOSED**. Sprint 82 **CLOSED**.  
+**Updated:** 2026-09-21 (Sprint 83 closeout)
 
 ---
 
 ## Current programme
 
-**Active sprint:** [Sprint 83 — Expository Resource Investigation](../development/sprints/2026-09-21-sprint-83-expository-resource-investigation/SPRINT-83-START-HERE.md) — **OPEN**
+**Active sprint:** *(none opened)*
 
-**Type:** Investigation — **not** implementation  
-**Opening decision:** [S83-D01](../development/sprints/2026-09-21-sprint-83-expository-resource-investigation/decisions.md#s83-d01--open-sprint-83--expository-resource-investigation)  
-**Backlog:** [PB-FA-011](../backlog/PRODUCT-BACKLOG.md#pb-fa-011--expository-resource)
+**Last closed sprint:** Sprint 83 — Expository Resource Investigation — **COMPLETE / CLOSED**
 
-**Last closed sprint:** Sprint 82 — Maths Entry & Alpha Completion — **COMPLETE / CLOSED**
+**Closure:** [SPRINT-83-CLOSURE.md](../development/sprints/2026-09-21-sprint-83-expository-resource-investigation/SPRINT-83-CLOSURE.md) · [S83-D03](../development/sprints/2026-09-21-sprint-83-expository-resource-investigation/decisions.md#s83-d03--accept-investigation-report-and-close-sprint-83)  
+**Accepted findings:** [S83-INVESTIGATION-REPORT.md](../development/sprints/2026-09-21-sprint-83-expository-resource-investigation/S83-INVESTIGATION-REPORT.md)  
+**Planning constraints:** [S83-D04](../development/sprints/2026-09-21-sprint-83-expository-resource-investigation/decisions.md#s83-d04--planning-handoff--sibling-prompt-family--protected-baseline) (sibling prompt-family · protected Interactive baseline)
 
 ### Alpha milestone (still authoritative)
 
@@ -27,23 +27,30 @@
 | ---- | ----- |
 | First-class gate at alpha close | `npm run test:first-class` → **339/339** |
 | Sprint 82 | **CLOSED** — historical |
-| Sprint 83 investigation brief | **Pending** — do not invent tasks ahead of it |
-| Implementation of Expository Resource | **Not authorised** by Sprint 83 opening |
+| Sprint 83 | **CLOSED** — investigation accepted; no implementation |
+| Expository implementation | **Not authorised** |
+| Interactive prompt family | **Protected baseline** (S83-D04) |
 
 ---
 
-## Sprint 83 posture
+## Intended next programme step
 
-Broad objective: investigate whether existing subsystem architecture can support a high-quality first-class Expository Resource, what product-specific prompt behaviour would be required, and whether any subsystem contracts need adaptation.
+**Expository Resource Planning** — **not opened**.
 
-**Immediate next:** accept the separate investigation brief, then begin investigation under that brief.
+Open only via an explicit opening decision. Do **not** invent a Planning plan or implementation tasks from this file.
 
-Intended later sequence (intentions only): Planning sprint → Implementation sprint — **not opened**.
+Handoff inputs when opening Planning:
 
-Canonical planning authority remains [PRODUCT-BACKLOG.md](../backlog/PRODUCT-BACKLOG.md). Historical debt is not automatic Sprint 83 work.
+1. [S83-INVESTIGATION-REPORT.md](../development/sprints/2026-09-21-sprint-83-expository-resource-investigation/S83-INVESTIGATION-REPORT.md)  
+2. [S83-D04](../development/sprints/2026-09-21-sprint-83-expository-resource-investigation/decisions.md#s83-d04--planning-handoff--sibling-prompt-family--protected-baseline)  
+3. [SPRINT-83-CLOSURE.md](../development/sprints/2026-09-21-sprint-83-expository-resource-investigation/SPRINT-83-CLOSURE.md)  
+4. [PB-FA-011](../backlog/PRODUCT-BACKLOG.md#pb-fa-011--expository-resource)
+
+Canonical planning authority remains [PRODUCT-BACKLOG.md](../backlog/PRODUCT-BACKLOG.md).
 
 ---
 
-## Previous sprint
+## Previous sprints
 
-Sprint 82 — Maths Entry & Alpha Completion — **CLOSED** ([closure](../development/sprints/2026-09-01-sprint-82-maths-entry-and-alpha-completion/SPRINT-82-CLOSURE.md) · [closeout](sprint-82-closeout.md))
+- Sprint 83 — Expository Resource Investigation — **CLOSED** ([closure](../development/sprints/2026-09-21-sprint-83-expository-resource-investigation/SPRINT-83-CLOSURE.md) · [closeout](sprint-83-closeout.md))  
+- Sprint 82 — Maths Entry & Alpha Completion — **CLOSED** ([closure](../development/sprints/2026-09-01-sprint-82-maths-entry-and-alpha-completion/SPRINT-82-CLOSURE.md) · [closeout](sprint-82-closeout.md))

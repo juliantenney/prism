@@ -1,12 +1,14 @@
 # Sprint 83 — Charter
 
 **Sprint:** 83 — Expository Resource Investigation  
-**Status:** **OPEN** (2026-09-21)  
+**Status:** **CLOSED / COMPLETE** (opened 2026-09-21 · closed 2026-09-21)  
+**Closure:** [SPRINT-83-CLOSURE.md](SPRINT-83-CLOSURE.md)  
 **Type:** Investigation — not implementation  
 **Predecessor:** Sprint 82 — CLOSED; Alpha development complete ([S82-D04](../2026-09-01-sprint-82-maths-entry-and-alpha-completion/decisions.md#s82-d04--alpha-development-complete))  
 **Backlog item:** [PB-FA-011 — Expository Resource](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-011--expository-resource)  
 **Start here:** [SPRINT-83-START-HERE.md](SPRINT-83-START-HERE.md)  
-**Opening decision:** [S83-D01](decisions.md#s83-d01--open-sprint-83--expository-resource-investigation)
+**Opening decision:** [S83-D01](decisions.md#s83-d01--open-sprint-83--expository-resource-investigation)  
+**Close decisions:** [S83-D03](decisions.md#s83-d03--accept-investigation-report-and-close-sprint-83) · [S83-D04](decisions.md#s83-d04--planning-handoff--sibling-prompt-family--protected-baseline)
 
 ---
 

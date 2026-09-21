@@ -1,63 +1,37 @@
 # Sprint 83 — Handover
 
-**Kind:** Open-sprint continuity / startup handover  
-**Sprint status:** **OPEN**  
-**Type:** Investigation — not implementation  
-**Dashboard:** [STATUS.md](STATUS.md) · **Entry:** [SPRINT-83-START-HERE.md](SPRINT-83-START-HERE.md)
+**Kind:** Closed-sprint handover  
+**Sprint status:** **CLOSED / COMPLETE**  
+**Closure:** [SPRINT-83-CLOSURE.md](SPRINT-83-CLOSURE.md)  
+**Authoritative findings:** [S83-INVESTIGATION-REPORT.md](S83-INVESTIGATION-REPORT.md)
 
 ---
 
-## A. Programme position
+## Start here
 
-| Item | State |
-| ---- | ----- |
-| Alpha development | **Complete** — [S82-D04](../2026-09-01-sprint-82-maths-entry-and-alpha-completion/decisions.md#s82-d04--alpha-development-complete) |
-| First-class engineering gate at alpha close | **339/339** |
-| Sprint 82 | **CLOSED** — do not reopen without a new decision |
-| Sprint 83 | **OPEN** — Expository Resource Investigation |
-| Canonical backlog | [PRODUCT-BACKLOG.md](../../../backlog/PRODUCT-BACKLOG.md) — deliberately pruned post-alpha |
-| Active backlog item | **PB-FA-011** Expository Resource |
+Sprint 83 is **CLOSED**. Operator accepted the investigation report ([S83-D03](decisions.md#s83-d03--accept-investigation-report-and-close-sprint-83)).
 
-**Authoritative alpha wording:**
+**No Expository implementation was authorised or performed.**  
+**No production behaviour changed.**
 
-> Alpha development complete. First-class journeys have been manually exercised and engineering-gated; known remaining issues and deferred capabilities are documented for post-alpha work.
+Planning handoff constraints ([S83-D04](decisions.md#s83-d04--planning-handoff--sibling-prompt-family--protected-baseline)):
 
-**Not claimed:** production-ready · formally WCAG conformant · bug-free · feature-complete for every future product/output type.
+- **Sibling prompt-family** — Expository gets its own coherent prompts/contracts where needed; do not branch or weaken Interactive prompts.
+- **Protected baseline** — do not modify Interactive prompts merely so Expository can work; additive infrastructure only if Interactive behaviour is preserved.
 
 ---
 
-## B. What Sprint 83 is for
+## Do next
 
-Investigate architecture fit, product-specific prompt behaviour, and any needed subsystem-contract adaptation for a first-class Expository Resource.
-
-Working hypothesis (not decided): subsystem progression broadly sound; Expository likely needs its own prompt family rather than Interactive Learning Resource prompts.
-
-**Detailed investigation brief:** pending separate supply and acceptance. Investigation execution has **not** begun.
-
----
-
-## C. Carry-forward context (useful only)
-
-- Historical debt and pruned backlog items are **not** automatic active work.  
-- Research Synthesis remains an **open relationship question** inside PB-FA-011 — not a separate committed product.  
-- QA is an **operating process** (Part 1 Benchmark + Part 2 Validation as custom ChatGPT workflow), not an active product-development backlog theme.  
-- Accessibility: strong automated **alpha baseline**; **no formal WCAG claim**.  
-- Settled Interactive / Workshop alpha architecture: do **not** reopen without evidence.  
-- Intended sequence (intentions only): Investigation → Planning sprint → Implementation sprint.
-
-Do **not** mechanically reload Sprint 82 maths-entry implementation detail into this investigation.
+1. Open an **Expository Resource Planning** sprint only via an **explicit opening decision** — not assumed by this file.  
+2. Planning inputs: [S83-INVESTIGATION-REPORT.md](S83-INVESTIGATION-REPORT.md) + [S83-D04](decisions.md#s83-d04--planning-handoff--sibling-prompt-family--protected-baseline) + [SPRINT-83-CLOSURE.md](SPRINT-83-CLOSURE.md).  
+3. Do **not** decide topology/schemas/prompt text/naming from this handover alone.  
+4. Do **not** reopen Sprint 82 or treat historical debt as automatic work.
 
 ---
 
-## D. Explicitly not authorised yet
+## Protected
 
-Implementation of Expository Resource; production prompt/schema/contract changes; Create UI or renderer changes; Expository→Interactive transformation; Podcast/Presentation implementation; generic extensibility frameworks; broad unrelated tech-debt discovery.
-
----
-
-## E. Next action
-
-1. Operator supplies / accepts the Expository Resource investigation brief.  
-2. Record acceptance in [decisions.md](decisions.md).  
-3. Populate [PLAN.md](PLAN.md) with bounded investigation tasks from that brief.  
-4. Only then begin investigation work.
+- Alpha development complete; gate at close **339/339**.  
+- Sprint 82 **CLOSED**.  
+- Interactive prompt family = protected baseline for Expository work.

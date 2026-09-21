@@ -1767,6 +1767,7 @@
       defaultPromptStrategy: String(raw.defaultPromptStrategy || "default_template"),
       defaultPromptNotes: String(raw.defaultPromptNotes || "").trim(),
       promptTemplate: String(raw.promptTemplate || ""),
+      expositoryPromptTemplate: String(raw.expositoryPromptTemplate || ""),
       defaultPromptVariables:
         raw.defaultPromptVariables && typeof raw.defaultPromptVariables === "object"
           ? raw.defaultPromptVariables
@@ -5423,7 +5424,117 @@
     return rows;
   }
 
-  function resolveWorkflowStepPromptTemplate(cfg) {
+  function resolveExpositorySiblingPromptsLib() {
+    var roots = [];
+    if (typeof globalThis !== "undefined") roots.push(globalThis);
+    if (typeof window !== "undefined") roots.push(window);
+    var i;
+    for (i = 0; i < roots.length; i += 1) {
+      if (roots[i] && roots[i].PrismExpositorySiblingPrompts) {
+        return roots[i].PrismExpositorySiblingPrompts;
+      }
+    }
+    if (typeof require === "function") {
+      try {
+        return require("./lib/expository-sibling-prompts.js");
+      } catch (_err) {}
+    }
+    return null;
+  }
+
+  function resolveExpositoryDomainGuidanceLib() {
+    var roots = [];
+    if (typeof globalThis !== "undefined") roots.push(globalThis);
+    if (typeof window !== "undefined") roots.push(window);
+    var i;
+    for (i = 0; i < roots.length; i += 1) {
+      if (roots[i] && roots[i].PrismExpositoryDomainGuidance) {
+        return roots[i].PrismExpositoryDomainGuidance;
+      }
+    }
+    if (typeof require === "function") {
+      try {
+        return require("./lib/expository-domain-guidance.js");
+      } catch (_err) {}
+    }
+    return null;
+  }
+
+  function isExpositoryResourceWorkflow(wf) {
+    var workflow = wf && typeof wf === "object" ? wf : null;
+    if (!workflow) return false;
+    if (isLdCreateExpositoryResource(workflow.ldCreateOutputType)) return true;
+    var steps = Array.isArray(workflow.steps) ? workflow.steps : [];
+    for (var i = 0; i < steps.length; i += 1) {
+      var cid = String(
+        (steps[i] && (steps[i].canonical_step_id || steps[i].canonicalStepId)) || ""
+      )
+        .trim()
+        .toLowerCase();
+      if (cid.indexOf("step_expository_") === 0) return true;
+    }
+    var constraints =
+      workflow.workflowOutputSpec &&
+      workflow.workflowOutputSpec.constraints &&
+      typeof workflow.workflowOutputSpec.constraints === "object"
+        ? workflow.workflowOutputSpec.constraints
+        : null;
+    if (constraints && constraints.expository_extent) return true;
+    var goalBlob = [
+      workflow.goal,
+      workflow.designIntent,
+      workflow.name
+    ]
+      .map(function (v) {
+        return String(v || "");
+      })
+      .join("\n");
+    if (/create an? expository resource/i.test(goalBlob)) return true;
+    return false;
+  }
+
+  function resolveWorkflowStepPromptTemplate(cfg, wfOrContext) {
+    var workflow =
+      wfOrContext && typeof wfOrContext === "object"
+        ? wfOrContext.workflow && typeof wfOrContext.workflow === "object"
+          ? wfOrContext.workflow
+          : wfOrContext.steps
+          ? wfOrContext
+          : null
+        : null;
+    var siblingLib = resolveExpositorySiblingPromptsLib();
+    var stageHint = {
+      canonical_step_id:
+        (cfg && (cfg.canonicalStepId || cfg.canonical_step_id)) ||
+        (wfOrContext &&
+          (wfOrContext.stepCanonicalStepId ||
+            wfOrContext.canonical_step_id ||
+            wfOrContext.canonicalStepId)) ||
+        "",
+      title:
+        (wfOrContext &&
+          (wfOrContext.stepCanonicalTitle || wfOrContext.stepTitle || wfOrContext.title)) ||
+        "",
+      outputName:
+        (wfOrContext && (wfOrContext.stepOutputName || wfOrContext.outputName)) || ""
+    };
+    var stage =
+      siblingLib && typeof siblingLib.resolveStageFromStepIdentity === "function"
+        ? siblingLib.resolveStageFromStepIdentity(stageHint)
+        : "";
+    var alwaysExpositoryStage =
+      stage === "expository_journey_plan" ||
+      stage === "expository_development" ||
+      stage === "expository_materials";
+    var expository = alwaysExpositoryStage || isExpositoryResourceWorkflow(workflow);
+    if (expository && siblingLib && typeof siblingLib.resolveTemplate === "function") {
+      var sibling = String(siblingLib.resolveTemplate(stage || stageHint) || "").trim();
+      if (sibling) return sibling;
+      var packSibling = String(
+        cfg && cfg.expositoryPromptTemplate ? cfg.expositoryPromptTemplate : ""
+      ).trim();
+      if (packSibling) return packSibling;
+    }
     var template = String(cfg && cfg.promptTemplate ? cfg.promptTemplate : "").trim();
     if (template) return template;
     var fallback = String(
@@ -5621,7 +5732,13 @@
       )
     };
     var selectedOptions = [];
-    var template = resolveWorkflowStepPromptTemplate(cfg);
+    var template = resolveWorkflowStepPromptTemplate(cfg, {
+      workflow: seed.workflow || null,
+      stepCanonicalStepId: syntheticCtx.stepCanonicalStepId,
+      stepCanonicalTitle: syntheticCtx.stepCanonicalTitle,
+      stepTitle: syntheticCtx.stepTitle,
+      stepOutputName: syntheticCtx.stepOutputName
+    });
     var draft = "";
     if (template) {
       var templateVars = {
@@ -5708,7 +5825,19 @@
         return byId[id];
       });
     }
-    var template = resolveWorkflowStepPromptTemplate(cfg);
+    var template = resolveWorkflowStepPromptTemplate(cfg, {
+      workflow:
+        (ctx.workflowId && typeof findWorkflowById === "function"
+          ? findWorkflowById(ctx.workflowId)
+          : null) ||
+        (state.selectedWorkflowId && typeof findWorkflowById === "function"
+          ? findWorkflowById(state.selectedWorkflowId)
+          : null),
+      stepCanonicalStepId: ctx.stepCanonicalStepId || "",
+      stepCanonicalTitle: ctx.stepCanonicalTitle || ctx.stepTitle || "",
+      stepTitle: ctx.stepTitle || "",
+      stepOutputName: ctx.stepOutputName || ""
+    });
     var usedFallbackTemplate = false;
     var isOpenPrefill = triggerSource === "workflow_step_open_prefill";
     var stepPromptSourceType = normalizePromptSourceType(ctx.stepPromptSource || "");
@@ -16658,12 +16787,103 @@
     return ctx;
   }
 
+  function collectExpositoryDomainGuidanceTexts(selectedDomains) {
+    var guidanceLib = resolveExpositoryDomainGuidanceLib();
+    if (!guidanceLib || typeof guidanceLib.resolvePromptRulePaths !== "function") {
+      return { selectedDomains: [], textsByPath: {} };
+    }
+    var paths = guidanceLib.resolvePromptRulePaths(selectedDomains);
+    var textsByPath = {};
+    var wgc =
+      (typeof window !== "undefined" && window.WorkflowGenerationContext) ||
+      (typeof globalThis !== "undefined" && globalThis.WorkflowGenerationContext) ||
+      null;
+    paths.forEach(function (row) {
+      var text = "";
+      if (wgc && typeof wgc.getCachedFileText === "function") {
+        text = String(wgc.getCachedFileText(row.path) || "");
+      }
+      if (!text && typeof require === "function") {
+        try {
+          var fs = require("fs");
+          var pathMod = require("path");
+          var abs = pathMod.join(
+            typeof __dirname !== "undefined" ? __dirname : process.cwd(),
+            row.path
+          );
+          text = fs.readFileSync(abs, "utf8");
+        } catch (_err) {}
+      }
+      if (text) textsByPath[row.path] = text;
+    });
+    return {
+      selectedDomains: paths.map(function (row) {
+        return row.domainId;
+      }),
+      textsByPath: textsByPath
+    };
+  }
+
+  function applyExpositoryDomainGuidanceToDraft(draftText, step, wf) {
+    var body = String(draftText || "").trim();
+    if (!body) return "";
+    var siblingLib = resolveExpositorySiblingPromptsLib();
+    var guidanceLib = resolveExpositoryDomainGuidanceLib();
+    if (!guidanceLib || typeof guidanceLib.applyDomainGuidanceToDraft !== "function") {
+      return body;
+    }
+    var stage =
+      siblingLib && typeof siblingLib.resolveStageFromStepIdentity === "function"
+        ? siblingLib.resolveStageFromStepIdentity(step || {})
+        : "";
+    if (!stage) return body;
+    var dedicatedExpository =
+      stage === "expository_journey_plan" ||
+      stage === "expository_development" ||
+      stage === "expository_materials";
+    var sharedSibling =
+      stage === "generate_learning_content" ||
+      stage === "define_learning_outcomes" ||
+      stage === "design_page";
+    if (!dedicatedExpository && !(sharedSibling && isExpositoryResourceWorkflow(wf))) {
+      return body;
+    }
+    var consumption =
+      siblingLib &&
+      siblingLib.DOMAIN_GUIDANCE_CONSUMPTION &&
+      siblingLib.DOMAIN_GUIDANCE_CONSUMPTION[stage]
+        ? siblingLib.DOMAIN_GUIDANCE_CONSUMPTION[stage]
+        : null;
+    var selected =
+      (wf && Array.isArray(wf.selectedDomains) && wf.selectedDomains.length
+        ? wf.selectedDomains
+        : null) ||
+      (typeof getSelectedWorkflowDomains === "function" ? getSelectedWorkflowDomains() : ["general"]);
+    var loaded = collectExpositoryDomainGuidanceTexts(selected);
+    return guidanceLib.applyDomainGuidanceToDraft(body, {
+      stage: stage,
+      why: consumption && consumption.why ? consumption.why : "",
+      selectedDomains: loaded.selectedDomains.length ? loaded.selectedDomains : selected,
+      textsByPath: loaded.textsByPath
+    });
+  }
+
   function applyWorkflowStepRuntimePromptAugmentations(draftText, step, wf, optionMap) {
     var draft = String(draftText || "").trim();
     if (!draft) return "";
     var ctx = enrichDlaLearnerPageAugmentContext(
       buildWorkflowStepPromptAugmentContextFromStep(step, wf)
     );
+    var expositoryWorkflow = isExpositoryResourceWorkflow(wf);
+    var expositoryKind = resolveExpositoryArtefactKindFromStep(step);
+    if (expositoryWorkflow || expositoryKind) {
+      draft = applyExpositoryDomainGuidanceToDraft(draft, step, wf);
+      // Keep product-independent quality overlays; skip Interactive activity/GAM scaffolds.
+      draft = applyEducationalQualityFrameworkPromptBlockToDraft(draft, ctx);
+      draft = applyMathSafeOutputContractToDraft(draft, ctx);
+      draft = applyStrictJsonArtefactContractToDraft(draft, ctx);
+      return String(draft || "").trim();
+    }
     if (
       isWorkflowStepDesignLearningActivities(ctx) &&
       isPageEnrichmentV2WorkflowEnabled(wf)
@@ -32266,7 +32486,13 @@
     var matchedPattern = resolveMatchedWorkflowStepPatternFromCatalog(row, catalog);
     if (!matchedPattern || !matchedPattern.promptFactory) return "";
     var cfg = normalizeWorkflowStepPromptConfig(matchedPattern.promptFactory);
-    var template = resolveWorkflowStepPromptTemplate(cfg);
+    var template = resolveWorkflowStepPromptTemplate(cfg, {
+      workflow: wf,
+      stepCanonicalStepId: row.canonical_step_id || row.canonicalStepId || "",
+      stepCanonicalTitle: row.title || "",
+      stepTitle: row.title || "",
+      stepOutputName: row.outputName || ""
+    });
     if (!isStaleCatalogSeededStepOverride(overrideBody, template)) return "";
     var wfRec = wf && typeof wf === "object" ? wf : null;
     if (!wfRec && state.selectedWorkflowId) {
@@ -32283,6 +32509,7 @@
       workflowOutputs:
         wfRec && Array.isArray(wfRec.workflowOutputs) ? wfRec.workflowOutputs.slice() : [],
       workflowOutputSpec: outputSpec,
+      workflow: wfRec,
       step: row,
       matchedPattern: matchedPattern
     });
@@ -56738,6 +56965,12 @@
     prismTestApi.applyWorkflowStepRuntimePromptAugmentations =
       applyWorkflowStepRuntimePromptAugmentations;
     prismTestApi.buildSeededStepPromptForWorkflowStep = buildSeededStepPromptForWorkflowStep;
+    prismTestApi.resolveWorkflowStepPromptTemplate = resolveWorkflowStepPromptTemplate;
+    prismTestApi.isExpositoryResourceWorkflow = isExpositoryResourceWorkflow;
+    prismTestApi.resolveExpositorySiblingPromptsLib = resolveExpositorySiblingPromptsLib;
+    prismTestApi.resolveExpositoryDomainGuidanceLib = resolveExpositoryDomainGuidanceLib;
+    prismTestApi.applyExpositoryDomainGuidanceToDraft = applyExpositoryDomainGuidanceToDraft;
+    prismTestApi.collectExpositoryDomainGuidanceTexts = collectExpositoryDomainGuidanceTexts;
     prismTestApi.buildSprint38VisualAffordanceDesignPagePromptBlock =
       buildSprint38VisualAffordanceDesignPagePromptBlock;
     prismTestApi.buildSprint38PedagogicalAddedValuePromptLines =

@@ -433,7 +433,7 @@
         return;
       }
 
-      var mNumbered = line.match(/^##\s+\d+\.\s+(.+?)\s*$/);
+      var mNumbered = line.match(/^##\s+\d+[A-Za-z]?\.\s+(.+?)\s*$/);
       if (mNumbered && mNumbered[1]) {
         pushPattern(mNumbered[1], out.length + 1);
         current = out[out.length - 1];
@@ -908,6 +908,21 @@
     });
   }
 
+  function getCachedFileText(path) {
+    var key = String(path || "").trim();
+    if (!key) return "";
+    if (Object.prototype.hasOwnProperty.call(textCache, key)) {
+      return String(textCache[key] || "");
+    }
+    return "";
+  }
+
+  function putCachedFileText(path, text) {
+    var key = String(path || "").trim();
+    if (!key) return;
+    textCache[key] = String(text || "");
+  }
+
   window.WorkflowGenerationContext = {
     loadManifest: loadManifest,
     getDomainOptions: getDomainOptions,
@@ -917,6 +932,9 @@
     getDomainArtefactOptions: getDomainArtefactOptions,
     getArtefactRenderCatalog: getArtefactRenderCatalog,
     getWorkflowPolicy: getWorkflowPolicy,
+    getCachedFileText: getCachedFileText,
+    putCachedFileText: putCachedFileText,
+    extractStepPatternCatalogFromText: extractStepPatternCatalogFromText,
     getWorkflowBriefConfig: getWorkflowBriefConfig,
     persistSelectedDomains: persistSelectedDomains,
     loadPersistedDomains: loadPersistedDomains

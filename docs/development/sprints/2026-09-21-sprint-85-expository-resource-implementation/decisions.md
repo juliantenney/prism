@@ -81,10 +81,30 @@ bypassing Interactive EP / DLA / GAM / Learning Sequence. Register EJP/XD/XM as 
 
 ---
 
+## S85-D06 — XM does not reuse GAM Interactive machinery (WP3)
+
+- **Decision:** At WP3, **Expository Materials** uses the native Expository materials contract and sibling prompt only. Do **not** route XM through GAM Interactive assembly/copy paths, activity `required_materials`, or GAM verification gates. Lower-level product-independent body-authoring aids (e.g. maths/table fidelity overlays) may be considered later in WP4 only where genuinely product-independent and without Interactive contract coupling.
+
+- **Status:** **Accepted** (2026-09-21)
+
+- **Rationale:** S83-D04 / S84 require sibling pedagogy; GAM is Interactive materials realisation. Commission lock and extent constraints are Expository-owned.
+
+---
+
+## S85-D07 — Expository sibling prompt family + domain guidance consumption (WP3)
+
+- **Decision:** Author production Expository sibling prompts in `lib/expository-sibling-prompts.js`, selected at Run/Copy via `resolveWorkflowStepPromptTemplate` when the workflow is Expository (or the step is a dedicated `step_expository_*`). Interactive pack `promptTemplate` strings for GLC/LO/DP/EP/DLA/GAM remain unmodified. Domain guidance reaches Expository stages by injecting General + selected-domain **prompt-rules** through established pack paths (`PrismExpositoryDomainGuidance` + WGC cache / disk), without Expository-specific domain pack copies. Catalog extraction accepts lettered headings (`## 11A.`).
+
+- **Status:** **Accepted** (2026-09-21)
+
+- **Evidence:** `lib/expository-sibling-prompts.js` · `lib/expository-domain-guidance.js` · `tests/s85-wp3-expository-sibling-prompts.test.js`
+
+---
+
 ## Pending decisions
 
 | ID | Decision | Status |
 | -- | -------- | ------ |
-| — | GAM body-authoring reuse behind XM | **Pending** (WP4) |
+| — | Product-independent body-authoring overlays for XM (maths/tables) | **Pending** (WP4; S85-D06) |
 | — | Research Synthesis identity | **Remains open** (non-blocking) |
 | — | Expository-specific Adjustments | **Deferred** unless evidence requires |

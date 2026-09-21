@@ -3266,15 +3266,24 @@ expository_journey_plan
   "executionMode": "llm",
   "structureStyle": "schema_structured",
   "canonical_step_id": "step_expository_journey_plan",
-  "promptTemplate": "Sprint 85 scaffolding: Plan an Expository Journey Plan for a reading/viewing Expository Resource.\n\nNorth star: progressively construct a coherent mental model — connected, discriminating, qualified, usable understanding. Do NOT emit Interactive activity beats, workspaces, evidence requirements, or material bodies.\n\nExtent: Scope / scale expresses desired content extent. Translate available extent into an allocation of explanatory attention across the intellectual journey (conceptual territory, section emphasis, elaboration, examples/representations/evidence/synthesis). Treat any words-equivalent as an approximate planning constraint — not a prose quota and not a pad/truncate target. Non-prose representations also consume learner attention.\n\nGoverning question: What intellectual journey will allow this audience to construct the understanding represented by these Learning Outcomes?\n\nReturn ONLY one markdown fenced JSON block (artifact_type \"expository_journey_plan\") with ordered sections[] each having section_id, title, purpose, knowledge_focus, and optional progression notes; include extent when scope provides interpretable planning signal. After the fence emit: STEP N OUTPUT: expository_journey_plan",
   "preferredOutputFormat": "json",
-  "defaultPromptNotes": "Sprint 85: EJP owns progressive construction of understanding across ordered sections and explanatory-attention allocation from Scale/scope. Full pedagogical prompt authoring in WP3.",
+  "defaultPromptNotes": "Sprint 85 WP3: Production EJP sibling prompt resolved at Run/Copy via PrismExpositorySiblingPrompts. Interactive EP unmodified.",
   "runnerInstructions": {
     "what_this_step_does": "Plans the Expository Resource intellectual journey across ordered exposition sections."
   },
   "defaultOutputStructure": {
-    "keys": ["artifact_type", "schema_version", "title", "audience", "extent", "sections", "learning_outcomes", "generation_notes"]
-  }
+    "keys": [
+      "artifact_type",
+      "schema_version",
+      "title",
+      "audience",
+      "extent",
+      "sections",
+      "learning_outcomes",
+      "generation_notes"
+    ]
+  },
+  "promptTemplate": "RUNTIME_RESOLVED_EXPOSITORY_SIBLING:step_expository_journey_plan"
 }
 ```
 
@@ -3309,15 +3318,20 @@ expository_development
   "executionMode": "llm",
   "structureStyle": "schema_structured",
   "canonical_step_id": "step_expository_development",
-  "promptTemplate": "Sprint 85 scaffolding: Develop each Expository Journey Plan section without replanning the chapter.\n\nInherit EJP section-level extent implications: relative emphasis, where deeper explanation is warranted, and how much elaboration/examples/contrasts/evidence/representations/synthesis the available extent affords. Do not expand resource scope beyond the EJP allocation.\n\nFor each section, decide the explanatory treatment and commission supporting intellectual materials needed for the intended conceptual move. Do NOT require Interactive evidence, workspaces, or learner_task/expected_output.\n\nReturn ONLY one markdown fenced JSON block (artifact_type \"expository_development\") with sections[] matching journey section_ids, each with explanation_intent and materials_commission[]. After the fence emit: STEP N OUTPUT: expository_development",
   "preferredOutputFormat": "json",
-  "defaultPromptNotes": "Sprint 85: XD per-section explanatory treatment + commissions; inherits EJP extent allocation. Full pedagogical prompt authoring in WP3.",
+  "defaultPromptNotes": "Sprint 85 WP3: Production XD sibling prompt via PrismExpositorySiblingPrompts. Inherits EJP extent allocation.",
   "runnerInstructions": {
     "what_this_step_does": "Develops each exposition section and commissions supporting intellectual materials."
   },
   "defaultOutputStructure": {
-    "keys": ["artifact_type", "schema_version", "sections", "generation_notes"]
-  }
+    "keys": [
+      "artifact_type",
+      "schema_version",
+      "sections",
+      "generation_notes"
+    ]
+  },
+  "promptTemplate": "RUNTIME_RESOLVED_EXPOSITORY_SIBLING:step_expository_development"
 }
 ```
 
@@ -3352,15 +3366,20 @@ expository_materials
   "executionMode": "llm",
   "structureStyle": "schema_structured",
   "canonical_step_id": "step_expository_materials",
-  "promptTemplate": "Sprint 85 scaffolding: Realise Expository Materials commissioned by Expository Development.\n\nCommission lock: realise each commission 1:1 — do not invent, delete, or reassign commissions. Realise within the EJP/XD extent allocation — do not independently expand resource scope or mechanically pad/truncate to a word target. Do not invent Interactive activities or workspaces.\n\nReturn ONLY one markdown fenced JSON block (artifact_type \"expository_materials\") with materials[] rows (material_id, section_id, kind, body). After the fence emit: STEP N OUTPUT: expository_materials",
   "preferredOutputFormat": "json",
-  "defaultPromptNotes": "Sprint 85: XM commission lock within EJP/XD extent constraints. Full pedagogical prompt authoring in WP3; GAM machinery reuse decision in WP4.",
+  "defaultPromptNotes": "Sprint 85 WP3: Production XM sibling prompt via PrismExpositorySiblingPrompts. Commission lock; no GAM Interactive reuse (S85-D06).",
   "runnerInstructions": {
     "what_this_step_does": "Realises commissioned intellectual material bodies for exposition sections."
   },
   "defaultOutputStructure": {
-    "keys": ["artifact_type", "schema_version", "materials", "generation_notes"]
-  }
+    "keys": [
+      "artifact_type",
+      "schema_version",
+      "materials",
+      "generation_notes"
+    ]
+  },
+  "promptTemplate": "RUNTIME_RESOLVED_EXPOSITORY_SIBLING:step_expository_materials"
 }
 ```
 

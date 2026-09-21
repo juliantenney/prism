@@ -34,7 +34,7 @@
 
 | WP2 | **COMPLETE** |
 
-| WP3 | **COMPLETE** — sibling prompts + domain guidance; **quality review applied** (operator acceptance pending) |
+| WP3 | **COMPLETE** — sibling prompts + domain guidance; quality review applied; **live-run corrective pass applied** (operator re-run pending) |
 
 | WP4+ | **NOT STARTED** |
 

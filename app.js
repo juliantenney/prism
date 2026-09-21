@@ -1955,6 +1955,9 @@
     step_design_learning_activities: "Designs the learning activities for this resource.",
     step_generate_activity_materials: "Creates the learning materials for each activity.",
     step_construct_learning_sequence: "Orders the activities into a clear learning sequence.",
+    step_expository_journey_plan: "Plans the intellectual journey across the exposition sections.",
+    step_expository_development: "Develops each section's explanation and supporting materials.",
+    step_expository_materials: "Writes the commissioned intellectual materials for the exposition.",
     step_design_page: "Adds the learner-facing page title and framing text.",
     step_design_assessment: "Plans how learning will be assessed.",
     step_generate_assessment_items: "Creates the assessment questions or items."
@@ -1969,6 +1972,9 @@
     "design learning activities": WORKFLOW_RUN_UI_STEP_DESCRIPTIONS_BY_CANONICAL.step_design_learning_activities,
     "generate activity materials": WORKFLOW_RUN_UI_STEP_DESCRIPTIONS_BY_CANONICAL.step_generate_activity_materials,
     "construct learning sequence": WORKFLOW_RUN_UI_STEP_DESCRIPTIONS_BY_CANONICAL.step_construct_learning_sequence,
+    "expository journey plan": WORKFLOW_RUN_UI_STEP_DESCRIPTIONS_BY_CANONICAL.step_expository_journey_plan,
+    "expository development": WORKFLOW_RUN_UI_STEP_DESCRIPTIONS_BY_CANONICAL.step_expository_development,
+    "expository materials": WORKFLOW_RUN_UI_STEP_DESCRIPTIONS_BY_CANONICAL.step_expository_materials,
     "design page": WORKFLOW_RUN_UI_STEP_DESCRIPTIONS_BY_CANONICAL.step_design_page,
     "design assessment": WORKFLOW_RUN_UI_STEP_DESCRIPTIONS_BY_CANONICAL.step_design_assessment,
     "generate assessment items": WORKFLOW_RUN_UI_STEP_DESCRIPTIONS_BY_CANONICAL.step_generate_assessment_items
@@ -5493,6 +5499,29 @@
     return false;
   }
 
+  function resolveExpositorySiblingPromptBodyForStep(step, wf) {
+    var siblingLib = resolveExpositorySiblingPromptsLib();
+    if (!siblingLib || typeof siblingLib.resolveStageFromStepIdentity !== "function") {
+      return "";
+    }
+    var stage = siblingLib.resolveStageFromStepIdentity(step || {});
+    if (!stage) return "";
+    var dedicated =
+      stage === "expository_journey_plan" ||
+      stage === "expository_development" ||
+      stage === "expository_materials";
+    var sharedSibling =
+      stage === "generate_learning_content" ||
+      stage === "define_learning_outcomes" ||
+      stage === "design_page";
+    if (!dedicated && !(sharedSibling && isExpositoryResourceWorkflow(wf))) {
+      return "";
+    }
+    return String(
+      siblingLib.resolveTemplate(stage) || siblingLib.resolveTemplate(step || {}) || ""
+    ).trim();
+  }
+
   function resolveWorkflowStepPromptTemplate(cfg, wfOrContext) {
     var workflow =
       wfOrContext && typeof wfOrContext === "object"
@@ -8409,6 +8438,17 @@
       stepCanonicalTitle: step.title || "",
       stepTitle: step.title || ""
     });
+  }
+
+  function isWorkflowStepExpositoryArtefactProducer(step) {
+    return !!resolveExpositoryArtefactKindFromStep(step);
+  }
+
+  function isWorkflowStepRunCaptureProducer(step, wf) {
+    return (
+      isWorkflowStepPageStructureProducer(step, wf) ||
+      isWorkflowStepExpositoryArtefactProducer(step)
+    );
   }
 
   function isWorkflowStepPageStructureProducer(step, wf) {
@@ -19557,7 +19597,64 @@
           out.expository_extent = extentContracts.normalizeExpositoryScopeExtent(scopeText);
         }
       }
+      out = sanitizeExpositoryGenerationFactors(out);
     }
+    return out;
+  }
+
+  /**
+   * Interactive-only brief factors that must not become Expository generation authority.
+   * Shared product-independent factors (topic, audience, scope_scale, delivery_*, input_strategy,
+   * page_profile, session_materials, learning_environments, expository_extent) are preserved.
+   */
+  var EXPOSITORY_INTERACTIVE_ONLY_FACTOR_IDS = {
+    design_scope: true,
+    question_style_mix: true,
+    assessment_type: true,
+    feedback_required: true,
+    difficulty_profile: true,
+    assessment_total_items: true,
+    feedback_display: true,
+    learner_answer_visibility: true,
+    feedback_timing: true,
+    assessment_semantics_constraints_applied: true,
+    coverage_scope: true,
+    cognitive_demand: true,
+    assessment_required: true,
+    assessment_strategy: true,
+    include_answers: true,
+    include_feedback_guidance: true,
+    assessment_interaction_mode: true,
+    peer_instruction_phase: true,
+    misconception_assessment_link: true,
+    design_feedback_required: true
+  };
+
+  function isExpositoryInteractiveOnlyFactorId(factorId) {
+    var id = String(factorId || "").trim();
+    return !!(id && EXPOSITORY_INTERACTIVE_ONLY_FACTOR_IDS[id]);
+  }
+
+  function sanitizeExpositoryGenerationFactors(factors) {
+    var src = factors && typeof factors === "object" ? factors : {};
+    var out = {};
+    Object.keys(src).forEach(function (k) {
+      if (!k || isExpositoryInteractiveOnlyFactorId(k)) return;
+      out[k] = src[k];
+    });
+    // Expository is never an Interactive activity/session product.
+    out.activities_required = false;
+    out.materials_required = false;
+    return out;
+  }
+
+  function sanitizeExpositoryConstraintPatch(patch) {
+    var src = patch && typeof patch === "object" ? patch : {};
+    var out = {};
+    Object.keys(src).forEach(function (k) {
+      if (!k || isExpositoryInteractiveOnlyFactorId(k)) return;
+      out[k] = src[k];
+    });
     return out;
   }
 
@@ -20466,6 +20563,12 @@
     });
     resolved = deriveAssessmentSemanticFactors(resolved, explicit);
     resolved = reconcileWorkflowBriefPedagogicFactors(resolved, base);
+    if (isLdCreateExpositoryResource(base.ldCreateOutputType)) {
+      resolved = sanitizeExpositoryGenerationFactors(resolved);
+      Object.keys(sources).forEach(function (id) {
+        if (isExpositoryInteractiveOnlyFactorId(id)) delete sources[id];
+      });
+    }
     Object.keys(resolved).forEach(function (id) {
       if (!id || sources[id]) return;
       if (Object.prototype.hasOwnProperty.call(explicit, id)) sources[id] = "explicit";
@@ -20918,9 +21021,14 @@
     return next;
   }
 
-  function applyWorkflowBriefMappings(config, resolvedFactors) {
+  function applyWorkflowBriefMappings(config, resolvedFactors, options) {
     var cfg = normalizeWorkflowBriefConfig(config);
     var values = resolvedFactors && typeof resolvedFactors === "object" ? resolvedFactors : {};
+    var opts = options && typeof options === "object" ? options : {};
+    var expositoryProduct = !!opts.expositoryProduct;
+    if (expositoryProduct) {
+      values = sanitizeExpositoryGenerationFactors(values);
+    }
     var out = {
       workflowOutputSpecPatch: {},
       workflowConstraintPatch: {},
@@ -20961,6 +21069,7 @@
       if (!rule || !rule.factor) return;
       var factor = String(rule.factor || "").trim();
       if (!factor) return;
+      if (expositoryProduct && isExpositoryInteractiveOnlyFactorId(factor)) return;
       if (!Object.prototype.hasOwnProperty.call(values, factor)) return;
       var value = normalizeMappedFactorValue(factor, values[factor]);
       var targets = Array.isArray(rule.mapsTo) ? rule.mapsTo : [];
@@ -20975,6 +21084,7 @@
               warn("Skipped unknown mapsTo target: " + t);
               return;
             }
+            if (expositoryProduct && isExpositoryInteractiveOnlyFactorId(ck)) return;
             out.workflowConstraintPatch[ck] = value;
             out.mapped.push({ factor: factor, target: t, value: value });
             return;
@@ -20999,6 +21109,7 @@
             warn("Skipped unknown mapsTo target: " + t);
             return;
           }
+          if (expositoryProduct && isExpositoryInteractiveOnlyFactorId(paramKey)) return;
           if (!out.stepParamPatch[stepId]) out.stepParamPatch[stepId] = {};
           out.stepParamPatch[stepId][paramKey] = value;
           out.mapped.push({ factor: factor, target: t, value: value });
@@ -21007,6 +21118,10 @@
         warn("Skipped unknown mapsTo target: " + t);
       });
     });
+    if (expositoryProduct) {
+      out.workflowConstraintPatch = sanitizeExpositoryConstraintPatch(out.workflowConstraintPatch);
+      return out;
+    }
     var feedbackMode = String(values.feedback_required || "").toLowerCase().trim();
     var assessmentType = String(values.assessment_type || "").toLowerCase().trim();
     var explicitIncludeAnswers = parseBooleanLike(values.include_answers);
@@ -22224,6 +22339,11 @@
     var mappedConstraints = (resolvedState && resolvedState.mappedBindings && resolvedState.mappedBindings.workflowConstraintPatch)
       ? resolvedState.mappedBindings.workflowConstraintPatch
       : {};
+    if (
+      normalizeLdCreateOutputType(base && base.ldCreateOutputType) === LD_CREATE_OUTPUT_TYPE_EXPOSITORY
+    ) {
+      mappedConstraints = sanitizeExpositoryConstraintPatch(mappedConstraints);
+    }
     var constraintLines = [];
     Object.keys(mappedConstraints || {}).forEach(function (k) {
       constraintLines.push(k + ": " + mappedConstraints[k]);
@@ -22431,6 +22551,9 @@
           resolvedSnapshot.sources,
           queuedDesign
         );
+        if (isLdCreateExpositoryResource(base && base.ldCreateOutputType)) {
+          assessmentQueue = [];
+        }
         var postQueue = getWorkflowRefinementQueue(
           cfg,
           base,
@@ -22438,6 +22561,11 @@
           askedMap,
           resolvedSnapshot.sources
         );
+        if (isLdCreateExpositoryResource(base && base.ldCreateOutputType)) {
+          postQueue = postQueue.filter(function (factor) {
+            return !isExpositoryInteractiveOnlyFactorId(factor && factor.id);
+          });
+        }
         postQueue = filterRefinementFactorsByGeneratedSteps(cfg, postQueue, queuedDesign);
         var activeProfileMeta = resolveActivePostGenerationRefinementProfile(
           cfg,
@@ -22840,7 +22968,9 @@
               firstPass.resolved,
               explicitValues
             );
-            var mapped = applyWorkflowBriefMappings(config, resolvedForMapping);
+            var mapped = applyWorkflowBriefMappings(config, resolvedForMapping, {
+              expositoryProduct: isLdCreateExpositoryResource(base.ldCreateOutputType)
+            });
             var resolvedState = attachWorkflowBriefPlanningToResolvedState(
               config,
               {
@@ -23153,6 +23283,97 @@
       if (matcher(steps[i], i)) return steps[i];
     }
     return null;
+  }
+
+  function ensureExpositorySiblingInputBindingsForSteps(steps, wf) {
+    if (!Array.isArray(steps) || !steps.length) return steps;
+    var wfResolved =
+      wf && typeof wf === "object"
+        ? wf
+        : state.selectedWorkflowId
+        ? findWorkflowById(state.selectedWorkflowId)
+        : null;
+    if (wfResolved && !isExpositoryResourceWorkflow(wfResolved)) {
+      var hasExpo = steps.some(function (row) {
+        return !!resolveExpositoryArtefactKindFromStep(row);
+      });
+      if (!hasExpo) return steps;
+    }
+    var catalog = Array.isArray(state.workflowStepPatternCatalog)
+      ? state.workflowStepPatternCatalog
+      : [];
+    var normalized = steps.map(function (row) {
+      return backfillWorkflowStepCatalogMetadata(row, catalog, null);
+    });
+    function findByCanonical(canonicalId, titleNeedle) {
+      return findWorkflowStepRowByIdentity(normalized, function (row) {
+        var cid = String(row.canonical_step_id || row.canonicalStepId || "")
+          .trim()
+          .toLowerCase();
+        if (cid === canonicalId) return true;
+        var title = String(row.title || "")
+          .trim()
+          .toLowerCase();
+        return titleNeedle ? title.indexOf(titleNeedle) !== -1 : false;
+      });
+    }
+    function ensureBindings(consumer, required) {
+      if (!consumer) return;
+      var nextBindings = normalizeStepInputBindings(consumer.inputBindings || []);
+      (required || []).forEach(function (spec) {
+        if (!spec || !spec.producer || !spec.artifactName) return;
+        var producerId = String(spec.producer.id || "").trim();
+        if (!producerId) return;
+        var art = String(spec.artifactName || "").trim();
+        var has = nextBindings.some(function (b) {
+          if (!b || b.kind !== "internal") return false;
+          return (
+            String(b.sourceStepId || "").trim() === producerId &&
+            normalizeWorkflowArtefactBindingKey(b.artifactName) ===
+              normalizeWorkflowArtefactBindingKey(art)
+          );
+        });
+        if (!has) {
+          nextBindings.push({
+            kind: "internal",
+            sourceStepId: producerId,
+            artifactName: art
+          });
+        }
+      });
+      consumer.inputBindings = normalizeStepInputBindings(nextBindings);
+    }
+    var glc = findByCanonical("step_generate_learning_content", "generate learning content");
+    var mk = findByCanonical("step_model_knowledge", "model knowledge");
+    var lo = findByCanonical("step_define_learning_outcomes", "learning outcome");
+    var ejp = findByCanonical("step_expository_journey_plan", "expository journey");
+    var xd = findByCanonical("step_expository_development", "expository development");
+    var xm = findByCanonical("step_expository_materials", "expository material");
+    var dp = findByCanonical("step_design_page", "design page");
+    ensureBindings(ejp, [
+      { producer: lo, artifactName: "learning_outcomes" },
+      { producer: mk, artifactName: "knowledge_model" },
+      { producer: glc, artifactName: "learning_content" }
+    ]);
+    ensureBindings(xd, [
+      { producer: ejp, artifactName: "expository_journey_plan" },
+      { producer: lo, artifactName: "learning_outcomes" },
+      { producer: glc, artifactName: "learning_content" },
+      { producer: mk, artifactName: "knowledge_model" }
+    ]);
+    ensureBindings(xm, [
+      { producer: xd, artifactName: "expository_development" },
+      { producer: glc, artifactName: "learning_content" }
+    ]);
+    ensureBindings(dp, [
+      { producer: xm, artifactName: "expository_materials" },
+      { producer: xd, artifactName: "expository_development" },
+      { producer: ejp, artifactName: "expository_journey_plan" },
+      { producer: lo, artifactName: "learning_outcomes" },
+      { producer: glc, artifactName: "learning_content" },
+      { producer: mk, artifactName: "knowledge_model" }
+    ]);
+    return normalized;
   }
 
   function ensureEpisodePlanInputBindingsForSteps(steps, wf) {
@@ -25570,8 +25791,21 @@
           "Expository Materials",
           "Design Page"
         ].forEach(pushExpositoryStep);
+        var expoRoleAnchors =
+          policy.stepRoleAnchors && typeof policy.stepRoleAnchors === "object"
+            ? policy.stepRoleAnchors
+            : {};
         out.steps = exoTitles.map(function (title) {
-          return { title: title, role: "" };
+          var role = "";
+          var titleKey = String(title || "").toLowerCase().trim();
+          if (titleKey === "design page") {
+            role =
+              String(expoRoleAnchors["Design Page (Expository)"] || "").trim() ||
+              "Shape the resource-level title, orientation and synthesis, and prepare the exposition for final page assembly.";
+          } else if (expoRoleAnchors[title]) {
+            role = String(expoRoleAnchors[title] || "").trim();
+          }
+          return { title: title, role: role };
         });
       }
     }
@@ -25663,6 +25897,18 @@
     });
 
     out.steps = ensureEpisodePlanInputBindingsForSteps(out.steps);
+    if (
+      isLdCreateExpositoryResource(h.ldCreateOutputType) ||
+      (Array.isArray(out.steps) &&
+        out.steps.some(function (row) {
+          return !!resolveExpositoryArtefactKindFromStep(row);
+        }))
+    ) {
+      out.steps = ensureExpositorySiblingInputBindingsForSteps(out.steps, {
+        ldCreateOutputType: LD_CREATE_OUTPUT_TYPE_EXPOSITORY,
+        steps: out.steps
+      });
+    }
 
     return out;
   }
@@ -26429,9 +26675,9 @@
       var runOutArea = li.querySelector('[data-field="runStepOutput"]');
       var runOutStatus = li.querySelector('[data-role="run-step-output-status"]');
       var runOutLabel = li.querySelector('[data-role="run-step-output-label"]');
-      // Sprint 75 C-04: show capture only when PRISM requires a page-structure artefact.
+      // Sprint 75 C-04: show capture when PRISM requires a page-structure or Expository artefact.
       var shouldShowRunOutput =
-        isRun && isWorkflowStepPageStructureProducer(stepForRun || {}, wfForRun || {});
+        isRun && isWorkflowStepRunCaptureProducer(stepForRun || {}, wfForRun || {});
       if (runOutWrap) {
         runOutWrap.classList.toggle("hidden", !shouldShowRunOutput);
       }
@@ -26729,7 +26975,7 @@
   }
 
   function isWorkflowRunStepCaptureReadyForAdvance(stepRow, stepId, wf, li) {
-    if (!isWorkflowStepPageStructureProducer(stepRow || {}, wf || {})) return true;
+    if (!isWorkflowStepRunCaptureProducer(stepRow || {}, wf || {})) return true;
     var sid = String(stepId || "").trim();
     var body = "";
     if (li) {
@@ -26750,7 +26996,7 @@
   function resolveWorkflowRunNextStepDisabledReason(stepRow, stepId, wf, li, idx, total) {
     if (idx >= total - 1) return "This is the final step.";
     if (!isWorkflowRunStepCaptureReadyForAdvance(stepRow, stepId, wf, li)) {
-      if (isWorkflowStepPageStructureProducer(stepRow || {}, wf || {})) {
+      if (isWorkflowStepRunCaptureProducer(stepRow || {}, wf || {})) {
         if (workflowRunStepHasBlockingCaptureErrors(stepId)) {
           return "Fix the validation errors in this step's result before continuing.";
         }
@@ -32561,6 +32807,14 @@
       if (!raw) return "";
       return applyWorkflowStepRuntimePromptAugmentations(raw, step, wfRec, {});
     }
+    var expositorySiblingBody = resolveExpositorySiblingPromptBodyForStep(step, wfRec);
+    if (expositorySiblingBody) {
+      return {
+        sourceType: sourceType === "none" ? "expository_sibling" : sourceType,
+        text: finalizePromptBody(expositorySiblingBody),
+        error: ""
+      };
+    }
     if (sourceType === "local_override") {
       var body = String(
         (step && (step.override_prompt_body || step.overridePromptBody)) || ""
@@ -34351,6 +34605,21 @@
     var constraintsText = supersededFields.constraints
       ? ""
       : String(outputSpec.constraints || "").trim();
+    if (constraintsText && isExpositoryResourceWorkflow(wf)) {
+      constraintsText = constraintsText
+        .split(/\r?\n|[;]+/)
+        .map(function (line) {
+          return String(line || "").trim();
+        })
+        .filter(function (line) {
+          if (!line) return false;
+          var key = String(line.split(":")[0] || "")
+            .trim()
+            .toLowerCase();
+          return !isExpositoryInteractiveOnlyFactorId(key);
+        })
+        .join("; ");
+    }
     if (constraintsText) {
       if (suppressAssessmentCues) {
         var keptConstraintLines = constraintsText
@@ -36877,6 +37146,9 @@
     normalizedSteps = ensureDesignPageUpstreamBindingsForSteps(normalizedSteps, wf);
     var wfForV2 = Object.assign({}, wf, { steps: normalizedSteps });
     normalizedSteps = applyPageEnrichmentV2StepNormalization(normalizedSteps, wfForV2);
+    if (isExpositoryResourceWorkflow(wfForV2) || isExpositoryResourceWorkflow(wf)) {
+      normalizedSteps = ensureExpositorySiblingInputBindingsForSteps(normalizedSteps, wfForV2);
+    }
 
     wf.workflowInputs = Array.isArray(wf.workflowInputs)
       ? wf.workflowInputs
@@ -37837,6 +38109,16 @@
           pageEnrichmentV2: true,
           partialPageOutputs: true
         }),
+        workflow: {
+          ldCreateOutputType: normalizeLdCreateOutputType(
+            (briefResolved && briefResolved.initialBrief && briefResolved.initialBrief.ldCreateOutputType) ||
+              (state.workflowBriefElicitation &&
+                state.workflowBriefElicitation.base &&
+                state.workflowBriefElicitation.base.ldCreateOutputType) ||
+              ""
+          ),
+          steps: design.steps || []
+        },
         step: step,
         matchedPattern: matchedPattern
       });
@@ -37860,6 +38142,23 @@
     }
     var scopeAndConstraintsCombined = scopeAndConstraints;
     var constraintPatch = mappedBindings.workflowConstraintPatch || {};
+    var createLdKind = normalizeLdCreateOutputType(
+      (briefResolved && briefResolved.initialBrief && briefResolved.initialBrief.ldCreateOutputType) ||
+        (state.workflowBriefElicitation &&
+          state.workflowBriefElicitation.base &&
+          state.workflowBriefElicitation.base.ldCreateOutputType) ||
+        ""
+    );
+    if (!createLdKind && Array.isArray(design.steps)) {
+      var hasExpoStepOnAccept = design.steps.some(function (s) {
+        var t = String((s && s.title) || "").toLowerCase();
+        return t.indexOf("expository") !== -1;
+      });
+      if (hasExpoStepOnAccept) createLdKind = LD_CREATE_OUTPUT_TYPE_EXPOSITORY;
+    }
+    if (createLdKind === LD_CREATE_OUTPUT_TYPE_EXPOSITORY) {
+      constraintPatch = sanitizeExpositoryConstraintPatch(constraintPatch);
+    }
     var extraConstraintLines = [];
     Object.keys(constraintPatch).forEach(function (k) {
       extraConstraintLines.push(k + ": " + constraintPatch[k]);
@@ -37885,6 +38184,7 @@
       workflowOutputSpec: workflowOutputSpec,
       scopeAndConstraints: scopeAndConstraintsCombined,
       workflowBriefResolution: briefResolved,
+      ldCreateOutputType: createLdKind || undefined,
       steps: steps,
       createdAt: now,
       updatedAt: now
@@ -38035,7 +38335,9 @@
           currentResolved.resolved,
           inf.explicitValues
         );
-        var mappedInf = applyWorkflowBriefMappings(inf.config, resolvedInfForMapping);
+        var mappedInf = applyWorkflowBriefMappings(inf.config, resolvedInfForMapping, {
+          expositoryProduct: isLdCreateExpositoryResource(inf.base && inf.base.ldCreateOutputType)
+        });
         var finalInfResolved = attachWorkflowBriefPlanningToResolvedState(
           inf.config,
           {
@@ -38379,7 +38681,11 @@
             current.resolved,
             elicit.explicitValues
           );
-          var mapped = applyWorkflowBriefMappings(elicit.config, resolvedElicitForMapping);
+          var mapped = applyWorkflowBriefMappings(elicit.config, resolvedElicitForMapping, {
+            expositoryProduct: isLdCreateExpositoryResource(
+              elicit.base && elicit.base.ldCreateOutputType
+            )
+          });
           var finalResolved = attachWorkflowBriefPlanningToResolvedState(
             elicit.config,
             {
@@ -56966,7 +57272,15 @@
       applyWorkflowStepRuntimePromptAugmentations;
     prismTestApi.buildSeededStepPromptForWorkflowStep = buildSeededStepPromptForWorkflowStep;
     prismTestApi.resolveWorkflowStepPromptTemplate = resolveWorkflowStepPromptTemplate;
+    prismTestApi.resolveExpositorySiblingPromptBodyForStep = resolveExpositorySiblingPromptBodyForStep;
     prismTestApi.isExpositoryResourceWorkflow = isExpositoryResourceWorkflow;
+    prismTestApi.sanitizeExpositoryGenerationFactors = sanitizeExpositoryGenerationFactors;
+    prismTestApi.sanitizeExpositoryConstraintPatch = sanitizeExpositoryConstraintPatch;
+    prismTestApi.isExpositoryInteractiveOnlyFactorId = isExpositoryInteractiveOnlyFactorId;
+    prismTestApi.ensureExpositorySiblingInputBindingsForSteps =
+      ensureExpositorySiblingInputBindingsForSteps;
+    prismTestApi.isWorkflowStepExpositoryArtefactProducer = isWorkflowStepExpositoryArtefactProducer;
+    prismTestApi.isWorkflowStepRunCaptureProducer = isWorkflowStepRunCaptureProducer;
     prismTestApi.resolveExpositorySiblingPromptsLib = resolveExpositorySiblingPromptsLib;
     prismTestApi.resolveExpositoryDomainGuidanceLib = resolveExpositoryDomainGuidanceLib;
     prismTestApi.applyExpositoryDomainGuidanceToDraft = applyExpositoryDomainGuidanceToDraft;
@@ -58075,6 +58389,7 @@
       applyEpisodePlanDlaPopulationPromptBlockToDraft;
     prismTestApi.isWorkflowStepDesignEpisodePlan = isWorkflowStepDesignEpisodePlan;
     prismTestApi.isWorkflowStepPageStructureProducer = isWorkflowStepPageStructureProducer;
+    prismTestApi.isWorkflowStepRunCaptureProducer = isWorkflowStepRunCaptureProducer;
     prismTestApi.workflowStepProducesStoredArtefact = workflowStepProducesStoredArtefact;
     prismTestApi.parsePageArtefactCaptureForStorage = parsePageArtefactCaptureForStorage;
     prismTestApi.parseEpisodePlanOrPageCaptureForStorage = parseEpisodePlanOrPageCaptureForStorage;

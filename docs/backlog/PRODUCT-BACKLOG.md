@@ -2,8 +2,8 @@
 
 **Canonical location:** `docs/backlog/PRODUCT-BACKLOG.md`  
 **Status:** Active — **alpha-use period** (Alpha development complete, 2026-09-02)  
-**Last updated:** 2026-09-21 (Sprint 83 closed)  
-**Active sprint:** *(none)* — intended next: Expository Resource Planning (**not opened**)
+**Last updated:** 2026-09-21 (Sprint 84 opened)  
+**Active sprint:** [Sprint 84 — Expository Resource Planning](../development/sprints/2026-09-21-sprint-84-expository-resource-planning/SPRINT-84-START-HERE.md) — **OPEN** (planning; not implementation)
 
 This file answers: **what might we actually choose to work on next?**
 
@@ -39,7 +39,7 @@ A possible distinction: Research Synthesis may require stronger multi-source syn
 
 **Explicit non-scope for the backlog item itself:** schemas; topology decisions; generic output frameworks; assuming new stages are required (or that Episode Plan/DLA/GAM is sufficient); implementation; promoting Podcast or Presentation to committed work merely as downstream applications.
 
-**Sprint allocation:** **Sprint 83 CLOSED** — investigation accepted ([SPRINT-83-CLOSURE.md](../development/sprints/2026-09-21-sprint-83-expository-resource-investigation/SPRINT-83-CLOSURE.md) · [S83-INVESTIGATION-REPORT.md](../development/sprints/2026-09-21-sprint-83-expository-resource-investigation/S83-INVESTIGATION-REPORT.md)). **Planning constraints:** sibling prompt-family + protected Interactive baseline ([S83-D04](../development/sprints/2026-09-21-sprint-83-expository-resource-investigation/decisions.md#s83-d04--planning-handoff--sibling-prompt-family--protected-baseline)). Implementation **not** authorised. Intended next: Expository Resource Planning sprint — **not opened**.
+**Sprint allocation:** **Sprint 83 CLOSED** (investigation accepted). **Sprint 84 OPEN** — [Expository Resource Planning](../development/sprints/2026-09-21-sprint-84-expository-resource-planning/SPRINT-84-START-HERE.md). Binding: sibling prompt-family + protected Interactive baseline ([S83-D04](../development/sprints/2026-09-21-sprint-83-expository-resource-investigation/decisions.md#s83-d04--planning-handoff--sibling-prompt-family--protected-baseline)). Detailed Planning brief pending. Implementation **not** authorised.
 
 ### PB-FA-002 — Programming / code learning-resource support
 

@@ -1,55 +1,46 @@
 # Next sprint — active programme
 
-**Status:** **Alpha development complete** (2026-09-02). Sprint 82 **CLOSED**. Sprint 81 **CLOSED**. Sprint 80 **CLOSED**.  
-**Updated:** 2026-09-03 (post-alpha backlog reconciliation)
+**Status:** **Sprint 83 OPEN** — Expository Resource Investigation (2026-09-21). Sprint 82 **CLOSED**. Alpha development **complete**.  
+**Updated:** 2026-09-21
 
 ---
 
 ## Current programme
 
-**Active sprint:** *(none opened)*
+**Active sprint:** [Sprint 83 — Expository Resource Investigation](../development/sprints/2026-09-21-sprint-83-expository-resource-investigation/SPRINT-83-START-HERE.md) — **OPEN**
 
-**Phase:** **Alpha-use period** — observe real use; do not invent engineering work from historical debt alone.
+**Type:** Investigation — **not** implementation  
+**Opening decision:** [S83-D01](../development/sprints/2026-09-21-sprint-83-expository-resource-investigation/decisions.md#s83-d01--open-sprint-83--expository-resource-investigation)  
+**Backlog:** [PB-FA-011](../backlog/PRODUCT-BACKLOG.md#pb-fa-011--expository-resource)
 
 **Last closed sprint:** Sprint 82 — Maths Entry & Alpha Completion — **COMPLETE / CLOSED**
 
-**Closure:** [SPRINT-82-CLOSURE.md](../development/sprints/2026-09-01-sprint-82-maths-entry-and-alpha-completion/SPRINT-82-CLOSURE.md) · [S82-D04](../development/sprints/2026-09-01-sprint-82-maths-entry-and-alpha-completion/decisions.md#s82-d04--alpha-development-complete)
-
-### Alpha milestone (authoritative wording)
+### Alpha milestone (still authoritative)
 
 > **Alpha development complete.** First-class journeys have been manually exercised and engineering-gated; known remaining issues and deferred capabilities are documented for post-alpha work.
 
 **Not claimed:** production-ready · formally WCAG conformant · bug-free · feature-complete for every future product/output type.
 
-### Protected state at close
+### Protected state
 
 | Item | State |
 | ---- | ----- |
-| First-class gate | `npm run test:first-class` → **339/339** |
-| D-014 | **RESOLVED** (confidence); RC3–RC8 remain historical suite residue |
-| Maths entry | MathLive (evidence) + MathJax (display); local offline packaging |
-| Workshop first-class path | Production regression **PASS** (facilitated semantics; 60-min duration) |
-| Sprint 81 / 82 | **CLOSED** — do not reopen without new opening decision |
+| First-class gate at alpha close | `npm run test:first-class` → **339/339** |
+| Sprint 82 | **CLOSED** — historical |
+| Sprint 83 investigation brief | **Pending** — do not invent tasks ahead of it |
+| Implementation of Expository Resource | **Not authorised** by Sprint 83 opening |
 
 ---
 
-## Selecting future work
+## Sprint 83 posture
 
-**Canonical planning authority:** [PRODUCT-BACKLOG.md](../backlog/PRODUCT-BACKLOG.md)
+Broad objective: investigate whether existing subsystem architecture can support a high-quality first-class Expository Resource, what product-specific prompt behaviour would be required, and whether any subsystem contracts need adaptation.
 
-Choose the next tranche **deliberately** from that backlog and/or from **evidenced alpha-use findings**.
+**Immediate next:** accept the separate investigation brief, then begin investigation under that brief.
 
-Notable candidates (not ordered; not automatic “next”):
+Intended later sequence (intentions only): Planning sprint → Implementation sprint — **not opened**.
 
-- **PB-FA-011** Expository Resource — significant post-alpha investigation  
-- **PB-FA-002** Programming / code learning-resource support  
-- **PB-S-005** Release / deployment packaging  
-
-Do **not** treat Expository Resource, Slideshow, or historical debt lists as automatically next.
-
-Historical engineering debt (Sprint 81 ledger, RC3–RC8, Group F, older governance D-IDs) remains discoverable in its records — **not** a standing obligation to reopen work.
-
-Open a **new sprint** only via an explicit opening decision — do not assume Sprint 83 from this file.
+Canonical planning authority remains [PRODUCT-BACKLOG.md](../backlog/PRODUCT-BACKLOG.md). Historical debt is not automatic Sprint 83 work.
 
 ---
 

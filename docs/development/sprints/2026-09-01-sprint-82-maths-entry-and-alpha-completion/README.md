@@ -17,4 +17,4 @@
 | [HANDOVER.md](HANDOVER.md) | Post-alpha continuity |
 | [next-chat-briefing.md](next-chat-briefing.md) | Compact load |
 
-Programme pointer: [NEXT-SPRINT.md](../../../sprints/NEXT-SPRINT.md)
+Programme pointer: [NEXT-SPRINT.md](../../../sprints/NEXT-SPRINT.md) · Active: [Sprint 83](../2026-09-21-sprint-83-expository-resource-investigation/SPRINT-83-START-HERE.md)

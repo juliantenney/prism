@@ -11,14 +11,14 @@
 
 ## If you are starting a new session
 
-> **Sprint 82 is closed.** Read [SPRINT-82-CLOSURE.md](SPRINT-82-CLOSURE.md) for outcomes, then [NEXT-SPRINT.md](../../../sprints/NEXT-SPRINT.md) for post-alpha programme selection.
+> **Sprint 82 is closed.** Read [SPRINT-82-CLOSURE.md](SPRINT-82-CLOSURE.md) for outcomes. Active programme: [Sprint 83 — Expository Resource Investigation](../2026-09-21-sprint-83-expository-resource-investigation/SPRINT-83-START-HERE.md) · [NEXT-SPRINT.md](../../../sprints/NEXT-SPRINT.md).
 
 | Fact | State |
 | ---- | ----- |
 | Alpha milestone | **Development complete** — not production-ready; no formal WCAG claim |
 | First-class gate | `npm run test:first-class` → **339/339** |
 | Sprint 82 | **CLOSED** — all gates G1–G5 complete |
-| Successor sprint | **Not opened** — select from backlog |
+| Successor sprint | [Sprint 83 OPEN](../2026-09-21-sprint-83-expository-resource-investigation/SPRINT-83-START-HERE.md) — investigation (not implementation) |
 
 ---
 

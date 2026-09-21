@@ -2,8 +2,8 @@
 
 **Canonical location:** `docs/backlog/PRODUCT-BACKLOG.md`  
 **Status:** Active — **alpha-use period** (Alpha development complete, 2026-09-02)  
-**Last updated:** 2026-09-03 (post-alpha backlog reconciliation)  
-**Active sprint:** none
+**Last updated:** 2026-09-21 (Sprint 83 opened)  
+**Active sprint:** [Sprint 83 — Expository Resource Investigation](../development/sprints/2026-09-21-sprint-83-expository-resource-investigation/SPRINT-83-START-HERE.md) — **OPEN** (investigation; not implementation)
 
 This file answers: **what might we actually choose to work on next?**
 
@@ -37,9 +37,9 @@ Investigation must determine whether the existing pipeline can support this clea
 
 A possible distinction: Research Synthesis may require stronger multi-source synthesis, provenance, evidence and citation semantics; Expository Resource is concerned more generally with producing a rich, coherent explanation. Former **PB-FA-009** (Research domain pack maturation) is **merged into this open question** — not retained as an independent future product.
 
-**Explicit non-scope now:** schemas; topology decisions; generic output frameworks; assuming new stages are required (or that Episode Plan/DLA/GAM is sufficient); implementation; opening a sprint; promoting Podcast or Presentation to committed work merely as downstream applications.
+**Explicit non-scope for the backlog item itself:** schemas; topology decisions; generic output frameworks; assuming new stages are required (or that Episode Plan/DLA/GAM is sufficient); implementation; promoting Podcast or Presentation to committed work merely as downstream applications.
 
-**Readiness:** Significant post-alpha investigation — **not sprint-allocated**.
+**Sprint allocation:** **Sprint 83 OPEN** — [Expository Resource Investigation](../development/sprints/2026-09-21-sprint-83-expository-resource-investigation/SPRINT-83-START-HERE.md). Investigation brief pending; implementation **not** authorised by opening.
 
 ### PB-FA-002 — Programming / code learning-resource support
 

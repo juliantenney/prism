@@ -1,6 +1,6 @@
 # Sprint 86 — Handover
 
-**Kind:** S86-T-008 **COMPLETE** — pipeline responsibility map for EQ1–EQ8  
+**Kind:** S86-T-009 **COMPLETE** — XD→XM→DP seam design; **WP4 COMPLETE**  
 **Sprint status:** **OPEN**  
 **Dashboard:** [STATUS.md](STATUS.md)
 
@@ -10,21 +10,22 @@
 
 | Item | State |
 | ---- | ----- |
-| EQ1–EQ8 | Authoritative quality model (unchanged by T-008) |
-| T-008 | **COMPLETE** — [T-008-PIPELINE-RESPONSIBILITY-MAP.md](T-008-PIPELINE-RESPONSIBILITY-MAP.md) |
-| WP4 | **IN PROGRESS** (T-008 done; T-009 pending) |
+| T-008 | COMPLETE |
+| T-009 | **COMPLETE** — [T-009-XD-XM-SEAM.md](T-009-XD-XM-SEAM.md) |
+| WP4 | **COMPLETE** |
+| Recommended seam option | **B** (enrichment + deterministic binding) |
 | Production files | **Unmodified** |
-| QA v0.1 | **Frozen** |
-| AD-010 | Root-cause diagnosed (unsupported structured XM); not fixed |
+| AD-010 | Not fixed (separate) |
+| Next | **T-010 / WP5** when authorised |
 
 ---
 
 ## B. Next action
 
-Authorise **S86-T-009**: XD→XM (and XM↔DP VA) representation participation seam — use T-008 §5 sharpened questions. No implementation. No new stage by default.
+Authorise **S86-T-010**: typography / editorial rendering requirements (principles only). Do not implement Option B yet (belongs in later T-011 / successor implementation design). Do not start T-011 unless PLAN order is deliberately changed.
 
 ---
 
-## C. T-008 headline
+## C. T-009 headline
 
-EJP must own EQ1 but lacks typed epistemic-form/purpose transport. Representation warrant (XD) ≠ body (XM) ≠ figure (DP VA). Orientation/Closing dual furniture is DP+renderer structural, not merely bad prose. AD-010 is renderer unsupported-body path.
+Compose around stable representational intent at XD; XM realises; DP may optionally visualise under linked `commission_id`; prose keeps essentials; no post-XM AI rewrite.

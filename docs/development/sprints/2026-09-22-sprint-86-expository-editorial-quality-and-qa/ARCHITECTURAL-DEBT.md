@@ -47,10 +47,11 @@ Debt / observations relevant to Sprint 86 scope. **Investigation/design only.**
 | S86-AD-013 | QA: “remove image ⇒ understanding must fall” vs accessible semantic equivalence | **v0.2 candidate**; rejected heuristic recorded in EQ5. QA v0.1 unmodified |
 | S86-AD-014 | Interpretive / disagreement briefs → neighbouring single-model spine | **EQ1**; C04 supported; C05 qualifies universality. **T-008:** EJP is primary owner but typed purpose/epistemic-form transport **missing**; XD cannot replan |
 | S86-AD-015 | “Instructional > editorial” not universal | **T-007 refined:** holds when purpose-fit holds; C04 is instructional EQ1 failure |
-| S86-AD-016 | Structured-material commissions ≠ learner-facing figures 1:1 | **T-008 confirmed by design:** XD commission → XM body; DP VA owns figures for diagrams; channels not locked 1:1. Carry to T-009 |
-| S86-AD-017 | Systematic editorial furniture / dual close / flat hierarchy | **T-007:** all five → **EQ7 / EQ8**. **T-008:** DP `page_synthesis` + renderer `ORIENTATION_SECTION_DEFINITIONS` + optional Closing after body |
-| S86-AD-018 | EQ1 typed purpose / epistemic-form ownership absent from contracts | **T-008:** responsibility **missing** as field; free-text EJP only. WP4/T-011 successor design input — no new stage in T-008 |
-| S86-AD-019 | Design Page owned patch list includes `sections` | **T-008:** `DESIGN_PAGE_OWNED_TOP_LEVEL_FIELDS` can overwrite assembled exposition if DP emits `sections[]` — must-not fragility |
+| S86-AD-016 | Structured-material commissions ≠ learner-facing figures 1:1 | **T-008 confirmed; T-009 preserves as desirable.** Option B links VA→commission optionally without forcing 1:1 |
+| S86-AD-017 | Systematic editorial furniture / dual close / flat hierarchy | **T-007/T-008.** WP5/T-010 next for hierarchy/typography |
+| S86-AD-018 | EQ1 typed purpose / epistemic-form ownership absent from contracts | **T-008.** Outside T-009 scope |
+| S86-AD-019 | Design Page owned patch list includes `sections` | **T-008.** Must-not fragility |
+| S86-AD-020 | EQ5 seam: soft post-hoc integration | **T-009:** recommend Option B (perceptibility + participation intent + deterministic VA↔commission binding). No new AI stage. Implementation deferred to successor design (T-011) |
 
 ## Explicitly out of sprint (at open / this pass)
 

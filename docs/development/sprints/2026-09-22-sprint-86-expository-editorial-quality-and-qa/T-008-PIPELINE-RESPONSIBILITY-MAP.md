@@ -282,6 +282,4 @@ No production files modified.
 
 ## 12. T-009 status note
 
-**T-009 remains PENDING.** Scope sharpened (see §5): perceptibility encoding, XD↔XM/VA participation without default new stage, materials≠figures alignment, a11y preserved.
-
-**Next after T-008:** S86-T-009 (still WP4).
+**T-009 COMPLETE** — see [T-009-XD-XM-SEAM.md](T-009-XD-XM-SEAM.md). Recommended **Option B** (enrichment + deterministic binding). WP4 COMPLETE. Next: T-010 / WP5 when authorised.

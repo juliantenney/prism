@@ -1956,7 +1956,7 @@
     step_generate_activity_materials: "Creates the learning materials for each activity.",
     step_construct_learning_sequence: "Orders the activities into a clear learning sequence.",
     step_expository_journey_plan: "Plans the intellectual journey across the exposition sections.",
-    step_expository_development: "Develops each section's explanation and supporting materials.",
+    step_expository_development: "Designs and realises each section's explanation, continuity, and supporting material commissions.",
     step_expository_materials: "Writes the commissioned intellectual materials for the exposition.",
     step_design_page: "Adds the learner-facing page title and framing text.",
     step_design_assessment: "Plans how learning will be assessed.",
@@ -5522,6 +5522,71 @@
     ).trim();
   }
 
+  /**
+   * Substitute internal template tokens (stepNotes, preferredOutputFormat, option:*) from
+   * workflow/step state — same contract as Interactive pack seeding. Leaves no unresolved
+   * {{stepNotes}} / {{option:*}} tokens that would trigger Copy's browser prompt fallback.
+   * Does not invent values for arbitrary author {{Variables}} outside this known set.
+   */
+  function materializeWorkflowPromptTemplateTokens(template, step, wf) {
+    var body = String(template || "");
+    if (!body || body.indexOf("{{") === -1) return String(body || "").trim();
+    var catalog = Array.isArray(state.workflowStepPatternCatalog)
+      ? state.workflowStepPatternCatalog
+      : [];
+    var matchedPattern = resolveMatchedWorkflowStepPatternFromCatalog(step, catalog);
+    var cfg = normalizeWorkflowStepPromptConfig(
+      matchedPattern && matchedPattern.promptFactory ? matchedPattern.promptFactory : null
+    );
+    var notes = String((step && (step.notes || step.stepNotes)) || "").trim();
+    var templateVars = {
+      stepTitle: String((step && step.title) || "").trim(),
+      stepOutputName: String((step && step.outputName) || "").trim(),
+      preferredOutputFormat: String(cfg.preferredOutputFormat || "json").trim() || "json",
+      stepNotes: stripWorkflowStepParamBlock(notes),
+      inputArtefactTypes: ""
+    };
+    if (cfg.defaultPromptVariables && typeof cfg.defaultPromptVariables === "object") {
+      Object.keys(cfg.defaultPromptVariables).forEach(function (k) {
+        if (!k || Object.prototype.hasOwnProperty.call(templateVars, k)) return;
+        var v = cfg.defaultPromptVariables[k];
+        templateVars[k] = v == null ? "" : String(v);
+      });
+    }
+    var parsedParams = parseWorkflowStepParamBlock(notes);
+    var optionMap = {};
+    if (Array.isArray(parsedParams)) {
+      parsedParams.forEach(function (row) {
+        if (!row || !row.id) return;
+        optionMap[String(row.id)] = row.value != null ? String(row.value) : "";
+      });
+    } else if (parsedParams && typeof parsedParams === "object") {
+      Object.keys(parsedParams).forEach(function (id) {
+        if (!id) return;
+        optionMap[id] = parsedParams[id] == null ? "" : String(parsedParams[id]);
+      });
+    }
+    (cfg.userOptions || []).forEach(function (opt) {
+      if (!opt || !opt.id) return;
+      var raw = Object.prototype.hasOwnProperty.call(optionMap, opt.id) ? optionMap[opt.id] : "";
+      var formatted =
+        typeof formatOptionValueForPrompt === "function"
+          ? formatOptionValueForPrompt(opt, raw)
+          : raw == null
+          ? ""
+          : String(raw);
+      templateVars["option:" + opt.id] = formatted;
+    });
+    // Known internal tokens always resolve (empty when unset) so Copy never prompts for them.
+    ["stepNotes", "preferredOutputFormat", "stepTitle", "stepOutputName", "inputArtefactTypes"].forEach(
+      function (k) {
+        if (!Object.prototype.hasOwnProperty.call(templateVars, k)) templateVars[k] = "";
+      }
+    );
+    void wf;
+    return applyWorkflowStepPromptTemplate(body, templateVars).trim();
+  }
+
   function resolveWorkflowStepPromptTemplate(cfg, wfOrContext) {
     var workflow =
       wfOrContext && typeof wfOrContext === "object"
@@ -7564,7 +7629,7 @@
     ) {
       return Promise.resolve(state.workflowStepPatternCatalog || []);
     }
-    return window.WorkflowGenerationContext
+    var catalogPromise = window.WorkflowGenerationContext
       .getStepPatternCatalog({ selectedDomains: domains })
       .then(function (catalog) {
         state.workflowStepPatternCatalog = Array.isArray(catalog) ? catalog : [];
@@ -7573,6 +7638,14 @@
       .catch(function () {
         return state.workflowStepPatternCatalog || [];
       });
+    // S85 WP4: warm Expository domain prompt-rules alongside the pattern catalog
+    // so sibling prompt construction is not dependent on Create-time context alone.
+    if (typeof window.WorkflowGenerationContext.ensureDomainPromptRulesCached === "function") {
+      window.WorkflowGenerationContext
+        .ensureDomainPromptRulesCached({ selectedDomains: domains })
+        .catch(function () {});
+    }
+    return catalogPromise;
   }
 
   function workflowHasRunnerGuidanceInCatalog(workflow, catalog) {
@@ -10870,6 +10943,8 @@
 
   function isPageEnrichmentV2WorkflowEnabled(wf) {
     if (readWorkflowOutputSpecFlag(wf, "pageEnrichmentV2")) return true;
+    // Expository Resource always uses the v2 page / partial-stage pipeline (no Episode Plan heuristic).
+    if (isExpositoryResourceWorkflow(wf)) return true;
     // Heuristic fallback: if workflow steps are already normalized to page artefacts,
     // treat workflow as v2-enabled even when persisted flags are missing/stale.
     if (!wf || typeof wf !== "object" || !Array.isArray(wf.steps)) return false;
@@ -10896,10 +10971,113 @@
   }
 
   function isPartialPageOutputWorkflowEnabled(wf) {
+    if (isExpositoryResourceWorkflow(wf) && isPageEnrichmentV2WorkflowEnabled(wf)) {
+      return true;
+    }
     return (
       isPageEnrichmentV2WorkflowEnabled(wf) &&
       readWorkflowOutputSpecFlag(wf, "partialPageOutputs")
     );
+  }
+
+  /**
+   * Recognise an Expository (or unambiguous) Design Page partial capture:
+   * page identity + design_page assembly + owned DP fields + no Interactive activities[].
+   */
+  function isExpositoryDesignPagePartialCaptureShape(parsed, wf) {
+    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) return false;
+    if (String(parsed.schema_version || "").trim() !== "2.0.0") return false;
+    if (String(parsed.artifact_type || "").trim().toLowerCase() !== "page") return false;
+    var assembly = parsed.assembly_state;
+    if (!assembly || typeof assembly !== "object" || Array.isArray(assembly)) return false;
+    if (String(assembly.current_stage || "").trim() !== "design_page") return false;
+    var enrichedBy = Array.isArray(assembly.enriched_by) ? assembly.enriched_by : [];
+    var hasDesignPageEnrichment = enrichedBy.some(function (token) {
+      return String(token || "").trim().toLowerCase() === "design_page";
+    });
+    if (!hasDesignPageEnrichment) return false;
+    if (Array.isArray(parsed.activities) && parsed.activities.length > 0) return false;
+    var hasOwnedPartialField =
+      parsed.page_synthesis != null ||
+      (typeof parsed.title === "string" && String(parsed.title).trim()) ||
+      parsed.visual_affordances != null ||
+      parsed.visual_affordance_schema_version != null;
+    if (!hasOwnedPartialField) return false;
+    if (isExpositoryResourceWorkflow(wf)) return true;
+    // Unambiguous partial DP shape (no activities) — do not invent Interactive structure.
+    return !Object.prototype.hasOwnProperty.call(parsed, "activities") ||
+      (Array.isArray(parsed.activities) && parsed.activities.length === 0);
+  }
+
+  /**
+   * DP-owned partial shape guard for envelope stamping. Step/workflow identity is the
+   * authority; model-authored assembly_state alone is never enough to promote JSON.
+   */
+  function isRecognisableExpositoryDesignPagePartialOwnedShape(parsed) {
+    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) return false;
+    if (Array.isArray(parsed.activities) && parsed.activities.length > 0) return false;
+    var hasOwnedPartialField =
+      parsed.page_synthesis != null ||
+      (typeof parsed.title === "string" && String(parsed.title).trim()) ||
+      parsed.visual_affordances != null ||
+      parsed.visual_affordance_schema_version != null;
+    if (!hasOwnedPartialField) return false;
+    if (Object.prototype.hasOwnProperty.call(parsed, "activities")) {
+      if (!Array.isArray(parsed.activities) || parsed.activities.length > 0) return false;
+    }
+    return true;
+  }
+
+  function isAuthorisedExpositoryDesignPageCaptureStep(step, wf) {
+    if (!isExpositoryResourceWorkflow(wf)) return false;
+    return isWorkflowStepDesignPage({
+      stepCanonicalStepId: step && (step.canonical_step_id || step.canonicalStepId || ""),
+      stepCanonicalTitle: step && step.title,
+      stepTitle: step && step.title
+    });
+  }
+
+  /**
+   * Deterministic pipeline envelope for a known Expository Design Page step.
+   * Supplies artifact_type/schema_version only when absent; never overwrites conflicts.
+   */
+  function applyExpositoryDesignPageCaptureEnvelopeIdentity(parsed, step, wf) {
+    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) return parsed;
+    if (!isAuthorisedExpositoryDesignPageCaptureStep(step, wf)) return parsed;
+    if (!isRecognisableExpositoryDesignPagePartialOwnedShape(parsed)) return parsed;
+
+    var hasArtifactKey = Object.prototype.hasOwnProperty.call(parsed, "artifact_type");
+    var hasSchemaKey = Object.prototype.hasOwnProperty.call(parsed, "schema_version");
+    var artifactRaw = hasArtifactKey ? parsed.artifact_type : undefined;
+    var schemaRaw = hasSchemaKey ? parsed.schema_version : undefined;
+    var artifactPresent =
+      hasArtifactKey && artifactRaw != null && String(artifactRaw).trim() !== "";
+    var schemaPresent = hasSchemaKey && schemaRaw != null && String(schemaRaw).trim() !== "";
+
+    if (artifactPresent && String(artifactRaw).trim().toLowerCase() !== "page") {
+      return parsed;
+    }
+    if (schemaPresent && String(schemaRaw).trim() !== "2.0.0") {
+      return parsed;
+    }
+    if (artifactPresent && schemaPresent) return parsed;
+
+    var next = Object.assign({}, parsed);
+    if (!artifactPresent) next.artifact_type = "page";
+    if (!schemaPresent) next.schema_version = "2.0.0";
+    return next;
+  }
+
+  function stampExpositoryDesignPageCaptureEnvelopeRaw(raw, step, wf) {
+    var parsed = tryParseWorkflowArtefactJson(raw);
+    if (!parsed) return String(raw || "");
+    var stamped = applyExpositoryDesignPageCaptureEnvelopeIdentity(parsed, step, wf);
+    if (stamped === parsed) return String(raw || "");
+    try {
+      return JSON.stringify(stamped, null, 2);
+    } catch (_) {
+      return String(raw || "");
+    }
   }
 
   function dlaCanonicalHeadingPresent(text) {
@@ -11108,9 +11286,11 @@
     };
   }
 
-  function attachExpositoryExtentFromFactors(ejp, factors) {
+  function attachExpositoryExtentFromFactors(ejp, factors, options) {
     if (!ejp || typeof ejp !== "object") return ejp;
-    if (ejp.extent && typeof ejp.extent === "object") return ejp;
+    var opts = options && typeof options === "object" ? options : {};
+    var overwrite = !!opts.overwrite;
+    if (!overwrite && ejp.extent && typeof ejp.extent === "object") return ejp;
     var contracts = resolveExpositoryContractsLib();
     if (!contracts || typeof contracts.normalizeExpositoryScopeExtent !== "function") return ejp;
     var extentFactor =
@@ -11119,7 +11299,7 @@
         : null;
     if (extentFactor) {
       ejp.extent = contracts.normalizeExpositoryScopeExtent(
-        extentFactor.scope_text || factors.scope_scale || ""
+        extentFactor.scope_text || (factors && factors.scope_scale) || ""
       );
       if (extentFactor.words_equivalent != null) {
         ejp.extent.words_equivalent = extentFactor.words_equivalent;
@@ -11151,8 +11331,8 @@
     var stage = resolvePartialPageCaptureStageFromStep(step);
     if (!stage) return null;
     if (
-      String(parsed.schema_version || "") !== "2.0.0" ||
-      String(parsed.artifact_type || "").toLowerCase() !== "page"
+      String(parsed.schema_version || "").trim() !== "2.0.0" ||
+      String(parsed.artifact_type || "").trim().toLowerCase() !== "page"
     ) {
       return null;
     }
@@ -11958,10 +12138,10 @@
       return { ok: false, errors: ["invalid capture object"] };
     }
     var errors = [];
-    if (String(parsed.schema_version || "") !== "2.0.0") {
+    if (String(parsed.schema_version || "").trim() !== "2.0.0") {
       errors.push('schema_version must be "2.0.0"');
     }
-    if (String(parsed.artifact_type || "") !== "page") {
+    if (String(parsed.artifact_type || "").trim().toLowerCase() !== "page") {
       errors.push('artifact_type must be "page"');
     }
     if (!parsed.assembly_state || typeof parsed.assembly_state !== "object") {
@@ -12120,13 +12300,14 @@
     }
     var workflow = resolveWorkflowForUpstreamArtefacts({ workflow: wf });
     var partialMode = isPartialPageOutputWorkflowEnabled(workflow);
-    if (
-      String(parsed.schema_version || "") === "2.0.0" &&
-      String(parsed.artifact_type || "") === "page"
-    ) {
+    var artifactType = String(parsed.artifact_type || "").trim().toLowerCase();
+    var schemaVersion = String(parsed.schema_version || "").trim();
+    if (schemaVersion === "2.0.0" && artifactType === "page") {
+      var stageFromStep = resolvePartialPageCaptureStageFromStep(step);
+      var expositoryPartialShape = isExpositoryDesignPagePartialCaptureShape(parsed, workflow);
       if (
-        partialMode &&
-        (resolvePartialPageCaptureStageFromStep(step) === "design_page" || (!step && partialMode))
+        (partialMode && (stageFromStep === "design_page" || (!step && partialMode))) ||
+        (isExpositoryResourceWorkflow(workflow) && expositoryPartialShape)
       ) {
         return validateDesignPagePartialPageCapture(parsed);
       }
@@ -14218,6 +14399,11 @@
     if (isPostEpisodePlanPartialOutputStep(step, workflow)) {
       var parsedPartialEarly = tryParseWorkflowArtefactJson(raw);
       if (parsedPartialEarly) {
+        parsedPartialEarly = applyExpositoryDesignPageCaptureEnvelopeIdentity(
+          parsedPartialEarly,
+          step,
+          workflow
+        );
         var partialStepCheck = validatePartialPageCaptureForStep(parsedPartialEarly, step, workflow);
         if (partialStepCheck) {
           if (!partialStepCheck.ok) {
@@ -14262,6 +14448,7 @@
           message: "Design Page v2 capture must be valid JSON page artefact"
         };
       }
+      parsedDp = applyExpositoryDesignPageCaptureEnvelopeIdentity(parsedDp, step, workflow);
       var dpCheck = validateDesignPageOrPageCapture(parsedDp, workflow, step);
       if (!dpCheck.ok) {
         return {
@@ -16843,6 +17030,15 @@
       if (wgc && typeof wgc.getCachedFileText === "function") {
         text = String(wgc.getCachedFileText(row.path) || "");
       }
+      // Browser cold-cache seam (S85 WP4): load prompt-rules into WGC cache on
+      // demand so Expository sibling prompts do not depend on an earlier warm-up.
+      if (
+        !text &&
+        wgc &&
+        typeof wgc.loadFileTextIntoCacheSync === "function"
+      ) {
+        text = String(wgc.loadFileTextIntoCacheSync(row.path) || "");
+      }
       if (!text && typeof require === "function") {
         try {
           var fs = require("fs");
@@ -16852,6 +17048,9 @@
             row.path
           );
           text = fs.readFileSync(abs, "utf8");
+          if (text && wgc && typeof wgc.putCachedFileText === "function") {
+            wgc.putCachedFileText(row.path, text);
+          }
         } catch (_err) {}
       }
       if (text) textsByPath[row.path] = text;
@@ -27125,6 +27324,20 @@
     var storesArtefact = workflowStepProducesStoredArtefact(stepRow || {}, wf || {});
     var pageStructureStep = isWorkflowStepPageStructureProducer(stepRow || {}, wf || {});
     var episodePlanStep = !!(stepRow && isWorkflowStepDesignEpisodePlanRow(stepRow));
+    var expoOriginalPasteForRaw = null;
+    if (
+      storesArtefact &&
+      pageStructureStep &&
+      stepRow &&
+      String(raw || "").trim() &&
+      isAuthorisedExpositoryDesignPageCaptureStep(stepRow, wf)
+    ) {
+      var stampedDpEnvelopeRaw = stampExpositoryDesignPageCaptureEnvelopeRaw(raw, stepRow, wf);
+      if (stampedDpEnvelopeRaw && stampedDpEnvelopeRaw !== raw) {
+        ta.value = stampedDpEnvelopeRaw;
+        raw = stampedDpEnvelopeRaw;
+      }
+    }
     if (storesArtefact && pageStructureStep && String(raw || "").trim()) {
       var pageCapture = episodePlanStep
         ? parseEpisodePlanOrPageCaptureForStorage(raw)
@@ -27162,6 +27375,10 @@
     } else if (storesArtefact && !pageStructureStep && String(raw || "").trim()) {
       var expoKind = resolveExpositoryArtefactKindFromStep(stepRow || {});
       if (expoKind) {
+        // Preserve the operator paste for preferRaw assembly. Capture validation may
+        // rewrite the textarea to a normalized JSON view; Raw must keep structured
+        // XM object bodies intact for export-time re-normalize.
+        expoOriginalPasteForRaw = String(raw || "");
         var expoCapture = parseExpositoryArtefactCaptureForStorage(raw, expoKind);
         if (!expoCapture.ok) {
           state.workflowRunStrictJsonValidation = state.workflowRunStrictJsonValidation || {};
@@ -27171,21 +27388,33 @@
           if (state.workflowRunStepCompleted[sid]) {
             delete state.workflowRunStepCompleted[sid];
           }
+          expoOriginalPasteForRaw = null;
         } else if (expoCapture.json) {
           if (state.workflowRunStrictJsonValidation) {
             delete state.workflowRunStrictJsonValidation[sid];
           }
           var expoParsed = expoCapture.parsed;
           if (expoKind === "expository_journey_plan") {
+            var authExtentFactors = resolveAuthoritativeExpositoryExtentFactors(wf);
             var wfFactors =
               (wf &&
                 wf.workflowOutputSpec &&
                 wf.workflowOutputSpec.constraints &&
                 typeof wf.workflowOutputSpec.constraints === "object" &&
                 wf.workflowOutputSpec.constraints) ||
+              (wf &&
+                wf.workflowBriefResolution &&
+                wf.workflowBriefResolution.resolvedFactors) ||
               (wf && wf.resolvedFactors) ||
               {};
-            expoParsed = attachExpositoryExtentFromFactors(expoParsed, wfFactors);
+            var extentFactors = Object.assign({}, wfFactors, {
+              scope_scale: authExtentFactors.scope_scale || wfFactors.scope_scale || "",
+              expository_extent:
+                authExtentFactors.expository_extent || wfFactors.expository_extent || null
+            });
+            expoParsed = attachExpositoryExtentFromFactors(expoParsed, extentFactors, {
+              overwrite: !!authExtentFactors.fromAdjustment
+            });
             expoCapture.json = JSON.stringify(expoParsed, null, 2);
           }
           ta.value = expoCapture.json;
@@ -27344,7 +27573,10 @@
       ta.value = finalizedCapture;
       raw = finalizedCapture;
     }
-    state.workflowRunCapturedOutputsRaw[sid] = raw;
+    state.workflowRunCapturedOutputsRaw[sid] =
+      expoOriginalPasteForRaw != null && String(expoOriginalPasteForRaw).trim()
+        ? expoOriginalPasteForRaw
+        : raw;
     if (storesArtefact) {
       var strictBypassForEpisodePlan = !!(stepRow && isWorkflowStepDesignEpisodePlanRow(stepRow));
       if (String(raw || "").trim()) {
@@ -27593,7 +27825,11 @@
     }
     statusEl.textContent = text;
     if (hasBlockingErr && blockingMessage) {
-      statusEl.setAttribute("title", blockingMessage);
+      if (typeof statusEl.setAttribute === "function") {
+        statusEl.setAttribute("title", blockingMessage);
+      } else {
+        statusEl.title = blockingMessage;
+      }
     } else if (typeof statusEl.removeAttribute === "function") {
       statusEl.removeAttribute("title");
     } else {
@@ -32809,9 +33045,14 @@
     }
     var expositorySiblingBody = resolveExpositorySiblingPromptBodyForStep(step, wfRec);
     if (expositorySiblingBody) {
+      var materializedSibling = materializeWorkflowPromptTemplateTokens(
+        expositorySiblingBody,
+        step,
+        wfRec
+      );
       return {
         sourceType: sourceType === "none" ? "expository_sibling" : sourceType,
-        text: finalizePromptBody(expositorySiblingBody),
+        text: finalizePromptBody(materializedSibling),
         error: ""
       };
     }
@@ -36316,6 +36557,9 @@
   }
 
   var ADJUSTMENTS_DURATION_PARAMETER_ID = "duration_minutes";
+  var ADJUSTMENTS_EXPOSITORY_SCOPE_PARAMETER_ID = "expository_scope";
+  var ADJUSTMENTS_EXPOSITORY_RESOURCE_CAPABILITY = "expository_resource";
+  var ADJUSTMENTS_INTERACTIVE_DURATION_CAPABILITY = "interactive_duration";
 
   /**
    * Commissioned Duration (S80-S6 §3).
@@ -36341,6 +36585,72 @@
     var minutes = Number(raw);
     if (!isFinite(minutes) || minutes <= 0) return null;
     return Math.round(minutes);
+  }
+
+  /**
+   * Commissioned Expository Scale/scope prose (S85 WP4).
+   * Prefer frozen expository_extent.scope_text, then scope_scale.
+   */
+  function resolveCommissionedExpositoryScopeText(wf) {
+    if (!wf || typeof wf !== "object") return "";
+    var factors = null;
+    var resolution = wf.workflowBriefResolution;
+    if (resolution && typeof resolution === "object" && resolution.resolvedFactors) {
+      factors = resolution.resolvedFactors;
+    } else if (wf.resolvedFactors && typeof wf.resolvedFactors === "object") {
+      factors = wf.resolvedFactors;
+    }
+    var constraints =
+      wf.workflowOutputSpec &&
+      wf.workflowOutputSpec.constraints &&
+      typeof wf.workflowOutputSpec.constraints === "object"
+        ? wf.workflowOutputSpec.constraints
+        : null;
+    if (factors && factors.expository_extent && typeof factors.expository_extent === "object") {
+      var fromExtent = String(factors.expository_extent.scope_text || "").trim();
+      if (fromExtent) return fromExtent;
+    }
+    if (constraints && constraints.expository_extent && typeof constraints.expository_extent === "object") {
+      var fromConstraintExtent = String(constraints.expository_extent.scope_text || "").trim();
+      if (fromConstraintExtent) return fromConstraintExtent;
+    }
+    var scopeScale = String(
+      (factors && factors.scope_scale) || (constraints && constraints.scope_scale) || ""
+    ).trim();
+    return scopeScale;
+  }
+
+  /**
+   * Authoritative Expository extent factors for capture/prompt consumers.
+   * Adjustments `expository_scope` overrides commissioned Create extent using
+   * the same normalizeExpositoryScopeExtent path as Create.
+   */
+  function resolveAuthoritativeExpositoryExtentFactors(wf) {
+    var contracts = resolveExpositoryContractsLib();
+    var context = resolveEffectiveRunContext(wf);
+    var fromAdjustment =
+      context.provenance[ADJUSTMENTS_EXPOSITORY_SCOPE_PARAMETER_ID] === "adjustment";
+    var scopeText = String(
+      context.parameters[ADJUSTMENTS_EXPOSITORY_SCOPE_PARAMETER_ID] != null
+        ? context.parameters[ADJUSTMENTS_EXPOSITORY_SCOPE_PARAMETER_ID]
+        : ""
+    ).trim();
+    if (!scopeText) {
+      scopeText = resolveCommissionedExpositoryScopeText(wf);
+    }
+    var extent = null;
+    if (
+      scopeText &&
+      contracts &&
+      typeof contracts.normalizeExpositoryScopeExtent === "function"
+    ) {
+      extent = contracts.normalizeExpositoryScopeExtent(scopeText);
+    }
+    return {
+      scope_scale: scopeText,
+      expository_extent: extent,
+      fromAdjustment: fromAdjustment
+    };
   }
 
   var ADJUSTMENTS_AUDIENCE_PARAMETER_ID = "audience";
@@ -36544,6 +36854,10 @@
       // remains the only stage that allocates time across activities; DLA
       // receives this value as a target band so it stops asserting a
       // hardcoded 60 (D1).
+      //
+      // S85 WP4: Interactive session-time only. Expository workflows expose
+      // Scope / extent instead (expository_scope) and do not present Duration
+      // as though it controlled explanatory attention.
       id: "duration_minutes",
       label: "Duration",
       help:
@@ -36558,8 +36872,27 @@
       max: 480,
       owner: "workflow_run_context",
       projection: "workflowContext",
-      applicability: { always: true },
+      applicability: {
+        requiresCapability: "interactive_duration"
+      },
       resolveCommissioned: resolveCommissionedWorkflowDurationMinutes
+    },
+    {
+      // S85 WP4: Expository resource content extent (explanatory attention).
+      // Reuses Create Scale/scope → normalizeExpositoryScopeExtent machinery.
+      // Opaque author prose — no false precision; same useful kinds as Create
+      // ("about a 10-minute read", "around 2,000 words", "concise", …).
+      id: "expository_scope",
+      label: "Scope / extent",
+      help:
+        "How much explanatory attention this Expository resource should give (for example: about a 10-minute read, around 2,000 words, concise, detailed). Leave blank to use the Scale / scope from Create. This steers Expository Journey Plan depth on the next run; it does not change which stages run.",
+      type: "text",
+      owner: "workflow_run_context",
+      projection: "workflowContext",
+      applicability: {
+        requiresCapability: "expository_resource"
+      },
+      resolveCommissioned: resolveCommissionedExpositoryScopeText
     },
     {
       // S80-S7: who this run is for, as author-written descriptive prose.
@@ -36648,6 +36981,7 @@
 
   // Capability-gated applicability. Unregistered capabilities fail closed
   // (isAdjustmentsParameterApplicable). S80-S8 registers CAI/GAI presence.
+  // S85 WP4 registers Expository vs Interactive duration/extent split.
   var ADJUSTMENTS_CAPABILITY_RESOLVERS = {
     generate_assessment_items: function (wf) {
       var steps = wf && Array.isArray(wf.steps) ? wf.steps : [];
@@ -36656,6 +36990,12 @@
         if (isWorkflowStepGenerateAssessmentItemsRow(steps[i])) return true;
       }
       return false;
+    },
+    expository_resource: function (wf) {
+      return isExpositoryResourceWorkflow(wf);
+    },
+    interactive_duration: function (wf) {
+      return !isExpositoryResourceWorkflow(wf);
     }
   };
 
@@ -52331,12 +52671,72 @@
 
   function parsePageArtefactCaptureForStorage(raw) {
     var initial = String(raw || "");
+    // Strip only the STEP N OUTPUT footer first so an embedded ```json fence keeps its closer.
+    // Full sanitizePrismRunCapturedOutput also strips trailing ``` which breaks fence extraction.
+    var stepFooterRe = /\r?\nSTEP\s*\d+\s*OUTPUT:[\s\S]*$/i;
+    var withoutStepFooter = initial;
+    var prevStep;
+    do {
+      prevStep = withoutStepFooter;
+      withoutStepFooter = withoutStepFooter.replace(stepFooterRe, "");
+    } while (withoutStepFooter !== prevStep);
+
+    function acceptPageObject(parsed, sourceBody) {
+      if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
+        return {
+          ok: false,
+          errors: ["not_json_object"],
+          message: "Page artefact capture must be a single JSON object"
+        };
+      }
+      if (String(parsed.artifact_type || "").trim().toLowerCase() !== "page") {
+        return {
+          ok: false,
+          errors: ["not_page_artefact"],
+          message: 'Page artefact capture must contain artifact_type "page"'
+        };
+      }
+      var bodyForDup = String(sourceBody || "");
+      if (/"artifact_type"\s*:\s*"page"[\s\S]*"artifact_type"\s*:\s*"page"/i.test(bodyForDup)) {
+        return {
+          ok: false,
+          errors: ["duplicate_page_objects"],
+          message: "Page artefact capture must not contain multiple embedded page objects"
+        };
+      }
+      return {
+        ok: true,
+        errors: [],
+        parsed: parsed,
+        json: JSON.stringify(parsed, null, 2)
+      };
+    }
+
+    // Copilot paste: prose + one ```json fence (+ STEP footer). Partial Design Page sync
+    // skips normalizePageWorkflowRunCapture, so storage parse must extract the fence here.
+    var embeddedFence = String(withoutStepFooter || "").match(
+      /```json\s*\r?\n([\s\S]*?)\r?\n```/i
+    );
+    if (embeddedFence && embeddedFence[1] != null && String(embeddedFence[1]).trim()) {
+      var embeddedBody = String(embeddedFence[1]).trim();
+      if (/^\s*\{/.test(embeddedBody) && /\}\s*$/.test(embeddedBody)) {
+        try {
+          var embeddedParsed = JSON.parse(embeddedBody);
+          var embeddedAccept = acceptPageObject(embeddedParsed, embeddedBody);
+          if (embeddedAccept.ok) return embeddedAccept;
+        } catch (_embeddedErr) {
+          /* fall through to strict path */
+        }
+      }
+    }
+
     var fencedWhole = /^\s*```json\s*\r?\n[\s\S]*\r?\n```\s*$/i.test(initial);
     var sanitized = fencedWhole ? initial : sanitizePrismRunCapturedOutput(initial);
     var trimmed = utilityNormalizeUtilitiesJsonInput(String(sanitized || "").trim());
     if (!trimmed) {
       return { ok: false, errors: ["empty_capture"], message: "Page artefact capture is empty" };
     }
+
     var body = trimmed;
     var hasFence = /```/.test(trimmed);
     if (hasFence) {
@@ -52359,33 +52759,7 @@
     }
     try {
       var parsed = JSON.parse(body);
-      if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
-        return {
-          ok: false,
-          errors: ["not_json_object"],
-          message: "Page artefact capture must be a single JSON object"
-        };
-      }
-      if (String(parsed.artifact_type || "").toLowerCase() !== "page") {
-        return {
-          ok: false,
-          errors: ["not_page_artefact"],
-          message: 'Page artefact capture must contain artifact_type "page"'
-        };
-      }
-      if (/"artifact_type"\s*:\s*"page"[\s\S]*"artifact_type"\s*:\s*"page"/i.test(body)) {
-        return {
-          ok: false,
-          errors: ["duplicate_page_objects"],
-          message: "Page artefact capture must not contain multiple embedded page objects"
-        };
-      }
-      return {
-        ok: true,
-        errors: [],
-        parsed: parsed,
-        json: JSON.stringify(parsed, null, 2)
-      };
+      return acceptPageObject(parsed, body);
     } catch (err) {
       return {
         ok: false,
@@ -57134,6 +57508,13 @@
     prismTestApi.getWorkflowAdjustmentParameters = getWorkflowAdjustmentParameters;
     prismTestApi.resolveEffectiveRunContext = resolveEffectiveRunContext;
     prismTestApi.getAdjustmentsParameterRegistry = getAdjustmentsParameterRegistry;
+    prismTestApi.isAdjustmentsParameterApplicable = isAdjustmentsParameterApplicable;
+    prismTestApi.resolveAuthoritativeExpositoryExtentFactors =
+      resolveAuthoritativeExpositoryExtentFactors;
+    prismTestApi.resolveCommissionedExpositoryScopeText = resolveCommissionedExpositoryScopeText;
+    prismTestApi.ADJUSTMENTS_EXPOSITORY_SCOPE_PARAMETER_ID =
+      ADJUSTMENTS_EXPOSITORY_SCOPE_PARAMETER_ID;
+    prismTestApi.ADJUSTMENTS_DURATION_PARAMETER_ID = ADJUSTMENTS_DURATION_PARAMETER_ID;
     prismTestApi.ADJUSTMENTS_STATE_VERSION = ADJUSTMENTS_STATE_VERSION;
     // Test-only registry override, so resolver and projection behaviour can be
     // proven against sample declarations as well as the shipped allowlist.
@@ -57273,6 +57654,9 @@
     prismTestApi.buildSeededStepPromptForWorkflowStep = buildSeededStepPromptForWorkflowStep;
     prismTestApi.resolveWorkflowStepPromptTemplate = resolveWorkflowStepPromptTemplate;
     prismTestApi.resolveExpositorySiblingPromptBodyForStep = resolveExpositorySiblingPromptBodyForStep;
+    prismTestApi.materializeWorkflowPromptTemplateTokens = materializeWorkflowPromptTemplateTokens;
+    prismTestApi.extractTemplateVariables = extractTemplateVariables;
+    prismTestApi.applyWorkflowStepPromptTemplate = applyWorkflowStepPromptTemplate;
     prismTestApi.isExpositoryResourceWorkflow = isExpositoryResourceWorkflow;
     prismTestApi.sanitizeExpositoryGenerationFactors = sanitizeExpositoryGenerationFactors;
     prismTestApi.sanitizeExpositoryConstraintPatch = sanitizeExpositoryConstraintPatch;
@@ -58406,6 +58790,16 @@
     prismTestApi.resolveLdDlaPageEnrichContractLib = resolveLdDlaPageEnrichContractLib;
     prismTestApi.assembleLiveDlaCanonicalPrompt = assembleLiveDlaCanonicalPrompt;
     prismTestApi.isPartialPageOutputWorkflowEnabled = isPartialPageOutputWorkflowEnabled;
+    prismTestApi.isExpositoryDesignPagePartialCaptureShape =
+      isExpositoryDesignPagePartialCaptureShape;
+    prismTestApi.isRecognisableExpositoryDesignPagePartialOwnedShape =
+      isRecognisableExpositoryDesignPagePartialOwnedShape;
+    prismTestApi.isAuthorisedExpositoryDesignPageCaptureStep =
+      isAuthorisedExpositoryDesignPageCaptureStep;
+    prismTestApi.applyExpositoryDesignPageCaptureEnvelopeIdentity =
+      applyExpositoryDesignPageCaptureEnvelopeIdentity;
+    prismTestApi.stampExpositoryDesignPageCaptureEnvelopeRaw =
+      stampExpositoryDesignPageCaptureEnvelopeRaw;
     prismTestApi.isPostEpisodePlanPartialOutputStep = isPostEpisodePlanPartialOutputStep;
     prismTestApi.resolvePartialPageCaptureStageFromStep = resolvePartialPageCaptureStageFromStep;
     prismTestApi.validatePartialPageCaptureForStep = validatePartialPageCaptureForStep;
@@ -58555,6 +58949,13 @@
     prismTestApi.emitPf11DlaUpstreamDiagnosticTrace = emitPf11DlaUpstreamDiagnosticTrace;
     prismTestApi.syncAllWorkflowRunCapturesFromDomToState = syncAllWorkflowRunCapturesFromDomToState;
     prismTestApi.syncWorkflowRunCapturedOutputToState = syncWorkflowRunCapturedOutputToState;
+    prismTestApi.updateRunStepOutputStatus = updateRunStepOutputStatus;
+    prismTestApi.getWorkflowRunStrictJsonValidationForTest = function () {
+      return Object.assign({}, state.workflowRunStrictJsonValidation || {});
+    };
+    prismTestApi.getWorkflowRunPageValidationForTest = function () {
+      return Object.assign({}, state.workflowRunPageValidation || {});
+    };
     prismTestApi.resolveWorkflowForUpstreamArtefacts = resolveWorkflowForUpstreamArtefacts;
     prismTestApi.resolveUpstreamWorkflowArtefactFromCaptures = resolveUpstreamWorkflowArtefactFromCaptures;
     prismTestApi.resolveDlaEnrichedPageJsonForGamCopy = resolveDlaEnrichedPageJsonForGamCopy;

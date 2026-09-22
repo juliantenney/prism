@@ -219,10 +219,12 @@ test("S1: enum and number values are validated against their declaration", () =>
   const ids = fresh.api.getAdjustmentsParameterRegistry().map((row) => row.id);
   // S80-S5 adds Goal; S80-S6 adds Duration; S80-S7 adds Audience;
   // S80-S8 adds capability-gated assessment Quantity + Difficulty.
+  // S85 WP4 adds capability-gated Expository Scope / extent.
   assert.deepEqual(plain(ids), [
     "topic",
     "goal",
     "duration_minutes",
+    "expository_scope",
     "audience",
     "assessment_item_count",
     "assessment_difficulty_profile"

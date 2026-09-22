@@ -147,7 +147,10 @@ test("T-029 negative: generate row with invalid evidence_anchors syntax fails De
   bad.visual_affordances[0].evidence_anchors = ["Imperial Expansion"];
   const check = api.validateDesignPagePartialPageCapture(bad);
   assert.equal(check.ok, false);
-  assert.match(errorText(check), /anchor must use activity_id\.path or page_synthesis\.field form/);
+  assert.match(
+    errorText(check),
+    /anchor must use activity_id\.path(?:, section_id\.path,)? or page_synthesis\.field form/
+  );
 });
 
 test("T-029 positive: Design Page partial without VA keys remains valid", () => {

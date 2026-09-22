@@ -123,6 +123,10 @@ test("XD continuity requires EJP whole-resource context", () => {
   assert.match(xd, /journey_intent/i);
   assert.match(xd, /preceding and following conceptual moves/i);
   assert.match(xd, /learning_content \(explanatory richness spine/i);
+  assert.match(xd, /explanation_intent vs exposition/i);
+  assert.match(xd, /exposition IS the actual learner-facing/i);
+  assert.match(xd, /Do NOT write exposition as authorial directives/i);
+  assert.match(xd, /required non-empty learner-facing prose/i);
 });
 
 test("EJP and XM keep learning_content as richness / source authority", () => {

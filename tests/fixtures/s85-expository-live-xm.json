@@ -1,0 +1,30 @@
+{
+  "artifact_type": "expository_materials",
+  "schema_version": "1.0.0",
+  "materials": [
+    {
+      "material_id": "mat-S2-loop",
+      "commission_id": "MC-S2-01",
+      "section_id": "S2",
+      "kind": "conceptual_diagram",
+      "body": "LIVE-XM-S2: Conceptual diagram of the formative loop. Intended learning shapes useful evidence; evidence is interpreted; interpretation informs action; action may generate further evidence. Do not add stages beyond these four warranted elements.",
+      "formal_notes": "Claim-bounded process figure for S2."
+    },
+    {
+      "material_id": "mat-S4-criteria",
+      "commission_id": "MC-S4-01",
+      "section_id": "S4",
+      "kind": "worked_example",
+      "body": "LIVE-XM-S4: Worked example. A short student response is read against two criteria and one exemplar excerpt; the lecturer names the quality gap and one feasible next step the student can take. The point is shared judgement, not comment volume.",
+      "formal_notes": "Example stays inside the evidence-to-action loop."
+    },
+    {
+      "material_id": "mat-S6-synthesis",
+      "commission_id": "MC-S6-01",
+      "section_id": "S6",
+      "kind": "synthesis_diagram",
+      "body": "LIVE-XM-S6: Synthesis diagram reusing the S2 four-part structure. Judgement may involve lecturer, peer, or self contributors, but those roles are not extra stages. The design question remains: what useful action can follow from the evidence?",
+      "formal_notes": "Continuity with S2 representation required."
+    }
+  ]
+}

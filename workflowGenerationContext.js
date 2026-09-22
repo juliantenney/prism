@@ -923,17 +923,84 @@
     textCache[key] = String(text || "");
   }
 
+  /**
+   * Synchronous same-origin load for Expository domain-guidance cold cache.
+   * Used only when prompt construction needs prompt-rules and the async catalog
+   * warm-up has not yet populated textCache.
+   */
+  function loadFileTextIntoCacheSync(path) {
+    var key = String(path || "").trim();
+    if (!key) return "";
+    if (Object.prototype.hasOwnProperty.call(textCache, key)) {
+      return String(textCache[key] || "");
+    }
+    try {
+      if (typeof XMLHttpRequest === "undefined") return "";
+      var xhr = new XMLHttpRequest();
+      xhr.open("GET", key, false);
+      xhr.send(null);
+      if (xhr.status >= 200 && xhr.status < 300) {
+        textCache[key] = String(xhr.responseText || "");
+        return textCache[key];
+      }
+    } catch (_err) {}
+    return "";
+  }
+
+  /**
+   * Ensure General + selected-domain prompt-rule files are in textCache.
+   * Complements getStepPatternCatalog (patterns-only) for Expository guidance.
+   */
+  function ensureDomainPromptRulesCached(options) {
+    var opts = options && typeof options === "object" ? options : {};
+    return loadManifest().then(function (manifest) {
+      var selectedDomains = normalizeSelectedDomains(opts.selectedDomains, manifest);
+      var files = [];
+      var seen = {};
+      function pushPath(p) {
+        var key = String(p || "").trim();
+        if (!key || seen[key]) return;
+        seen[key] = true;
+        files.push(key);
+      }
+      // Always include General prompt-rules when present in the manifest.
+      var generalDomain = manifest.domains && manifest.domains.general;
+      if (generalDomain && Array.isArray(generalDomain.files)) {
+        generalDomain.files.forEach(function (path) {
+          if (/prompt-rules/i.test(path)) pushPath(path);
+        });
+      }
+      selectedDomains.forEach(function (domainId) {
+        var d = manifest.domains[domainId];
+        if (!d || !Array.isArray(d.files)) return;
+        d.files.forEach(function (path) {
+          if (/prompt-rules/i.test(path)) pushPath(path);
+        });
+      });
+      return loadFiles(files).then(function (result) {
+        return {
+          loaded: (result.loaded || []).map(function (f) {
+            return f.path;
+          }),
+          missing: (result.missing || []).slice()
+        };
+      });
+    });
+  }
+
   window.WorkflowGenerationContext = {
     loadManifest: loadManifest,
     getDomainOptions: getDomainOptions,
     buildWorkflowGenerationContext: buildWorkflowGenerationContext,
     buildPromptRefinementContext: buildPromptRefinementContext,
     getStepPatternCatalog: getStepPatternCatalog,
+    ensureDomainPromptRulesCached: ensureDomainPromptRulesCached,
     getDomainArtefactOptions: getDomainArtefactOptions,
     getArtefactRenderCatalog: getArtefactRenderCatalog,
     getWorkflowPolicy: getWorkflowPolicy,
     getCachedFileText: getCachedFileText,
     putCachedFileText: putCachedFileText,
+    loadFileTextIntoCacheSync: loadFileTextIntoCacheSync,
     extractStepPatternCatalogFromText: extractStepPatternCatalogFromText,
     getWorkflowBriefConfig: getWorkflowBriefConfig,
     persistSelectedDomains: persistSelectedDomains,

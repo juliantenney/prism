@@ -1,0 +1,96 @@
+{
+  "artifact_type": "expository_development",
+  "schema_version": "1.0.0",
+  "sections": [
+    {
+      "section_id": "S1",
+      "explanation_intent": "Open by contrasting formative purpose with instrument-first habit, so later sections inherit a purpose-led frame.",
+      "exposition": "Formative assessment is often approached as a question of which instrument to use — a quiz, a draft submission, a peer review form. That starting point is misleading. What makes assessment formative is not the instrument itself, but the purpose for which evidence of learning is elicited and used. When you begin from purpose, the design question becomes: what do I need to know about learners' current understanding, and what useful action can follow from that knowledge? Instrument choice then becomes a later, subordinate decision. This purpose-led frame is the foundation for the rest of this resource.",
+      "invitations_to_think": [
+        "Where do you currently start when designing formative assessment — instrument or purpose?"
+      ],
+      "continuity_hooks": [
+        "Carry the purpose frame into the evidence-to-action model in S2."
+      ],
+      "materials_commission": []
+    },
+    {
+      "section_id": "S2",
+      "explanation_intent": "Establish intended learning → evidence → interpretation → action as a recurring relationship, not a rigid procedure.",
+      "exposition": "Once purpose is clear, formative assessment can be understood as a recurring relationship among four elements. Intended learning shapes what evidence is worth eliciting. Evidence of current understanding or performance is then interpreted in relation to that intended direction. Interpretation informs what happens next — a teaching move, a learner revision, a peer conversation, or another cycle of enquiry. Action, in turn, can generate further evidence. These four elements form a loop, not a fixed teaching procedure. Missing any one of them weakens the formative character of the work: collecting evidence without interpretation, or offering comments without a feasible next step, leaves the loop incomplete.",
+      "invitations_to_think": [
+        "Which of the four elements is weakest in a current module you teach?"
+      ],
+      "continuity_hooks": [
+        "S3 will pressure-test the action/feedback hinge of this loop."
+      ],
+      "materials_commission": [
+        {
+          "commission_id": "MC-S2-01",
+          "section_id": "S2",
+          "kind": "conceptual_diagram",
+          "intent": "Make the evidence-to-action loop inspectable",
+          "constraints": "Four warranted elements only; no extra stages"
+        }
+      ]
+    },
+    {
+      "section_id": "S3",
+      "explanation_intent": "Show that comments become formative only when interpretation yields a feasible next step.",
+      "exposition": "Feedback is often treated as synonymous with the volume or detail of comments returned to students. In the evidence-to-action loop, comments become formative only when interpretation of evidence yields a feasible next step. A dense annotation that leaves the learner unsure what to do next is not yet formative, however carefully worded. Conversely, a brief judgement that names the quality gap and points to a realistic revision move can close the loop. The hinge is use: interpretation must lead to action that the learner (or teacher) can actually take.",
+      "invitations_to_think": [],
+      "continuity_hooks": [
+        "S4 supplies tools that make the quality target of feedback more visible."
+      ],
+      "materials_commission": []
+    },
+    {
+      "section_id": "S4",
+      "explanation_intent": "Develop how criteria and exemplars help learners and lecturers share a usable sense of quality.",
+      "exposition": "For interpretation to be usable, lecturers and learners need a shared sense of quality. Criteria make expectations inspectable; exemplars show what those criteria look like in practice. Together they support evaluative judgement rather than opaque grading. A criterion list alone can remain abstract; an exemplar without criteria can be copied without understanding. Used together inside the same formative loop, they help students recognise quality gaps and choose a next step that actually addresses them.",
+      "invitations_to_think": [
+        "What would an exemplar reveal that a criterion list alone would not?"
+      ],
+      "continuity_hooks": [
+        "S5 asks who else can contribute to that shared judgement."
+      ],
+      "materials_commission": [
+        {
+          "commission_id": "MC-S4-01",
+          "section_id": "S4",
+          "kind": "worked_example",
+          "intent": "Walk through criteria-plus-exemplar judgement",
+          "constraints": "Keep the example inside the same formative loop"
+        }
+      ]
+    },
+    {
+      "section_id": "S5",
+      "explanation_intent": "Extend peer and self contributors without turning them into additional mandatory process stages.",
+      "exposition": "Judgement and action in the formative loop need not belong only to the lecturer. Peers and learners themselves can interpret evidence and propose next steps. That extension does not invent new process stages. Peer review and self-assessment remain contributions to the same four-part relationship: intended learning, evidence, interpretation, and action. The design question stays constant — who can usefully contribute to which part of the loop — rather than how many extra stages to append.",
+      "invitations_to_think": [],
+      "continuity_hooks": [
+        "S6 reintegrates actors into the original four-part model."
+      ],
+      "materials_commission": []
+    },
+    {
+      "section_id": "S6",
+      "explanation_intent": "Return to the S2 loop with richer judgement roles and feasible multi-scale design choices.",
+      "exposition": "Returning to the evidence-to-action model, the four elements remain the same, but judgement may now involve lecturer, peer, or self contributors, and action may operate at individual, peer, cohort, or appropriately automated scales. Those roles and scales enrich the loop; they do not replace it with a competing framework. Across these choices, the central design question remains: what useful action can follow from the evidence? That question holds the resource together from the opening purpose frame through to practical design.",
+      "invitations_to_think": [
+        "What single design change would make evidence more actionable in your context?"
+      ],
+      "continuity_hooks": [],
+      "materials_commission": [
+        {
+          "commission_id": "MC-S6-01",
+          "section_id": "S6",
+          "kind": "synthesis_diagram",
+          "intent": "Reuse the S2 structure with richer judgement/actors",
+          "constraints": "Preserve continuity with S2; no competing framework"
+        }
+      ]
+    }
+  ]
+}

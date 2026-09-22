@@ -310,7 +310,9 @@ test("S6: Duration is a declared registry parameter with the required characteri
   assert.equal(row.units, "minutes");
   assert.equal(row.owner, "workflow_run_context");
   assert.equal(row.projection, "workflowContext");
-  assert.deepEqual(plain(row.applicability), { always: true });
+  assert.deepEqual(plain(row.applicability), {
+    requiresCapability: "interactive_duration"
+  });
   assert.equal(typeof row.resolveCommissioned, "function");
   assert.equal(row.multiline, false, "a number is always a scalar");
 });

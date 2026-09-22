@@ -298,11 +298,15 @@ test("F/G/H: EJP/XD/XM capture producers accept valid artefacts and gate advance
       {
         section_id: "section_1",
         explanation_intent: "clarify",
+        exposition: "Clarify the opening idea so the journey can proceed.",
         materials_commission: []
       }
     ]
   });
-  const xmObj = contracts.normalizeExpositoryMaterials({
+  assert.equal(
+    contracts.validateExpositoryArtefactShape(xdObj, "expository_development").ok,
+    true
+  );  const xmObj = contracts.normalizeExpositoryMaterials({
     materials: []
   });
 

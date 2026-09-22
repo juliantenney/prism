@@ -1,0 +1,104 @@
+{
+  "artifact_type": "expository_journey_plan",
+  "schema_version": "1.0.0",
+  "title": "Formative assessment: from evidence to action",
+  "audience": "University lecturers developing formative assessment practice",
+  "journey_intent": "Build a practical conceptual model of formative assessment as an evidence-to-action loop, then return to that model with richer judgement and feasible design choices.",
+  "extent": {
+    "scope_text": "short resource",
+    "words_equivalent": 2200,
+    "interpretation": "compact chapter-scale exposition",
+    "qualitative_hint": "six sections; selective elaboration"
+  },
+  "sections": [
+    {
+      "section_id": "S1",
+      "title": "What formative assessment is for",
+      "purpose": "Orient the reader away from instrument-first thinking.",
+      "knowledge_focus": "Formative purpose versus assessment instrument choice",
+      "conceptual_move": "Reframe formative assessment as a purpose for evidence use",
+      "dependencies": [],
+      "lo_refs": ["LO1"],
+      "elaboration_intentions": ["contrast"],
+      "representation_needs": [],
+      "connections": ["S2"],
+      "synthesis": "Purpose, not instrument choice, defines formative assessment.",
+      "order": 1
+    },
+    {
+      "section_id": "S2",
+      "title": "Evidence to action",
+      "purpose": "Establish the central mental model for the resource.",
+      "knowledge_focus": "Intended learning, evidence, interpretation, and action",
+      "conceptual_move": "Establish the recurring evidence-to-action relationship",
+      "dependencies": ["S1"],
+      "lo_refs": ["LO1", "LO2"],
+      "elaboration_intentions": ["mechanism"],
+      "representation_needs": ["process diagram"],
+      "connections": ["S3", "S6"],
+      "synthesis": "Evidence becomes formative through interpretation and subsequent action.",
+      "order": 2
+    },
+    {
+      "section_id": "S3",
+      "title": "Useful feedback",
+      "purpose": "Deepen the loop at the point of feedback use.",
+      "knowledge_focus": "Feedback as usable judgement, not comment volume",
+      "conceptual_move": "Qualify when feedback is formative",
+      "dependencies": ["S2"],
+      "lo_refs": ["LO2"],
+      "elaboration_intentions": ["example"],
+      "representation_needs": [],
+      "connections": ["S4"],
+      "synthesis": "Feedback is formative when it informs realistic next steps.",
+      "order": 3
+    },
+    {
+      "section_id": "S4",
+      "title": "Criteria and exemplars",
+      "purpose": "Make quality inspectable for lecturers and learners.",
+      "knowledge_focus": "Criteria, exemplars, and evaluative judgement",
+      "conceptual_move": "Equip learners to recognise quality",
+      "dependencies": ["S3"],
+      "lo_refs": ["LO3"],
+      "elaboration_intentions": ["worked example"],
+      "representation_needs": [],
+      "connections": ["S5"],
+      "synthesis": "Criteria and exemplars support shared judgement of quality.",
+      "order": 4
+    },
+    {
+      "section_id": "S5",
+      "title": "Peers and self",
+      "purpose": "Distribute judgement without inventing new process stages.",
+      "knowledge_focus": "Peer and self-assessment as contributors to the same loop",
+      "conceptual_move": "Extend actors while preserving the four-part model",
+      "dependencies": ["S4"],
+      "lo_refs": ["LO3"],
+      "elaboration_intentions": ["boundary case"],
+      "representation_needs": [],
+      "connections": ["S6"],
+      "synthesis": "Peers and learners can contribute judgement and action inside the same loop.",
+      "order": 5
+    },
+    {
+      "section_id": "S6",
+      "title": "Designing the loop",
+      "purpose": "Synthesise the journey into reusable design practice.",
+      "knowledge_focus": "Integrated formative design choices across scales",
+      "conceptual_move": "Return to the S2 model with richer judgement and feasible action",
+      "dependencies": ["S2", "S5"],
+      "lo_refs": ["LO1", "LO2", "LO3"],
+      "elaboration_intentions": ["synthesis"],
+      "representation_needs": ["process diagram"],
+      "connections": [],
+      "synthesis": "Design asks what useful action can follow from evidence.",
+      "order": 6
+    }
+  ],
+  "learning_outcomes": [
+    { "id": "LO1", "statement": "Distinguish formative purpose from assessment instruments." },
+    { "id": "LO2", "statement": "Explain how evidence becomes formative through interpretation and action." },
+    { "id": "LO3", "statement": "Use criteria, exemplars, peers, and self-assessment inside one design loop." }
+  ]
+}

@@ -1,0 +1,135 @@
+{
+  "title": "Formative assessment: from evidence to action",
+  "page_synthesis": {
+    "overview": "Formative assessment is less about choosing a particular kind of assessment and more about what happens to evidence of learning. This resource explores how evidence can make learning visible, how feedback becomes useful through action, and how students can develop their own capacity to recognise quality.",
+    "learning_purpose": "Develop a practical conceptual model for thinking about formative assessment in university teaching: connect intended learning with useful evidence, informed judgement and realistic next steps for lecturers and learners.",
+    "knowledge_summary": "Formative assessment works as a feedback loop. Intended learning helps determine what evidence is worth eliciting. Evidence of current understanding or performance is interpreted in relation to that intended direction, and the resulting judgement informs what happens next. Feedback therefore becomes formative through interpretation and use, rather than simply through the provision of comments. Criteria, exemplars, peer judgement and self-assessment can help students develop a more usable understanding of quality and greater evaluative independence. Formative support can also operate at different scales through individual, peer, self, cohort-level or appropriate automated feedback. Across these approaches, the central design question remains the same: what useful action can follow from the evidence?"
+  },
+  "visual_affordance_schema_version": "38.4",
+  "activities_visual_review": [],
+  "visual_affordances": [
+    {
+      "affordance_id": "va-S2-evidence-action-01",
+      "scope": "section",
+      "section_id": "S2",
+      "rationale": "The relationship between intended learning, evidence, interpretation and subsequent action is the central mental model for the resource. A compact process representation makes these relationships and their recurrence easier to inspect than prose alone.",
+      "subject": "Evidence-to-action formative assessment loop",
+      "context": "Visualise the four-part relationship established in the commissioned S2 conceptual diagram: intended learning shapes useful evidence, evidence is interpreted, interpretation informs action, and action can generate further evidence.",
+      "evidence_anchors": [
+        "S2.knowledge_focus",
+        "S2.synthesis"
+      ],
+      "visual_decision": "generate",
+      "visual_slot": "section-after-content",
+      "tier": "essential",
+      "purpose": "mechanism",
+      "preferred_representation": "process",
+      "reasoning_supported": "Learners see why collecting evidence alone is insufficient and how evidence becomes formative through interpretation and subsequent action.",
+      "learner_stage": "post_reasoning",
+      "anti_spoiler": false,
+      "representation_avoid": [
+        "generic_infographic",
+        "topic_hero_image",
+        "linear_timeline"
+      ],
+      "canonical_discipline_note": "Represent formative assessment as a recurring relationship among the four warranted elements, not as a mandatory fixed teaching procedure.",
+      "requires_exact_data_match": false,
+      "must_show": [
+        "intended learning",
+        "evidence",
+        "interpretation",
+        "action",
+        "a return relationship showing that action can generate further evidence"
+      ],
+      "must_not_show": [
+        "additional assessment stages not present upstream",
+        "a rigid numbered procedure",
+        "interactive learner tasks"
+      ],
+      "allowed_claims": [
+        "Intended learning informs what evidence is worth eliciting.",
+        "Evidence must be interpreted rather than simply collected.",
+        "Interpretation can inform subsequent learning or teaching action.",
+        "Subsequent action can generate further evidence."
+      ],
+      "disallowed_claims": [
+        "Every formative assessment must follow an identical sequence.",
+        "Evidence automatically improves learning.",
+        "The process requires individual lecturer feedback."
+      ],
+      "source_basis": "S2 knowledge focus, synthesis and commissioned conceptual diagram MC-S2-01.",
+      "caption_intent": "Show how intended learning, evidence, interpretation and action form a recurring formative process.",
+      "alt_text": "A feedback-loop diagram connects intended learning, evidence, interpretation and action, with action leading back to further evidence.",
+      "detailed_description": "Four labelled elements form a compact process. Intended learning leads to evidence, showing that learning intentions shape what evidence is useful. Evidence leads to interpretation, and interpretation leads to action. A return arrow from action to evidence indicates that subsequent learning or teaching action can produce further evidence and continue the formative process.",
+      "discipline_risk_level": "low"
+    },
+    {
+      "affordance_id": "va-S6-synthesis-01",
+      "scope": "section",
+      "section_id": "S6",
+      "rationale": "The final section deliberately returns to the earlier evidence-to-action model with a richer account of judgement and possible actors. Reusing the same visual structure supports synthesis without introducing a competing framework.",
+      "subject": "Integrated formative assessment design loop",
+      "context": "Refine the earlier four-part model to connect intended learning, useful evidence, interpretation and judgement, and feasible action. Indicate that lecturers, learners or peers may contribute to judgement and action without turning them into additional stages.",
+      "evidence_anchors": [
+        "S1.synthesis",
+        "S2.synthesis",
+        "S3.synthesis",
+        "S4.synthesis",
+        "S5.synthesis",
+        "S6.synthesis"
+      ],
+      "visual_decision": "generate",
+      "visual_slot": "section-after-content",
+      "tier": "essential",
+      "purpose": "synthesis",
+      "preferred_representation": "process",
+      "reasoning_supported": "Learners integrate the resource's distinctions into one reusable mental model linking goals, evidence, judgement and feasible action.",
+      "learner_stage": "post_reasoning",
+      "anti_spoiler": false,
+      "representation_avoid": [
+        "generic_infographic",
+        "topic_hero_image",
+        "hierarchical_org_chart"
+      ],
+      "canonical_discipline_note": "Maintain conceptual continuity with the S2 representation. Lecturer, learner and peer roles are possible contributors to judgement and action, not additional mandatory process stages.",
+      "requires_exact_data_match": false,
+      "must_show": [
+        "intended learning",
+        "useful evidence",
+        "interpretation and judgement",
+        "feasible action",
+        "recurrence from action towards further evidence",
+        "lecturer, learner and peer as secondary possible contributors"
+      ],
+      "must_not_show": [
+        "a new framework unrelated to the S2 model",
+        "individual feedback as the only formative mechanism",
+        "unsupported claims that peer, self and automated feedback are interchangeable",
+        "interactive worksheets or evidence chores"
+      ],
+      "allowed_claims": [
+        "Formative assessment connects intended learning, useful evidence, informed judgement and feasible subsequent action.",
+        "Lecturers, learners or peers may contribute to interpretation, judgement or action.",
+        "Different formative practices can share the same evidence-to-action logic.",
+        "Formative support need not depend exclusively on individual lecturer comments."
+      ],
+      "disallowed_claims": [
+        "One source of feedback is universally preferable.",
+        "Cohort-level feedback always replaces individual feedback.",
+        "The model guarantees learning improvement.",
+        "Every element must be implemented as a separate assessment event."
+      ],
+      "source_basis": "S1-S6 synthesis relationships and commissioned synthesis diagram MC-S6-01.",
+      "caption_intent": "Consolidate the resource into a single recurring relationship between intended learning, useful evidence, judgement and feasible action.",
+      "alt_text": "A formative assessment loop links intended learning, useful evidence, interpretation and judgement, and feasible action, with lecturers, learners and peers shown as possible contributors.",
+      "detailed_description": "A refined version of the earlier feedback-loop diagram contains four main elements. Intended learning connects to useful evidence; useful evidence connects to interpretation and judgement; interpretation and judgement connect to feasible action; and feasible action returns towards further evidence. Lecturer, learner and peer labels sit alongside interpretation and action as possible contributors rather than additional stages.",
+      "discipline_risk_level": "low"
+    }
+  ],
+  "assembly_state": {
+    "current_stage": "design_page",
+    "enriched_by": [
+      "design_page"
+    ]
+  }
+}

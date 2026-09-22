@@ -368,6 +368,7 @@ test("S7 §1: the registry declares the always-on parameters plus capability-gat
     "assessment_item_count",
     "audience",
     "duration_minutes",
+    "expository_scope",
     "goal",
     "topic"
   ]);
@@ -979,6 +980,7 @@ test("S7 §16: a further text parameter projects with no prompt-builder edits", 
     "assessment_item_count",
     "audience",
     "duration_minutes",
+    "expository_scope",
     "goal",
     "topic"
   ]);

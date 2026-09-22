@@ -1,0 +1,157 @@
+{
+  "artifact_type": "expository_materials",
+  "schema_version": "1.0.0",
+  "materials": [
+    {
+      "material_id": "mat-S2-loop",
+      "commission_id": "MC-S2-01",
+      "section_id": "S2",
+      "kind": "conceptual_diagram",
+      "body": {
+        "title": "Evidence-to-action formative loop",
+        "elements": [
+          {
+            "id": "intended_learning",
+            "label": "Intended learning",
+            "supporting_text": "Shapes what evidence is worth eliciting."
+          },
+          {
+            "id": "evidence",
+            "label": "Evidence",
+            "supporting_text": "Current understanding or performance."
+          },
+          {
+            "id": "interpretation",
+            "label": "Interpretation",
+            "supporting_text": "Judgement against intended learning."
+          },
+          {
+            "id": "action",
+            "label": "Action",
+            "supporting_text": "Feasible next step that may generate further evidence."
+          }
+        ],
+        "relationships": [
+          {
+            "from": "intended_learning",
+            "to": "evidence",
+            "meaning": "Intended learning informs useful evidence."
+          },
+          {
+            "from": "evidence",
+            "to": "interpretation",
+            "meaning": "Evidence is interpreted, not merely collected."
+          },
+          {
+            "from": "interpretation",
+            "to": "action",
+            "meaning": "Interpretation informs subsequent action."
+          },
+          {
+            "from": "action",
+            "to": "evidence",
+            "meaning": "Action can generate further evidence."
+          }
+        ],
+        "compact_rendering": true,
+        "caption": "Intended learning, evidence, interpretation and action form a recurring formative loop."
+      },
+      "formal_notes": "AUTHOR-ONLY S2: Represent as a recurring relationship; do not invent extra stages."
+    },
+    {
+      "material_id": "mat-S5-worked",
+      "commission_id": "MC-S5-01",
+      "section_id": "S5",
+      "kind": "compact_worked_example",
+      "body": {
+        "title": "Peer judgement inside the same loop",
+        "scenario": "In a seminar module, students exchange draft abstracts. The lecturer wants peers to contribute judgement without inventing a separate assessment stage.",
+        "stages": [
+          {
+            "label": "Intended learning",
+            "description": "Abstracts should make a clear claim and situate it for a disciplinary reader."
+          },
+          {
+            "label": "Evidence",
+            "description": "Each student reads a peer draft against two criteria and one short exemplar excerpt."
+          },
+          {
+            "label": "Interpretation",
+            "description": "The peer names the strongest claim and one quality gap relative to the exemplar."
+          },
+          {
+            "label": "Action",
+            "description": "The author revises one sentence to close that gap before tutor feedback."
+          }
+        ],
+        "synthesis": "Peer and self contributors enrich judgement and action inside the original four-part loop; they do not add mandatory new stages."
+      },
+      "formal_notes": "AUTHOR-ONLY S5: Keep the example inside the evidence-to-action loop; do not invent worksheets."
+    },
+    {
+      "material_id": "mat-S6-synthesis",
+      "commission_id": "MC-S6-01",
+      "section_id": "S6",
+      "kind": "synthesis_diagram",
+      "body": {
+        "title": "Integrated formative design loop",
+        "elements": [
+          {
+            "id": "intended_learning",
+            "label": "Intended learning",
+            "guiding_question": "What should learners become able to do?",
+            "supporting_text": "Keeps evidence purposive."
+          },
+          {
+            "id": "useful_evidence",
+            "label": "Useful evidence",
+            "guiding_question": "What will make current understanding visible?",
+            "supporting_text": "Evidence must be interpretable."
+          },
+          {
+            "id": "interpretation_judgement",
+            "label": "Interpretation and judgement",
+            "guiding_question": "What does the evidence mean against intention?",
+            "supporting_text": "May involve lecturer, peer, or self."
+          },
+          {
+            "id": "feasible_action",
+            "label": "Feasible action",
+            "guiding_question": "What useful action can follow?",
+            "supporting_text": "Action may regenerate evidence."
+          }
+        ],
+        "relationships": [
+          {
+            "from": "intended_learning",
+            "to": "useful_evidence",
+            "meaning": "Purpose shapes evidence."
+          },
+          {
+            "from": "useful_evidence",
+            "to": "interpretation_judgement",
+            "meaning": "Evidence requires interpretation."
+          },
+          {
+            "from": "interpretation_judgement",
+            "to": "feasible_action",
+            "meaning": "Judgement informs action."
+          },
+          {
+            "from": "feasible_action",
+            "to": "useful_evidence",
+            "meaning": "Action can yield further evidence."
+          }
+        ],
+        "possible_contributors": [
+          { "label": "Lecturer", "role": "May judge and act" },
+          { "label": "Peer", "role": "May contribute judgement" },
+          { "label": "Learner", "role": "May self-assess and revise" }
+        ],
+        "compact_rendering": true,
+        "caption": "The S2 loop returns with richer judgement roles; contributors are not extra stages."
+      },
+      "formal_notes": "AUTHOR-ONLY S6: Preserve continuity with S2; no competing framework."
+    }
+  ]
+}

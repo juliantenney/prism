@@ -98,6 +98,8 @@ test("XD keeps a single explanation_intent and does not default commission kind"
 
         explanatory_treatment: "legacy alias field",
 
+        exposition: "Learner-facing explanation of the opening move.",
+
         materials_commission: [{ commission_id: "c1", intent: "a worked case" }]
 
       }
@@ -108,10 +110,31 @@ test("XD keeps a single explanation_intent and does not default commission kind"
 
   assert.equal(xd.sections[0].explanation_intent, "legacy alias field");
 
+  assert.equal(xd.sections[0].exposition, "Learner-facing explanation of the opening move.");
+
   assert.equal(xd.sections[0].explanatory_treatment, undefined);
 
   assert.equal(xd.sections[0].materials_commission[0].kind, "");
 
+});
+
+test("XD does not silently promote explanation_intent into exposition", () => {
+  const xd = contracts.normalizeExpositoryDevelopment({
+    sections: [
+      {
+        section_id: "s1",
+        explanation_intent: "Open by contrasting purpose with instruments."
+      }
+    ]
+  });
+  assert.equal(xd.sections[0].explanation_intent, "Open by contrasting purpose with instruments.");
+  assert.equal(xd.sections[0].exposition, "");
+  const check = contracts.validateExpositoryArtefactShape(xd, "expository_development");
+  assert.equal(check.ok, false);
+  assert.ok(
+    check.errors.some((e) => /exposition required/i.test(String(e))),
+    check.errors.join(" | ")
+  );
 });
 
 
@@ -296,6 +319,8 @@ test("Expository assembly merges EJP→XD→XM into section-primary page without
 
         explanation_intent: "open the enquiry",
 
+        exposition: "Learners meet the enquiry as a live question about energy flow.",
+
         materials_commission: [
 
           { commission_id: "c1", section_id: "s1", kind: "diagram", intent: "energy flow" }
@@ -309,6 +334,8 @@ test("Expository assembly merges EJP→XD→XM into section-primary page without
         section_id: "s2",
 
         explanation_intent: "build mechanism",
+
+        exposition: "The mechanism is traced through successive electron transfers.",
 
         materials_commission: [
 
@@ -373,6 +400,11 @@ test("Expository assembly merges EJP→XD→XM into section-primary page without
   assert.equal(result.page.sections[0].section_id, "s1");
 
   assert.equal(result.page.sections[0].explanation_intent, "open the enquiry");
+
+  assert.equal(
+    result.page.sections[0].exposition,
+    "Learners meet the enquiry as a live question about energy flow."
+  );
 
   assert.equal(result.page.sections[0].materials.length, 1);
 

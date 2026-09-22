@@ -1,14 +1,14 @@
 # Sprint 86 — Validation set (case selection)
 
-**Status:** Cases **selected** (S86-T-005) — **not generated**  
-**Instrument:** [EXPOSITORY-QA-v0.1.md](EXPOSITORY-QA-v0.1.md) (freeze criteria during later evaluation)  
+**Status:** C01 captured · **C02 generated & QA-evaluated** · C03–C05 selected pending generation  
+**Instrument:** [EXPOSITORY-QA-v0.1.md](EXPOSITORY-QA-v0.1.md) (**frozen** during T-006 validation runs)  
 **Baseline:** [evidence/case-01-bayes/CASE-01-RECORD.md](evidence/case-01-bayes/CASE-01-RECORD.md)
 
 **Set size:** 5 total (Bayes + 4). Sufficient contrast without category-filling.
 
 **Selection principle:** Prefer cases that could **break or qualify** draft principles / QA dimensions — not topics PRISM is expected to handle easily.
 
-**Do not begin S86-T-006 in this task.**
+**S86-T-006:** **IN PROGRESS** — C02 complete; do not mark complete until C03–C05 evaluated.
 
 ---
 
@@ -26,13 +26,14 @@
 
 | Field | Value |
 | ----- | ----- |
-| Status | **Selected — not generated** |
+| Status | **Generated · QA v0.1 evaluated** — [evidence/case2/](evidence/case2/) · `Case2.zip` immutable |
 | Topic / prompt | Explain how to design a semi-structured interview protocol for small-scale educational research: purpose of an interview guide, question types, sequencing, probing, and common pitfalls — without turning the resource into a checklist worksheet. |
 | Audience | Early-career academic staff and postgraduate researchers new to qualitative interviewing |
 | Approximate extent | about a 15-minute read |
 | Why selected | Procedural / technical craft; should work with **little or no graphical material** |
 | Challenges | **P5/P6** and **D5/D6** under low-visual conditions; whether “representation purpose” wrongly pressures graphics; procedural pacing vs Bayes-style conceptual arc; **P1** may not want a dramatic problem hook |
 | Expected representational needs | Possibly none essential; optional simple sequencing schematic only if it earns its place — do not prescribe |
+| Actual (post-generation) | ~2,759 words; **4 figures** despite low-visual intent; see [evidence/case2/QA-FINDINGS.md](evidence/case2/QA-FINDINGS.md) |
 
 ---
 
@@ -92,6 +93,9 @@
 
 ---
 
-## Next (not this task)
+## Next (T-006 in progress)
 
-S86-T-006 — when authorised, generate C02–C05 with PRISM Expository and evaluate using **frozen** QA v0.1, recording instrument misfits without silently rewriting criteria.
+- **C02** evaluated under frozen QA v0.1 — [evidence/case2/QA-FINDINGS.md](evidence/case2/QA-FINDINGS.md)  
+- **C03–C05** still to generate/evaluate when authorised  
+- Do **not** revise QA v0.1 mid-pass; record instrument observations only  
+- T-007 synthesis awaits remaining cases

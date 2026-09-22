@@ -23,8 +23,8 @@
 
 | Item | Path |
 | ---- | ---- |
-| Preserved ZIP (authoritative, immutable) | [`../../Bayes.zip`](../../Bayes.zip) relative to this folder = pack root `Bayes.zip` |
-| Absolute pack path | `docs/development/sprints/2026-09-22-sprint-86-expository-editorial-quality-and-qa/Bayes.zip` |
+| Evidence directory | `docs/development/sprints/2026-09-22-sprint-86-expository-editorial-quality-and-qa/evidence/case-01-bayes/` |
+| Preserved ZIP (authoritative, immutable) | [`Bayes.zip`](Bayes.zip) (same folder) |
 | Learner HTML inside ZIP | `learner-page.html` |
 | Assets | `assets/` (4 PNGs) · `lib/mathjax/` (offline MathJax) |
 

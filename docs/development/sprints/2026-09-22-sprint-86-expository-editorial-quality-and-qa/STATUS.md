@@ -1,7 +1,7 @@
 # Sprint 86 — Status
 
 **Last updated:** 2026-09-22  
-**Sprint status:** **OPEN** — WP1/WP2/WP3 initial investigation in progress  
+**Sprint status:** **OPEN** — S86-T-006 in progress (Case 02 evaluated)  
 **Opening decision:** [S86-D01](decisions.md#s86-d01--open-sprint-86--expository-editorial-quality--qa)  
 **Start here:** [SPRINT-86-START-HERE.md](SPRINT-86-START-HERE.md)
 
@@ -12,34 +12,28 @@
 | Field | Value |
 | ----- | ----- |
 | Type | Investigation / Design |
-| S86-T-001…T-005 | **COMPLETE** (docs/evidence only) |
-| S86-T-006 | **NOT STARTED** — do not generate cases yet |
+| S86-T-001…T-005 | **COMPLETE** |
+| S86-T-006 | **IN PROGRESS** — C02 done; C03–C05 pending |
 | WP1 | **IN PROGRESS** — working findings; model not accepted |
-| WP2 | **IN PROGRESS** — QA v0.1 drafted; not final |
-| WP3 | **IN PROGRESS** — case 01 captured; C02–C05 selected only |
+| WP2 | **IN PROGRESS** — QA v0.1 frozen for validation runs |
+| WP3 | **IN PROGRESS** — C01 + C02 evidence; C03–C05 pending |
 | WP4–WP5 | **NOT STARTED** |
-| Production implementation | **Not authorised** |
-| Interactive prompts modified? | **No** |
+| QA v0.1 modified this pass? | **No** |
+| Production implementation | **Not authorised / none** |
 | Commit | **Not made** |
 
 ---
 
-## Key artefacts this pass
+## Key artefacts
 
 | Artefact | Path |
 | -------- | ---- |
-| Case 01 record | [evidence/case-01-bayes/CASE-01-RECORD.md](evidence/case-01-bayes/CASE-01-RECORD.md) |
-| Case 01 editorial findings | [evidence/case-01-bayes/EDITORIAL-FINDINGS.md](evidence/case-01-bayes/EDITORIAL-FINDINGS.md) |
-| WP1 findings | [WP1-FINDINGS.md](WP1-FINDINGS.md) |
-| Expository QA v0.1 | [EXPOSITORY-QA-v0.1.md](EXPOSITORY-QA-v0.1.md) |
+| Case 01 | [evidence/case-01-bayes/](evidence/case-01-bayes/) |
+| Case 02 record | [evidence/case2/CASE-02-RECORD.md](evidence/case2/CASE-02-RECORD.md) |
+| Case 02 QA findings | [evidence/case2/QA-FINDINGS.md](evidence/case2/QA-FINDINGS.md) |
+| Case 02 ZIP (immutable) | [evidence/case2/Case2.zip](evidence/case2/Case2.zip) |
+| QA v0.1 (frozen) | [EXPOSITORY-QA-v0.1.md](EXPOSITORY-QA-v0.1.md) |
 | Validation set | [VALIDATION-SET.md](VALIDATION-SET.md) |
-| Baseline ZIP | [Bayes.zip](Bayes.zip) (immutable) |
-
----
-
-## Predecessor closure distinction (unchanged)
-
-> S85 establishes functional first-class Expository capability. It does not claim that the learner-facing presentation is polished or final.
 
 ---
 

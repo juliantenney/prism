@@ -1,9 +1,8 @@
 # Sprint 86 — Handover
 
-**Kind:** WP1/WP2/WP3 initial investigation complete through T-005  
+**Kind:** S86-T-006 in progress — Case 02 evaluated under frozen QA v0.1  
 **Sprint status:** **OPEN**  
-**Dashboard:** [STATUS.md](STATUS.md)  
-**Opening:** [S86-D01](decisions.md#s86-d01--open-sprint-86--expository-editorial-quality--qa)
+**Dashboard:** [STATUS.md](STATUS.md)
 
 ---
 
@@ -11,22 +10,23 @@
 
 | Item | State |
 | ---- | ----- |
-| Case 01 Bayes | **Captured** — [evidence/case-01-bayes/](evidence/case-01-bayes/) · ZIP immutable |
-| P1–P11 vs case 01 | **Assessed provisionally** — [WP1-FINDINGS.md](WP1-FINDINGS.md) |
-| Two-layer distinction | **Articulated with Bayes evidence** — not final terminology lock |
-| Expository QA | **v0.1 pre-validation** — [EXPOSITORY-QA-v0.1.md](EXPOSITORY-QA-v0.1.md) |
-| Validation set | **C02–C05 selected** — not generated — [VALIDATION-SET.md](VALIDATION-SET.md) |
-| Structured-material fallback | **Confirmed ×7** in export — debt S86-AD-010 |
+| Case 01 | Captured |
+| Case 02 | Generated + QA v0.1 evaluated — [evidence/case2/QA-FINDINGS.md](evidence/case2/QA-FINDINGS.md) |
+| Case2.zip | **Unmodified** |
+| QA v0.1 | **Frozen / unmodified** this pass |
+| S86-AD-010 | Cross-case evidence (C01 ×7, C02 ×4) |
+| C03–C05 | **Pending** |
+| T-006 | **IN PROGRESS** (not complete) |
 | Production changes | **None** |
 
 ---
 
 ## B. Next action
 
-Authorise **S86-T-006** when ready: generate C02–C05 with PRISM Expository and evaluate using **frozen** QA v0.1. Do not revise v0.1 mid-pass. Do not implement editorial fixes. Do not fix S86-AD-010 in the generation pass unless separately authorised.
+Authorise Case 03 generation/evaluation when ready. Keep QA v0.1 frozen. Do not start T-007 synthesis until remaining validation cases are evaluated. Do not fix S86-AD-010 unless separately authorised.
 
 ---
 
-## C. Authoritative inputs
+## C. Case 02 headline (not a substitute for the findings doc)
 
-S85 closure · S84 design · S83-D04 · PB-FA-012 · Charter · [WP1-FINDINGS.md](WP1-FINDINGS.md) · QA v0.1 · Validation set
+Instructional architecture **STRONG**; editorial architecture **CONCERN**. Four figures despite low-visual selection intent; Fig 2 strongest warrant; integration often adjacent. Structured-material fallback ×4.

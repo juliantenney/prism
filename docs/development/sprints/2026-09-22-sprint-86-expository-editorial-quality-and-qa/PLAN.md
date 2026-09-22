@@ -30,7 +30,7 @@ Draft editorial principles         HYPOTHESES TO TEST — not production rules
 | -- | ----- | -------------- | ------ |
 | **WP1** | Editorial quality model | Draft principles tested/revised; general vs context-dependent distinguished; mediocrity-despite-correctness explained | **IN PROGRESS** — case-01 working findings; not accepted |
 | **WP2** | Expository QA framework | Repeatable qualitative process; dimensions; judgement conventions; anti–false-precision guidance | **IN PROGRESS** — [EXPOSITORY-QA-v0.1.md](EXPOSITORY-QA-v0.1.md) pre-validation |
-| **WP3** | Diverse QA evidence set | Bayes + ~3–5 contrasting PRISM-generated resources; model hold/fail/change findings | **IN PROGRESS** — case 01 captured; C02–C05 selected; generation not started |
+| **WP3** | Diverse QA evidence set | Bayes + ~3–5 contrasting PRISM-generated resources; model hold/fail/change findings | **IN PROGRESS** — C01 captured; **C02 evaluated**; C03–C05 pending |
 | **WP4** | Pipeline responsibility + XD/XM seam | Responsibility map across EJP/XD/XM/DP/assembly/renderer; XD→XM integration finding | **NOT STARTED** |
 | **WP5** | Typography requirements + successor design | Editorial rendering requirements (not CSS); bounded implementation recommendation | **NOT STARTED** |
 
@@ -45,7 +45,7 @@ Draft editorial principles         HYPOTHESES TO TEST — not production rules
 | S86-T-003 | Articulate instructional vs editorial architecture distinction with evidence | WP1 | **COMPLETE** (provisional) |
 | S86-T-004 | Draft Expository QA process (dimensions, judgement scheme, evidence expectations) | WP2 | **COMPLETE** (v0.1 pre-validation) |
 | S86-T-005 | Select deliberately contrasting resource cases (~4–6 total including Bayes) | WP3 | **COMPLETE** (selection only) |
-| S86-T-006 | When authorised: generate/evaluate additional PRISM Expository samples | WP3 | **PENDING** — do not start yet |
+| S86-T-006 | When authorised: generate/evaluate additional PRISM Expository samples | WP3 | **IN PROGRESS** — C02 evaluated; C03–C05 pending |
 | S86-T-007 | Synthesize model hold / fail / qualify findings across sample | WP1/WP3 | **PENDING** |
 | S86-T-008 | Map editorial responsibilities onto existing EJP/XD/XM/DP/assembly/renderer | WP4 | **PENDING** |
 | S86-T-009 | Investigate XD→XM prose/representation integration seam (smallest coherent option) | WP4 | **PENDING** |

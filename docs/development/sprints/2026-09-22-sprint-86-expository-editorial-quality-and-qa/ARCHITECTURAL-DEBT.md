@@ -41,8 +41,9 @@ Debt / observations relevant to Sprint 86 scope. **Investigation/design only.**
 
 | ID | Finding | Notes |
 | -- | ------- | ----- |
-| **S86-AD-010** | Learner-facing fallback: “Structured material body is not supported for learner rendering.” (**×7** in preserved Bayes export) | **Functional/rendering defect** discovered via QA — **not** an editorial-quality finding. Do **not** fix in T-001…T-005. Do not let it dominate editorial assessment. Bounded handling later. |
-| S86-AD-011 | P2/P8 and P5/P6 overlap candidates; missing “forward momentum / section joints” candidate | Working model notes in [WP1-FINDINGS.md](WP1-FINDINGS.md) — await cross-case challenge |
+| **S86-AD-010** | Learner-facing fallback: “Structured material body is not supported for learner rendering.” | **Functional/rendering defect.** Cross-case evidence: Case 01 **×7**; Case 02 **×4** (S1/S3/S4/S7). Do **not** fix in T-006 evaluation passes. Outside D1–D15. |
+| S86-AD-011 | P2/P8 and P5/P6 overlap candidates; missing “forward momentum / section joints” candidate | Working model notes in [WP1-FINDINGS.md](WP1-FINDINGS.md) — await further cases / T-007 |
+| S86-AD-012 | Representation over-generation on low-visual procedural brief (Case 02: 4 figures; Fig 4 weakly warranted) | Cross-check on C05; instrument observation: warrant vs purpose vs integration (do not edit QA v0.1 mid-pass) |
 
 ## Explicitly out of sprint (at open / this pass)
 

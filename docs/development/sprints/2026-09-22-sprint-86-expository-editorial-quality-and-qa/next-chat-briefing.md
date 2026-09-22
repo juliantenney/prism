@@ -1,20 +1,21 @@
 # Sprint 86 — Next-chat briefing
 
-**Sprint status:** **OPEN** — T-001…T-005 complete; stop before T-006
+**Sprint status:** **OPEN** — T-006 in progress (C02 evaluated; C03–C05 pending)
 
 ## One-liner
 
-Bayes case 01 captured; P1–P11 provisionally tested; instructional vs editorial layers evidenced; Expository QA v0.1 frozen for later cases; C02–C05 selected but **not** generated.
+Case 02 interview-protocol resource evaluated under **frozen** QA v0.1: instructional **STRONG**, editorial **CONCERN**. Do not start Case 03 until authorised.
 
-## Verified
+## Case 02 headlines
 
-- `Bayes.zip` inspected; immutable
-- Structured-material fallback ×7 → S86-AD-010 (functional, not editorial)
-- No production code/prompt/contract/renderer/CSS changes
+- 7 sections; ~2,759 words; 4 figures despite low-visual intent  
+- Structured-material fallback ×4 → S86-AD-010 cross-case  
+- QA v0.1 and Case2.zip unmodified  
 
 ## Do not
 
-- Start S86-T-006 without authorisation  
-- Implement editorial or AD-010 fixes  
-- Silently revise QA v0.1 while scoring later cases  
+- Generate/evaluate Case 03 without authorisation  
+- Revise QA v0.1 mid-validation  
+- Fix AD-010 or implement editorial changes  
+- Mark T-006 complete  
 - Commit without operator instruction  

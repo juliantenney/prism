@@ -1,20 +1,20 @@
 # Next sprint — active programme
 
-**Status:** **Sprint 86 OPEN** — Expository Editorial Quality & QA (2026-09-22). Sprint 85 **COMPLETE / CLOSED**. Sprint 84 **CLOSED**. Sprint 83 **CLOSED**. Sprint 82 **CLOSED**. Alpha development **complete**.  
+**Status:** **Sprint 86 COMPLETE / CLOSED** (2026-09-22). No successor implementation sprint opened yet. Sprint 85 **COMPLETE / CLOSED**. Sprint 84 **CLOSED**. Sprint 83 **CLOSED**. Sprint 82 **CLOSED**. Alpha development **complete**.  
 **Updated:** 2026-09-22
 
 ---
 
 ## Current programme
 
-**Active sprint:** [Sprint 86 — Expository Editorial Quality & QA](../development/sprints/2026-09-22-sprint-86-expository-editorial-quality-and-qa/SPRINT-86-START-HERE.md) — **OPEN**
+**Last closed sprint:** [Sprint 86 — Expository Editorial Quality & QA](../development/sprints/2026-09-22-sprint-86-expository-editorial-quality-and-qa/T-012-SPRINT-86-CLOSURE.md) — **COMPLETE / CLOSED**
 
-**Type:** Investigation / Design — **not** implementation  
-**Opening decision:** [S86-D01](../development/sprints/2026-09-22-sprint-86-expository-editorial-quality-and-qa/decisions.md#s86-d01--open-sprint-86--expository-editorial-quality--qa)  
+**Type:** Investigation / Design — **no production implementation in S86**  
+**Close decision:** [S86-D02](../development/sprints/2026-09-22-sprint-86-expository-editorial-quality-and-qa/decisions.md#s86-d02--close-sprint-86--expository-editorial-quality--qa)  
 **Backlog:** [PB-FA-012](../backlog/PRODUCT-BACKLOG.md#pb-fa-012--expository-editorial-quality--qa)  
-**Predecessor:** [Sprint 85 COMPLETE / CLOSED](../development/sprints/2026-09-21-sprint-85-expository-resource-implementation/SPRINT-85-CLOSURE.md)
+**Closeout pointer:** [sprint-86-closeout.md](sprint-86-closeout.md)
 
-**Last closed sprint:** Sprint 85 — Expository Resource Implementation — **COMPLETE / CLOSED**
+**Active implementation sprint:** **None** — successor Expository editorial implementation sprint **not yet opened**.
 
 ### Alpha milestone (still authoritative)
 
@@ -26,36 +26,38 @@
 
 | Item | State |
 | ---- | ----- |
-| First-class gate | `npm run test:first-class` → **339/339** |
-| Focused S85 gate at close | **78/78** |
-| Sprint 82–85 | **CLOSED** (S85 functional Expository delivered; polish not claimed) |
-| Sprint 86 | **OPEN** — investigation/design only |
-| Production editorial implementation | **Not authorised** |
+| First-class gate | `npm run test:first-class` → **339/339** (at S85 close) |
+| Sprint 82–86 | **CLOSED** |
+| Production Expository | **S85 functional** — S86 polish **not** shipped |
 | Interactive prompt family | **Protected baseline** (S83-D04) |
-| Draft editorial principles | **Hypotheses to test** — not production rules |
+| T-011 first slice | **Designed — not implemented** |
+| QA v0.2 | **Handoff** — draft before coding in successor sprint |
 
 ---
 
-## Sprint 86 posture
+## Sprint 86 closure distinction
 
-Investigate and design Expository **editorial** quality and QA — the layer beyond functional instructional architecture — using Bayes as case 1 and a small diverse generated sample to test draft principles.
+> S86 establishes the Expository editorial quality model, validation evidence, pipeline/seam/typography designs, and a bounded first successor implementation slice. It does **not** implement that slice.
 
-**Authoritative inputs:** [SPRINT-86-CHARTER.md](../development/sprints/2026-09-22-sprint-86-expository-editorial-quality-and-qa/SPRINT-86-CHARTER.md) · [DRAFT-EDITORIAL-PRINCIPLES.md](../development/sprints/2026-09-22-sprint-86-expository-editorial-quality-and-qa/DRAFT-EDITORIAL-PRINCIPLES.md) · [SPRINT-85-CLOSURE.md](../development/sprints/2026-09-21-sprint-85-expository-resource-implementation/SPRINT-85-CLOSURE.md) · [S84 design](../development/sprints/2026-09-21-sprint-84-expository-resource-planning/S84-EXPOSITORY-RESOURCE-DESIGN.md) · [S83-D04](../development/sprints/2026-09-21-sprint-83-expository-resource-investigation/decisions.md#s83-d04--planning-handoff--sibling-prompt-family--protected-baseline)
+---
 
-**Immediate next:** execute investigation/design WPs in [PLAN.md](../development/sprints/2026-09-22-sprint-86-expository-editorial-quality-and-qa/PLAN.md). Do **not** implement editorial changes; do **not** reopen S85.
+## When authorised — successor starting point
+
+1. Open successor **implementation** sprint (not created here).  
+2. Draft **QA v0.2** before coding.  
+3. Implement T-011 first slice (EQ1, chapter open/close, AD-010, typography CSS, DP sections safety).  
+4. Tests + Interactive baseline + live pressure cases.  
+5. Later: Option B / H3s only from live evidence.
+
+Canonical design: [T-011-SUCCESSOR-IMPLEMENTATION-DESIGN.md](../development/sprints/2026-09-22-sprint-86-expository-editorial-quality-and-qa/T-011-SUCCESSOR-IMPLEMENTATION-DESIGN.md)
 
 Canonical planning authority remains [PRODUCT-BACKLOG.md](../backlog/PRODUCT-BACKLOG.md).
 
 ---
 
-## Sprint 85 closure distinction (unchanged)
-
-> S85 establishes functional first-class Expository capability. It does not claim that the learner-facing presentation is polished or final.
-
----
-
 ## Previous sprints
 
+- Sprint 86 — Expository Editorial Quality & QA — **CLOSED** ([closure](../development/sprints/2026-09-22-sprint-86-expository-editorial-quality-and-qa/T-012-SPRINT-86-CLOSURE.md) · [closeout](sprint-86-closeout.md))  
 - Sprint 85 — Expository Resource Implementation — **CLOSED** ([closure](../development/sprints/2026-09-21-sprint-85-expository-resource-implementation/SPRINT-85-CLOSURE.md) · [closeout](sprint-85-closeout.md))  
 - Sprint 84 — Expository Resource Planning — **CLOSED** ([closure](../development/sprints/2026-09-21-sprint-84-expository-resource-planning/SPRINT-84-CLOSURE.md) · [closeout](sprint-84-closeout.md))  
 - Sprint 83 — Expository Resource Investigation — **CLOSED** ([closure](../development/sprints/2026-09-21-sprint-83-expository-resource-investigation/SPRINT-83-CLOSURE.md) · [closeout](sprint-83-closeout.md))  

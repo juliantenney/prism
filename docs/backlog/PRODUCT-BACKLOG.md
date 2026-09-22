@@ -2,8 +2,8 @@
 
 **Canonical location:** `docs/backlog/PRODUCT-BACKLOG.md`  
 **Status:** Active — **alpha-use period** (Alpha development complete, 2026-09-02)  
-**Last updated:** 2026-09-22 (Sprint 86 opened)  
-**Active sprint:** [Sprint 86 — Expository Editorial Quality & QA](../development/sprints/2026-09-22-sprint-86-expository-editorial-quality-and-qa/SPRINT-86-START-HERE.md) — **OPEN** (investigation/design; not implementation)
+**Last updated:** 2026-09-22 (Sprint 86 closed)  
+**Active sprint:** **None** — [Sprint 86](../development/sprints/2026-09-22-sprint-86-expository-editorial-quality-and-qa/T-012-SPRINT-86-CLOSURE.md) **COMPLETE / CLOSED**; successor implementation sprint **not yet opened**
 
 This file answers: **what might we actually choose to work on next?**
 
@@ -49,9 +49,9 @@ Investigate and design the **editorial** quality layer for first-class Expositor
 
 **Explicit non-scope:** production implementation in the investigation sprint; fixed chapter templates; Interactive prompt edits; reopening S83–S85 architecture without compelling evidence; Research Synthesis resolution; Expository→Interactive; CAS/table-maths.
 
-**Sprint allocation:** **Sprint 86 OPEN** — [Expository Editorial Quality & QA](../development/sprints/2026-09-22-sprint-86-expository-editorial-quality-and-qa/SPRINT-86-START-HERE.md) ([S86-D01](../development/sprints/2026-09-22-sprint-86-expository-editorial-quality-and-qa/decisions.md#s86-d01--open-sprint-86--expository-editorial-quality--qa)).
+**Sprint allocation:** **Sprint 86 COMPLETE / CLOSED** — [closure](../development/sprints/2026-09-22-sprint-86-expository-editorial-quality-and-qa/T-012-SPRINT-86-CLOSURE.md) ([S86-D02](../development/sprints/2026-09-22-sprint-86-expository-editorial-quality-and-qa/decisions.md#s86-d02--close-sprint-86--expository-editorial-quality--qa)). Investigation/design outputs accepted (EQ1–EQ8, T-007–T-011, frozen C01–C05). **T-011 first slice designed — not implemented.** QA v0.2 carried to successor sprint.
 
-**Readiness:** Investigation/design authorised within Sprint 86; production editorial implementation **not** authorised by opening alone.
+**Readiness:** Successor **implementation** sprint not yet opened. When authorised: draft QA v0.2 before coding, then implement T-011 first slice.
 
 ### PB-FA-002 — Programming / code learning-resource support
 

@@ -1,12 +1,13 @@
 # Sprint 86 — Charter
 
 **Sprint:** 86 — Expository Editorial Quality & QA  
-**Status:** **OPEN** (opened 2026-09-22)  
+**Status:** **COMPLETE / CLOSED** (closed 2026-09-22)  
 **Type:** Investigation / Design — not implementation  
 **Predecessor:** Sprint 85 — COMPLETE / CLOSED ([SPRINT-85-CLOSURE.md](../2026-09-21-sprint-85-expository-resource-implementation/SPRINT-85-CLOSURE.md))  
 **Backlog item:** [PB-FA-012 — Expository Editorial Quality & QA](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-012--expository-editorial-quality--qa)  
 **Start here:** [SPRINT-86-START-HERE.md](SPRINT-86-START-HERE.md)  
-**Opening decision:** [S86-D01](decisions.md#s86-d01--open-sprint-86--expository-editorial-quality--qa)
+**Opening decision:** [S86-D01](decisions.md#s86-d01--open-sprint-86--expository-editorial-quality--qa)  
+**Close:** [S86-D02](decisions.md#s86-d02--close-sprint-86--expository-editorial-quality--qa) · [T-012-SPRINT-86-CLOSURE.md](T-012-SPRINT-86-CLOSURE.md)
 
 ---
 

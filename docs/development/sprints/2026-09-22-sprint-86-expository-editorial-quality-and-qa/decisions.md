@@ -1,8 +1,9 @@
 # Sprint 86 — Decision Log
 
-**Sprint status:** **OPEN** (opened 2026-09-22) — Investigation/design  
+**Sprint status:** **COMPLETE / CLOSED** (closed 2026-09-22) — Investigation/design  
 **Format:** ID · Decision · Status · Rationale · Consequences  
-**Predecessor:** [Sprint 85 COMPLETE / CLOSED](../2026-09-21-sprint-85-expository-resource-implementation/SPRINT-85-CLOSURE.md)
+**Predecessor:** [Sprint 85 COMPLETE / CLOSED](../2026-09-21-sprint-85-expository-resource-implementation/SPRINT-85-CLOSURE.md)  
+**Closure:** [T-012-SPRINT-86-CLOSURE.md](T-012-SPRINT-86-CLOSURE.md)
 
 ---
 
@@ -28,12 +29,32 @@
 
 ---
 
-## Pending decisions
+## S86-D02 — Close Sprint 86 — Expository Editorial Quality & QA
 
-| ID | Decision | Status |
-| -- | -------- | ------ |
-| — | Accept refined editorial quality model | **Pending** (after WP1/WP3 evidence) |
-| — | Accept Expository QA framework | **Pending** (WP2) |
-| — | Accept pipeline responsibility map + XD/XM finding | **Pending** (WP4) |
-| — | Accept typography requirements + successor implementation design | **Pending** (WP5) |
-| — | Authorise any later implementation sprint | **Not opened** |
+- **Decision:** Close Sprint 86 as **COMPLETE / CLOSED**. Accept EQ1–EQ8, the T-007–T-011 investigation/design outputs, frozen C01–C05 under QA v0.1, and the T-011 first successor implementation slice as the handoff for a **later** implementation sprint. Carry **QA v0.2** (WP2) into that successor sprint — to be drafted **before coding**. Do **not** implement the first slice in Sprint 86. Do **not** open Sprint 87 in this decision.
+
+- **Status:** **Accepted** (2026-09-22)
+
+- **Rationale:**
+  - Investigation/design charter objectives are met: quality model, diverse evidence, pipeline map, seam design, typography requirements, bounded successor design.
+  - WP2’s remaining v0.2 drafting is deliberately timed for successor-sprint acceptance instrumentation, not left as silent unfinished S86 work.
+  - Production implementation was never authorised by S86-D01; closing without code change preserves that boundary.
+
+- **Consequences:**
+  - Authoritative closure: [T-012-SPRINT-86-CLOSURE.md](T-012-SPRINT-86-CLOSURE.md).
+  - Programme pointer updates to Sprint 86 **CLOSED**; successor implementation sprint **not yet opened**.
+  - Interactive baseline remains protected.
+  - T-011 first slice remains the implementation target when a successor sprint is explicitly authorised.
+  - Option B (T-009) remains follow-on, not first slice.
+
+---
+
+## Closed acceptance notes
+
+| Item | Status at S86 close |
+| ---- | ------------------- |
+| Editorial quality model EQ1–EQ8 | **Accepted** for successor design (not yet production rules until implemented) |
+| Expository QA v0.1 | **Frozen** for C01–C05; **v0.2 handoff** |
+| Pipeline responsibility map + XD/XM finding | **Accepted** (T-008/T-009) |
+| Typography requirements + successor implementation design | **Accepted** (T-010/T-011) |
+| Authorise successor implementation sprint | **Not opened** in S86 |

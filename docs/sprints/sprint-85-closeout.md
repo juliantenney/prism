@@ -12,4 +12,4 @@ Canonical closeout: [../development/sprints/2026-09-21-sprint-85-expository-reso
 
 **Alpha:** development complete unchanged ([S82-D04](../development/sprints/2026-09-01-sprint-82-maths-entry-and-alpha-completion/decisions.md#s82-d04--alpha-development-complete)) — this sprint is a post-alpha product addition.
 
-**Successor:** [Sprint 86 — Expository Editorial Quality & QA](sprint-86-expository-editorial-quality-and-qa.md) — **OPEN** ([NEXT-SPRINT.md](NEXT-SPRINT.md)) — investigation/design of editorial quality; does not reopen Sprint 85.
+**Successor:** [Sprint 86 — Expository Editorial Quality & QA](sprint-86-expository-editorial-quality-and-qa.md) — **COMPLETE / CLOSED** ([sprint-86-closeout.md](sprint-86-closeout.md)) — investigation/design of editorial quality; did not reopen Sprint 85; T-011 first slice designed but not implemented.

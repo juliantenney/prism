@@ -1,6 +1,6 @@
 # Sprint 86 — Validation set (case selection)
 
-**Status:** C01 captured · **C02 generated & QA-evaluated** · C03–C05 selected pending generation  
+**Status:** C01–**C05** generated & QA-evaluated · **S86-T-006 COMPLETE**  
 **Instrument:** [EXPOSITORY-QA-v0.1.md](EXPOSITORY-QA-v0.1.md) (**frozen** during T-006 validation runs)  
 **Baseline:** [evidence/case-01-bayes/CASE-01-RECORD.md](evidence/case-01-bayes/CASE-01-RECORD.md)
 
@@ -8,7 +8,7 @@
 
 **Selection principle:** Prefer cases that could **break or qualify** draft principles / QA dimensions — not topics PRISM is expected to handle easily.
 
-**S86-T-006:** **IN PROGRESS** — C02 complete; do not mark complete until C03–C05 evaluated.
+**S86-T-006:** **COMPLETE** — C01–C05 evaluated. **S86-T-007** pending (do not start in Case 05 task).
 
 ---
 
@@ -41,13 +41,14 @@
 
 | Field | Value |
 | ----- | ----- |
-| Status | **Selected — not generated** |
+| Status | **Generated · QA v0.1 evaluated** — [evidence/case3/](evidence/case3/) · `case3.zip` immutable |
 | Topic / prompt | Explain how natural selection differs from Lamarckian inheritance as accounts of adaptive change. Develop the contrast between differential survival/reproduction of variation and the inheritance of acquired characteristics, using accessible organism examples. Clarify what each account does and does not claim. |
 | Audience | First-year undergraduate biology / life-sciences students |
 | Approximate extent | about a 20-minute read |
 | Why selected | Mechanism contrast where **representation is materially important** (process / comparison visuals likely earn their place) |
 | Challenges | **P5/P6** integration (not decorative evolution posters); **P7** selective emphasis at the decisive contrast; comparison structure without false symmetry |
 | Expected representational needs | Process/contrast diagrams likely valuable; avoid stock “tree of life” decoration |
+| Actual (post-generation) | Title *How Does Adaptive Change Happen?*; S1–S7; ~2,404 words; **4 causal/comparison figures** with strong warrant; see [evidence/case3/QA-FINDINGS.md](evidence/case3/QA-FINDINGS.md) |
 
 ---
 
@@ -55,13 +56,14 @@
 
 | Field | Value |
 | ----- | ----- |
-| Status | **Selected — not generated** |
+| Status | **Generated · QA v0.1 evaluated** — [evidence/case4/](evidence/case4/) · `case4.zip` immutable |
 | Topic / prompt | Explain why historians disagree about the causes of the First World War. Develop a small number of competing interpretive emphases (e.g. structural vs contingent; militarism, alliance systems, crisis decision-making) and show how the same broad evidence base can support different weightings. Do not deliver a single “correct cause list.” |
 | Audience | Second-year undergraduate history students |
 | Approximate extent | about a 20-minute read |
 | Why selected | Humanities / interpretive; **competing perspectives**; heavy **qualification**; source-/historiography-aware explanation |
 | Challenges | **P11/D10** closure without false resolution; **P7** emphasis without rhetorical overclaim; **P1** entry may be contested interpretation rather than a single problem/question; **D12** grounding/fidelity; resists Bayes-like unique worked-example spine |
 | Expected representational needs | Optional comparative map of interpretive emphases; graphics not mandatory — argumentative structure may carry the load |
+| Actual (post-generation) | Title *Why did the First World War begin?*; S1–S7 multi-level outbreak arc (~3,167 words); **3** causal-role figures (integrated model); historiographical-disagreement brief **not fulfilled** (A+B delivered; **C miss**); see [evidence/case4/QA-FINDINGS.md](evidence/case4/QA-FINDINGS.md) |
 
 ---
 
@@ -69,13 +71,14 @@
 
 | Field | Value |
 | ----- | ----- |
-| Status | **Selected — not generated** |
+| Status | **Generated · QA v0.1 evaluated** — [evidence/case5/](evidence/case5/) · `case5.zip` immutable |
 | Topic / prompt | Explain what it means for an argument to be deductively valid, and how that differs from an argument merely being persuasive or plausible in everyday discussion. Use short plain-language examples. Clarify that validity concerns form/support relation, not whether premises are true, and that everyday strength-of-reasons judgements are a different kind of appraisal. |
 | Audience | University staff and postgraduate students across disciplines with little or no formal logic training |
 | Approximate extent | about a 15-minute read |
 | Why selected | Abstract conceptual; **plausibly excellent with little/no graphics**; challenges the idea that Expository entries must open like Bayes (scenario/problem → machinery) |
 | Challenges | **P1/D9** — definitional contrast or carefully chosen mini-examples may beat a dramatic “problem”; **P5** pressure to invent unnecessary visuals; **P8** trust without condescension; register calibration (**D11**) |
 | Expected representational needs | Prose + short example arguments likely sufficient; avoid decorative logic symbols unless they earn explanatory work |
+| Actual (post-generation) | Title *When Does a Conclusion Really Follow?*; S1–S5; ~2,120 words; **2** figures; purpose-fit **success** (instructional STRONG / editorial CONCERN); see [evidence/case5/QA-FINDINGS.md](evidence/case5/QA-FINDINGS.md) |
 
 ---
 
@@ -93,9 +96,9 @@
 
 ---
 
-## Next (T-006 in progress)
+## Next (after T-006)
 
-- **C02** evaluated under frozen QA v0.1 — [evidence/case2/QA-FINDINGS.md](evidence/case2/QA-FINDINGS.md)  
-- **C03–C05** still to generate/evaluate when authorised  
-- Do **not** revise QA v0.1 mid-pass; record instrument observations only  
-- T-007 synthesis awaits remaining cases
+- **C01–C05** evaluated under frozen QA v0.1 — **S86-T-006 COMPLETE**  
+- **S86-T-007** cross-case synthesis next (when authorised)  
+- Do **not** revise QA v0.1 until T-007 sets revision posture; instrument observations already recorded in case QA findings  
+- Do not invent C06

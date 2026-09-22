@@ -41,9 +41,13 @@ Debt / observations relevant to Sprint 86 scope. **Investigation/design only.**
 
 | ID | Finding | Notes |
 | -- | ------- | ----- |
-| **S86-AD-010** | Learner-facing fallback: “Structured material body is not supported for learner rendering.” | **Functional/rendering defect.** Cross-case evidence: Case 01 **×7**; Case 02 **×4** (S1/S3/S4/S7). Do **not** fix in T-006 evaluation passes. Outside D1–D15. |
-| S86-AD-011 | P2/P8 and P5/P6 overlap candidates; missing “forward momentum / section joints” candidate | Working model notes in [WP1-FINDINGS.md](WP1-FINDINGS.md) — await further cases / T-007 |
-| S86-AD-012 | Representation over-generation on low-visual procedural brief (Case 02: 4 figures; Fig 4 weakly warranted) | Cross-check on C05; instrument observation: warrant vs purpose vs integration (do not edit QA v0.1 mid-pass) |
+| **S86-AD-010** | Learner-facing fallback: “Structured material body is not supported for learner rendering.” | **Functional/rendering defect.** Confirmed on **five** independent Expository exports: Case 01 **×7**; Case 02 **×4**; Case 03 **×4**; Case 04 **×3**; Case 05 **×5** (S2/S3/S4/S5×2). Repeatable. Do **not** fix in T-006. Outside D1–D15. |
+| S86-AD-011 | P2/P8 and P5/P6 overlap candidates; missing “forward momentum / section joints” candidate | Working model notes — carry to **T-007** |
+| S86-AD-012 | Representation over-generation on low-visual procedural brief (Case 02) | **Qualified by C03** (warranted visuals) and **C05** (mild: 2 figures, Fig 1 warranted / Fig 2 borderline). Case-sensitive, not universal. |
+| S86-AD-013 | QA instrument tension: “remove image ⇒ understanding must fall” vs accessible semantic equivalence | Recorded from Case 03 — candidate v0.2; **do not edit QA v0.1 mid-pass** |
+| S86-AD-014 | Interpretive / disagreement briefs may be realised as a neighbouring single-model explanatory spine | **Supported by Case 04**; **qualified by Case 05** purpose-fit success on schematic conceptual brief — likely domain-/brief-sensitive. Carry to T-007 / WP4. |
+| S86-AD-015 | “Instructional architecture stronger than editorial” is not a safe universal | **Qualified by Case 04**; **re-supported by Case 05** when purpose-fit holds. Preserve C04 as genuine counterexample in T-007. |
+| S86-AD-016 | Structured-material commissions are not 1:1 with learner-facing figures | **Supported by Case 05:** 5 structured materials / 2 figures; fallbacks still print beside realised figures (S4/S5). Diagnostic only — do not over-infer architecture. |
 
 ## Explicitly out of sprint (at open / this pass)
 

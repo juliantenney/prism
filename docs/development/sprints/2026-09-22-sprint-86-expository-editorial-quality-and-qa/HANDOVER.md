@@ -1,6 +1,6 @@
 # Sprint 86 — Handover
 
-**Kind:** S86-T-006 in progress — Case 02 evaluated under frozen QA v0.1  
+**Kind:** S86-T-006 **COMPLETE** — all validation cases C01–C05 evaluated under frozen QA v0.1  
 **Sprint status:** **OPEN**  
 **Dashboard:** [STATUS.md](STATUS.md)
 
@@ -10,23 +10,29 @@
 
 | Item | State |
 | ---- | ----- |
-| Case 01 | Captured |
-| Case 02 | Generated + QA v0.1 evaluated — [evidence/case2/QA-FINDINGS.md](evidence/case2/QA-FINDINGS.md) |
-| Case2.zip | **Unmodified** |
-| QA v0.1 | **Frozen / unmodified** this pass |
-| S86-AD-010 | Cross-case evidence (C01 ×7, C02 ×4) |
-| C03–C05 | **Pending** |
-| T-006 | **IN PROGRESS** (not complete) |
+| C01–C05 | All evaluated |
+| C05 validity vs persuasiveness | [evidence/case5/QA-FINDINGS.md](evidence/case5/QA-FINDINGS.md) |
+| case5.zip | **Unmodified** |
+| QA v0.1 | **Frozen / unmodified** |
+| S86-AD-010 | Confirmed on **five** independent exports (C05 ×5) |
+| S86-T-006 | **COMPLETE** |
+| S86-T-007 | **PENDING** — do not start until authorised |
 | Production changes | **None** |
 
 ---
 
 ## B. Next action
 
-Authorise Case 03 generation/evaluation when ready. Keep QA v0.1 frozen. Do not start T-007 synthesis until remaining validation cases are evaluated. Do not fix S86-AD-010 unless separately authorised.
+Authorise **S86-T-007** cross-case synthesis (hold / fail / qualify P1–P11; instrument observations → v0.2 candidates). Keep QA v0.1 frozen until T-007 decides revision posture. Do not implement; do not fix AD-010 in investigation passes.
 
 ---
 
-## C. Case 02 headline (not a substitute for the findings doc)
+## C. Case 05 headline
 
-Instructional architecture **STRONG**; editorial architecture **CONCERN**. Four figures despite low-visual selection intent; Fig 2 strongest warrant; integration often adjacent. Structured-material fallback ×4.
+Purpose-fit **success**: validity ≠ truth; counterexample test; form contrast; non-deductive boundary preserved. Instructional **STRONG**; editorial **CONCERN** (furniture / dual close). Qualifies C04 as domain-sensitive purpose-fit failure, not universal.
+
+---
+
+## D. Repository note (for next commit)
+
+Untracked evidence dirs may include **case3/, case4/, case5/** plus prior Sprint 86 doc edits from T-006 passes. Inspect `git status` before any commit; do not frame a commit as Case-05-only if C03–C04 evidence remains untracked.

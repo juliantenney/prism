@@ -13,9 +13,12 @@
 | [DRAFT-EDITORIAL-PRINCIPLES.md](DRAFT-EDITORIAL-PRINCIPLES.md) | P1–P11 hypotheses only |
 | [WP1-FINDINGS.md](WP1-FINDINGS.md) | Case-01 principle test + two-layer finding |
 | [EXPOSITORY-QA-v0.1.md](EXPOSITORY-QA-v0.1.md) | Pre-validation QA instrument |
-| [VALIDATION-SET.md](VALIDATION-SET.md) | C01–C05 selection (C02–C05 not generated) |
+| [VALIDATION-SET.md](VALIDATION-SET.md) | C01–C05 selection & evaluation (**T-006 COMPLETE**) |
 | [evidence/case-01-bayes/](evidence/case-01-bayes/) | Bayes baseline + `Bayes.zip` |
-| [evidence/case2/](evidence/case2/) | Case 02 record + QA v0.1 findings + `Case2.zip` |
+| [evidence/case2/](evidence/case2/) | Case 02 record + QA findings + `Case2.zip` |
+| [evidence/case3/](evidence/case3/) | Case 03 record + QA findings + `case3.zip` |
+| [evidence/case4/](evidence/case4/) | Case 04 record + QA findings + `case4.zip` |
+| [evidence/case5/](evidence/case5/) | Case 05 record + QA findings + `case5.zip` |
 | [STATUS.md](STATUS.md) | Dashboard |
 | [PLAN.md](PLAN.md) | Investigation/design WPs |
 | [decisions.md](decisions.md) | S86-D01… |

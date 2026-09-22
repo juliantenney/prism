@@ -33,7 +33,7 @@ Debt / observations relevant to Sprint 86 scope. **Investigation/design only.**
 | S86-AD-004 | Representations may accompany rather than participate | **Supported by case 01** — QA D5/D6 · WP4 seam |
 | S86-AD-005 | Internal artefacts as page furniture | **Supported by case 01** — QA D8 |
 | S86-AD-006 | Multiple closures | **Supported by case 01** — QA D10 |
-| S86-AD-007 | Typography functional not publishing-grade | **Supported by case 01** (0×H3; UI font stack) — WP5 |
+| S86-AD-007 | Typography functional not publishing-grade | **T-010:** requirements recorded — [T-010-TYPOGRAPHY-REQUIREMENTS.md](T-010-TYPOGRAPHY-REQUIREMENTS.md). Implementation design = T-011 |
 | S86-AD-008 | Research Synthesis identity | Remains with PB-FA-011 — out of S86 scope |
 | S86-AD-009 | Expository → Interactive hypothesis | Out of S86 scope |
 
@@ -51,7 +51,8 @@ Debt / observations relevant to Sprint 86 scope. **Investigation/design only.**
 | S86-AD-017 | Systematic editorial furniture / dual close / flat hierarchy | **T-007/T-008.** WP5/T-010 next for hierarchy/typography |
 | S86-AD-018 | EQ1 typed purpose / epistemic-form ownership absent from contracts | **T-008.** Outside T-009 scope |
 | S86-AD-019 | Design Page owned patch list includes `sections` | **T-008.** Must-not fragility |
-| S86-AD-020 | EQ5 seam: soft post-hoc integration | **T-009:** recommend Option B (perceptibility + participation intent + deterministic VA↔commission binding). No new AI stage. Implementation deferred to successor design (T-011) |
+| S86-AD-020 | EQ5 seam: soft post-hoc integration | **T-009:** Option B recommended. Implementation deferred to T-011 |
+| S86-AD-021 | Flat hierarchy / UI-adjacent presentation | **T-010:** MUST retain measure; SHOULD soften cards; H3 only with upstream subsections; anti-patterns listed. Not a serif mandate |
 
 ## Explicitly out of sprint (at open / this pass)
 

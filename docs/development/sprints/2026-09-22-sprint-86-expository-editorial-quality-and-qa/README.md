@@ -14,6 +14,7 @@
 | [T-007-FIVE-CASE-SYNTHESIS.md](T-007-FIVE-CASE-SYNTHESIS.md) | Five-case synthesis |
 | [T-008-PIPELINE-RESPONSIBILITY-MAP.md](T-008-PIPELINE-RESPONSIBILITY-MAP.md) | EQ→pipeline responsibility map |
 | [T-009-XD-XM-SEAM.md](T-009-XD-XM-SEAM.md) | XD→XM→DP seam design (Option B) |
+| [T-010-TYPOGRAPHY-REQUIREMENTS.md](T-010-TYPOGRAPHY-REQUIREMENTS.md) | Editorial/typographic requirements |
 | [WP1-FINDINGS.md](WP1-FINDINGS.md) | WP1 complete — two-layer finding + model |
 | [EXPOSITORY-QA-v0.1.md](EXPOSITORY-QA-v0.1.md) | Pre-validation QA instrument (frozen) |
 | [VALIDATION-SET.md](VALIDATION-SET.md) | C01–C05 selection & evaluation (**T-006 COMPLETE**) |

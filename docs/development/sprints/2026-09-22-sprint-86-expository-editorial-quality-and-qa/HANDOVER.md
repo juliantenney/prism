@@ -1,6 +1,6 @@
 # Sprint 86 — Handover
 
-**Kind:** S86-T-009 **COMPLETE** — XD→XM→DP seam design; **WP4 COMPLETE**  
+**Kind:** S86-T-010 **COMPLETE** — typography/editorial presentation requirements  
 **Sprint status:** **OPEN**  
 **Dashboard:** [STATUS.md](STATUS.md)
 
@@ -10,22 +10,19 @@
 
 | Item | State |
 | ---- | ----- |
-| T-008 | COMPLETE |
-| T-009 | **COMPLETE** — [T-009-XD-XM-SEAM.md](T-009-XD-XM-SEAM.md) |
-| WP4 | **COMPLETE** |
-| Recommended seam option | **B** (enrichment + deterministic binding) |
-| Production files | **Unmodified** |
-| AD-010 | Not fixed (separate) |
-| Next | **T-010 / WP5** when authorised |
+| T-010 | **COMPLETE** — [T-010-TYPOGRAPHY-REQUIREMENTS.md](T-010-TYPOGRAPHY-REQUIREMENTS.md) |
+| WP5 | **IN PROGRESS** (requirements done; T-011 pending) |
+| Production CSS/renderer | **Unmodified** |
+| Next | **T-011** bounded successor implementation design when authorised |
 
 ---
 
 ## B. Next action
 
-Authorise **S86-T-010**: typography / editorial rendering requirements (principles only). Do not implement Option B yet (belongs in later T-011 / successor implementation design). Do not start T-011 unless PLAN order is deliberately changed.
+Authorise **S86-T-011**: bounded successor implementation design (what to change / not change) drawing on EQ1–EQ8, T-008/T-009, T-010, AD-010. Do not implement in T-011 unless the task explicitly authorises code — check task brief. Do not start until authorised.
 
 ---
 
-## C. T-009 headline
+## C. T-010 headline
 
-Compose around stable representational intent at XD; XM realises; DP may optionally visualise under linked `commission_id`; prose keeps essentials; no post-XM AI rewrite.
+Publishing-grade restraint: measure OK; stop cardifying prose; H3 only with real subsections; quiet figures/captions; maths unboxed; furniture/dual-close are EQ7/EQ8 not font tricks.

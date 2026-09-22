@@ -2,8 +2,8 @@
 
 **Canonical location:** `docs/backlog/PRODUCT-BACKLOG.md`  
 **Status:** Active — **alpha-use period** (Alpha development complete, 2026-09-02)  
-**Last updated:** 2026-09-22 (Sprint 85 closed)  
-**Active sprint:** **None** — select next work deliberately from this backlog and/or evidenced alpha-use findings
+**Last updated:** 2026-09-22 (Sprint 86 opened)  
+**Active sprint:** [Sprint 86 — Expository Editorial Quality & QA](../development/sprints/2026-09-22-sprint-86-expository-editorial-quality-and-qa/SPRINT-86-START-HERE.md) — **OPEN** (investigation/design; not implementation)
 
 This file answers: **what might we actually choose to work on next?**
 
@@ -37,7 +37,21 @@ A possible distinction: Research Synthesis may require stronger multi-source syn
 
 **Sprint allocation:** **Sprint 83 CLOSED** (investigation). **Sprint 84 CLOSED** — [Planning](../development/sprints/2026-09-21-sprint-84-expository-resource-planning/SPRINT-84-CLOSURE.md). **Sprint 85 CLOSED** — [Implementation](../development/sprints/2026-09-21-sprint-85-expository-resource-implementation/SPRINT-85-CLOSURE.md) ([S85-D08](../development/sprints/2026-09-21-sprint-85-expository-resource-implementation/decisions.md#s85-d08--close-sprint-85--expository-resource-implementation-complete)). Gates at close: focused **78/78** · first-class **339/339**. Binding remains accepted [S84 design](../development/sprints/2026-09-21-sprint-84-expository-resource-planning/S84-EXPOSITORY-RESOURCE-DESIGN.md) · [S83-D04](../development/sprints/2026-09-21-sprint-83-expository-resource-investigation/decisions.md#s83-d04--planning-handoff--sibling-prompt-family--protected-baseline).
 
-**Remaining planning interest under this ID:** Research Synthesis relationship question only — not unimplemented Expository product work.
+**Remaining planning interest under this ID:** Research Synthesis relationship question only — not unimplemented Expository product work. Editorial quality of delivered Expository Resources is investigated separately under [PB-FA-012](#pb-fa-012--expository-editorial-quality--qa) (Sprint 86).
+
+### PB-FA-012 — Expository Editorial Quality & QA
+
+Investigate and design the **editorial** quality layer for first-class Expository Resources — distinct from the instructional architecture already delivered in Sprint 85.
+
+**Problem frame:** A resource can be factually correct, pedagogically sensible and technically valid yet still feel editorially mediocre (assembled from competent components rather than authored as a coherent intellectual reading experience).
+
+**Scope sketch:** general editorial quality model; repeatable Expository QA process (qualitative human judgement — not a numerical score programme); small diverse generated evidence set; pipeline responsibility map on the **existing** Expository topology; XD→XM prose/representation integration finding; typography/editorial rendering requirements; bounded successor implementation design.
+
+**Explicit non-scope:** production implementation in the investigation sprint; fixed chapter templates; Interactive prompt edits; reopening S83–S85 architecture without compelling evidence; Research Synthesis resolution; Expository→Interactive; CAS/table-maths.
+
+**Sprint allocation:** **Sprint 86 OPEN** — [Expository Editorial Quality & QA](../development/sprints/2026-09-22-sprint-86-expository-editorial-quality-and-qa/SPRINT-86-START-HERE.md) ([S86-D01](../development/sprints/2026-09-22-sprint-86-expository-editorial-quality-and-qa/decisions.md#s86-d01--open-sprint-86--expository-editorial-quality--qa)).
+
+**Readiness:** Investigation/design authorised within Sprint 86; production editorial implementation **not** authorised by opening alone.
 
 ### PB-FA-002 — Programming / code learning-resource support
 

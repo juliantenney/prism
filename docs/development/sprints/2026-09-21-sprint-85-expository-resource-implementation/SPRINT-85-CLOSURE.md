@@ -133,9 +133,9 @@ Also listed lightly in [ARCHITECTURAL-DEBT.md](ARCHITECTURAL-DEBT.md).
 
 ## 8. Successor programme
 
-**No active sprint opened by this closeout.**
+**Successor:** [Sprint 86 — Expository Editorial Quality & QA](../2026-09-22-sprint-86-expository-editorial-quality-and-qa/SPRINT-86-START-HERE.md) — **OPEN** ([S86-D01](../2026-09-22-sprint-86-expository-editorial-quality-and-qa/decisions.md#s86-d01--open-sprint-86--expository-editorial-quality--qa)).
 
-Next work is selected deliberately from [PRODUCT-BACKLOG.md](../../../backlog/PRODUCT-BACKLOG.md) and/or evidenced alpha-use findings. Do not invent an Expository polish programme from these observations.
+Sprint 86 is **investigation/design** of Expository editorial quality and QA. It does **not** reopen Sprint 85 functional delivery, S83/S84 architecture, or authorise production editorial implementation by opening alone.
 
 Programme pointer: [NEXT-SPRINT.md](../../../sprints/NEXT-SPRINT.md)
 

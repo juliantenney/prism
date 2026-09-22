@@ -1,21 +1,17 @@
 # Next sprint — active programme
 
-**Status:** **Sprint 85 OPEN** — Expository Resource Implementation (2026-09-21). Sprint 84 **CLOSED**. Sprint 83 **CLOSED**. Sprint 82 **CLOSED**. Alpha development **complete**.  
-**Updated:** 2026-09-21
+**Status:** **No active sprint.** Sprint 85 **COMPLETE / CLOSED**. Sprint 84 **CLOSED**. Sprint 83 **CLOSED**. Sprint 82 **CLOSED**. Alpha development **complete**.  
+**Updated:** 2026-09-22
 
 ---
 
 ## Current programme
 
-**Active sprint:** [Sprint 85 — Expository Resource Implementation](../development/sprints/2026-09-21-sprint-85-expository-resource-implementation/SPRINT-85-START-HERE.md) — **OPEN**
+**Active sprint:** **None**
 
-**Type:** Implementation  
-**Opening decision:** [S85-D01](../development/sprints/2026-09-21-sprint-85-expository-resource-implementation/decisions.md#s85-d01--open-sprint-85--expository-resource-implementation)  
-**Backlog:** [PB-FA-011](../backlog/PRODUCT-BACKLOG.md#pb-fa-011--expository-resource)  
-**Authoritative design:** [S84-EXPOSITORY-RESOURCE-DESIGN.md](../development/sprints/2026-09-21-sprint-84-expository-resource-planning/S84-EXPOSITORY-RESOURCE-DESIGN.md)  
-**Binding constraints:** [S83-D04](../development/sprints/2026-09-21-sprint-83-expository-resource-investigation/decisions.md#s83-d04--planning-handoff--sibling-prompt-family--protected-baseline) · accepted S84 design (S84-D03…D12)
+**Last closed sprint:** [Sprint 85 — Expository Resource Implementation](../development/sprints/2026-09-21-sprint-85-expository-resource-implementation/SPRINT-85-CLOSURE.md) — **COMPLETE / CLOSED** ([S85-D08](../development/sprints/2026-09-21-sprint-85-expository-resource-implementation/decisions.md#s85-d08--close-sprint-85--expository-resource-implementation-complete))
 
-**Last closed sprint:** Sprint 84 — Expository Resource Planning — **COMPLETE / CLOSED**
+**How next work is selected:** Deliberately from [PRODUCT-BACKLOG.md](../backlog/PRODUCT-BACKLOG.md) and/or evidenced alpha-use findings. Open a new sprint only via an explicit opening decision. Do **not** invent an Expository polish programme from S85 observations.
 
 ### Alpha milestone (still authoritative)
 
@@ -27,32 +23,30 @@
 
 | Item | State |
 | ---- | ----- |
-| First-class gate at alpha close | `npm run test:first-class` → **339/339** — Interactive gate must remain green |
-| Sprint 82 | **CLOSED** — historical |
-| Sprint 83 | **CLOSED** — investigation accepted; do not reopen |
-| Sprint 84 | **CLOSED** — Planning design accepted; do not reopen architecture |
-| Sprint 85 implementation brief | **Pending** — do not invent tasks ahead of it |
-| Production implementation | **Authorised within Sprint 85 scope** after brief acceptance |
+| First-class gate | `npm run test:first-class` → **339/339** |
+| Focused S85 gate at close | `node --test tests/s85-*.test.js` → **78/78** |
+| Sprint 82 | **CLOSED** — Alpha complete |
+| Sprint 83 | **CLOSED** — investigation accepted |
+| Sprint 84 | **CLOSED** — Planning design accepted |
+| Sprint 85 | **COMPLETE / CLOSED** — first-class Expository implemented |
 | Interactive prompt family | **Protected baseline** (S83-D04) |
+| Expository functional capability | **Delivered** — presentation polish **not claimed** |
 
 ---
 
-## Sprint 85 posture
+## Sprint 85 closure distinction
 
-Implement the accepted Sprint 84 design for a first-class Expository Resource.
+> S85 establishes functional first-class Expository capability. It does not claim that the learner-facing presentation is polished or final.
 
-**Authoritative inputs:** [S84 design](../development/sprints/2026-09-21-sprint-84-expository-resource-planning/S84-EXPOSITORY-RESOURCE-DESIGN.md) · [SPRINT-84-CLOSURE.md](../development/sprints/2026-09-21-sprint-84-expository-resource-planning/SPRINT-84-CLOSURE.md) · [S84 decisions](../development/sprints/2026-09-21-sprint-84-expository-resource-planning/decisions.md) · [S83-D04](../development/sprints/2026-09-21-sprint-83-expository-resource-investigation/decisions.md#s83-d04--planning-handoff--sibling-prompt-family--protected-baseline) · [PB-FA-011](../backlog/PRODUCT-BACKLOG.md#pb-fa-011--expository-resource)
+Canonical closeout: [SPRINT-85-CLOSURE.md](../development/sprints/2026-09-21-sprint-85-expository-resource-implementation/SPRINT-85-CLOSURE.md) · [sprint-85-closeout.md](sprint-85-closeout.md)
 
-**Immediate next:** accept the separate detailed implementation brief, then begin bounded implementation under that brief.
-
-Production work and production Expository prompt authoring have **not** begun in the opening step.
-
-Canonical planning authority remains [PRODUCT-BACKLOG.md](../backlog/PRODUCT-BACKLOG.md).
+Backlog: [PB-FA-011](../backlog/PRODUCT-BACKLOG.md#pb-fa-011--expository-resource) — first-class Expository **implemented**; Research Synthesis relationship remains **open**.
 
 ---
 
 ## Previous sprints
 
+- Sprint 85 — Expository Resource Implementation — **CLOSED** ([closure](../development/sprints/2026-09-21-sprint-85-expository-resource-implementation/SPRINT-85-CLOSURE.md) · [closeout](sprint-85-closeout.md))  
 - Sprint 84 — Expository Resource Planning — **CLOSED** ([closure](../development/sprints/2026-09-21-sprint-84-expository-resource-planning/SPRINT-84-CLOSURE.md) · [closeout](sprint-84-closeout.md))  
 - Sprint 83 — Expository Resource Investigation — **CLOSED** ([closure](../development/sprints/2026-09-21-sprint-83-expository-resource-investigation/SPRINT-83-CLOSURE.md) · [closeout](sprint-83-closeout.md))  
 - Sprint 82 — Maths Entry & Alpha Completion — **CLOSED** ([closure](../development/sprints/2026-09-01-sprint-82-maths-entry-and-alpha-completion/SPRINT-82-CLOSURE.md) · [closeout](sprint-82-closeout.md))

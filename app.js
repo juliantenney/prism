@@ -12193,7 +12193,7 @@
           var ok =
             vpcMod && typeof vpcMod.isCanonicalEvidenceAnchorSyntax === "function"
               ? vpcMod.isCanonicalEvidenceAnchorSyntax(text)
-              : /^page_synthesis\.(overview|knowledge_summary|learning_purpose|study_tips)$/.test(
+              : /^page_synthesis\.(overview|knowledge_summary|learning_purpose|study_tips|closing_paragraph)$/.test(
                   text
                 ) || /^[A-Za-z][A-Za-z0-9_-]*\.[A-Za-z0-9_.-]+$/.test(text);
           if (!ok) {

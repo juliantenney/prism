@@ -1,8 +1,9 @@
 # Sprint 85 — Decision Log
 
-**Sprint status:** **OPEN** (opened 2026-09-21) — Implementation in progress  
+**Sprint status:** **COMPLETE / CLOSED** (closed 2026-09-22)  
 **Format:** ID · Decision · Status · Rationale · Consequences  
-**Authoritative design:** [S84-EXPOSITORY-RESOURCE-DESIGN.md](../2026-09-21-sprint-84-expository-resource-planning/S84-EXPOSITORY-RESOURCE-DESIGN.md)
+**Authoritative design:** [S84-EXPOSITORY-RESOURCE-DESIGN.md](../2026-09-21-sprint-84-expository-resource-planning/S84-EXPOSITORY-RESOURCE-DESIGN.md)  
+**Closure:** [SPRINT-85-CLOSURE.md](SPRINT-85-CLOSURE.md) · [S85-D08](#s85-d08--close-sprint-85--expository-resource-implementation-complete)
 
 ---
 
@@ -101,10 +102,34 @@ bypassing Interactive EP / DLA / GAM / Learning Sequence. Register EJP/XD/XM as 
 
 ---
 
-## Pending decisions
+## S85-D08 — Close Sprint 85 — Expository Resource Implementation COMPLETE
 
-| ID | Decision | Status |
-| -- | -------- | ------ |
-| — | Product-independent body-authoring overlays for XM (maths/tables) | **Pending** (WP4; S85-D06) |
-| — | Research Synthesis identity | **Remains open** (non-blocking) |
-| — | Expository-specific Adjustments | **Deferred** unless evidence requires |
+- **Decision:** Accept Sprint 85 implementation as **COMPLETE / CLOSED**. First-class Expository Resource capability is delivered and was manually exercised end-to-end. Record the closure distinction:
+
+> S85 establishes functional first-class Expository capability. It does not claim that the learner-facing presentation is polished or final.
+
+- **Status:** **Accepted** (2026-09-22)
+
+- **Evidence:**
+  - Final live E2E (Bayes' theorem) exercised Create → sibling pipeline → assembly → render → export, including Adjustments Scope / extent and DP closing / graphics / formal notation.
+  - Narrow WP4 DP validation repair (`closing_paragraph` evidence-anchor allowlist; Expository DP `representation_avoid` vocabulary alignment) — fail-closed preserved.
+  - Focused gate `node --test tests/s85-*.test.js` → **78/78**.
+  - First-class gate `npm run test:first-class` → **339/339**.
+
+- **Consequences:**
+  - [PB-FA-011](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-011--expository-resource) records first-class Expository as **implemented**; Research Synthesis relationship remains **open** (non-blocking).
+  - No successor sprint opened by this closeout; next work selected deliberately from the product backlog.
+  - Non-blocking polish/refinement observations are recorded only as observations — not Sprint 85 work and not a new engineering programme.
+  - Alpha-complete claim ([S82-D04](../2026-09-01-sprint-82-maths-entry-and-alpha-completion/decisions.md#s82-d04--alpha-development-complete)) is **unchanged**.
+  - Do not reopen S83/S84 architecture; do not invent polish tasks from this closeout.
+
+---
+
+## Remaining open questions (not Sprint 85 reopeners)
+
+| Topic | Status |
+| ----- | ------ |
+| Research Synthesis identity | **Open** (non-blocking; remains with PB-FA-011) |
+| Expository → Interactive relationship | **Open** (architectural hypothesis) |
+| Future maths/CAS/table-maths | **Out of scope** ([PB-M-001](../../../backlog/PRODUCT-BACKLOG.md#pb-m-001--future-maths-capabilities)) |
+| Learner-facing presentation polish | **Deferred** — not a functional blocker |

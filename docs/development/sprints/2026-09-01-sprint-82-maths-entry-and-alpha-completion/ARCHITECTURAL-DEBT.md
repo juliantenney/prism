@@ -43,7 +43,7 @@ Historical notes only — **canonical planning authority:** [PRODUCT-BACKLOG.md]
 
 - Historical **RC3–RC8** full-suite residue — [D-014](../../governance/D-014-test-suite-confidence-diagnostic.md) (not a planning programme)  
 - Future maths capabilities (mixed prose+math; per-cell table maths; CAS) — [PB-M-001](../../../backlog/PRODUCT-BACKLOG.md#pb-m-001--future-maths-capabilities)  
-- Significant post-alpha candidates include Expository Resource ([PB-FA-011](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-011--expository-resource)) — not automatic next work  
+- Significant post-alpha candidate Expository Resource ([PB-FA-011](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-011--expository-resource)) — **first-class implemented in Sprint 85**; Research Synthesis relationship remains open; polish not claimed as automatic next work  
 - Sprint 81 debt S81-D-001…D-007 remains in the [S81 ledger](../2026-08-28-sprint-81-learner-workspace-investigation-and-surface-architecture/ARCHITECTURAL-DEBT.md) (not promoted to product backlog)  
 
 Former PB-FA-008 Slideshow-as-architecture-test is **superseded**; Presentation remains a lightweight idea only.

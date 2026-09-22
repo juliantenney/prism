@@ -1,10 +1,11 @@
 # Sprint 85 — Charter
 
 **Sprint:** 85 — Expository Resource Implementation  
-**Status:** **OPEN** (2026-09-21)  
+**Status:** **COMPLETE / CLOSED** (closed 2026-09-22)  
 **Type:** Implementation  
 **Predecessor:** Sprint 84 — COMPLETE / CLOSED ([SPRINT-84-CLOSURE.md](../2026-09-21-sprint-84-expository-resource-planning/SPRINT-84-CLOSURE.md))  
 **Backlog item:** [PB-FA-011 — Expository Resource](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-011--expository-resource)  
+**Closure:** [SPRINT-85-CLOSURE.md](SPRINT-85-CLOSURE.md) · [S85-D08](decisions.md#s85-d08--close-sprint-85--expository-resource-implementation-complete)  
 **Start here:** [SPRINT-85-START-HERE.md](SPRINT-85-START-HERE.md)  
 **Opening decision:** [S85-D01](decisions.md#s85-d01--open-sprint-85--expository-resource-implementation)  
 **Authoritative design:** [S84-EXPOSITORY-RESOURCE-DESIGN.md](../2026-09-21-sprint-84-expository-resource-planning/S84-EXPOSITORY-RESOURCE-DESIGN.md)

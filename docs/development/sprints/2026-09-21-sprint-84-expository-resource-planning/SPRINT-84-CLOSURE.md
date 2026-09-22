@@ -94,9 +94,9 @@ Architecture detail: [decisions.md](decisions.md) · [S84-EXPOSITORY-RESOURCE-DE
 
 ## 5. Successor programme
 
-**Successor:** [Sprint 85 — Expository Resource Implementation](../2026-09-21-sprint-85-expository-resource-implementation/SPRINT-85-START-HERE.md) — **OPEN** ([S85-D01](../2026-09-21-sprint-85-expository-resource-implementation/decisions.md#s85-d01--open-sprint-85--expository-resource-implementation)).
+**Successor:** [Sprint 85 — Expository Resource Implementation](../2026-09-21-sprint-85-expository-resource-implementation/SPRINT-85-CLOSURE.md) — **COMPLETE / CLOSED** ([S85-D08](../2026-09-21-sprint-85-expository-resource-implementation/decisions.md#s85-d08--close-sprint-85--expository-resource-implementation-complete)).
 
-Do not reopen Sprint 84 architecture. Do not invent implementation tasks from this Planning pack.
+Do not reopen Sprint 84 architecture. Do not invent implementation or polish tasks from this Planning pack.
 
 Programme pointer: [NEXT-SPRINT.md](../../../sprints/NEXT-SPRINT.md)
 

@@ -2,8 +2,8 @@
 
 **Canonical location:** `docs/backlog/PRODUCT-BACKLOG.md`  
 **Status:** Active — **alpha-use period** (Alpha development complete, 2026-09-02)  
-**Last updated:** 2026-09-21 (Sprint 85 opened)  
-**Active sprint:** [Sprint 85 — Expository Resource Implementation](../development/sprints/2026-09-21-sprint-85-expository-resource-implementation/SPRINT-85-START-HERE.md) — **OPEN** (implementation; detailed brief pending)
+**Last updated:** 2026-09-22 (Sprint 85 closed)  
+**Active sprint:** **None** — select next work deliberately from this backlog and/or evidenced alpha-use findings
 
 This file answers: **what might we actually choose to work on next?**
 
@@ -19,27 +19,25 @@ It is **not** a catalogue of every historical observation. Sprint debt ledgers a
 
 ### PB-FA-011 — Expository Resource
 
-Investigate a first-class **Expository Resource**: a high-quality, richly written and illustrated explanatory learning resource analogous to a strong book chapter, designed for understanding through exposition rather than learner activity.
+**Status:** First-class Expository Resource **implemented** ([Sprint 85 COMPLETE / CLOSED](../development/sprints/2026-09-21-sprint-85-expository-resource-implementation/SPRINT-85-CLOSURE.md)).
 
-The central challenge is **richness**: coherent narrative supported where appropriate by examples/non-examples, cases, evidence, applications, misconceptions, worked examples, comparisons, source material and purposeful graphics, without turning richness into a mechanical checklist.
+A high-quality, richly written and illustrated explanatory learning resource analogous to a strong book chapter, designed for understanding through exposition rather than learner activity.
 
-**Key architectural hypothesis:** Expository Resource may be both a learner-facing product and a rich realised-content input to other PRISM products. In particular, generating grounded exposition before interactive learning design may address PRISM's recurring content-richness problem: establish rich intellectual material first, then determine what learners should do with it.
+**Delivered (S83–S85):** investigation → planning → implementation of Create product `expository_resource`, sibling EJP/XD/XM pedagogy, ordered exposition sections, shared graphics/formal-notation/assembly/render/export path, Adjustments Scope / extent, learner closing paragraph — Interactive baseline protected.
 
-This could also support later Podcast and Presentation products and combinations such as:
+**Closure distinction (S85):** establishes **functional** first-class Expository capability; does **not** claim learner-facing presentation is polished or final. Non-blocking polish/refinement observations remain observations only — not an automatic follow-on programme.
 
-> “Read this, then come to the workshop tomorrow.”
+**Key architectural hypothesis (still open):** Expository Resource may also be a rich realised-content input to other PRISM products (e.g. Interactive generation after grounded exposition; later Podcast/Presentation). That relationship is **not** resolved by S85.
 
-Investigation must determine whether the existing pipeline can support this cleanly, where richness is currently lost, and whether Expository Resource can become an upstream input to Interactive generation without compromising PRISM's authority model.
-
-**Unresolved relationship to Research Synthesis** (do not decide now):
+**Unresolved relationship to Research Synthesis** (remains open — do not treat as delivered):
 
 > Is Research Synthesis a distinct PRISM product/domain, or is it a specialised source/provenance treatment of Expository Resource?
 
 A possible distinction: Research Synthesis may require stronger multi-source synthesis, provenance, evidence and citation semantics; Expository Resource is concerned more generally with producing a rich, coherent explanation. Former **PB-FA-009** (Research domain pack maturation) is **merged into this open question** — not retained as an independent future product.
 
-**Explicit non-scope for the backlog item itself:** schemas; topology decisions; generic output frameworks; assuming new stages are required (or that Episode Plan/DLA/GAM is sufficient); implementation; promoting Podcast or Presentation to committed work merely as downstream applications.
+**Sprint allocation:** **Sprint 83 CLOSED** (investigation). **Sprint 84 CLOSED** — [Planning](../development/sprints/2026-09-21-sprint-84-expository-resource-planning/SPRINT-84-CLOSURE.md). **Sprint 85 CLOSED** — [Implementation](../development/sprints/2026-09-21-sprint-85-expository-resource-implementation/SPRINT-85-CLOSURE.md) ([S85-D08](../development/sprints/2026-09-21-sprint-85-expository-resource-implementation/decisions.md#s85-d08--close-sprint-85--expository-resource-implementation-complete)). Gates at close: focused **78/78** · first-class **339/339**. Binding remains accepted [S84 design](../development/sprints/2026-09-21-sprint-84-expository-resource-planning/S84-EXPOSITORY-RESOURCE-DESIGN.md) · [S83-D04](../development/sprints/2026-09-21-sprint-83-expository-resource-investigation/decisions.md#s83-d04--planning-handoff--sibling-prompt-family--protected-baseline).
 
-**Sprint allocation:** **Sprint 83 CLOSED** (investigation accepted). **Sprint 84 CLOSED** — [Planning design accepted](../development/sprints/2026-09-21-sprint-84-expository-resource-planning/SPRINT-84-CLOSURE.md) ([S84-D12](../development/sprints/2026-09-21-sprint-84-expository-resource-planning/decisions.md#s84-d12--accept-refined-planning-design-and-close-sprint-84)). **Sprint 85 OPEN** — [Expository Resource Implementation](../development/sprints/2026-09-21-sprint-85-expository-resource-implementation/SPRINT-85-START-HERE.md) ([S85-D01](../development/sprints/2026-09-21-sprint-85-expository-resource-implementation/decisions.md#s85-d01--open-sprint-85--expository-resource-implementation)). Binding: accepted [S84 design](../development/sprints/2026-09-21-sprint-84-expository-resource-planning/S84-EXPOSITORY-RESOURCE-DESIGN.md) · sibling prompt-family + protected Interactive baseline ([S83-D04](../development/sprints/2026-09-21-sprint-83-expository-resource-investigation/decisions.md#s83-d04--planning-handoff--sibling-prompt-family--protected-baseline)). Production implementation authorised **within Sprint 85 scope** after the separate implementation brief is accepted; detailed tasks not yet invented.
+**Remaining planning interest under this ID:** Research Synthesis relationship question only — not unimplemented Expository product work.
 
 ### PB-FA-002 — Programming / code learning-resource support
 

@@ -288,6 +288,105 @@ test("Design Page capture API accepts Expository section VA", () => {
   assert.equal(result.ok, true, (result.errors || []).join(" | "));
 });
 
+test("WP4 repair: closing_paragraph anchor + canonical representation_avoid pass DP/VA validation", () => {
+  const body = sibling.resolveTemplate("design_page");
+  assert.match(body, /page_synthesis\.closing_paragraph|closing_paragraph/);
+  assert.match(
+    body,
+    /representation_avoid[\s\S]*summary_table[\s\S]*filled_worksheet[\s\S]*hierarchical_org_chart/
+  );
+  assert.match(body, /Never invent free-form phrases/i);
+  assert.match(body, /use ONLY the shared Sprint 38 closed vocabulary/i);
+
+  const pageAffordance = {
+    affordance_id: "va-page-knowledge-summary-01",
+    scope: "page",
+    region: "knowledge_summary",
+    visual_decision: "generate",
+    visual_slot: "knowledge-summary-after-content",
+    tier: "essential",
+    purpose: "synthesis",
+    preferred_representation: "concept_map",
+    subject: "Whole-resource synthesis map",
+    context:
+      "Visual brief: consolidate authorised relationships from the knowledge summary and closing paragraph without inventing new claims.",
+    evidence_anchors: [
+      "page_synthesis.knowledge_summary",
+      "page_synthesis.closing_paragraph",
+      "S5.synthesis"
+    ],
+    rationale:
+      "Externalises the integrative model so learners can revisit how closing carry-away ideas rest on authored exposition.",
+    reasoning_supported: "Learners consolidate relationships already explained upstream.",
+    learner_stage: "post_reasoning",
+    anti_spoiler: false,
+    representation_avoid: [
+      "generic_infographic",
+      "topic_hero_image",
+      "filled_worksheet",
+      "summary_table"
+    ],
+    canonical_discipline_note: "Show only relationships warranted by upstream prose.",
+    requires_exact_data_match: false,
+    must_show: ["authorised relationship nodes", "closing carry-away links"],
+    must_not_show: ["new mechanisms", "activity worksheets"],
+    allowed_claims: ["Closing ideas rest on relationships already explained."],
+    disallowed_claims: ["Claims absent from upstream substance."],
+    source_basis: "page_synthesis.knowledge_summary; page_synthesis.closing_paragraph; S5.synthesis",
+    caption_intent: "Map authorised synthesis links including the closing carry-away.",
+    alt_text: "Concept map of authorised synthesis relationships; detailed description follows.",
+    detailed_description:
+      "A concept map links knowledge-summary nodes to the closing carry-away without adding new mechanisms.",
+    discipline_risk_level: "medium"
+  };
+
+  assert.deepEqual(sprint38.validateAffordanceEnvelope(pageAffordance, 0), []);
+  pageAffordance.representation_avoid.forEach((token) => {
+    assert.ok(
+      sprint38.REPRESENTATION_AVOID.indexOf(token) !== -1,
+      "expected canonical representation_avoid token: " + token
+    );
+  });
+
+  const capture = makeExpositoryDpCapture(pageAffordance);
+  capture.page_synthesis.closing_paragraph =
+    "Carry away that each stage of the loop depends on the previous move — not a checklist of tips.";
+  capture.sections = makeAssembledExpositoryPage(pageAffordance).sections;
+
+  const shape = vpc.validateVisualPlanningCaptureShape(capture);
+  assert.equal(shape.valid, true, JSON.stringify(shape.errors, null, 2));
+
+  const assembled = makeAssembledExpositoryPage(pageAffordance);
+  assembled.page_synthesis.closing_paragraph =
+    capture.page_synthesis.closing_paragraph;
+  const contract = vpc.validateVisualPlanningContract(assembled);
+  assert.equal(contract.valid, true, JSON.stringify(contract.errors, null, 2));
+  assert.equal(
+    (contract.errors || []).filter((e) =>
+      /unknown page_synthesis field 'closing_paragraph'/i.test(e.message || "")
+    ).length,
+    0
+  );
+
+  const api = loadPrismTestApi();
+  const result = api.validateDesignPagePartialPageCapture(capture);
+  assert.equal(result.ok, true, (result.errors || []).join(" | "));
+
+  // Fail-closed: free-form avoidance tokens remain rejected (no silent coerce).
+  const poisoned = Object.assign({}, pageAffordance, {
+    representation_avoid: ["decorative_equation", "unlabelled_chart", "new worked example"]
+  });
+  const poisonedErrors = sprint38.validateAffordanceEnvelope(poisoned, 0);
+  assert.ok(poisonedErrors.some((e) => /representation_avoid/i.test(e)));
+});
+
+test("WP4 repair: Interactive study_tips page_synthesis anchor remains valid", () => {
+  assert.ok(vpc.PAGE_SYNTHESIS_ANCHOR_FIELDS.indexOf("study_tips") !== -1);
+  assert.ok(vpc.PAGE_SYNTHESIS_ANCHOR_FIELDS.indexOf("closing_paragraph") !== -1);
+  assert.equal(vpc.isCanonicalEvidenceAnchorSyntax("page_synthesis.study_tips"), true);
+  assert.equal(vpc.isCanonicalEvidenceAnchorSyntax("page_synthesis.closing_paragraph"), true);
+});
+
 test("6: Interactive activity generate affordance still validates unchanged", () => {
   const interactive = {
     affordance_id: "va-A3-classification-01",

@@ -1,7 +1,7 @@
 # Sprint 86 — Status
 
 **Last updated:** 2026-09-22  
-**Sprint status:** **OPEN** — S86-T-006 **COMPLETE**; T-007 not started  
+**Sprint status:** **OPEN** — S86-T-007 **COMPLETE**; next = WP4 (T-008) when authorised  
 **Opening decision:** [S86-D01](decisions.md#s86-d01--open-sprint-86--expository-editorial-quality--qa)  
 **Start here:** [SPRINT-86-START-HERE.md](SPRINT-86-START-HERE.md)
 
@@ -12,11 +12,11 @@
 | Field | Value |
 | ----- | ----- |
 | Type | Investigation / Design |
-| S86-T-001…T-005 | **COMPLETE** |
-| S86-T-006 | **COMPLETE** — C01–C05 evaluated under frozen QA v0.1 |
-| S86-T-007 | **PENDING** — cross-case synthesis not started |
-| WP1–WP2 | **IN PROGRESS** — model/QA not finally accepted |
-| WP3 | **IN PROGRESS** — five-case evidence captured; synthesis awaits T-007 |
+| S86-T-001…T-007 | **COMPLETE** |
+| S86-T-008… | **PENDING** — WP4 not started |
+| WP1 | **COMPLETE** — EQ1–EQ8 evidence-backed model |
+| WP2 | **IN PROGRESS** — QA v0.1 frozen; v0.2 candidates listed (not drafted) |
+| WP3 | **COMPLETE** — five-case set frozen; T-007 synthesis done |
 | WP4–WP5 | **NOT STARTED** |
 | QA v0.1 modified this pass? | **No** |
 | Production implementation | **None** |
@@ -26,21 +26,19 @@
 
 ## Key artefacts
 
-| Case | Path |
-| ---- | ---- |
-| C01 | [evidence/case-01-bayes/](evidence/case-01-bayes/) |
-| C02 | [evidence/case2/](evidence/case2/) |
-| C03 | [evidence/case3/](evidence/case3/) |
-| C04 | [evidence/case4/](evidence/case4/) |
-| C05 | [evidence/case5/](evidence/case5/) |
+| Artefact | Path |
+| -------- | ---- |
+| Successor principles EQ1–EQ8 | [DRAFT-EDITORIAL-PRINCIPLES.md](DRAFT-EDITORIAL-PRINCIPLES.md) |
+| T-007 synthesis | [T-007-FIVE-CASE-SYNTHESIS.md](T-007-FIVE-CASE-SYNTHESIS.md) |
+| WP1 findings | [WP1-FINDINGS.md](WP1-FINDINGS.md) |
 | QA v0.1 (frozen) | [EXPOSITORY-QA-v0.1.md](EXPOSITORY-QA-v0.1.md) |
-| Validation set | [VALIDATION-SET.md](VALIDATION-SET.md) |
+| C01–C05 evidence | [evidence/](evidence/) |
 
 ---
 
-## Case 05 headline (T-006 close)
+## T-007 headline
 
-Deductive validity brief **fulfilled**. Instructional **STRONG**; editorial **CONCERN**. AD-010 ×5 (five-case). See [evidence/case5/QA-FINDINGS.md](evidence/case5/QA-FINDINGS.md).
+P1–P11 → **EQ1–EQ8**. Added purpose/epistemic-form principle (**EQ1**). Systematic editorial furniture/dual-close/flat-hierarchy confirmed. C04 remains genuine instructional purpose-fit counterexample. AD-010: **23** occurrences / five exports (outside model).
 
 ---
 

@@ -2,7 +2,7 @@
 
 **Status:** **OPEN** — Investigation/design pack opened ([S86-D01](decisions.md#s86-d01--open-sprint-86--expository-editorial-quality--qa))  
 **Dashboard:** [STATUS.md](STATUS.md) · **Charter:** [SPRINT-86-CHARTER.md](SPRINT-86-CHARTER.md)  
-**Draft principles:** [DRAFT-EDITORIAL-PRINCIPLES.md](DRAFT-EDITORIAL-PRINCIPLES.md) — **hypotheses only**
+**Draft principles:** [DRAFT-EDITORIAL-PRINCIPLES.md](DRAFT-EDITORIAL-PRINCIPLES.md) — **EQ1–EQ8** (T-007)
 
 Gate/task IDs: `S86-T-###`, `S86-D##`, `S86-WP#`.
 
@@ -19,7 +19,7 @@ Production implementation          NOT AUTHORISED
 Sprint 85 architecture / delivery  CLOSED — do not reopen
 S83/S84 Expository architecture    ACCEPTED — do not reopen without compelling evidence
 Interactive baseline               PROTECTED (S83-D04)
-Draft editorial principles         HYPOTHESES TO TEST — not production rules
+Draft editorial principles         EQ1–EQ8 after T-007 — not yet production rules
 ```
 
 ---
@@ -28,10 +28,10 @@ Draft editorial principles         HYPOTHESES TO TEST — not production rules
 
 | WP | Focus | Gate (summary) | Status |
 | -- | ----- | -------------- | ------ |
-| **WP1** | Editorial quality model | Draft principles tested/revised; general vs context-dependent distinguished; mediocrity-despite-correctness explained | **IN PROGRESS** — case-01 working findings; not accepted |
-| **WP2** | Expository QA framework | Repeatable qualitative process; dimensions; judgement conventions; anti–false-precision guidance | **IN PROGRESS** — [EXPOSITORY-QA-v0.1.md](EXPOSITORY-QA-v0.1.md) pre-validation |
-| **WP3** | Diverse QA evidence set | Bayes + ~3–5 contrasting PRISM-generated resources; model hold/fail/change findings | **IN PROGRESS** — **C01–C05 evaluated**; T-007 synthesis pending |
-| **WP4** | Pipeline responsibility + XD/XM seam | Responsibility map across EJP/XD/XM/DP/assembly/renderer; XD→XM integration finding | **NOT STARTED** |
+| **WP1** | Editorial quality model | Draft principles tested/revised; general vs context-dependent distinguished; mediocrity-despite-correctness explained | **COMPLETE** — EQ1–EQ8; [T-007-FIVE-CASE-SYNTHESIS.md](T-007-FIVE-CASE-SYNTHESIS.md) |
+| **WP2** | Expository QA framework | Repeatable qualitative process; dimensions; judgement conventions; anti–false-precision guidance | **IN PROGRESS** — v0.1 frozen; v0.2 candidates listed in T-007 |
+| **WP3** | Diverse QA evidence set | Bayes + ~3–5 contrasting PRISM-generated resources; model hold/fail/change findings | **COMPLETE** — C01–C05 frozen; T-007 synthesis done |
+| **WP4** | Pipeline responsibility + XD/XM seam | Responsibility map across EJP/XD/XM/DP/assembly/renderer; XD→XM integration finding | **NOT STARTED** — next when authorised |
 | **WP5** | Typography requirements + successor design | Editorial rendering requirements (not CSS); bounded implementation recommendation | **NOT STARTED** |
 
 ---
@@ -46,8 +46,8 @@ Draft editorial principles         HYPOTHESES TO TEST — not production rules
 | S86-T-004 | Draft Expository QA process (dimensions, judgement scheme, evidence expectations) | WP2 | **COMPLETE** (v0.1 pre-validation) |
 | S86-T-005 | Select deliberately contrasting resource cases (~4–6 total including Bayes) | WP3 | **COMPLETE** (selection only) |
 | S86-T-006 | When authorised: generate/evaluate additional PRISM Expository samples | WP3 | **COMPLETE** — C01–C05 evaluated under frozen QA v0.1 |
-| S86-T-007 | Synthesize model hold / fail / qualify findings across sample | WP1/WP3 | **PENDING** |
-| S86-T-008 | Map editorial responsibilities onto existing EJP/XD/XM/DP/assembly/renderer | WP4 | **PENDING** |
+| S86-T-007 | Synthesize model hold / fail / qualify findings across sample | WP1/WP3 | **COMPLETE** — EQ1–EQ8; [T-007-FIVE-CASE-SYNTHESIS.md](T-007-FIVE-CASE-SYNTHESIS.md) |
+| S86-T-008 | Map editorial responsibilities onto existing EJP/XD/XM/DP/assembly/renderer | WP4 | **PENDING** — next |
 | S86-T-009 | Investigate XD→XM prose/representation integration seam (smallest coherent option) | WP4 | **PENDING** |
 | S86-T-010 | Record typography / editorial rendering requirements (principles only) | WP5 | **PENDING** |
 | S86-T-011 | Produce bounded successor implementation design (what to change / not change) | WP5 | **PENDING** |

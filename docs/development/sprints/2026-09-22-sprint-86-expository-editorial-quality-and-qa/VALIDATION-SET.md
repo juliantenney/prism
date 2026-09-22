@@ -96,9 +96,10 @@
 
 ---
 
-## Next (after T-006)
+## Next (after T-007)
 
-- **C01–C05** evaluated under frozen QA v0.1 — **S86-T-006 COMPLETE**  
-- **S86-T-007** cross-case synthesis next (when authorised)  
-- Do **not** revise QA v0.1 until T-007 sets revision posture; instrument observations already recorded in case QA findings  
+- **S86-T-006 COMPLETE** — C01–C05 frozen  
+- **S86-T-007 COMPLETE** — EQ1–EQ8; see [T-007-FIVE-CASE-SYNTHESIS.md](T-007-FIVE-CASE-SYNTHESIS.md)  
+- **Next:** S86-T-008 / WP4 when authorised  
+- QA v0.1 remains frozen until a WP2 v0.2 task; instrument candidates listed in T-007  
 - Do not invent C06

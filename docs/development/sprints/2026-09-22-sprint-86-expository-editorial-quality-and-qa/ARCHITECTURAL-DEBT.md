@@ -41,13 +41,14 @@ Debt / observations relevant to Sprint 86 scope. **Investigation/design only.**
 
 | ID | Finding | Notes |
 | -- | ------- | ----- |
-| **S86-AD-010** | Learner-facing fallback: “Structured material body is not supported for learner rendering.” | **Functional/rendering defect.** Confirmed on **five** independent Expository exports: Case 01 **×7**; Case 02 **×4**; Case 03 **×4**; Case 04 **×3**; Case 05 **×5** (S2/S3/S4/S5×2). Repeatable. Do **not** fix in T-006. Outside D1–D15. |
-| S86-AD-011 | P2/P8 and P5/P6 overlap candidates; missing “forward momentum / section joints” candidate | Working model notes — carry to **T-007** |
-| S86-AD-012 | Representation over-generation on low-visual procedural brief (Case 02) | **Qualified by C03** (warranted visuals) and **C05** (mild: 2 figures, Fig 1 warranted / Fig 2 borderline). Case-sensitive, not universal. |
-| S86-AD-013 | QA instrument tension: “remove image ⇒ understanding must fall” vs accessible semantic equivalence | Recorded from Case 03 — candidate v0.2; **do not edit QA v0.1 mid-pass** |
-| S86-AD-014 | Interpretive / disagreement briefs may be realised as a neighbouring single-model explanatory spine | **Supported by Case 04**; **qualified by Case 05** purpose-fit success on schematic conceptual brief — likely domain-/brief-sensitive. Carry to T-007 / WP4. |
-| S86-AD-015 | “Instructional architecture stronger than editorial” is not a safe universal | **Qualified by Case 04**; **re-supported by Case 05** when purpose-fit holds. Preserve C04 as genuine counterexample in T-007. |
-| S86-AD-016 | Structured-material commissions are not 1:1 with learner-facing figures | **Supported by Case 05:** 5 structured materials / 2 figures; fallbacks still print beside realised figures (S4/S5). Diagnostic only — do not over-infer architecture. |
+| **S86-AD-010** | Learner-facing fallback: “Structured material body is not supported for learner rendering.” | **Functional/rendering defect.** Confirmed on **five** independent Expository exports: C01 **×7** + C02 **×4** + C03 **×4** + C04 **×3** + C05 **×5** = **23** learner-facing occurrences. Outside editorial model (EQ1–EQ8). Successor functional work — not fixed in T-006/T-007. |
+| S86-AD-011 | P2/P8 and P5/P6 overlap candidates | **Resolved in T-007** — overlaps merged into EQ4–EQ6; forward-momentum remains technique note, not separate principle |
+| S86-AD-012 | Representation over-generation on low-visual briefs | **Case-sensitive** (C02 strong; C05 mild; C03 warranted). Captured in **EQ5** |
+| S86-AD-013 | QA: “remove image ⇒ understanding must fall” vs accessible semantic equivalence | **v0.2 candidate**; rejected heuristic recorded in EQ5. QA v0.1 unmodified |
+| S86-AD-014 | Interpretive / disagreement briefs → neighbouring single-model spine | **EQ1**; C04 supported; C05 qualifies universality. WP4: early-spine ownership |
+| S86-AD-015 | “Instructional > editorial” not universal | **T-007 refined:** holds when purpose-fit holds; C04 is instructional EQ1 failure |
+| S86-AD-016 | Structured-material commissions ≠ learner-facing figures 1:1 | **WP4 diagnostic** (C05). Not an editorial principle |
+| S86-AD-017 | Systematic editorial furniture / dual close / flat hierarchy | **T-007:** all five cases → **EQ7 / EQ8**. Visible regions must earn learner value |
 
 ## Explicitly out of sprint (at open / this pass)
 

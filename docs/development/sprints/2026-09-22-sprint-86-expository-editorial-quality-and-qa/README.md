@@ -10,9 +10,10 @@
 | -------- | ---- |
 | [SPRINT-86-START-HERE.md](SPRINT-86-START-HERE.md) | Session entry |
 | [SPRINT-86-CHARTER.md](SPRINT-86-CHARTER.md) | Mission, QA intent, guardrails |
-| [DRAFT-EDITORIAL-PRINCIPLES.md](DRAFT-EDITORIAL-PRINCIPLES.md) | P1–P11 hypotheses only |
-| [WP1-FINDINGS.md](WP1-FINDINGS.md) | Case-01 principle test + two-layer finding |
-| [EXPOSITORY-QA-v0.1.md](EXPOSITORY-QA-v0.1.md) | Pre-validation QA instrument |
+| [DRAFT-EDITORIAL-PRINCIPLES.md](DRAFT-EDITORIAL-PRINCIPLES.md) | **EQ1–EQ8** successor model (T-007) |
+| [T-007-FIVE-CASE-SYNTHESIS.md](T-007-FIVE-CASE-SYNTHESIS.md) | Five-case synthesis |
+| [WP1-FINDINGS.md](WP1-FINDINGS.md) | WP1 complete — two-layer finding + model |
+| [EXPOSITORY-QA-v0.1.md](EXPOSITORY-QA-v0.1.md) | Pre-validation QA instrument (frozen) |
 | [VALIDATION-SET.md](VALIDATION-SET.md) | C01–C05 selection & evaluation (**T-006 COMPLETE**) |
 | [evidence/case-01-bayes/](evidence/case-01-bayes/) | Bayes baseline + `Bayes.zip` |
 | [evidence/case2/](evidence/case2/) | Case 02 record + QA findings + `Case2.zip` |

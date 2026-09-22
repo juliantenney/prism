@@ -1,22 +1,21 @@
 # Sprint 86 — Next-chat briefing
 
-**Sprint status:** **OPEN** — **S86-T-006 COMPLETE** (C01–C05 evaluated); **T-007 PENDING**
+**Sprint status:** **OPEN** — **T-007 COMPLETE**; next = **T-008 / WP4** when authorised
 
 ## One-liner
 
-Case 05 (deductive validity vs everyday appraisal) evaluated under **frozen** QA v0.1: purpose-fit **success**; instructional **STRONG**, editorial **CONCERN**. T-006 closed. Do not start T-007 until authorised.
+Five-case synthesis produced successor principles **EQ1–EQ8** (adds purpose/epistemic-form; qualifies opening, recurrence, representations, closure). QA v0.1 unchanged. Do not start WP4 until authorised.
 
-## Case 05 headlines
+## Load these
 
-- Title: *When Does a Conclusion Really Follow?* · S1–S5 · ~2,120 words · 2 figures  
-- Validity ≠ truth; counterexample test; form contrast; non-deductive boundary preserved  
-- AD-010 ×5 (now **five-case** repeatable); 5 structured materials ≠ 2 figures  
-- C04 purpose-fit failure looks domain-sensitive, not universal  
+- [DRAFT-EDITORIAL-PRINCIPLES.md](DRAFT-EDITORIAL-PRINCIPLES.md)  
+- [T-007-FIVE-CASE-SYNTHESIS.md](T-007-FIVE-CASE-SYNTHESIS.md)  
+- [STATUS.md](STATUS.md)
 
 ## Do not
 
-- Begin T-007 without authorisation  
-- Revise QA v0.1 / P1–P11 yet  
-- Fix AD-010 or implement editorial changes  
-- Invent Case 06  
-- Commit without operator instruction — and inspect full `git status` (C03–C05 evidence may still be untracked together with pack-doc edits)
+- Begin WP4 / T-008 without authorisation  
+- Edit QA v0.1  
+- Fix AD-010 or implement editorial/prompt/renderer changes  
+- Generate further validation cases  
+- Commit without operator instruction  

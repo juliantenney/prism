@@ -1,6 +1,6 @@
 # Sprint 86 — Handover
 
-**Kind:** S86-T-006 **COMPLETE** — all validation cases C01–C05 evaluated under frozen QA v0.1  
+**Kind:** S86-T-007 **COMPLETE** — five-case synthesis → EQ1–EQ8  
 **Sprint status:** **OPEN**  
 **Dashboard:** [STATUS.md](STATUS.md)
 
@@ -10,29 +10,24 @@
 
 | Item | State |
 | ---- | ----- |
-| C01–C05 | All evaluated |
-| C05 validity vs persuasiveness | [evidence/case5/QA-FINDINGS.md](evidence/case5/QA-FINDINGS.md) |
-| case5.zip | **Unmodified** |
+| T-006 | COMPLETE — C01–C05 frozen |
+| T-007 | **COMPLETE** — [T-007-FIVE-CASE-SYNTHESIS.md](T-007-FIVE-CASE-SYNTHESIS.md) |
+| Quality model | **EQ1–EQ8** in [DRAFT-EDITORIAL-PRINCIPLES.md](DRAFT-EDITORIAL-PRINCIPLES.md) |
+| WP1 | **COMPLETE** |
+| WP3 | **COMPLETE** (evidence + synthesis) |
 | QA v0.1 | **Frozen / unmodified** |
-| S86-AD-010 | Confirmed on **five** independent exports (C05 ×5) |
-| S86-T-006 | **COMPLETE** |
-| S86-T-007 | **PENDING** — do not start until authorised |
-| Production changes | **None** |
+| AD-010 | Five exports; **23** total occurrences; outside model |
+| WP4 / T-008 | **PENDING** — not started |
+| Production | **None** |
 
 ---
 
 ## B. Next action
 
-Authorise **S86-T-007** cross-case synthesis (hold / fail / qualify P1–P11; instrument observations → v0.2 candidates). Keep QA v0.1 frozen until T-007 decides revision posture. Do not implement; do not fix AD-010 in investigation passes.
+Authorise **S86-T-008** (WP4): map EQ responsibilities onto EJP/XD/XM/Design Page/assembly/renderer; use T-007 WP4 handoff notes. Do not implement. Do not rewrite production prompts. Do not draft QA v0.2 unless separately authorised under WP2.
 
 ---
 
-## C. Case 05 headline
+## C. Model headline
 
-Purpose-fit **success**: validity ≠ truth; counterexample test; form contrast; non-deductive boundary preserved. Instructional **STRONG**; editorial **CONCERN** (furniture / dual close). Qualifies C04 as domain-sensitive purpose-fit failure, not universal.
-
----
-
-## D. Repository note (for next commit)
-
-Untracked evidence dirs may include **case3/, case4/, case5/** plus prior Sprint 86 doc edits from T-006 passes. Inspect `git status` before any commit; do not frame a commit as Case-05-only if C03–C04 evidence remains untracked.
+High-quality Expository = **commissioned understanding in the right epistemic form** + **authored reading experience**. Systematic editorial debt (furniture, dual close, flat hierarchy) across all five cases; C04 purpose-fit failure is instructional and domain-/brief-sensitive.

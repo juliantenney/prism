@@ -12,4 +12,4 @@ Evidence-backed EQ1–EQ8 quality model, frozen C01–C05 QA v0.1 validation, pi
 
 ## Next
 
-Successor **implementation** sprint not yet opened. Start from T-012 §11 when authorised. Draft QA v0.2 before coding.
+**Successor:** [Sprint 87 — Expository Quality — First Successor Implementation](sprint-87-expository-quality-first-successor-implementation.md) — **READY / NOT STARTED** ([START HERE](../development/sprints/2026-09-22-sprint-87-expository-quality-first-successor-implementation/SPRINT-87-START-HERE.md)). First task: draft QA v0.2, then implement T-011 first slice.

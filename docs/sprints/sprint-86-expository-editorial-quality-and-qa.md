@@ -23,4 +23,4 @@ Investigate and design Expository **editorial** quality (distinct from instructi
 | QA v0.2 | **Handoff** to successor sprint |
 | Production implementation | **None in S86** |
 
-Programme pointer: [NEXT-SPRINT.md](NEXT-SPRINT.md)
+Programme pointer: [NEXT-SPRINT.md](NEXT-SPRINT.md) · **Successor:** [Sprint 87](sprint-87-expository-quality-first-successor-implementation.md) — **READY / NOT STARTED**

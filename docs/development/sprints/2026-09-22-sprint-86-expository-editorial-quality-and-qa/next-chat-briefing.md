@@ -4,17 +4,15 @@
 
 ## One-liner
 
-Sprint 86 closed: EQ1–EQ8 + T-011 first-slice design handed off. No production implementation. Successor sprint not opened. Draft QA v0.2 before coding when implementation is authorised.
+Sprint 86 closed. Successor [Sprint 87](../2026-09-22-sprint-87-expository-quality-first-successor-implementation/SPRINT-87-START-HERE.md) is **READY / NOT STARTED**. Continue there — first task QA v0.2.
 
-## Load
+## Load (historical)
 
 - [T-012-SPRINT-86-CLOSURE.md](T-012-SPRINT-86-CLOSURE.md)  
-- [T-011-SUCCESSOR-IMPLEMENTATION-DESIGN.md](T-011-SUCCESSOR-IMPLEMENTATION-DESIGN.md)  
-- [STATUS.md](STATUS.md)
+- [T-011-SUCCESSOR-IMPLEMENTATION-DESIGN.md](T-011-SUCCESSOR-IMPLEMENTATION-DESIGN.md)
 
 ## Do not
 
-- Implement the first slice without a new authorised implementation sprint  
-- Create Sprint 87 casually without opening decision  
-- Treat polished Expository presentation as already shipped  
-- Reopen frozen C01–C05 judgements  
+- Reopen Sprint 86 conclusions or frozen C01–C05 judgements  
+- Treat polished Expository presentation as already shipped from S86  
+- Work implementation from this pack — use Sprint 87

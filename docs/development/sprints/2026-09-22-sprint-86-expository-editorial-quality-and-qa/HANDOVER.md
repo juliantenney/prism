@@ -17,18 +17,13 @@
 | Production Expository | Remains **Sprint 85** functional delivery |
 | Interactive | **Protected** |
 | Alpha | **Complete** (unchanged) |
-| Sprint 87 | **Not created** |
+| Sprint 87 | **READY / NOT STARTED** — [START HERE](../2026-09-22-sprint-87-expository-quality-first-successor-implementation/SPRINT-87-START-HERE.md) |
 
 ---
 
-## B. Next programme action (when authorised)
+## B. Next programme action
 
-Open a **successor implementation sprint** (not created here). Then:
-
-1. Draft **QA v0.2** before coding.  
-2. Implement T-011 first slice in dependency order.  
-3. Test + Interactive baseline + live pressure cases.  
-4. Decide later on Option B / H3s from live evidence.
+**Successor opened:** [Sprint 87](../2026-09-22-sprint-87-expository-quality-first-successor-implementation/SPRINT-87-START-HERE.md) — **READY / NOT STARTED**. Sprint 86 remains **COMPLETE / CLOSED**. First S87 task = draft QA v0.2, then implement T-011 first slice.
 
 ---
 

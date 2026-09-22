@@ -26,7 +26,7 @@
 | QA v0.2 | **Handoff** — draft at successor-sprint start, before coding |
 | Production Expository | **S85** functional — S86 polish **not** shipped |
 | Interactive prompts | **Protected** (S83-D04) |
-| Sprint 87 | **Not created** |
+| Sprint 87 | **READY / NOT STARTED** — [pack](../2026-09-22-sprint-87-expository-quality-first-successor-implementation/SPRINT-87-START-HERE.md) |
 
 ---
 
@@ -36,15 +36,11 @@ Established EQ1–EQ8, frozen C01–C05 under QA v0.1, pipeline/seam/typography 
 
 ---
 
-## Next programme action (when authorised)
+## Next programme action
 
-1. Open a successor **implementation** sprint (not created here).  
-2. Draft **QA v0.2** before coding.  
-3. Implement T-011 first slice in dependency order.  
-4. Tests + Interactive baseline + live pressure cases.  
-5. Decide later on Option B / semantic H3s from live evidence.
+**Successor:** [Sprint 87](../2026-09-22-sprint-87-expository-quality-first-successor-implementation/SPRINT-87-START-HERE.md) — **READY / NOT STARTED**. First task there: draft QA v0.2, then implement T-011 first slice. Sprint 86 remains **COMPLETE / CLOSED**.
 
-Details: [T-012-SPRINT-86-CLOSURE.md](T-012-SPRINT-86-CLOSURE.md) §11 · [T-011-SUCCESSOR-IMPLEMENTATION-DESIGN.md](T-011-SUCCESSOR-IMPLEMENTATION-DESIGN.md)
+Details (historical): [T-012-SPRINT-86-CLOSURE.md](T-012-SPRINT-86-CLOSURE.md) §11 · [T-011-SUCCESSOR-IMPLEMENTATION-DESIGN.md](T-011-SUCCESSOR-IMPLEMENTATION-DESIGN.md)
 
 ---
 

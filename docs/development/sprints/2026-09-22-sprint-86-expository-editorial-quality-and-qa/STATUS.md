@@ -17,8 +17,8 @@
 | WP2 | **HANDOFF** — QA v0.2 to successor sprint (before coding) |
 | First implementation slice | Designed (T-011) — **not implemented** |
 | Production implementation in S86 | **None** |
-| Successor sprint | **Not opened** |
-| Sprint 87 | **Not created** |
+| Successor sprint | [Sprint 87](../2026-09-22-sprint-87-expository-quality-first-successor-implementation/SPRINT-87-START-HERE.md) — **READY / NOT STARTED** |
+| Sprint 87 | Pack created — work not begun |
 
 ---
 

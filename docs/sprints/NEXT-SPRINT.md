@@ -1,20 +1,21 @@
 # Next sprint — active programme
 
-**Status:** **Sprint 86 COMPLETE / CLOSED** (2026-09-22). No successor implementation sprint opened yet. Sprint 85 **COMPLETE / CLOSED**. Sprint 84 **CLOSED**. Sprint 83 **CLOSED**. Sprint 82 **CLOSED**. Alpha development **complete**.  
+**Status:** **Sprint 87 READY / NOT STARTED** (pack created 2026-09-22). Sprint 86 **COMPLETE / CLOSED**. Sprint 85 **COMPLETE / CLOSED**. Sprint 84–82 **CLOSED**. Alpha development **complete**.  
 **Updated:** 2026-09-22
 
 ---
 
 ## Current programme
 
-**Last closed sprint:** [Sprint 86 — Expository Editorial Quality & QA](../development/sprints/2026-09-22-sprint-86-expository-editorial-quality-and-qa/T-012-SPRINT-86-CLOSURE.md) — **COMPLETE / CLOSED**
+**Active sprint:** [Sprint 87 — Expository Quality — First Successor Implementation](../development/sprints/2026-09-22-sprint-87-expository-quality-first-successor-implementation/SPRINT-87-START-HERE.md) — **READY / NOT STARTED**
 
-**Type:** Investigation / Design — **no production implementation in S86**  
-**Close decision:** [S86-D02](../development/sprints/2026-09-22-sprint-86-expository-editorial-quality-and-qa/decisions.md#s86-d02--close-sprint-86--expository-editorial-quality--qa)  
+**Type:** Implementation + validation  
+**Opening decision:** [S87-D01](../development/sprints/2026-09-22-sprint-87-expository-quality-first-successor-implementation/decisions.md#s87-d01--open-sprint-87--expository-quality--first-successor-implementation)  
 **Backlog:** [PB-FA-012](../backlog/PRODUCT-BACKLOG.md#pb-fa-012--expository-editorial-quality--qa)  
-**Closeout pointer:** [sprint-86-closeout.md](sprint-86-closeout.md)
+**Charter pointer:** [sprint-87-expository-quality-first-successor-implementation.md](sprint-87-expository-quality-first-successor-implementation.md)  
+**Authoritative design:** [S86 T-011](../development/sprints/2026-09-22-sprint-86-expository-editorial-quality-and-qa/T-011-SUCCESSOR-IMPLEMENTATION-DESIGN.md)
 
-**Active implementation sprint:** **None** — successor Expository editorial implementation sprint **not yet opened**.
+**Last closed sprint:** [Sprint 86 — Expository Editorial Quality & QA](../development/sprints/2026-09-22-sprint-86-expository-editorial-quality-and-qa/T-012-SPRINT-86-CLOSURE.md) — **COMPLETE / CLOSED** ([closeout](sprint-86-closeout.md))
 
 ### Alpha milestone (still authoritative)
 
@@ -26,30 +27,27 @@
 
 | Item | State |
 | ---- | ----- |
-| First-class gate | `npm run test:first-class` → **339/339** (at S85 close) |
+| First-class gate (inherited) | `npm run test:first-class` → **339/339** (at S86 handoff) |
 | Sprint 82–86 | **CLOSED** |
-| Production Expository | **S85 functional** — S86 polish **not** shipped |
+| Sprint 87 | **READY / NOT STARTED** — no implementation begun |
+| Production Expository | **S85 functional** — S87 first slice **not** shipped |
 | Interactive prompt family | **Protected baseline** (S83-D04) |
-| T-011 first slice | **Designed — not implemented** |
-| QA v0.2 | **Handoff** — draft before coding in successor sprint |
+| First authorised S87 task | **S87-T-001** — draft QA v0.2 before coding |
 
 ---
 
-## Sprint 86 closure distinction
+## Sprint 87 mission (one line)
 
-> S86 establishes the Expository editorial quality model, validation evidence, pipeline/seam/typography designs, and a bounded first successor implementation slice. It does **not** implement that slice.
+Implement and validate the bounded S86 T-011 first Expository quality slice without destabilising Interactive.
 
 ---
 
-## When authorised — successor starting point
+## Immediate next
 
-1. Open successor **implementation** sprint (not created here).  
-2. Draft **QA v0.2** before coding.  
-3. Implement T-011 first slice (EQ1, chapter open/close, AD-010, typography CSS, DP sections safety).  
-4. Tests + Interactive baseline + live pressure cases.  
-5. Later: Option B / H3s only from live evidence.
+1. **S87-T-001** — Draft Expository QA v0.2.  
+2. Then implement T-011 first slice in dependency order (contracts → prompts → assembly → renderer/AD-010/presentation → gates → live validation → closure).
 
-Canonical design: [T-011-SUCCESSOR-IMPLEMENTATION-DESIGN.md](../development/sprints/2026-09-22-sprint-86-expository-editorial-quality-and-qa/T-011-SUCCESSOR-IMPLEMENTATION-DESIGN.md)
+Do **not** skip QA v0.2. Do **not** expand into Option B / fonts / H3s without a later decision.
 
 Canonical planning authority remains [PRODUCT-BACKLOG.md](../backlog/PRODUCT-BACKLOG.md).
 
@@ -57,6 +55,7 @@ Canonical planning authority remains [PRODUCT-BACKLOG.md](../backlog/PRODUCT-BAC
 
 ## Previous sprints
 
+- Sprint 87 — Expository Quality — First Successor Implementation — **READY / NOT STARTED** ([START HERE](../development/sprints/2026-09-22-sprint-87-expository-quality-first-successor-implementation/SPRINT-87-START-HERE.md) · [charter pointer](sprint-87-expository-quality-first-successor-implementation.md))  
 - Sprint 86 — Expository Editorial Quality & QA — **CLOSED** ([closure](../development/sprints/2026-09-22-sprint-86-expository-editorial-quality-and-qa/T-012-SPRINT-86-CLOSURE.md) · [closeout](sprint-86-closeout.md))  
 - Sprint 85 — Expository Resource Implementation — **CLOSED** ([closure](../development/sprints/2026-09-21-sprint-85-expository-resource-implementation/SPRINT-85-CLOSURE.md) · [closeout](sprint-85-closeout.md))  
 - Sprint 84 — Expository Resource Planning — **CLOSED** ([closure](../development/sprints/2026-09-21-sprint-84-expository-resource-planning/SPRINT-84-CLOSURE.md) · [closeout](sprint-84-closeout.md))  

@@ -1,21 +1,20 @@
 # Sprint 86 — Next-chat briefing
 
-**Sprint status:** **OPEN** — Investigation/design pack established; WPs not started
+**Sprint status:** **OPEN** — T-001…T-005 complete; stop before T-006
 
 ## One-liner
 
-Investigate Expository **editorial** quality and QA (model, process, diverse evidence, pipeline map, successor design). Do **not** implement. Do **not** reopen S85. Draft principles are hypotheses only.
+Bayes case 01 captured; P1–P11 provisionally tested; instructional vs editorial layers evidenced; Expository QA v0.1 frozen for later cases; C02–C05 selected but **not** generated.
 
 ## Verified
 
-- Sprint 85 COMPLETE / CLOSED (functional Expository; polish not claimed)
-- S86 pack + S86-D01 accepted
-- No production code/prompt/contract/renderer changes at open
+- `Bayes.zip` inspected; immutable
+- Structured-material fallback ×7 → S86-AD-010 (functional, not editorial)
+- No production code/prompt/contract/renderer/CSS changes
 
 ## Do not
 
-- Implement editorial improvements  
-- Modify Interactive prompts  
-- Impose a fixed chapter template  
-- Optimise to a numerical QA score  
+- Start S86-T-006 without authorisation  
+- Implement editorial or AD-010 fixes  
+- Silently revise QA v0.1 while scoring later cases  
 - Commit without operator instruction  

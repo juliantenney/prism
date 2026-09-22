@@ -28,9 +28,9 @@ Draft editorial principles         HYPOTHESES TO TEST — not production rules
 
 | WP | Focus | Gate (summary) | Status |
 | -- | ----- | -------------- | ------ |
-| **WP1** | Editorial quality model | Draft principles tested/revised; general vs context-dependent distinguished; mediocrity-despite-correctness explained | **NOT STARTED** |
-| **WP2** | Expository QA framework | Repeatable qualitative process; dimensions; judgement conventions; anti–false-precision guidance | **NOT STARTED** |
-| **WP3** | Diverse QA evidence set | Bayes + ~3–5 contrasting PRISM-generated resources; model hold/fail/change findings | **NOT STARTED** |
+| **WP1** | Editorial quality model | Draft principles tested/revised; general vs context-dependent distinguished; mediocrity-despite-correctness explained | **IN PROGRESS** — case-01 working findings; not accepted |
+| **WP2** | Expository QA framework | Repeatable qualitative process; dimensions; judgement conventions; anti–false-precision guidance | **IN PROGRESS** — [EXPOSITORY-QA-v0.1.md](EXPOSITORY-QA-v0.1.md) pre-validation |
+| **WP3** | Diverse QA evidence set | Bayes + ~3–5 contrasting PRISM-generated resources; model hold/fail/change findings | **IN PROGRESS** — case 01 captured; C02–C05 selected; generation not started |
 | **WP4** | Pipeline responsibility + XD/XM seam | Responsibility map across EJP/XD/XM/DP/assembly/renderer; XD→XM integration finding | **NOT STARTED** |
 | **WP5** | Typography requirements + successor design | Editorial rendering requirements (not CSS); bounded implementation recommendation | **NOT STARTED** |
 
@@ -40,12 +40,12 @@ Draft editorial principles         HYPOTHESES TO TEST — not production rules
 
 | ID | Title | WP | Status |
 | -- | ----- | -- | ------ |
-| S86-T-001 | Capture Bayes editorial evidence as case 1 baseline | WP1/WP3 | **PENDING** |
-| S86-T-002 | Test draft principles P1–P11 for generality / redundancy / missing dimensions | WP1 | **PENDING** |
-| S86-T-003 | Articulate instructional vs editorial architecture distinction with evidence | WP1 | **PENDING** |
-| S86-T-004 | Draft Expository QA process (dimensions, judgement scheme, evidence expectations) | WP2 | **PENDING** |
-| S86-T-005 | Select deliberately contrasting resource cases (~4–6 total including Bayes) | WP3 | **PENDING** |
-| S86-T-006 | When authorised: generate/evaluate additional PRISM Expository samples | WP3 | **PENDING** |
+| S86-T-001 | Capture Bayes editorial evidence as case 1 baseline | WP1/WP3 | **COMPLETE** |
+| S86-T-002 | Test draft principles P1–P11 for generality / redundancy / missing dimensions | WP1 | **COMPLETE** (provisional; single-case) |
+| S86-T-003 | Articulate instructional vs editorial architecture distinction with evidence | WP1 | **COMPLETE** (provisional) |
+| S86-T-004 | Draft Expository QA process (dimensions, judgement scheme, evidence expectations) | WP2 | **COMPLETE** (v0.1 pre-validation) |
+| S86-T-005 | Select deliberately contrasting resource cases (~4–6 total including Bayes) | WP3 | **COMPLETE** (selection only) |
+| S86-T-006 | When authorised: generate/evaluate additional PRISM Expository samples | WP3 | **PENDING** — do not start yet |
 | S86-T-007 | Synthesize model hold / fail / qualify findings across sample | WP1/WP3 | **PENDING** |
 | S86-T-008 | Map editorial responsibilities onto existing EJP/XD/XM/DP/assembly/renderer | WP4 | **PENDING** |
 | S86-T-009 | Investigate XD→XM prose/representation integration seam (smallest coherent option) | WP4 | **PENDING** |
@@ -72,9 +72,7 @@ Do **not** invent production implementation tasks in this plan.
 
 ## Candidate contrasting sample themes (planning only)
 
-Conceptual/analytical · procedural/technical · humanities/interpretive · source-grounded/evidence-heavy · strong visual needs · cases where extensive visuals are unnecessary.
-
-Final selection during WP3 — not fixed at open.
+**Superseded for selection by** [VALIDATION-SET.md](VALIDATION-SET.md) (C01–C05). Generation of C02–C05 awaits S86-T-006 authorisation.
 
 ---
 

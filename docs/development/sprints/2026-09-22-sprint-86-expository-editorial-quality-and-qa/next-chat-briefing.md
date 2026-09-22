@@ -1,21 +1,21 @@
 # Sprint 86 — Next-chat briefing
 
-**Sprint status:** **OPEN** — **T-007 COMPLETE**; next = **T-008 / WP4** when authorised
+**Sprint status:** **OPEN** — **T-008 COMPLETE**; next = **T-009** when authorised
 
 ## One-liner
 
-Five-case synthesis produced successor principles **EQ1–EQ8** (adds purpose/epistemic-form; qualifies opening, recurrence, representations, closure). QA v0.1 unchanged. Do not start WP4 until authorised.
+Pipeline responsibility map done: EQ1 missing typed ownership; EQ5 split XD/XM/DP-VA; EQ7/EQ8 furniture structural; AD-010 = unsupported structured XM. Do not start T-009 until authorised.
 
 ## Load these
 
+- [T-008-PIPELINE-RESPONSIBILITY-MAP.md](T-008-PIPELINE-RESPONSIBILITY-MAP.md)  
 - [DRAFT-EDITORIAL-PRINCIPLES.md](DRAFT-EDITORIAL-PRINCIPLES.md)  
-- [T-007-FIVE-CASE-SYNTHESIS.md](T-007-FIVE-CASE-SYNTHESIS.md)  
 - [STATUS.md](STATUS.md)
 
 ## Do not
 
-- Begin WP4 / T-008 without authorisation  
-- Edit QA v0.1  
-- Fix AD-010 or implement editorial/prompt/renderer changes  
-- Generate further validation cases  
+- Begin T-009 / WP5 without authorisation  
+- Implement, edit prompts, or fix AD-010  
+- Add a new AI stage  
+- Draft QA v0.2  
 - Commit without operator instruction  

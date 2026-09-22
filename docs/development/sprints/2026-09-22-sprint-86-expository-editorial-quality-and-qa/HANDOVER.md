@@ -1,6 +1,6 @@
 # Sprint 86 — Handover
 
-**Kind:** S86-T-007 **COMPLETE** — five-case synthesis → EQ1–EQ8  
+**Kind:** S86-T-008 **COMPLETE** — pipeline responsibility map for EQ1–EQ8  
 **Sprint status:** **OPEN**  
 **Dashboard:** [STATUS.md](STATUS.md)
 
@@ -10,24 +10,21 @@
 
 | Item | State |
 | ---- | ----- |
-| T-006 | COMPLETE — C01–C05 frozen |
-| T-007 | **COMPLETE** — [T-007-FIVE-CASE-SYNTHESIS.md](T-007-FIVE-CASE-SYNTHESIS.md) |
-| Quality model | **EQ1–EQ8** in [DRAFT-EDITORIAL-PRINCIPLES.md](DRAFT-EDITORIAL-PRINCIPLES.md) |
-| WP1 | **COMPLETE** |
-| WP3 | **COMPLETE** (evidence + synthesis) |
-| QA v0.1 | **Frozen / unmodified** |
-| AD-010 | Five exports; **23** total occurrences; outside model |
-| WP4 / T-008 | **PENDING** — not started |
-| Production | **None** |
+| EQ1–EQ8 | Authoritative quality model (unchanged by T-008) |
+| T-008 | **COMPLETE** — [T-008-PIPELINE-RESPONSIBILITY-MAP.md](T-008-PIPELINE-RESPONSIBILITY-MAP.md) |
+| WP4 | **IN PROGRESS** (T-008 done; T-009 pending) |
+| Production files | **Unmodified** |
+| QA v0.1 | **Frozen** |
+| AD-010 | Root-cause diagnosed (unsupported structured XM); not fixed |
 
 ---
 
 ## B. Next action
 
-Authorise **S86-T-008** (WP4): map EQ responsibilities onto EJP/XD/XM/Design Page/assembly/renderer; use T-007 WP4 handoff notes. Do not implement. Do not rewrite production prompts. Do not draft QA v0.2 unless separately authorised under WP2.
+Authorise **S86-T-009**: XD→XM (and XM↔DP VA) representation participation seam — use T-008 §5 sharpened questions. No implementation. No new stage by default.
 
 ---
 
-## C. Model headline
+## C. T-008 headline
 
-High-quality Expository = **commissioned understanding in the right epistemic form** + **authored reading experience**. Systematic editorial debt (furniture, dual close, flat hierarchy) across all five cases; C04 purpose-fit failure is instructional and domain-/brief-sensitive.
+EJP must own EQ1 but lacks typed epistemic-form/purpose transport. Representation warrant (XD) ≠ body (XM) ≠ figure (DP VA). Orientation/Closing dual furniture is DP+renderer structural, not merely bad prose. AD-010 is renderer unsupported-body path.

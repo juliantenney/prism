@@ -31,7 +31,7 @@ Draft editorial principles         EQ1–EQ8 after T-007 — not yet production 
 | **WP1** | Editorial quality model | Draft principles tested/revised; general vs context-dependent distinguished; mediocrity-despite-correctness explained | **COMPLETE** — EQ1–EQ8; [T-007-FIVE-CASE-SYNTHESIS.md](T-007-FIVE-CASE-SYNTHESIS.md) |
 | **WP2** | Expository QA framework | Repeatable qualitative process; dimensions; judgement conventions; anti–false-precision guidance | **IN PROGRESS** — v0.1 frozen; v0.2 candidates listed in T-007 |
 | **WP3** | Diverse QA evidence set | Bayes + ~3–5 contrasting PRISM-generated resources; model hold/fail/change findings | **COMPLETE** — C01–C05 frozen; T-007 synthesis done |
-| **WP4** | Pipeline responsibility + XD/XM seam | Responsibility map across EJP/XD/XM/DP/assembly/renderer; XD→XM integration finding | **NOT STARTED** — next when authorised |
+| **WP4** | Pipeline responsibility + XD/XM seam | Responsibility map across EJP/XD/XM/DP/assembly/renderer; XD→XM integration finding | **IN PROGRESS** — T-008 COMPLETE; T-009 PENDING |
 | **WP5** | Typography requirements + successor design | Editorial rendering requirements (not CSS); bounded implementation recommendation | **NOT STARTED** |
 
 ---
@@ -47,8 +47,8 @@ Draft editorial principles         EQ1–EQ8 after T-007 — not yet production 
 | S86-T-005 | Select deliberately contrasting resource cases (~4–6 total including Bayes) | WP3 | **COMPLETE** (selection only) |
 | S86-T-006 | When authorised: generate/evaluate additional PRISM Expository samples | WP3 | **COMPLETE** — C01–C05 evaluated under frozen QA v0.1 |
 | S86-T-007 | Synthesize model hold / fail / qualify findings across sample | WP1/WP3 | **COMPLETE** — EQ1–EQ8; [T-007-FIVE-CASE-SYNTHESIS.md](T-007-FIVE-CASE-SYNTHESIS.md) |
-| S86-T-008 | Map editorial responsibilities onto existing EJP/XD/XM/DP/assembly/renderer | WP4 | **PENDING** — next |
-| S86-T-009 | Investigate XD→XM prose/representation integration seam (smallest coherent option) | WP4 | **PENDING** |
+| S86-T-008 | Map editorial responsibilities onto existing EJP/XD/XM/DP/assembly/renderer | WP4 | **COMPLETE** — [T-008-PIPELINE-RESPONSIBILITY-MAP.md](T-008-PIPELINE-RESPONSIBILITY-MAP.md) |
+| S86-T-009 | Investigate XD→XM prose/representation integration seam (smallest coherent option) | WP4 | **PENDING** — next; scope sharpened by T-008 §5 (perceptibility encoding; XD↔XM/VA participation; materials≠figures; a11y preserved; no default new stage) |
 | S86-T-010 | Record typography / editorial rendering requirements (principles only) | WP5 | **PENDING** |
 | S86-T-011 | Produce bounded successor implementation design (what to change / not change) | WP5 | **PENDING** |
 | S86-T-012 | Sprint closure record when outputs accepted | Close | **PENDING** |
@@ -57,16 +57,18 @@ Do **not** invent production implementation tasks in this plan.
 
 ---
 
-## Pipeline responsibility hypotheses (to investigate)
+## Pipeline responsibility hypotheses (superseded as working notes)
+
+**Superseded for ownership conclusions by** [T-008-PIPELINE-RESPONSIBILITY-MAP.md](T-008-PIPELINE-RESPONSIBILITY-MAP.md).
 
 | Stage | Working editorial responsibility hypotheses |
 | ----- | --------------------------------------------- |
-| **EJP** | Intellectual entry; whole-resource editorial shape; relative explanatory emphasis; planned recurrence/development; major rhetorical progression; intended synthesis/ending |
-| **XD** | Learner-facing explanatory composition; paragraph-level movement; transitions; selective rhetorical emphasis; prose restraint / semantic density; interaction between prose and commissioned representations |
-| **XM** | Realisation of commissioned intellectual artefacts; representation purpose; relationships/distinctions/evidence the artefact must make perceptible; no takeover of main exposition |
-| **Design Page** | Learner-facing editorial composition; which internal artefacts deserve visible expression; orientation/synthesis treatment; page-level hierarchy and visual planning; avoid projecting PRISM internal structure as learner furniture |
+| **EJP** | Intellectual entry; whole-resource editorial shape; relative explanatory emphasis; planned recurrence/development; major rhetorical progression; intended synthesis/ending — **plus EQ1 purpose/epistemic form (typed ownership currently missing)** |
+| **XD** | Learner-facing explanatory composition; paragraph-level movement; transitions; selective rhetorical emphasis; prose restraint / semantic density; warrant-based commissions |
+| **XM** | Realisation of commissioned intellectual artefact **bodies**; not warrant; not necessarily the learner figure |
+| **Design Page** | Title; thin orientation/synthesis transport; optional Closing; visual affordance planning — **must not repair EJP/XD/XM**; current furniture/VA practice is EQ7/EQ8/EQ5 risk |
 | **Assembly** | Preserve intended relationships without unrestricted rewrite |
-| **Renderer** | Restrained educational-publishing typographic grammar; measure/rhythm; hierarchy; prose/maths/figure/caption/table relationships; conceptual emphasis; editorial not widget presentation; accessibility preserved |
+| **Renderer** | Regions, supported structured XM, VA placement, typography; AD-010 on unsupported structured bodies |
 
 ---
 

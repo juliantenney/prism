@@ -12,6 +12,7 @@
 | [SPRINT-86-CHARTER.md](SPRINT-86-CHARTER.md) | Mission, QA intent, guardrails |
 | [DRAFT-EDITORIAL-PRINCIPLES.md](DRAFT-EDITORIAL-PRINCIPLES.md) | **EQ1–EQ8** successor model (T-007) |
 | [T-007-FIVE-CASE-SYNTHESIS.md](T-007-FIVE-CASE-SYNTHESIS.md) | Five-case synthesis |
+| [T-008-PIPELINE-RESPONSIBILITY-MAP.md](T-008-PIPELINE-RESPONSIBILITY-MAP.md) | EQ→pipeline responsibility map |
 | [WP1-FINDINGS.md](WP1-FINDINGS.md) | WP1 complete — two-layer finding + model |
 | [EXPOSITORY-QA-v0.1.md](EXPOSITORY-QA-v0.1.md) | Pre-validation QA instrument (frozen) |
 | [VALIDATION-SET.md](VALIDATION-SET.md) | C01–C05 selection & evaluation (**T-006 COMPLETE**) |

@@ -41,14 +41,16 @@ Debt / observations relevant to Sprint 86 scope. **Investigation/design only.**
 
 | ID | Finding | Notes |
 | -- | ------- | ----- |
-| **S86-AD-010** | Learner-facing fallback: “Structured material body is not supported for learner rendering.” | **Functional/rendering defect.** Confirmed on **five** independent Expository exports: C01 **×7** + C02 **×4** + C03 **×4** + C04 **×3** + C05 **×5** = **23** learner-facing occurrences. Outside editorial model (EQ1–EQ8). Successor functional work — not fixed in T-006/T-007. |
+| **S86-AD-010** | Learner-facing fallback: “Structured material body is not supported for learner rendering.” | **Functional defect (T-008 root cause).** Renderer supports only compact worked-example (`stages[]`) and diagram (`elements[]`+`relationships[]`) structured XM bodies; other object bodies → `expository_structured_unsupported` via `buildExpositionStructuredMaterial` / `renderUnsupportedStructured` in `lib/learner-renderer-vnext/expository-structured-materials.js`. Five exports; **23** occurrences. Materials ≠ figures by design (diagram graphic = DP VA). Do **not** fix in investigation passes. |
 | S86-AD-011 | P2/P8 and P5/P6 overlap candidates | **Resolved in T-007** — overlaps merged into EQ4–EQ6; forward-momentum remains technique note, not separate principle |
 | S86-AD-012 | Representation over-generation on low-visual briefs | **Case-sensitive** (C02 strong; C05 mild; C03 warranted). Captured in **EQ5** |
 | S86-AD-013 | QA: “remove image ⇒ understanding must fall” vs accessible semantic equivalence | **v0.2 candidate**; rejected heuristic recorded in EQ5. QA v0.1 unmodified |
-| S86-AD-014 | Interpretive / disagreement briefs → neighbouring single-model spine | **EQ1**; C04 supported; C05 qualifies universality. WP4: early-spine ownership |
+| S86-AD-014 | Interpretive / disagreement briefs → neighbouring single-model spine | **EQ1**; C04 supported; C05 qualifies universality. **T-008:** EJP is primary owner but typed purpose/epistemic-form transport **missing**; XD cannot replan |
 | S86-AD-015 | “Instructional > editorial” not universal | **T-007 refined:** holds when purpose-fit holds; C04 is instructional EQ1 failure |
-| S86-AD-016 | Structured-material commissions ≠ learner-facing figures 1:1 | **WP4 diagnostic** (C05). Not an editorial principle |
-| S86-AD-017 | Systematic editorial furniture / dual close / flat hierarchy | **T-007:** all five cases → **EQ7 / EQ8**. Visible regions must earn learner value |
+| S86-AD-016 | Structured-material commissions ≠ learner-facing figures 1:1 | **T-008 confirmed by design:** XD commission → XM body; DP VA owns figures for diagrams; channels not locked 1:1. Carry to T-009 |
+| S86-AD-017 | Systematic editorial furniture / dual close / flat hierarchy | **T-007:** all five → **EQ7 / EQ8**. **T-008:** DP `page_synthesis` + renderer `ORIENTATION_SECTION_DEFINITIONS` + optional Closing after body |
+| S86-AD-018 | EQ1 typed purpose / epistemic-form ownership absent from contracts | **T-008:** responsibility **missing** as field; free-text EJP only. WP4/T-011 successor design input — no new stage in T-008 |
+| S86-AD-019 | Design Page owned patch list includes `sections` | **T-008:** `DESIGN_PAGE_OWNED_TOP_LEVEL_FIELDS` can overwrite assembled exposition if DP emits `sections[]` — must-not fragility |
 
 ## Explicitly out of sprint (at open / this pass)
 

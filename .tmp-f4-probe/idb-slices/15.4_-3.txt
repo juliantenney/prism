@@ -1,0 +1,52 @@
+positive results come from, then map those counts onto the corresponding probability calculation.",
+      "dependencies": [
+        "S2",
+        "S3"
+      ],
+      "lo_refs": [
+        "LO2",
+        "LO3",
+        "LO4",
+        "LO5"
+      ],
+      "elaboration_intentions": [
+        "Develop the established example of 10,000 people, 1% prevalence, a 90% positive rate when the condition is present, and a 5% positive rate when it is absent.",
+        "Show that 90 positive results arise among the 100 people with the condition while 495 arise among the 9,900 without it, giving 585 positive results in total.",
+        "Use 90 out of 585 to obtain approximately 15.4%, then map the same quantities onto Bayes' theorem.",
+        "Explicitly contrast the 90% likelihood with the approximately 15.4% posterior so the reversal-of-conditionals misconception becomes visible."
+      ],
+      "representation_needs": [
+        "A natural-frequency representation showing the population split, positive results from each group, and the resulting 90 out of 585 posterior.",
+        "A compact mapping between the frequency representation and the corresponding Bayes' theorem calculation."
+      ],
+      "connections": [
+        "Operationalises the conditional distinction established in S2 and the theorem components introduced in S3.",
+        "Provides the baseline case that S5 will modify by changing the prior while holding the test characteristics constant."
+      ],
+      "synthesis": "The positive result raises the probability of the condition from 1% to about 15.4%, but not to 90%, because most people begin in the much larger group without the condition and some of them also produce positive results.",
+      "order": 4
+    },
+    {
+      "section_id": "S5",
+      "title": "Why does the starting probability matter so much?",
+      "purpose": "Isolate the influence of the prior and show why evidence cannot be interpreted independently of base rates and competing sources of the same observation.",
+      "knowledge_focus": "Base rate, prior probability, posterior probability, likelihood, false-positive rate, competing sources of evidence, and evidential discrimination.",
+      "conceptual_move": "Hold the evidence model constant while changing the prior, demonstrating that the same test characteristics can support very different posterior probabilities in different starting contexts.",
+      "dependencies": [
+        "S3",
+        "S4"
+      ],
+      "lo_refs": [
+        "LO5",
+        "LO6"
+      ],
+      "elaboration_intentions": [
+        "Compare the 1% prevalence case with the established 20% prevalence case while retaining the 90% positive rate under the condition and 5% positive rate without it.",
+        "Use the change from approximately 15.4% to approximately 81.8% to isolate the effect of the prior rather than introducing a new evidence mechanism.",
+        "Explain why a relatively small false-positive rate can still generate many observations when the group without the condition is much larger."
+      ],
+      "representation_needs": [
+        "A direct comparison of the 1% and 20% prior scenarios showing unchanged test characteristics but different posterior probabilities."
+      ],
+      "connections": [
+        "Reuses the S4 worked example 

@@ -1,0 +1,57 @@
+,
+      "visual_slot": "section-after-content",
+      "tier": "valuable",
+      "purpose": "synthesis",
+      "preferred_representation": "process",
+      "reasoning_supported": "Learners consolidate logical appraisal and substantive appraisal as related but distinct parts of evaluating a purportedly deductive argument.",
+      "learner_stage": "post_reasoning",
+      "anti_spoiler": false,
+      "representation_avoid": [
+        "filled_worksheet",
+        "generic_infographic",
+        "unsupported_causal_arrow",
+        "topic_hero_image"
+      ],
+      "canonical_discipline_note": "Represent only the appraisal sequence and distinctions established upstream; do not extend the process into methods for evaluating non-deductive arguments.",
+      "requires_exact_data_match": false,
+      "must_show": [
+        "identify premises and conclusion",
+        "grant premises provisionally",
+        "ask whether the conclusion could nevertheless be false",
+        "distinguish valid from invalid on that basis",
+        "consider truth or support of premises separately",
+        "soundness as requiring validity and true premises"
+      ],
+      "must_not_show": [
+        "learner response fields",
+        "assessment prompts",
+        "new tests for non-deductive reasoning",
+        "unsupported claims about evidential quality"
+      ],
+      "allowed_claims": [
+        "Logical appraisal concerns whether the premises guarantee the conclusion.",
+        "Substantive appraisal concerns whether the premises should be accepted.",
+        "Soundness requires validity and true premises."
+      ],
+      "disallowed_claims": [
+        "Deductive validity is the appropriate test for every form of academic reasoning.",
+        "Validity establishes that premises are factually correct."
+      ],
+      "source_basis": "S5 explanation, synthesis, and commissioned argument-appraisal sequence.",
+      "caption_intent": "Deductive appraisal separates testing the inferential guarantee from evaluating the premises themselves.",
+      "alt_text": "Process diagram showing identification of premises and conclusion, provisional acceptance of premises, counterexample testing, determination of validity, and separate consideration of the premises.",
+      "detailed_description": "A concise left-to-right process begins by identifying premises and conclusion, then provisionally granting the premises. It proceeds to the question of whether the conclusion could still be false. A possible counterexample indicates invalidity; where the conclusion is forced, the argument is valid. The representation then separates this logical appraisal from consideration of whether the premises are actually true or adequately supported, with soundness identified as requiring both validity and true premises.",
+      "discipline_risk_level": "low"
+    }
+  ],
+  "assembly_state": {
+    "current_stage": "design_page",
+    "enriched_by": [
+      "design_page"
+    ]
+  },
+  "artifact_type": "page",
+  "schema_version": "2.0.0"
+}"
+created_at".2026-09-22T12:47:00.469Z"
+updated_at".2026-09-22T12:47:00.469Z{..=*....XY...........T.....'.w.r.-.1.6.7.2.6.1.e.a.-.8.e.2.4.-.4.a.1.1.-.9.7.2.1.-.9.6.d.6.f.4.7.7.8.1.7.0.,.........$.a.8.6.1.8.4.a.f.-.4.e.5.d.-.4.d.f.a.-.b.3.5.7.-.6.1.e.6.3.e.0.3.e.a.4.d..'.w.r.-.1.6

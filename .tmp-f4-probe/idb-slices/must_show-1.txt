@@ -1,0 +1,53 @@
+.knowledge_focus",
+        "S4.synthesis"
+      ],
+      "visual_decision": "generate",
+      "visual_slot": "section-after-content",
+      "tier": "essential",
+      "purpose": "mechanism",
+      "preferred_representation": "annotated_system",
+      "reasoning_supported": "Learners distinguish two superficially similar arguments by inspecting how the positions of P and Q change the inferential relationship.",
+      "learner_stage": "post_reasoning",
+      "anti_spoiler": false,
+      "representation_avoid": [
+        "summary_table",
+        "generic_infographic",
+        "topic_hero_image"
+      ],
+      "canonical_discipline_note": "Preserve exactly the two argument forms established upstream and use P and Q only as already introduced.",
+      "requires_exact_data_match": false,
+      "must_show": [
+        "If P, then Q; P; therefore Q",
+        "If P, then Q; Q; therefore P",
+        "accepted-manuscript example aligned with the first form",
+        "data-collection example aligned with the second form",
+        "clear indication that the first form guarantees its conclusion and the second leaves alternatives open"
+      ],
+      "must_not_show": [
+        "additional symbolic notation",
+        "new argument forms",
+        "new worked examples",
+        "claims that truth of Q establishes P"
+      ],
+      "allowed_claims": [
+        "The first displayed argument form forces its conclusion when its premises are granted.",
+        "The second displayed argument form leaves open other ways in which Q could be true.",
+        "Argument form can make inferential differences easier to inspect."
+      ],
+      "disallowed_claims": [
+        "Claims about logical forms not developed in the upstream exposition.",
+        "Claims that formal notation is required to assess validity."
+      ],
+      "source_basis": "S4 explanation, synthesis, and commissioned side-by-side argument-form comparison.",
+      "caption_intent": "Two similar-looking arguments can differ in validity because the inferential direction changes.",
+      "alt_text": "Side-by-side comparison of two conditional argument forms. The valid form reads: If P then Q; P; therefore Q. The invalid form reads: If P then Q; Q; therefore P.",
+      "detailed_description": "Two vertically aligned argument structures appear side by side. The first pairs the accepted-manuscript example with 'If P, then Q; P; therefore Q' and indicates that the conclusion is forced once the premises are granted. The second pairs the data-collection example with 'If P, then Q; Q; therefore P' and indicates that Q may be true for reasons other than P. The visual emphasises the changed position of P and Q rather than introducing additional notation.",
+      "discipline_risk_level": "low"
+    },
+    {
+      "affordance_id": "va-S5-appraisal-synthesis-01",
+      "scope": "section",
+      "section_id": "S5",
+      "rationale": "The final section integrates distinctions developed across the resource. A compact process representation can consolidate the relationship between testing an inference and separately considering its premises without turning the sequence into an activity.",
+      "subject": "Deductive argument appraisal sequence",
+      "context": "Synthesise the established appraisal sequence from identify

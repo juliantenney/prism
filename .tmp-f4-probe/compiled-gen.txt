@@ -1,0 +1,89 @@
+1. Educational objective
+- purpose: synthesis
+- reasoning_supported: Learners isolate the prior as the changing quantity and compare its effect on posterior probability while recognising that the evidence model remains constant.
+
+2. Representation
+- preferred_representation: annotated_system
+- Depict the system structure with clear labels
+- Annotate only source-supported parts
+- Preserve spatial or functional relationships
+- Avoid decorative labels that invent components
+
+3. Claim boundaries
+- Do not strengthen qualified or conditional claims.
+- allowed_claims:
+  - The same test characteristics can yield different posterior probabilities when the prior changes.
+  - The prior contributes to the interpretation of the evidence.
+- disallowed_claims:
+  - Higher prevalence makes the test itself more accurate.
+- canonical_discipline_note: Hold the 90% positive rate with the condition and 5% positive rate without the condition constant across both scenarios.
+- Subject and context are commissioning cues only — not authoritative on-image claim labels.
+- Learner-facing on-image labels and captions must stay within allowed_claims, disallowed_claims, and canonical_discipline_note.
+- If a relationship is authorised only qualitatively and no exact formal relationship is supplied, do not invent an equation — use arrows, grouping or short labels.
+
+4. Commissioning cues (subordinate)
+- Subject and context are commissioning cues only — not authoritative on-image claim labels.
+- Learner-facing on-image labels and captions must stay within allowed_claims, disallowed_claims, and canonical_discipline_note.
+- subject: Comparison of 1% and 20% prevalence scenarios with identical test characteristics.
+- context: Place after the section's comparison to consolidate how changing the starting prevalence alters the composition of positive results and therefore the posterior probability.
+
+5. Evidence basis
+- [(unknown anchor) | section_substance] base-rate comparison
+- [(unknown anchor) | section_substance] same evidence, different prior
+- [(unknown anchor) | section_substance] matched comparison
+
+5b. Precision-critical fidelity
+Precision-critical fidelity:
+Preserve authorised equations, values, symbolic relationships, units and technical labels exactly where they are represented.
+Harmless typography or spacing variation is allowed.
+You may arrange or visually explain authorised formal claims without changing their notation, convention, or algebraic form.
+Do NOT derive, invent, substitute, average, simplify into a different relationship, or create a new equation merely to make the visual coherent.
+Do not reparameterise, normalise, rearrange, or substitute an authorised precision-critical expression into a different formal convention unless that alternate form is also explicitly authorised.
+If the authorised source does not specify an exact formal relationship, represent the connection qualitatively (arrows, grouping, short labels) rather than inventing a formula.
+Before rendering, silently verify every mathematical or formal label against the authorised precision-critical relationships and claims.
+This brief requires exact data match: numeric values, units and symbolic forms must match authorised evidence.
+
+6. Required content
+- 1% prevalence leading to a posterior of about 15.4%
+- 20% prevalence leading to a posterior of about 81.8%
+- 90% positive rate among people with the condition in both scenarios
+- 5% positive rate among people without the condition in both scenarios
+- A clear indication that prevalence is the quantity that changes
+
+7. Excluded content
+- Different test characteristics between the two scenarios
+- An implication that the test becomes more accurate when prevalence rises
+- Additional prevalence scenarios
+- representation_avoid:
+  - summary_table
+  - generic_infographic
+  - topic_hero_image
+  - numeric_claim_without_source
+
+8. Spoiler boundary
+- anti_spoiler: false
+- boundary: (none)
+- learner_stage: post_reasoning
+
+9. Discipline guidance
+- discipline_risk_level: high
+- canonical_discipline_note: Hold the 90% positive rate with the condition and 5% positive rate without the condition constant across both scenarios.
+
+10. Caption guidance
+- Changing the prior from 1% to 20% changes the posterior even though the test characteristics remain fixed.
+
+11. Resource visual language
+- Restrained, high-quality university-level educational illustration.
+- Explanatory diagram character — not a promotional poster, marketing infographic, or decorative collage.
+- Prefer coherent diagrammatic / schematic treatment by default.
+- Use richer spatial or landscape treatment only when the chosen representation genuinely benefits from spatial geography.
+- Keep palette character restrained and coherent across figures for this learner resource.
+- Use consistent annotation, label, arrow and callout character.
+- Keep backgrounds uncluttered; avoid decorative chrome that competes with instructional labels.
+- Figures for this learner resource should feel like members of the same visual family.
+- Do not force different representation types into identical compositions — layout follows Visual structure / Representation.
+
+12. Learner-facing figure copy (authored with this brief; do not invent style/camera language)
+- alt_text: Matched comparison showing identical 90% and 5% test rates with prevalence changing from 1% to 20%, producing posterior probabilities of about 15.4% and 81.8%.
+- detailed_description: Two parallel scenarios use populations of 10,000 and identical test characteristics. The first begins with 1% prevalence and ends with a posterior of about 15.4%. The second begins with 20% prevalence and ends with a posterior of about 81.8%. Shared annotations make clear that the test rates are held constant while prevalence changes.
+- Note: generation_instruction above is the image prompt only; learner HTML uses alt_text + detailed_description, not this prompt.

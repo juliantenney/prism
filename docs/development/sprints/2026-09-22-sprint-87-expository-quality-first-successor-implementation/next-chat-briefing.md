@@ -1,24 +1,19 @@
 # Sprint 87 — Next-chat briefing
 
-**Sprint status:** **IN PROGRESS**
+**Sprint status:** **COMPLETE / CLOSED**
 
 ## One-liner
 
-T-001–T-006 complete (QA · EQ1 · chapter form · AD-010 · T-010 presentation · engineering gate). WP5 IN PROGRESS. Next = **S87-T-007** live/manual validation. Interactive protected. First-class **339/339**.
+Sprint 87 closed. First Expository quality slice implemented and validated. PB-FA-012 **CLOSED**. First-class **339/339**. Bayes calibration 89→90 (one case). Deferred capabilities remain deferred.
 
 ## Load
 
-- [PLAN.md](PLAN.md)  
+- [T-008-SPRINT-87-CLOSURE.md](T-008-SPRINT-87-CLOSURE.md)  
 - [STATUS.md](STATUS.md)  
-- [decisions.md](decisions.md) S87-D07
-
-## First action
-
-**S87-T-007** — Live/manual Expository validation (pressure cases + QA v0.2).
+- [decisions.md](decisions.md) S87-D14  
 
 ## Do not
 
-- Close Sprint 87 or PB-FA-012 yet  
-- Reopen fonts / Option B / H3 generation  
-- Edit Interactive prompts  
-- Commit unless explicitly requested
+- Reopen Sprint 87 first-slice work casually  
+- Pull Option B / fonts / H3 / rewrite / Interactive generalisation into scope without a new decision  
+- Commit unless Julian requests it

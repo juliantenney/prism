@@ -129,6 +129,38 @@ test("XD continuity requires EJP whole-resource context", () => {
   assert.match(xd, /required non-empty learner-facing prose/i);
 });
 
+test("XD EQ6 register guidance is restrained (no phrase blacklist)", () => {
+  const xd = sibling.resolveTemplate("expository_development");
+  assert.match(xd, /Expository register \(EQ6/i);
+  assert.match(xd, /Make importance apparent through explanation/i);
+  assert.match(
+    xd,
+    /confidence and continuity of an author developing an argument or explanation/i
+  );
+  assert.match(xd, /Rhetorical confidence must not become epistemic overconfidence/i);
+  assert.match(xd, /Prefer direct explanatory transitions/i);
+  assert.match(xd, /Do not ban particular phrases mechanically/i);
+  assert.match(xd, /Preserve useful conceptual signposting/i);
+  assert.doesNotMatch(xd, /blacklist/i);
+});
+
+test("XD commissioning requires distinct explanatory function; accessibility ≠ redundancy", () => {
+  const xd = sibling.resolveTemplate("expository_development");
+  assert.match(xd, /distinct explanatory or perceptual function/i);
+  assert.match(xd, /Do not commission a material merely to restate/i);
+  assert.match(xd, /Accessibility semantic equivalence is not editorial redundancy/i);
+  assert.match(xd, /Empty commissions are valid/i);
+});
+
+test("DP visual planning requires warrantable value and explicit connectors when depicting relationships", () => {
+  const dp = sibling.resolveTemplate("design_page");
+  assert.match(dp, /adds explanatory or perceptual value beyond restating completed section prose/i);
+  assert.match(dp, /Accessibility semantic equivalence is not editorial redundancy/i);
+  assert.match(dp, /authorise each connector explicitly/i);
+  assert.match(dp, /Do not rely on spatial adjacency or parallel-list order/i);
+  assert.match(dp, /visual_affordances may be \[\] when no figure is warranted/i);
+});
+
 test("EJP and XM keep learning_content as richness / source authority", () => {
   const ejp = sibling.resolveTemplate("expository_journey_plan");
   assert.match(ejp, /do not plan from MK\/LO alone when learning_content is available/i);
@@ -218,4 +250,4 @@ test("domain guidance consumption matrix covers all Expository stages", () => {
     assert.ok(sibling.DOMAIN_GUIDANCE_CONSUMPTION[stage].why);
   });
 });
-
+

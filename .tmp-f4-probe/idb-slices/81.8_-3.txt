@@ -1,0 +1,50 @@
+bservation.",
+      "knowledge_focus": "Base rate, prior probability, posterior probability, likelihood, false-positive rate, competing sources of evidence, and evidential discrimination.",
+      "conceptual_move": "Hold the evidence model constant while changing the prior, demonstrating that the same test characteristics can support very different posterior probabilities in different starting contexts.",
+      "dependencies": [
+        "S3",
+        "S4"
+      ],
+      "lo_refs": [
+        "LO5",
+        "LO6"
+      ],
+      "elaboration_intentions": [
+        "Compare the 1% prevalence case with the established 20% prevalence case while retaining the 90% positive rate under the condition and 5% positive rate without it.",
+        "Use the change from approximately 15.4% to approximately 81.8% to isolate the effect of the prior rather than introducing a new evidence mechanism.",
+        "Explain why a relatively small false-positive rate can still generate many observations when the group without the condition is much larger."
+      ],
+      "representation_needs": [
+        "A direct comparison of the 1% and 20% prior scenarios showing unchanged test characteristics but different posterior probabilities."
+      ],
+      "connections": [
+        "Reuses the S4 worked example so the effect of changing only the prior is$..~... visible.",
+        "Deepens S3's account of the overall probability of evidence by showing why competing routes to the same evidence matter.",
+        "Prepares S6's broader interpretation of evidence as probability-changing rather than automatically decisive."
+      ],
+      "synthesis": "The evidential meaning of an observation depends partly on the starting context: the same evidence model can produce very different posterior probabilities when the prior probability changes.",
+      "order": 5
+    },
+    {
+      "section_id": "S6",
+      "title": "Evidence updates probability; it does not simply prove or disprove",
+      "purpose": "Generalise beyond the positive-test calculation to a qualified account of evidential updating in which evidence can support, weaken, or provide little discrimination between possibilities.",
+      "knowledge_focus": "Bayesian updating, evidential discrimination, evidence, competing sources of evidence, prior probability, and posterior probability.",
+      "conceptual_move": "Move from interpreting a single positive result to understanding evidence according to how differently competing possibilities predict it, avoiding an all-or-nothing view of evidential support.",
+      "dependencies": [
+        "S1",
+        "S3",
+        "S5"
+      ],
+      "lo_refs": [
+        "LO1",
+        "LO6"
+      ],
+      "elaboration_intentions": [
+        "Explain that evidence supports a hypothesis when it is more expected under that hypothesis than under competing possibilities, and can count against it when the reverse holds.",
+        "Clarify that an initially unlikely hypothesis can become substantially more plausible without becoming certain or even more likely than not.",
+        "Reconnect to the 1% example to distinguish a large probability increase from proof."
+      ],
+      "representation_needs": [],
+      "connections": [
+        "Returns to the prior-to-posterior movement introduced in S1 w

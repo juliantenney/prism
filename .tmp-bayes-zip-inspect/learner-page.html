@@ -1,0 +1,1510 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>Bayes&#39; theorem: updating probability with evidence</title><style>:root{--learner-navigation-width:1200px;--learner-reading-width:70ch;--learner-sticky-nav-height:7.5rem;--learner-page-gutter:1rem;--learner-space-1:.5rem;--learner-space-2:.75rem;--learner-space-3:1rem;--learner-space-4:1.5rem;--learner-space-5:2rem;--learner-font-sans:"Segoe UI",Roboto,Helvetica,Arial,sans-serif;--learner-text-xs:.75rem;--learner-text-sm:.875rem;--learner-text-base:1rem;--learner-text-md:1.0625rem;--learner-text-lg:1.125rem;--learner-text-xl:1.25rem;--learner-text-title:1.75rem;--learner-leading-tight:1.25;--learner-leading-heading:1.35;--learner-leading-body:1.65}body.util-page-export--vnext{margin:0;padding:0 0 calc(var(--learner-sticky-nav-height) + 2rem);max-width:none;font-family:var(--learner-font-sans);font-size:var(--learner-text-base);line-height:var(--learner-leading-body);color:#1f2937;background:#fff;overflow-x:clip}body.util-page-export--vnext,body.util-page-export--vnext *{box-sizing:border-box}body.util-page-export--vnext [data-journey-section]{scroll-margin-top:var(--learner-sticky-nav-height)}.util-learning-header,.util-journey-nav{width:min(calc(100% - 2 * var(--learner-page-gutter)),var(--learner-navigation-width));margin-inline:auto}.util-learner-page{width:min(calc(100% - 2 * var(--learner-page-gutter)),var(--learner-reading-width));padding:0 0 var(--learner-space-5);margin-inline:auto}.util-learning-header__intro{width:100%;max-width:var(--learner-reading-width);margin-inline:auto;padding-block:.75rem var(--learner-space-2)}.util-learning-header__title{margin-block:0 var(--learner-space-1);font-size:var(--learner-text-title);line-height:var(--learner-leading-tight);font-weight:700;letter-spacing:-.015em;color:#0f172a;text-align:center}.util-learning-header__subtitle{margin-block:0;margin-inline:auto;max-width:min(100%,58ch);font-size:var(--learner-text-sm);line-height:1.45;color:#475569;text-align:left;white-space:normal}.util-learning-header__duration{color:#64748b;white-space:nowrap}.util-journey-nav{--journey-accent:#16a34a;position:sticky;top:0;z-index:50;margin-bottom:var(--learner-space-4);padding-block:.75rem .85rem;background:rgba(255,255,255,.97);backdrop-filter:blur(8px)}.util-journey-nav--sequential{width:100%;max-width:none;margin-inline:0;padding-inline:var(--learner-page-gutter);box-sizing:border-box;overflow:visible}.util-journey-sequential{--journey-all-btn-gap:.65rem;position:relative;width:100%;max-width:var(--learner-reading-width);margin-inline:auto;display:grid;gap:.55rem;padding-bottom:.45rem;border-bottom:1px solid #e2e8f0;overflow:visible}.util-journey-sequential__row{display:grid;grid-template-columns:44px repeat(3,minmax(0,1fr));align-items:start;column-gap:.85rem;row-gap:.35rem;width:100%;font-size:.875rem}.util-journey-all-btn{appearance:none;display:inline-flex;align-items:center;justify-content:center;width:44px;min-width:44px;min-height:44px;padding:.4rem;margin:0;border:1px solid #94a3b8;border-radius:8px;background:#f8fafc;color:#0f172a;box-shadow:0 1px 2px rgba(15,23,42,.06);cursor:pointer}.util-journey-all-btn:hover{background:#f1f5f9;border-color:#64748b}.util-journey-all-btn:focus-visible{outline:2px solid #2563eb;outline-offset:2px}.util-journey-all-btn__icon{display:block}@media (min-width:900px){.util-journey-sequential__row{grid-template-columns:repeat(3,minmax(0,1fr))}.util-journey-all-btn{position:absolute;inset-inline-end:calc(100% + var(--journey-all-btn-gap));top:0;z-index:2}}.util-journey-current-wrap{display:grid;justify-items:center;align-content:start;gap:.2rem;min-width:0}.util-journey-position{margin:0;font-size:var(--learner-text-sm);line-height:1.4;font-weight:600;color:#475569;text-align:center}.util-journey-adjacent{display:grid;grid-template-columns:1.15em minmax(0,1fr) 1.15em;align-items:start;column-gap:0;min-width:0;min-height:44px;padding:.25rem .15rem;color:#111827;text-decoration:none;font-weight:400;text-align:center}.util-journey-adjacent--placeholder{min-height:0;visibility:hidden;pointer-events:none}.util-journey-adjacent:hover{text-decoration:underline}.util-journey-adjacent:focus-visible{outline:2px solid #2563eb;outline-offset:2px;border-radius:4px}.util-journey-adjacent__chevron{grid-row:1;z-index:1;color:#64748b;font-size:1.15rem;line-height:1.25}.util-journey-adjacent--prev .util-journey-adjacent__chevron{grid-column:1;justify-self:start}.util-journey-adjacent--next .util-journey-adjacent__chevron{grid-column:3;justify-self:end}.util-journey-adjacent__title{grid-column:1/-1;grid-row:1;z-index:0;padding-inline:1.15em;text-align:center}.util-journey-adjacent__title,.util-journey-current{display:block;min-width:0;line-height:1.25;white-space:normal;overflow-wrap:break-word;word-break:normal;hyphens:manual}.util-journey-current{justify-self:center;text-align:center;font-weight:700;color:#0f172a;padding:.25rem .15rem}.util-journey-all-panel{margin-top:.15rem;width:100%;max-width:100%;max-height:min(60vh,28rem);overflow:auto;border:1px solid #e2e8f0;border-radius:10px;background:#fff;box-shadow:0 10px 28px rgba(15,23,42,.08);font-size:.875rem}.util-journey-all-panel__header{display:flex;align-items:center;justify-content:space-between;gap:.75rem;position:sticky;top:0;z-index:1;padding:.65rem .85rem;background:#fff;border-bottom:1px solid #e2e8f0}.util-journey-all-panel__title{margin:0;font-size:var(--learner-text-sm);font-weight:650;color:#0f172a}.util-journey-all-close{appearance:none;display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:.35rem .7rem;margin:0;border:1px solid #cbd5e1;border-radius:8px;background:#fff;color:#0f172a;font:inherit;font-size:var(--learner-text-sm);font-weight:600;cursor:pointer}.util-journey-all-close:hover{background:#f8fafc}.util-journey-all-close:focus-visible{outline:2px solid #2563eb;outline-offset:2px}.util-journey-all-list{list-style:none;margin:0;padding:.35rem}.util-journey-all-link{display:block;padding:.7rem .85rem;min-height:44px;color:#111827;text-decoration:none;border-radius:8px;line-height:1.35;white-space:normal;overflow-wrap:break-word;word-break:normal}.util-journey-all-link:hover{background:#f8fafc}.util-journey-all-link:focus-visible{outline:2px solid #2563eb;outline-offset:2px}.util-journey-all-link[aria-current=location]{background:#ecfdf5;box-shadow:inset 3px 0 0 var(--journey-accent);font-weight:650;color:#14532d}.util-learner-renderer-vnext{font-size:var(--learner-text-base);line-height:var(--learner-leading-body);color:#1f2937;text-align:left}.util-learner-renderer-vnext p{font-size:var(--learner-text-base);line-height:var(--learner-leading-body);color:#1f2937;margin:0 0 var(--learner-space-3)}.util-learner-renderer-vnext ul,.util-learner-renderer-vnext ol{margin:0 0 var(--learner-space-3);padding-left:1.25rem}.util-learner-renderer-vnext li{font-size:var(--learner-text-base);line-height:var(--learner-leading-body);margin:0 0 var(--learner-space-1)}.util-learner-renderer-vnext li:last-child{margin-bottom:0}.util-learner-renderer-vnext blockquote{margin:0 0 var(--learner-space-3);padding-left:.9rem;border-left:3px solid #d1d5db;color:#374151}.util-learner-renderer-vnext .util-page-orientation,.util-learner-renderer-vnext .util-learning-activities,.util-learner-renderer-vnext .util-assessment-section,.util-learner-renderer-vnext .util-study-tips{margin:0 0 var(--learner-space-5)}.util-learner-renderer-vnext .util-section-heading{font-size:var(--learner-text-xl);line-height:var(--learner-leading-heading);font-weight:700;color:#111827;margin:var(--learner-space-5) 0 var(--learner-space-2)}.util-learner-renderer-vnext .util-page-orientation .util-section-heading:first-child{margin-top:0}.util-learner-renderer-vnext .util-activity{margin:0;padding:0;border:0;background:transparent;box-shadow:none;border-radius:0}.util-learner-renderer-vnext .util-activity+.util-activity{margin-top:4rem;padding-top:3rem;border-top:1px solid #e5e7eb}.util-learner-renderer-vnext .util-page-orientation+.util-learning-activities>.util-activity:first-child{margin-top:4rem;padding-top:3rem;border-top:1px solid #e5e7eb}.util-learner-renderer-vnext .util-learning-activities>.util-activity:last-child{margin-bottom:var(--learner-space-5)}.util-learner-renderer-vnext .util-activity-header{display:flex;justify-content:space-between;align-items:flex-start;gap:var(--learner-space-2);flex-wrap:wrap;margin:0 0 var(--learner-space-3)}.util-learner-renderer-vnext .util-activity-title{font-size:var(--learner-text-lg);line-height:var(--learner-leading-heading);font-weight:700;color:#111827;margin:0}.util-learner-renderer-vnext .util-badge-row{display:flex;gap:.5rem;flex-wrap:wrap}.util-learner-renderer-vnext .util-badge{display:inline-block;border:1px solid #dbe4f0;background:#f8fafc;color:#374151;border-radius:999px;padding:2px 10px;font-size:.78rem;font-weight:600}.util-learner-renderer-vnext .util-badge-time,.util-learner-renderer-vnext .util-badge-group{font-size:var(--learner-text-xs);line-height:1.3}.util-learner-renderer-vnext .util-mapped-outcomes{font-size:var(--learner-text-sm);line-height:1.5;color:#475569}.util-learner-renderer-vnext .util-activity-preamble,.util-learner-renderer-vnext .util-activity-preamble-cue{font-size:var(--learner-text-base);line-height:var(--learner-leading-body);color:#374151}.util-learner-renderer-vnext .util-beat-section{margin:0 0 var(--learner-space-4)}.util-learner-renderer-vnext .util-beat-heading{font-size:var(--learner-text-md);line-height:var(--learner-leading-heading);font-weight:700;color:#111827;margin:var(--learner-space-4) 0 var(--learner-space-2)}.util-learner-renderer-vnext .util-beat-stream>*{margin-bottom:var(--learner-space-3)}.util-learner-renderer-vnext .util-beat-stream>*:last-child{margin-bottom:0}.util-learner-renderer-vnext .util-beat-instruction{font-size:var(--learner-text-base);line-height:var(--learner-leading-body);color:#1f2937;border-left:3px solid #cbd5e1;padding:var(--learner-space-2) 0 var(--learner-space-2) .75rem;background:transparent}.util-learner-renderer-vnext .util-beat-instruction p{margin:0}.util-learner-renderer-vnext .util-pedagogical-guidance{padding:var(--learner-space-2) .75rem;border-left:3px solid #cbd5e1;border-radius:0 8px 8px 0;background:#f9fafb}.util-learner-renderer-vnext .util-guidance-label{margin:0 0 .35rem;font-size:var(--learner-text-sm);line-height:1.4;font-weight:600;color:#475569}.util-learner-renderer-vnext .util-guidance-body,.util-learner-renderer-vnext .util-guidance-body p,.util-learner-renderer-vnext .util-guidance-body li{font-size:var(--learner-text-base);line-height:var(--learner-leading-body);color:#1f2937}.util-learner-renderer-vnext .util-guidance-body>:last-child{margin-bottom:0}.util-learner-renderer-vnext .util-material-heading{margin:0 0 var(--learner-space-2);font-size:var(--learner-text-base);line-height:var(--learner-leading-heading);font-weight:650;color:#374151}.util-learner-renderer-vnext .util-material-block,.util-learner-renderer-vnext .util-worked-example,.util-learner-renderer-vnext .util-scenario-card,.util-learner-renderer-vnext .util-template-block,.util-learner-renderer-vnext .util-prompt-set,.util-learner-renderer-vnext .util-checklist-block{margin:0;padding:0;border:0;background:transparent;box-shadow:none}.util-learner-renderer-vnext .util-worked-example,.util-learner-renderer-vnext .util-sample-output{font-size:var(--learner-text-base);line-height:var(--learner-leading-body);color:#1f2937}.util-learner-renderer-vnext .util-knowledge_summary__content,.util-learner-renderer-vnext .util-knowledge-summary__content,.util-learner-renderer-vnext .util-knowledge-summary--prose{font-size:var(--learner-text-base);line-height:var(--learner-leading-body);font-weight:400;color:#1f2937}.util-learner-renderer-vnext .util-material-block>:first-child,.util-learner-renderer-vnext .util-worked-example>:first-child,.util-learner-renderer-vnext .util-scenario-card>:first-child,.util-learner-renderer-vnext .util-template-block>:first-child,.util-learner-renderer-vnext .util-prompt-set>:first-child,.util-learner-renderer-vnext .util-checklist-block>:first-child,.util-learner-renderer-vnext .util-output-block>:first-child,.util-learner-renderer-vnext .util-assessment-item>:first-child{margin-top:0}.util-learner-renderer-vnext .util-material-block>:last-child,.util-learner-renderer-vnext .util-worked-example>:last-child,.util-learner-renderer-vnext .util-scenario-card>:last-child,.util-learner-renderer-vnext .util-template-block>:last-child,.util-learner-renderer-vnext .util-prompt-set>:last-child,.util-learner-renderer-vnext .util-checklist-block>:last-child,.util-learner-renderer-vnext .util-output-block>:last-child,.util-learner-renderer-vnext .util-assessment-item>:last-child{margin-bottom:0}.util-learner-renderer-vnext .util-md-heading{font-size:var(--learner-text-base);line-height:var(--learner-leading-heading);font-weight:650;color:#1f2937;margin:var(--learner-space-3) 0 var(--learner-space-1)}.util-learner-renderer-vnext .util-md-heading--source-1,.util-learner-renderer-vnext .util-md-heading--source-2{font-size:var(--learner-text-md);font-weight:700;color:#1f2937;margin:var(--learner-space-3) 0 var(--learner-space-1)}.util-learner-renderer-vnext .util-md-heading--source-3{font-size:var(--learner-text-base);font-weight:650;color:#1f2937;margin:var(--learner-space-3) 0 var(--learner-space-1)}.util-learner-renderer-vnext .util-md-heading--source-4,.util-learner-renderer-vnext .util-md-heading--source-5,.util-learner-renderer-vnext .util-md-heading--source-6{font-size:var(--learner-text-sm);font-weight:650;color:#374151;margin:var(--learner-space-2) 0 var(--learner-space-1)}.util-learner-renderer-vnext .util-output-block{border-left:3px solid #86efac;padding:var(--learner-space-2) 0 var(--learner-space-2) .75rem;background:#f9fafb;border-radius:0 8px 8px 0}.util-learner-renderer-vnext .util-output-block p,.util-learner-renderer-vnext .util-output-block li{font-size:var(--learner-text-base);line-height:var(--learner-leading-body);color:#1f2937}.util-learner-renderer-vnext .util-assessment-item{border:1px solid #e5e7eb;border-radius:10px;padding:var(--learner-space-3);background:#fff;box-shadow:none}.util-learner-renderer-vnext .util-assessment-list{display:grid;gap:var(--learner-space-3)}.util-learner-renderer-vnext .util-assessment-item-header{margin:0 0 var(--learner-space-2)}.util-learner-renderer-vnext .util-assessment-title{margin:0;font-size:var(--learner-text-base);line-height:var(--learner-leading-heading);font-weight:700;color:#111827}.util-learner-renderer-vnext .util-assessment-statement{font-size:var(--learner-text-base);line-height:var(--learner-leading-body);font-weight:500;color:#111827}.util-learner-renderer-vnext .util-assessment-options li,.util-learner-renderer-vnext .util-assessment-rationale,.util-learner-renderer-vnext .util-assessment-feedback p{font-size:var(--learner-text-base);line-height:var(--learner-leading-body);color:#1f2937}.util-learner-renderer-vnext .util-assessment-feedback{margin-top:var(--learner-space-2)}.util-learner-renderer-vnext .util-assessment-feedback summary{cursor:pointer;font-size:var(--learner-text-sm);line-height:1.4;font-weight:600;color:#374151}.util-learner-renderer-vnext .util-assessment-fieldset{border:0;margin:0;padding:0;min-width:0}.util-learner-renderer-vnext .util-assessment-legend{padding:0;margin:0 0 var(--learner-space-2);font-size:var(--learner-text-base);line-height:var(--learner-leading-body);font-weight:500;color:#111827}.util-learner-renderer-vnext .util-assessment-option{display:flex;align-items:flex-start;gap:.55rem;margin:0 0 .55rem}.util-learner-renderer-vnext .util-assessment-option__input{margin:.35rem 0 0;flex:0 0 auto}.util-learner-renderer-vnext .util-assessment-option__label{font-size:var(--learner-text-base);line-height:var(--learner-leading-body);color:#1f2937;cursor:pointer}.util-learner-renderer-vnext .util-assessment-option__input:focus-visible{outline:2px solid #2563eb;outline-offset:2px}.util-learner-renderer-vnext .util-assessment-check{margin-top:var(--learner-space-2);padding:.45rem .8rem;font:inherit;font-size:var(--learner-text-sm);font-weight:600;color:#1e3a8a;background:#eff6ff;border:1px solid #93c5fd;border-radius:6px;cursor:pointer}.util-learner-renderer-vnext .util-assessment-check:focus-visible{outline:2px solid #2563eb;outline-offset:2px}.util-learner-renderer-vnext .util-assessment-result{margin-top:var(--learner-space-2);padding:var(--learner-space-2);border-left:3px solid #64748b;background:#f8fafc;font-size:var(--learner-text-base);line-height:var(--learner-leading-body);color:#1f2937}.util-learner-renderer-vnext .util-assessment-result--prompt{border-left-color:#d97706;background:#fffbeb}.util-learner-renderer-vnext .util-interactive-checklist{border:0;margin:0;padding:0;min-width:0}.util-learner-renderer-vnext .util-interactive-checklist legend{padding:0;margin:0 0 var(--learner-space-2);font-size:var(--learner-text-sm);line-height:var(--learner-leading-heading);font-weight:650;color:#374151}.util-learner-renderer-vnext .util-interactive-checklist__item{display:flex;align-items:flex-start;gap:.55rem;margin:0 0 .55rem}.util-learner-renderer-vnext .util-interactive-checklist__input{margin:.3rem 0 0;flex:0 0 auto}.util-learner-renderer-vnext .util-interactive-checklist__label{font-size:var(--learner-text-base);line-height:var(--learner-leading-body);color:#1f2937;cursor:pointer}.util-learner-renderer-vnext .util-interactive-checklist__input:focus-visible{outline:2px solid #2563eb;outline-offset:2px}.util-learner-renderer-vnext .util-guided-review{margin:0;padding:0;border:0;min-width:0;max-width:100%}.util-learner-renderer-vnext .util-guided-review__title{margin:0 0 var(--learner-space-2);font-size:var(--learner-text-md);line-height:var(--learner-leading-heading);font-weight:700;color:#111827}.util-learner-renderer-vnext .util-guided-review__progress{margin:0 0 var(--learner-space-2);font-size:var(--learner-text-sm);line-height:1.4;font-weight:600;color:#475569}.util-learner-renderer-vnext .util-guided-review__statement{margin:0 0 var(--learner-space-3);font-size:var(--learner-text-base);line-height:var(--learner-leading-body);font-weight:600;color:#111827}.util-learner-renderer-vnext .util-guided-review__section-label{margin:0 0 .35rem;font-size:var(--learner-text-sm);line-height:1.4;font-weight:650;color:#374151}.util-learner-renderer-vnext .util-guided-review__why,.util-learner-renderer-vnext .util-guided-review__look-for,.util-learner-renderer-vnext .util-guided-review__missing{margin:0 0 var(--learner-space-3)}.util-learner-renderer-vnext .util-guided-review__why p,.util-learner-renderer-vnext .util-guided-review__look-for li,.util-learner-renderer-vnext .util-guided-review__missing li{font-size:var(--learner-text-base);line-height:var(--learner-leading-body);color:#1f2937}.util-learner-renderer-vnext .util-guided-review__look-for ul{list-style:none;padding-left:0;margin-left:0}.util-learner-renderer-vnext .util-guided-review__feature-key{font-weight:650;color:#374151}.util-learner-renderer-vnext .util-guided-review__confirm{margin-top:var(--learner-space-2)}.util-learner-renderer-vnext .util-guided-review__panel{margin:0 0 var(--learner-space-4);padding:0 0 var(--learner-space-3);border-bottom:1px solid #e5e7eb}.util-learner-renderer-vnext .util-guided-review__panel:last-child{border-bottom:0;margin-bottom:0;padding-bottom:0}.util-learner-renderer-vnext .util-guided-review__nav{display:flex;flex-wrap:wrap;gap:.75rem;justify-content:space-between;margin-top:var(--learner-space-3)}.util-learner-renderer-vnext .util-guided-review__nav-btn{font:inherit;font-size:var(--learner-text-sm);line-height:1.3;font-weight:600;padding:.55rem .85rem;min-height:44px;border:1px solid #cbd5e1;border-radius:8px;background:#fff;color:#0f172a;cursor:pointer}.util-learner-renderer-vnext .util-guided-review__nav-btn:focus-visible{outline:2px solid #2563eb;outline-offset:2px}.util-learner-renderer-vnext .util-guided-review__nav-btn:disabled{opacity:.45;cursor:not-allowed}@media (max-width:720px){.util-learner-renderer-vnext .util-guided-review__nav{flex-direction:column}.util-learner-renderer-vnext .util-guided-review__nav-btn{width:100%}}@media (prefers-reduced-motion:reduce){.util-learner-renderer-vnext .util-guided-review__panel{transition:none}}@media print{.util-learner-renderer-vnext .util-guided-review__nav{display:none!important}.util-learner-renderer-vnext .util-guided-review__panel,.util-learner-renderer-vnext .util-guided-review__panel[hidden]{display:block!important}}.util-learner-renderer-vnext .util-prose-measure{max-width:var(--learner-reading-width);margin-left:0;margin-right:0}.util-learner-renderer-vnext .util-page-video__content iframe,.util-learner-renderer-vnext .util-page-video__content video{max-width:100%}.util-learner-renderer-vnext .util-table-scroll,.util-learner-renderer-vnext .util-material-table,.util-learner-renderer-vnext .util-material-table-block{max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}.util-learner-renderer-vnext .util-table-scroll.util-material-table table{width:100%;table-layout:auto}.util-learner-renderer-vnext .util-table-scroll.util-material-table th,.util-learner-renderer-vnext .util-table-scroll.util-material-table td{min-width:8rem;white-space:normal;overflow-wrap:normal;word-break:normal;vertical-align:top}.util-learner-renderer-vnext .util-table-scroll.util-material-table th:first-child,.util-learner-renderer-vnext .util-table-scroll.util-material-table td:first-child{min-width:6rem;white-space:normal}.util-learner-renderer-vnext table{width:100%;border-collapse:collapse;min-width:34rem}.util-learner-renderer-vnext th,.util-learner-renderer-vnext td{border:1px solid #e5e7eb;padding:.6rem .75rem;text-align:left;vertical-align:top;line-height:1.5}.util-learner-renderer-vnext td{font-size:.9375rem;color:#1f2937}.util-learner-renderer-vnext th{font-size:.875rem;background:#f9fafb;font-weight:600;color:#374151}.util-learner-renderer-vnext .util-visual-asset{margin:var(--learner-space-3) 0;max-width:100%;position:relative}.util-learner-renderer-vnext .util-visual-asset-media{position:relative;display:block;max-width:100%}.util-learner-renderer-vnext .util-visual-asset-image{display:block;width:100%;max-width:100%;height:auto;border:1px solid #e5e7eb;border-radius:8px;cursor:zoom-in}.util-learner-renderer-vnext .util-visual-asset-caption{margin-top:var(--learner-space-1);font-size:var(--learner-text-sm);line-height:1.45;color:#475569}.util-learner-renderer-vnext .util-visual-asset{position:relative}.util-learner-renderer-vnext .util-visual-asset-media{position:relative;display:block;max-width:100%}.util-learner-renderer-vnext .util-visual-asset-image{display:block;width:100%;max-width:100%;height:auto;border:1px solid #e5e7eb;border-radius:8px;cursor:zoom-in}.util-learner-renderer-vnext .util-visual-asset-caption{margin-top:.5rem;font-size:.875rem;line-height:1.45;color:#475569}.util-learner-content-expand{position:absolute;top:.5rem;right:.5rem;z-index:2;box-sizing:border-box;width:2.2rem;height:2.2rem;min-width:2.2rem;min-height:2.2rem;display:inline-flex;align-items:center;justify-content:center;padding:0;margin:0;border:1px solid rgba(15,23,42,.18);border-radius:.55rem;background:rgba(255,255,255,.82);color:#0f172a;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);box-shadow:0 1px 2px rgba(15,23,42,.12);cursor:pointer;}.util-learner-content-expand:hover{background:rgba(255,255,255,.94)}.util-learner-content-expand:focus-visible{outline:2px solid #2563eb;outline-offset:2px}.util-learner-content-expand svg{display:block;pointer-events:none}.util-learner-content-viewer{padding:0;border:0;background:transparent;max-width:none}.util-learner-content-viewer::backdrop{background:rgba(15,23,42,.62)}.util-learner-content-viewer__panel{box-sizing:border-box;width:min(96vw,72rem);max-height:92vh;margin:auto;display:flex;flex-direction:column;gap:.75rem;padding:1rem 1rem 1.1rem;border-radius:1rem;background:#fff;color:#0f172a;box-shadow:0 20px 50px rgba(15,23,42,.35);}.util-learner-content-viewer__header{display:flex;align-items:center;justify-content:space-between;gap:.75rem}.util-learner-content-viewer__title{margin:0;font-size:1rem;font-weight:600;line-height:1.3}.util-learner-content-viewer__close{appearance:none;border:1px solid #cbd5e1;border-radius:.55rem;background:#f8fafc;color:#0f172a;padding:.45rem .85rem;font:inherit;cursor:pointer;}.util-learner-content-viewer__close:focus-visible,.util-learner-content-expand:focus-visible{outline:2px solid #2563eb;outline-offset:2px}.util-learner-content-viewer__body{overflow:auto;max-height:calc(92vh - 4.5rem)}.util-learner-content-viewer__image{display:block;max-width:100%;max-height:80vh;width:auto;height:auto;margin:0 auto;object-fit:contain;}.util-learner-content-viewer__caption{margin:.75rem 0 0;font-size:.9rem;line-height:1.45;color:#334155}.util-learner-content-viewer__caption[hidden],.util-learner-content-viewer__image[hidden],.util-learner-content-viewer__table-host[hidden]{display:none!important}@media (prefers-reduced-motion:reduce){.util-learner-content-viewer,.util-learner-content-viewer::backdrop{transition:none!important}}.util-visual-affordance{display:none!important}.util-learner-renderer-vnext .util-composition-moment{margin:0 0 var(--learner-space-5);padding:0;border:0;background:transparent;box-shadow:none}.util-learner-renderer-vnext .util-composition-moment:first-of-type{margin-top:var(--learner-space-2)}.util-learner-renderer-vnext .util-composition-moment:last-child{margin-bottom:0}.util-learner-renderer-vnext .util-composition-moment__body>*{margin-bottom:var(--learner-space-3)}.util-learner-renderer-vnext .util-composition-moment__body>*:last-child{margin-bottom:0}.util-learner-renderer-vnext .util-composition-moment-heading{font-size:var(--learner-text-md);line-height:var(--learner-leading-heading);font-weight:650;color:#111827;margin:0 0 var(--learner-space-3);padding:0 0 var(--learner-space-1);border-bottom:1px solid #e5e7eb;letter-spacing:-.01em}.util-learner-renderer-vnext .util-composition-moment-nav{margin:calc(-1 * var(--learner-space-2)) 0 var(--learner-space-3);font-size:var(--learner-text-sm);line-height:1.45}.util-learner-renderer-vnext .util-composition-moment-nav__link{color:#1d4ed8;text-decoration:underline;text-underline-offset:2px}.util-learner-renderer-vnext .util-composition-moment-nav__link:focus{outline:2px solid #2563eb;outline-offset:2px}.util-learner-renderer-vnext .util-revision-criterion-action{margin:.55rem 0 0;font-size:var(--learner-text-sm);line-height:1.45}.util-learner-renderer-vnext .util-revision-criterion-action__link{color:#1d4ed8;text-decoration:underline;text-underline-offset:2px}.util-learner-renderer-vnext .util-revision-criterion-action__link:focus{outline:2px solid #2563eb;outline-offset:2px}.util-learner-renderer-vnext .util-revision-reminder{display:none}.util-learner-renderer-vnext .util-revision-reminder[data-revision-reminder-active="true"]{display:block;position:fixed;top:var(--learner-sticky-nav-height,0px);left:0;right:0;z-index:40;margin:0 auto;max-width:42rem;width:calc(100% - 1.5rem);padding:.45rem .75rem;border:1px solid #cbd5e1;border-left:3px solid #64748b;background:#fff;box-shadow:0 2px 8px rgba(15,23,42,.12)}.util-learner-renderer-vnext .util-revision-reminder__chrome{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:.35rem .75rem;margin:0 0 .2rem}.util-learner-renderer-vnext .util-revision-reminder__label{margin:0;font-size:var(--learner-text-xs);font-weight:650;letter-spacing:.01em;color:#64748b;text-transform:none}.util-learner-renderer-vnext .util-revision-reminder__statement{margin:0;font-size:var(--learner-text-sm);line-height:1.4;font-weight:600;color:#0f172a}.util-learner-renderer-vnext .util-revision-reminder__view{font:inherit;font-size:var(--learner-text-sm);color:#1d4ed8;background:transparent;border:0;padding:0;text-decoration:underline;text-underline-offset:2px;cursor:pointer}.util-learner-renderer-vnext .util-revision-reminder__view:focus{outline:2px solid #2563eb;outline-offset:2px}.util-learner-renderer-vnext .util-revision-guidance{margin:0 0 var(--learner-space-3);padding:var(--learner-space-2) .85rem;border-left:3px solid #94a3b8;background:#f8fafc}.util-learner-renderer-vnext .util-revision-guidance__chrome{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:.5rem .75rem;margin:0 0 .45rem}.util-learner-renderer-vnext .util-revision-guidance__heading{margin:0;font-size:var(--learner-text-sm);font-weight:650;color:#0f172a}.util-learner-renderer-vnext .util-revision-guidance__heading:focus{outline:2px solid #2563eb;outline-offset:2px}.util-learner-renderer-vnext .util-revision-guidance__hide{font:inherit;font-size:var(--learner-text-sm);color:#1d4ed8;background:transparent;border:0;padding:0;text-decoration:underline;text-underline-offset:2px;cursor:pointer}.util-learner-renderer-vnext .util-revision-guidance__hide:focus{outline:2px solid #2563eb;outline-offset:2px}.util-learner-renderer-vnext .util-revision-guidance__honesty{margin:0 0 .55rem;font-size:var(--learner-text-xs);line-height:1.4;color:#64748b}.util-learner-renderer-vnext .util-revision-guidance__body{font-size:var(--learner-text-sm);line-height:var(--learner-leading-body);color:#1f2937}.util-learner-renderer-vnext .util-revision-guidance__statement{margin:0 0 .45rem;font-weight:600;color:#111827}.util-learner-renderer-vnext .util-revision-guidance .util-guided-review__section-label{font-size:var(--learner-text-xs);font-weight:600;color:#64748b;margin:0 0 .25rem}.util-learner-renderer-vnext .util-revision-guidance .util-guided-review__why,.util-learner-renderer-vnext .util-revision-guidance .util-guided-review__look-for,.util-learner-renderer-vnext .util-revision-guidance .util-guided-review__missing{margin:0 0 .45rem}.util-learner-renderer-vnext .util-composition-moment--orient{margin-bottom:var(--learner-space-4)}.util-learner-renderer-vnext .util-composition-moment--orient .util-composition-moment__body{display:flow-root}.util-learner-renderer-vnext .util-composition-study-phase,.util-learner-renderer-vnext .util-composition-activity-purpose{font-size:var(--learner-text-sm);line-height:1.45;color:#64748b;margin:0 0 var(--learner-space-1)}.util-learner-renderer-vnext .util-composition-study-phase{font-weight:600;color:#475569}.util-learner-renderer-vnext .util-composition-preamble{margin:0 0 var(--learner-space-2);padding:0;border:0;background:transparent;font-size:var(--learner-text-base);line-height:var(--learner-leading-body);color:#1f2937}.util-learner-renderer-vnext .util-composition-reasoning-orientation{font-size:var(--learner-text-sm);line-height:var(--learner-leading-body);color:#475569;margin:0 0 var(--learner-space-2)}.util-learner-renderer-vnext .util-composition-self-explanation{color:#374151;margin:0}.util-learner-renderer-vnext .util-composition-argument-structure{margin:var(--learner-space-3) 0 0;padding:var(--learner-space-2) .75rem;background:#fafafa;border-left-color:#d1d5db}.util-learner-renderer-vnext .util-composition-argument-structure .util-guidance-label{font-size:var(--learner-text-xs);line-height:1.35;font-weight:600;color:#64748b;margin:0 0 .3rem}.util-learner-renderer-vnext .util-composition-argument-structure .util-guidance-body{font-size:var(--learner-text-sm);line-height:var(--learner-leading-body);color:#374151}.util-learner-renderer-vnext .util-composition-moment .util-beat-instruction{border-left:0;padding:0;margin:0 0 var(--learner-space-3);background:transparent}.util-learner-renderer-vnext .util-composition-moment .util-beat-instruction .util-semantic-icon{margin-top:.12em}.util-learner-renderer-vnext .util-composition-learn-item{margin:0 0 var(--learner-space-3)}.util-learner-renderer-vnext .util-composition-learn-item:last-child{margin-bottom:0}.util-learner-renderer-vnext .util-composition-learn-item--definition .util-material-heading{font-size:var(--learner-text-sm);font-weight:600;color:#475569;margin:0 0 var(--learner-space-1)}.util-learner-renderer-vnext .util-composition-learn-item--definition .util-md-heading{margin-top:0}.util-learner-renderer-vnext .util-task-card__title{margin:0 0 var(--learner-space-2);font-size:var(--learner-text-base);line-height:var(--learner-leading-heading);font-weight:650;color:#374151}.util-learner-renderer-vnext .util-composition-moment--do .util-composition-moment-heading{color:#0f172a;border-bottom-color:#dbeafe}.util-learner-renderer-vnext .util-composition-subheading{display:block;font-size:var(--learner-text-sm);line-height:var(--learner-leading-heading);font-weight:600;color:#475569;margin:0 0 var(--learner-space-1)}.util-learner-renderer-vnext .util-composition-expected-output{margin:var(--learner-space-3) 0;padding:var(--learner-space-2) var(--learner-space-3);background:#f8fafc;border-radius:8px;border-left:3px solid #cbd5e1}.util-learner-renderer-vnext .util-composition-expected-output p:last-child{margin-bottom:0}.util-learner-renderer-vnext .util-learner-workspace{margin-top:var(--learner-space-3);padding:var(--learner-space-3);border:1px solid #bfdbfe;border-radius:10px;background:#f8fbff}.util-learner-renderer-vnext .util-learner-workspace__label{display:block;font-size:var(--learner-text-base);line-height:var(--learner-leading-heading);font-weight:650;color:#0f172a;margin:0 0 var(--learner-space-2)}.util-learner-renderer-vnext .util-learner-workspace__input{display:block;width:100%;min-height:9rem;padding:var(--learner-space-2);font:inherit;font-size:var(--learner-text-base);line-height:var(--learner-leading-body);color:#111827;border:1px solid #cbd5e1;border-radius:8px;background:#fff;resize:vertical}.util-learner-renderer-vnext .util-learner-workspace__input:focus{outline:2px solid #2563eb;outline-offset:1px;border-color:#93c5fd}.util-learner-renderer-vnext .util-learner-workspace__prompt{margin:0 0 var(--learner-space-2);font-size:var(--learner-text-sm);line-height:var(--learner-leading-body);color:#475569}.util-learner-renderer-vnext .util-learner-response-group{margin:var(--learner-space-3) 0;display:grid;gap:var(--learner-space-3)}.util-learner-renderer-vnext .util-learner-response-group__note{margin:0;font-size:var(--learner-text-xs);line-height:1.45;color:#64748b}.util-learner-renderer-vnext .util-learner-response-group .util-learner-workspace{margin:0}.util-learner-renderer-vnext .util-ordering-workspace{margin-top:var(--learner-space-3);padding:var(--learner-space-3);border:1px solid #bfdbfe;border-radius:10px;background:#f8fbff}.util-learner-renderer-vnext .util-visually-hidden{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}.util-learner-renderer-vnext .util-learner-draft-controls{display:flex;flex-wrap:wrap;align-items:center;gap:.75rem;margin:0 0 var(--learner-space-3);padding:var(--learner-space-2) 0;border-bottom:1px solid #e2e8f0}.util-learner-renderer-vnext .util-learner-draft-status{margin:0;font-size:var(--learner-text-xs);line-height:1.4;color:#475569}.util-learner-renderer-vnext .util-learner-draft-clear{font:inherit;font-size:var(--learner-text-xs);line-height:1.2;padding:.35rem .6rem;border:1px solid #cbd5e1;border-radius:6px;background:#fff;color:#0f172a;cursor:pointer}.util-learner-renderer-vnext .util-learner-draft-clear:focus-visible{outline:2px solid #2563eb;outline-offset:1px}@media print{.util-learner-renderer-vnext .util-learner-draft-controls{display:none}}.util-learner-renderer-vnext .util-ordering-workspace__label{margin:0 0 var(--learner-space-2)}.util-learner-renderer-vnext .util-ordering-workspace__prompt{margin:0 0 var(--learner-space-3);font-size:var(--learner-text-sm);line-height:var(--learner-leading-body);color:#475569}.util-learner-renderer-vnext .util-ordering-list{list-style:none;margin:0;padding:0;display:grid;gap:var(--learner-space-2)}.util-learner-renderer-vnext .util-ordering-item{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:var(--learner-space-2);align-items:start;padding:var(--learner-space-2);border:1px solid #dbeafe;border-radius:8px;background:#fff}.util-learner-renderer-vnext .util-ordering-item__position{margin:0 0 .35rem;font-size:var(--learner-text-xs);color:#64748b;font-weight:600}.util-learner-renderer-vnext .util-ordering-item__content{margin:0;font-size:var(--learner-text-base);line-height:var(--learner-leading-body);color:#0f172a}.util-learner-renderer-vnext .util-ordering-item__controls{display:flex;flex-wrap:wrap;gap:.4rem;justify-content:flex-end}.util-learner-renderer-vnext .util-ordering-item__move{font:inherit;font-size:var(--learner-text-xs);line-height:1.2;padding:.35rem .55rem;border:1px solid #cbd5e1;border-radius:6px;background:#f8fafc;color:#0f172a;cursor:pointer}.util-learner-renderer-vnext .util-ordering-item__move:focus-visible{outline:2px solid #2563eb;outline-offset:1px}.util-learner-renderer-vnext .util-ordering-item__move:disabled{opacity:.45;cursor:not-allowed}.util-learner-renderer-vnext .util-ordering-workspace__status{min-height:1.25rem;margin-top:var(--learner-space-2);font-size:var(--learner-text-xs);color:#475569}.util-learner-renderer-vnext .util-ordering-workspace__check{margin-top:var(--learner-space-2);display:grid;gap:.5rem;justify-items:start}.util-learner-renderer-vnext .util-ordering-workspace__check-btn{font:inherit;font-size:var(--learner-text-sm);padding:.4rem .7rem;border:1px solid #93c5fd;border-radius:6px;background:#eff6ff;color:#1d4ed8;cursor:pointer}.util-learner-renderer-vnext .util-ordering-workspace__feedback{margin:0;font-size:var(--learner-text-sm);color:#334155}.util-learner-renderer-vnext .util-ordering-workspace__feedback[data-ordering-state="correct"]{color:#166534}.util-learner-renderer-vnext .util-ordering-workspace__feedback[data-ordering-state="incorrect"]{color:#9a3412}@media (max-width:720px){.util-learner-renderer-vnext .util-ordering-item{grid-template-columns:1fr}.util-learner-renderer-vnext .util-ordering-item__controls{justify-content:flex-start}}@media (prefers-reduced-motion:reduce){.util-learner-renderer-vnext .util-ordering-item{transition:none}}@media print{.util-learner-renderer-vnext .util-ordering-workspace{break-inside:avoid-page}.util-learner-renderer-vnext .util-ordering-item__controls,.util-learner-renderer-vnext .util-ordering-workspace__check{display:none}}.util-learner-renderer-vnext .util-learner-workspace__note{font-size:var(--learner-text-xs);line-height:1.45;color:#64748b;margin:var(--learner-space-2) 0 0}.util-learner-renderer-vnext .util-learner-table-workspace{margin-top:var(--learner-space-3);padding:var(--learner-space-3);border:1px solid #bfdbfe;border-radius:10px;background:#f8fbff}.util-learner-renderer-vnext .util-learner-table-breakout,.util-learner-renderer-vnext .util-material-table-block{--learner-breakout-left:max(var(--learner-page-gutter),calc((100vw - var(--learner-reading-width))/2));width:min(75rem,calc(100vw - var(--learner-breakout-left) - var(--learner-page-gutter)));max-width:none;margin-left:0;margin-right:0}.util-learner-renderer-vnext .util-learner-table-workspace__material{margin:0;border:0;padding:0;background:transparent}.util-learner-renderer-vnext .util-learner-table-workspace__guidance{font-size:var(--learner-text-xs);line-height:1.45;color:#64748b;margin:0 0 var(--learner-space-2)}.util-learner-renderer-vnext .util-learner-table-workspace__table{margin:0}.util-learner-renderer-vnext .util-learner-table-workspace__table table{width:100%;table-layout:auto;border-collapse:collapse}.util-learner-renderer-vnext .util-learner-table-workspace__table th,.util-learner-renderer-vnext .util-learner-table-workspace__table td{min-width:8rem;white-space:normal;overflow-wrap:normal;word-break:normal;vertical-align:top}.util-learner-renderer-vnext .util-learner-table-workspace__table th[scope="row"],.util-learner-renderer-vnext .util-learner-table-workspace__table th:first-child,.util-learner-renderer-vnext .util-learner-table-workspace__table td:first-child{min-width:6rem;white-space:normal}.util-learner-renderer-vnext .util-learner-table-workspace__table .util-learner-table-workspace__cell--fixed{padding:.5rem .65rem;background:#f1f5f9;color:#0f172a}.util-learner-renderer-vnext .util-learner-table-workspace__table .util-learner-table-workspace__cell--editable{padding:2px;background:#fff;min-width:8rem;height:1px;vertical-align:top}.util-learner-renderer-vnext .util-learner-table-workspace__cell--editable-inner{display:flex;flex-direction:column;align-items:stretch;box-sizing:border-box;min-height:100%;height:100%}.util-learner-renderer-vnext .util-learner-table-workspace__input{flex:1 1 auto;display:block;width:100%;min-width:0;min-height:4.5rem;box-sizing:border-box;margin:0;padding:.4rem .5rem;resize:vertical;overflow:auto;font:inherit;font-size:var(--learner-text-sm);line-height:1.4;color:#111827;border:1px solid #cbd5e1;border-radius:4px;background:#fff;vertical-align:top}.util-learner-renderer-vnext .util-learner-table-workspace__input:focus{outline:2px solid #2563eb;outline-offset:0;border-color:#93c5fd}.util-learner-renderer-vnext .util-composition-check-guidance{font-size:var(--learner-text-sm);line-height:var(--learner-leading-body);color:#475569;margin:0 0 var(--learner-space-3);padding:0 0 var(--learner-space-2);border-bottom:1px solid #f1f5f9}.util-learner-renderer-vnext .util-composition-reveal{margin:var(--learner-space-3) 0;border:1px solid #e2e8f0;border-radius:8px;background:#fff;overflow:hidden}.util-learner-renderer-vnext .util-composition-reveal summary{cursor:pointer;list-style:none;font-size:var(--learner-text-sm);line-height:var(--learner-leading-heading);font-weight:600;color:#1d4ed8;padding:var(--learner-space-2) var(--learner-space-3);background:#f8fafc}.util-learner-renderer-vnext .util-composition-reveal summary::-webkit-details-marker{display:none}.util-learner-renderer-vnext .util-composition-reveal summary::before{content:"\25b8";display:inline-block;margin-right:.45em;transition:transform .15s ease}.util-learner-renderer-vnext .util-composition-reveal[open] summary::before{transform:rotate(90deg)}.util-learner-renderer-vnext .util-composition-reveal summary:focus-visible{outline:2px solid #2563eb;outline-offset:-2px}.util-learner-renderer-vnext .util-composition-reveal__body{padding:var(--learner-space-3);border-top:1px solid #e2e8f0;background:#fff}.util-learner-renderer-vnext .util-composition-moment--check .util-checklist-block{margin-top:var(--learner-space-2)}@media (max-width:720px){.util-learner-renderer-vnext .util-composition-moment{margin-bottom:var(--learner-space-4)}.util-learner-renderer-vnext .util-learner-workspace{padding:var(--learner-space-2)}.util-learner-renderer-vnext .util-learner-table-workspace{padding:var(--learner-space-2)}.util-learner-renderer-vnext .util-learner-table-workspace__cell--editable{min-width:8rem}}@media print{.util-learner-renderer-vnext .util-composition-reveal,.util-learner-renderer-vnext .util-composition-reveal__body,.util-learner-renderer-vnext .util-learner-workspace,.util-learner-renderer-vnext .util-learner-table-workspace{break-inside:avoid-page}.util-learner-renderer-vnext .util-composition-reveal[open] .util-composition-reveal__body{display:block}.util-learner-renderer-vnext .util-learner-table-workspace__input{border-color:#94a3b8;background:transparent;box-shadow:none;-webkit-appearance:none;appearance:none;min-height:4.5rem;resize:none}.util-learner-renderer-vnext .util-learner-table-workspace__cell--editable{background:#fff}.util-learner-renderer-vnext .util-learner-table-workspace__cell--fixed{background:#f8fafc;-webkit-print-color-adjust:exact;print-color-adjust:exact}}.util-lucide-icon{display:inline-block;vertical-align:-0.15em;flex-shrink:0;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.util-lucide-icon--sm{width:16px;height:16px}.util-lucide-icon--md{width:18px;height:18px}.util-lucide-icon--lg{width:20px;height:20px}.util-pedagogic-beat{display:inline-flex;align-items:center;gap:.4rem;color:inherit}.util-pedagogic-beat__label{font-size:.875rem;line-height:1.3}.util-checklist{margin:8px 0 14px 1.1rem;padding:0;list-style:disc}.util-checklist>li{margin:0 0 6px;line-height:1.45}.util-semantic-icon{display:inline-flex;flex:0 0 auto;align-items:center;justify-content:center;line-height:1}.util-icon-heading{display:flex;align-items:flex-start;gap:.55rem}.util-icon-heading>.util-semantic-icon{margin-top:.15em;flex-shrink:0}.util-icon-heading>.util-semantic-icon__label{flex:1;min-width:0}.util-section-heading.util-icon-heading{align-items:center}.util-section-heading .util-semantic-icon{margin-top:0}.util-guidance-label.util-icon-heading{margin:0 0 6px;align-items:center}.util-beat-instruction.util-icon-heading>.util-semantic-icon__label p{margin:0}.util-assessment-feedback summary.util-icon-heading,.util-assessment-feedback>summary{display:flex;align-items:center;gap:.45rem;cursor:pointer}.util-assessment-feedback .util-semantic-icon{margin-top:0}.util-mapped-outcomes.util-icon-heading{display:flex;align-items:flex-start;gap:.45rem;margin:0 0 10px;font-size:.875rem;color:#475569}@media (max-width:700px){.util-journey-sequential{width:100%;max-width:100%}.util-journey-sequential__row{grid-template-columns:44px minmax(0,1fr);grid-template-areas:"btn current" "prev prev" "next next";column-gap:.65rem;row-gap:.4rem;justify-content:stretch}.util-journey-all-btn{position:static;inset-inline-end:auto;top:auto;z-index:auto;grid-area:btn}.util-journey-current-wrap{grid-area:current;justify-items:center}.util-journey-adjacent--prev{grid-area:prev}.util-journey-adjacent--next{grid-area:next}.util-journey-adjacent--placeholder{display:none}.util-journey-all-panel{max-width:100%}}@media (max-width:720px){:root{--learner-page-gutter:.75rem}.util-learning-header__intro{padding-block:.65rem var(--learner-space-2)}.util-journey-nav{padding-block:.65rem .75rem}.util-learning-header__title{font-size:var(--learner-text-xl)}.util-learner-renderer-vnext .util-section-heading{font-size:var(--learner-text-lg)}.util-learner-renderer-vnext .util-activity+.util-activity,.util-learner-renderer-vnext .util-page-orientation+.util-learning-activities>.util-activity:first-child{margin-top:2.5rem;padding-top:2rem}}@media (max-width:390px){.util-journey-sequential{width:100%;max-width:100%}.util-journey-sequential__row{column-gap:.5rem}}@media (prefers-reduced-motion:reduce){.util-journey-nav,.util-journey-all-panel{scroll-behavior:auto}}@media print{.util-learning-header,.util-journey-nav{display:none!important}body.util-page-export--vnext{overflow:visible}.util-learner-page{width:100%;max-width:none;padding:0}.util-learner-renderer-vnext .util-activity+.util-activity,.util-learner-renderer-vnext .util-page-orientation+.util-learning-activities>.util-activity:first-child{margin-top:1.5rem;padding-top:1rem;border-top-color:#d1d5db;break-before:auto}.util-learner-renderer-vnext .util-assessment-check{display:none}.util-learner-renderer-vnext .util-assessment-result{display:none}.util-learner-renderer-vnext .util-assessment-option__input{accent-color:#111}.util-learner-renderer-vnext .util-interactive-checklist__input{accent-color:#111;-webkit-print-color-adjust:exact;print-color-adjust:exact}}</style><!-- prism-mathjax-export-bootstrap --><script>(function(){  var cfg = window.MathJax && typeof window.MathJax === 'object' ? window.MathJax : {};  cfg.tex = Object.assign({}, cfg.tex || {}, {    inlineMath: [['\\(','\\)']],    displayMath: [['\\[','\\]']]  });  window.MathJax = cfg;})();</script><script id="prism-mathjax-export-loader" async src="lib/mathjax/es5/tex-chtml.js"></script></head><body class="util-page-export util-page-export--vnext util-page-export--with-learning-header"><script data-prism-vnext-export-runtime="true">/**
+ * Standalone export runtime for learner-renderer vNext draft persistence.
+ * Generated by scripts/build-learner-renderer-vnext-browser.js — do not edit.
+ */
+(function (root, factory) {
+  "use strict";
+  var api = factory();
+  if (typeof module !== "undefined" && module.exports) {
+    module.exports = api;
+  }
+  if (typeof root !== "undefined") {
+    if (root.PRISM_LEARNER_RENDERER_VNEXT && typeof root.PRISM_LEARNER_RENDERER_VNEXT === "object") {
+      Object.keys(api).forEach(function (key) {
+        root.PRISM_LEARNER_RENDERER_VNEXT[key] = api[key];
+      });
+    } else {
+      root.PRISM_LEARNER_RENDERER_VNEXT = api;
+    }
+  }
+})(typeof globalThis !== "undefined" ? globalThis : typeof window !== "undefined" ? window : this, function () {
+  "use strict";
+
+  var __modules = {};
+  var __cache = {};
+
+  function __bundleRequire(fileName) {
+    if (__cache[fileName]) return __cache[fileName];
+    if (!__modules[fileName]) throw new Error("Missing bundled module: " + fileName);
+    var module = { exports: {} };
+    __modules[fileName](module, module.exports, __bundleRequire);
+    __cache[fileName] = module.exports;
+    return module.exports;
+  }
+
+  __modules["lib/learner-renderer-vnext/learner-draft-constants.js"] = function (module, exports, __bundleRequire) {
+var DRAFT_SCHEMA_VERSION = 1;
+var WORKSPACE_STATE_VERSION = 1;
+var RENDERER_ID = "learner-renderer-vnext";
+var STORAGE_KEY_PREFIX = "learner-renderer-vnext:draft:";
+var DEFAULT_SAVE_DEBOUNCE_MS = 400;
+
+var STATUS = Object.freeze({
+  NOT_SAVED: "Draft not saved",
+  SAVING: "Saving…",
+  SAVED: "Draft saved on this device",
+  RESTORED: "Draft restored",
+  UNABLE: "Unable to save draft",
+  UNAVAILABLE: "Responses cannot be saved on this device."
+});
+
+var DIAGNOSTIC = Object.freeze({
+  UNSUPPORTED_WORKSPACE_STATE_ADAPTER: "UNSUPPORTED_WORKSPACE_STATE_ADAPTER",
+  UNSTABLE_PERSISTENCE_PAGE_IDENTITY: "UNSTABLE_PERSISTENCE_PAGE_IDENTITY",
+  UNSUPPORTED_DRAFT_SCHEMA_VERSION: "UNSUPPORTED_DRAFT_SCHEMA_VERSION",
+  INVALID_PERSISTED_WORKSPACE_STATE: "INVALID_PERSISTED_WORKSPACE_STATE",
+  INVALID_PERSISTED_ORDERING_STATE: "INVALID_PERSISTED_ORDERING_STATE",
+  STALE_PERSISTED_WORKSPACE: "STALE_PERSISTED_WORKSPACE",
+  LEARNER_DRAFT_READ_FAILED: "LEARNER_DRAFT_READ_FAILED",
+  LEARNER_DRAFT_WRITE_FAILED: "LEARNER_DRAFT_WRITE_FAILED",
+  LEARNER_DRAFT_DELETE_FAILED: "LEARNER_DRAFT_DELETE_FAILED",
+  LEARNER_DRAFT_PARSE_FAILED: "LEARNER_DRAFT_PARSE_FAILED"
+});
+
+var SUPPORTED_KINDS = Object.freeze([
+  "text_entry",
+  "table_entry",
+  "ordering",
+  "assessment_selection",
+  "checklist_entry"
+]);
+
+module.exports = {
+  DRAFT_SCHEMA_VERSION: DRAFT_SCHEMA_VERSION,
+  WORKSPACE_STATE_VERSION: WORKSPACE_STATE_VERSION,
+  RENDERER_ID: RENDERER_ID,
+  STORAGE_KEY_PREFIX: STORAGE_KEY_PREFIX,
+  DEFAULT_SAVE_DEBOUNCE_MS: DEFAULT_SAVE_DEBOUNCE_MS,
+  STATUS: STATUS,
+  DIAGNOSTIC: DIAGNOSTIC,
+  SUPPORTED_KINDS: SUPPORTED_KINDS
+};
+
+  };
+
+  __modules["lib/learner-renderer-vnext/learner-draft-page-key.js"] = function (module, exports, __bundleRequire) {
+var constants = __bundleRequire("lib/learner-renderer-vnext/learner-draft-constants.js");
+
+function firstNonEmpty(values) {
+  for (var i = 0; i < values.length; i += 1) {
+    var text = String(values[i] == null ? "" : values[i]).trim();
+    if (text) return text;
+  }
+  return "";
+}
+
+function slugPart(value) {
+  return (
+    String(value || "")
+      .toLowerCase()
+      .replace(/[^a-z0-9._:-]+/g, "-")
+      .replace(/^-+|-+$/g, "")
+      .slice(0, 120) || "na"
+  );
+}
+
+/**
+ * Default resource id for the primary assembled learner page within a workflow.
+ * Stable across title/activity churn; scoped by workflow_id in the draft key.
+ */
+var DEFAULT_LEARNER_PAGE_RESOURCE_ID = "learner-page";
+
+/**
+ * Stamp workflow-backed persistence identity onto a page model.
+ *
+ * Earliest authoritative layer: when a page is resolved/assembled under a known
+ * workflow, identity must come from that workflow — not from title/activity fallback.
+ * Does not overwrite existing workflow/page ids. No-ops when workflow id is absent.
+ *
+ * @param {Object} sourcePage
+ * @param {Object|null|undefined} workflow
+ * @returns {Object} the same page object (mutated) or the original value
+ */
+function attachLearnerPageIdentityFromWorkflow(sourcePage, workflow) {
+  if (!sourcePage || typeof sourcePage !== "object" || Array.isArray(sourcePage)) {
+    return sourcePage;
+  }
+  var wf = workflow && typeof workflow === "object" && !Array.isArray(workflow) ? workflow : null;
+  var workflowId = firstNonEmpty([
+    wf && wf.id,
+    wf && wf.workflow_id,
+    wf && wf.workflowId
+  ]);
+  if (!workflowId) return sourcePage;
+
+  var page = sourcePage;
+  if (!page.metadata || typeof page.metadata !== "object" || Array.isArray(page.metadata)) {
+    page.metadata = {};
+  }
+
+  var existingWorkflowId = firstNonEmpty([
+    page.metadata.workflow_id,
+    page.metadata.workflowId,
+    page.workflow_id,
+    page.workflowId
+  ]);
+  if (!existingWorkflowId) {
+    page.workflow_id = workflowId;
+    page.metadata.workflow_id = workflowId;
+  }
+
+  var existingPageId = firstNonEmpty([
+    page.metadata.page_id,
+    page.metadata.pageId,
+    page.metadata.lesson_id,
+    page.metadata.lessonId,
+    page.page_id,
+    page.pageId
+  ]);
+  if (!existingPageId) {
+    page.page_id = DEFAULT_LEARNER_PAGE_RESOURCE_ID;
+    page.metadata.page_id = DEFAULT_LEARNER_PAGE_RESOURCE_ID;
+  }
+
+  var workflowName = firstNonEmpty([wf && wf.name, wf && wf.title]);
+  if (workflowName && !firstNonEmpty([page.metadata.workflow_name, page.metadata.workflowName])) {
+    page.metadata.workflow_name = workflowName;
+  }
+  var workflowSlug = firstNonEmpty([wf && wf.slug, wf && wf.workflow_slug, wf && wf.workflowSlug]);
+  if (workflowSlug && !firstNonEmpty([page.metadata.workflow_slug, page.metadata.workflowSlug])) {
+    page.metadata.workflow_slug = workflowSlug;
+  }
+
+  var resolution =
+    wf &&
+    wf.workflowBriefResolution &&
+    typeof wf.workflowBriefResolution === "object" &&
+    !Array.isArray(wf.workflowBriefResolution)
+      ? wf.workflowBriefResolution
+      : null;
+  var resolvedFactors =
+    resolution &&
+    resolution.resolvedFactors &&
+    typeof resolution.resolvedFactors === "object" &&
+    !Array.isArray(resolution.resolvedFactors)
+      ? resolution.resolvedFactors
+      : null;
+  if (resolvedFactors) {
+    if (
+      !page.constraints_applied ||
+      typeof page.constraints_applied !== "object" ||
+      Array.isArray(page.constraints_applied)
+    ) {
+      page.constraints_applied = {};
+    }
+    var deliveryMode = firstNonEmpty([resolvedFactors.delivery_mode]);
+    var deliveryContext = firstNonEmpty([resolvedFactors.delivery_context]);
+    if (deliveryMode && !firstNonEmpty([page.constraints_applied.delivery_mode])) {
+      page.constraints_applied.delivery_mode = deliveryMode;
+    }
+    if (deliveryContext && !firstNonEmpty([page.constraints_applied.delivery_context])) {
+      page.constraints_applied.delivery_context = deliveryContext;
+    }
+  }
+
+  return page;
+}
+
+/**
+ * Build a deterministic page identity for local draft isolation.
+ *
+ * Hierarchy: workflowId → page/lesson id → schema version → ordered activity ids → title.
+ * Does not hash visible prose bodies. Does not use rendered HTML.
+ *
+ * @param {Object} sourcePage
+ * @returns {{
+ *   pageKey: string,
+ *   storageKey: string,
+ *   unstable: boolean,
+ *   components: Object,
+ *   diagnostic: Object|null
+ * }}
+ */
+function buildLearnerDraftPageIdentity(sourcePage) {
+  var page = sourcePage && typeof sourcePage === "object" ? sourcePage : {};
+  var metadata = page.metadata && typeof page.metadata === "object" ? page.metadata : {};
+  var workflowId = firstNonEmpty([
+    metadata.workflow_id,
+    metadata.workflowId,
+    page.workflow_id,
+    page.workflowId
+  ]);
+  var pageId = firstNonEmpty([
+    metadata.page_id,
+    metadata.pageId,
+    metadata.lesson_id,
+    metadata.lessonId,
+    page.page_id,
+    page.pageId
+  ]);
+  var schemaVersion = firstNonEmpty([page.schema_version, page.schemaVersion, "unknown"]);
+  var title = firstNonEmpty([page.title]);
+  var activityIds = (Array.isArray(page.activities) ? page.activities : [])
+    .map(function (activity) {
+      return String((activity && activity.activity_id) || "").trim();
+    })
+    .filter(Boolean)
+    .join(",");
+
+  var unstable = !workflowId && !pageId;
+  var diagnostic = null;
+  if (unstable) {
+    diagnostic = {
+      code: constants.DIAGNOSTIC.UNSTABLE_PERSISTENCE_PAGE_IDENTITY,
+      message:
+        "Draft page identity falls back to title and activity membership because workflow/page ids are absent."
+    };
+  }
+
+  var components = {
+    workflowId: workflowId || "no-workflow",
+    pageId: pageId || "no-page-id",
+    schemaVersion: schemaVersion,
+    activityIds: activityIds || "no-activities",
+    title: title || "untitled"
+  };
+
+  var pageKey = [
+    "v" + String(constants.DRAFT_SCHEMA_VERSION),
+    slugPart(components.workflowId),
+    slugPart(components.pageId),
+    slugPart(components.schemaVersion),
+    slugPart(components.activityIds),
+    slugPart(components.title)
+  ].join("::");
+
+  return {
+    pageKey: pageKey,
+    storageKey: constants.STORAGE_KEY_PREFIX + pageKey,
+    unstable: unstable,
+    components: components,
+    diagnostic: diagnostic
+  };
+}
+
+function migrateLearnerDraft(envelope) {
+  // Future migrations land here. Version 1 is accepted as-is.
+  return {
+    ok: true,
+    envelope: envelope,
+    migrated: false
+  };
+}
+
+module.exports = {
+  DEFAULT_LEARNER_PAGE_RESOURCE_ID: DEFAULT_LEARNER_PAGE_RESOURCE_ID,
+  attachLearnerPageIdentityFromWorkflow: attachLearnerPageIdentityFromWorkflow,
+  buildLearnerDraftPageIdentity: buildLearnerDraftPageIdentity,
+  migrateLearnerDraft: migrateLearnerDraft
+};
+
+  };
+
+  __modules["lib/learner-renderer-vnext/learner-draft-envelope.js"] = function (module, exports, __bundleRequire) {
+var constants = __bundleRequire("lib/learner-renderer-vnext/learner-draft-constants.js");
+var migrateLearnerDraft = __bundleRequire("lib/learner-renderer-vnext/learner-draft-page-key.js").migrateLearnerDraft;
+
+function createEmptyEnvelope(pageKey) {
+  return {
+    schemaVersion: constants.DRAFT_SCHEMA_VERSION,
+    renderer: constants.RENDERER_ID,
+    pageKey: String(pageKey || ""),
+    savedAt: null,
+    workspaces: {}
+  };
+}
+
+function createWorkspaceState(kind, value) {
+  return {
+    kind: String(kind || ""),
+    stateVersion: constants.WORKSPACE_STATE_VERSION,
+    value: value
+  };
+}
+
+/**
+ * @param {*} raw
+ * @param {string} expectedPageKey
+ * @returns {{ ok: boolean, envelope?: Object, diagnostics: Object[] }}
+ */
+function parseAndValidateEnvelope(raw, expectedPageKey) {
+  var diagnostics = [];
+  if (raw == null || raw === "") {
+    return { ok: true, envelope: null, diagnostics: diagnostics };
+  }
+
+  var parsed;
+  if (typeof raw === "string") {
+    try {
+      parsed = JSON.parse(raw);
+    } catch (_err) {
+      diagnostics.push({
+        code: constants.DIAGNOSTIC.LEARNER_DRAFT_PARSE_FAILED,
+        message: "Stored learner draft JSON could not be parsed."
+      });
+      return { ok: false, diagnostics: diagnostics };
+    }
+  } else if (typeof raw === "object") {
+    parsed = raw;
+  } else {
+    diagnostics.push({
+      code: constants.DIAGNOSTIC.LEARNER_DRAFT_PARSE_FAILED,
+      message: "Stored learner draft has an unexpected type."
+    });
+    return { ok: false, diagnostics: diagnostics };
+  }
+
+  if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
+    diagnostics.push({
+      code: constants.DIAGNOSTIC.INVALID_PERSISTED_WORKSPACE_STATE,
+      message: "Stored learner draft envelope is not an object."
+    });
+    return { ok: false, diagnostics: diagnostics };
+  }
+
+  var schemaVersion = Number(parsed.schemaVersion);
+  if (schemaVersion !== constants.DRAFT_SCHEMA_VERSION) {
+    diagnostics.push({
+      code: constants.DIAGNOSTIC.UNSUPPORTED_DRAFT_SCHEMA_VERSION,
+      message: "Stored learner draft schema version is unsupported.",
+      schemaVersion: parsed.schemaVersion
+    });
+    return { ok: false, envelope: parsed, diagnostics: diagnostics };
+  }
+
+  var migrated = migrateLearnerDraft(parsed);
+  var envelope = migrated.envelope;
+  if (String(envelope.pageKey || "") && expectedPageKey && String(envelope.pageKey) !== String(expectedPageKey)) {
+    diagnostics.push({
+      code: constants.DIAGNOSTIC.STALE_PERSISTED_WORKSPACE,
+      message: "Stored learner draft page key does not match the current page identity."
+    });
+    return { ok: false, envelope: envelope, diagnostics: diagnostics };
+  }
+
+  if (!envelope.workspaces || typeof envelope.workspaces !== "object" || Array.isArray(envelope.workspaces)) {
+    envelope.workspaces = {};
+  }
+
+  return { ok: true, envelope: envelope, diagnostics: diagnostics };
+}
+
+module.exports = {
+  createEmptyEnvelope: createEmptyEnvelope,
+  createWorkspaceState: createWorkspaceState,
+  parseAndValidateEnvelope: parseAndValidateEnvelope
+};
+
+  };
+
+  __modules["lib/learner-renderer-vnext/learner-draft-storage.js"] = function (module, exports, __bundleRequire) {
+var constants = __bundleRequire("lib/learner-renderer-vnext/learner-draft-constants.js");
+var envelope = __bundleRequire("lib/learner-renderer-vnext/learner-draft-envelope.js");
+
+/**
+ * @param {{ getItem?: Function, setItem?: Function, removeItem?: Function }|null} storage
+ */
+function createLearnerDraftStorage(storage) {
+  var backend = storage || null;
+  var available = Boolean(
+    backend &&
+      typeof backend.getItem === "function" &&
+      typeof backend.setItem === "function" &&
+      typeof backend.removeItem === "function"
+  );
+
+  function loadLearnerDraft(pageKey) {
+    var diagnostics = [];
+    if (!available) {
+      diagnostics.push({
+        code: constants.DIAGNOSTIC.LEARNER_DRAFT_READ_FAILED,
+        message: "Learner draft storage is unavailable."
+      });
+      return { ok: false, envelope: null, diagnostics: diagnostics, unavailable: true };
+    }
+    var storageKey = constants.STORAGE_KEY_PREFIX + String(pageKey || "");
+    try {
+      var raw = backend.getItem(storageKey);
+      return envelope.parseAndValidateEnvelope(raw, pageKey);
+    } catch (_err) {
+      diagnostics.push({
+        code: constants.DIAGNOSTIC.LEARNER_DRAFT_READ_FAILED,
+        message: "Learner draft storage read failed."
+      });
+      return { ok: false, envelope: null, diagnostics: diagnostics };
+    }
+  }
+
+  function saveLearnerDraft(pageKey, draftEnvelope) {
+    var diagnostics = [];
+    if (!available) {
+      diagnostics.push({
+        code: constants.DIAGNOSTIC.LEARNER_DRAFT_WRITE_FAILED,
+        message: "Learner draft storage is unavailable."
+      });
+      return { ok: false, diagnostics: diagnostics, unavailable: true };
+    }
+    var storageKey = constants.STORAGE_KEY_PREFIX + String(pageKey || "");
+    try {
+      var payload = Object.assign({}, draftEnvelope || {}, {
+        savedAt: new Date().toISOString(),
+        pageKey: String(pageKey || "")
+      });
+      backend.setItem(storageKey, JSON.stringify(payload));
+      return { ok: true, diagnostics: diagnostics, envelope: payload };
+    } catch (err) {
+      var code = constants.DIAGNOSTIC.LEARNER_DRAFT_WRITE_FAILED;
+      var message = "Learner draft storage write failed.";
+      if (err && (err.name === "QuotaExceededError" || err.code === 22 || err.code === 1014)) {
+        message = "Learner draft storage quota was exceeded.";
+      }
+      diagnostics.push({ code: code, message: message });
+      return { ok: false, diagnostics: diagnostics };
+    }
+  }
+
+  function deleteLearnerDraft(pageKey) {
+    var diagnostics = [];
+    if (!available) {
+      diagnostics.push({
+        code: constants.DIAGNOSTIC.LEARNER_DRAFT_DELETE_FAILED,
+        message: "Learner draft storage is unavailable."
+      });
+      return { ok: false, diagnostics: diagnostics, unavailable: true };
+    }
+    var storageKey = constants.STORAGE_KEY_PREFIX + String(pageKey || "");
+    try {
+      backend.removeItem(storageKey);
+      return { ok: true, diagnostics: diagnostics };
+    } catch (_err) {
+      diagnostics.push({
+        code: constants.DIAGNOSTIC.LEARNER_DRAFT_DELETE_FAILED,
+        message: "Learner draft storage delete failed."
+      });
+      return { ok: false, diagnostics: diagnostics };
+    }
+  }
+
+  return {
+    available: available,
+    loadLearnerDraft: loadLearnerDraft,
+    saveLearnerDraft: saveLearnerDraft,
+    deleteLearnerDraft: deleteLearnerDraft
+  };
+}
+
+function resolveDefaultBrowserStorage() {
+  try {
+    if (typeof localStorage === "undefined" || !localStorage) return null;
+    var probeKey = constants.STORAGE_KEY_PREFIX + "__probe__";
+    localStorage.setItem(probeKey, "1");
+    localStorage.removeItem(probeKey);
+    return localStorage;
+  } catch (_err) {
+    return null;
+  }
+}
+
+module.exports = {
+  createLearnerDraftStorage: createLearnerDraftStorage,
+  resolveDefaultBrowserStorage: resolveDefaultBrowserStorage
+};
+
+  };
+
+  __modules["lib/learner-renderer-vnext/learner-draft-adapters.js"] = function (module, exports, __bundleRequire) {
+var constants = __bundleRequire("lib/learner-renderer-vnext/learner-draft-constants.js");
+var envelope = __bundleRequire("lib/learner-renderer-vnext/learner-draft-envelope.js");
+
+var adapters = Object.create(null);
+
+function registerLearnerStateAdapter(kind, adapter) {
+  var key = String(kind || "");
+  if (!key || !adapter || typeof adapter.serialize !== "function" || typeof adapter.restore !== "function") {
+    throw new Error("Invalid learner state adapter for kind: " + key);
+  }
+  adapters[key] = {
+    serialize: adapter.serialize,
+    restore: adapter.restore,
+    validate: typeof adapter.validate === "function" ? adapter.validate : function () {
+      return { ok: true, diagnostics: [] };
+    },
+    clear: typeof adapter.clear === "function" ? adapter.clear : null
+  };
+}
+
+function getLearnerStateAdapter(kind) {
+  return adapters[String(kind || "")] || null;
+}
+
+function listRegisteredAdapterKinds() {
+  return Object.keys(adapters);
+}
+
+function qa(root, selector) {
+  return Array.prototype.slice.call(root.querySelectorAll(selector));
+}
+
+function q(root, selector) {
+  return root.querySelector(selector);
+}
+
+function serializeTextEntry(workspaceElement) {
+  var input = q(workspaceElement, "textarea.util-learner-workspace__input");
+  return envelope.createWorkspaceState("text_entry", {
+    text: input ? String(input.value || "") : ""
+  });
+}
+
+function restoreTextEntry(workspaceElement, state) {
+  var diagnostics = [];
+  if (!state || state.kind !== "text_entry" || !state.value || typeof state.value !== "object") {
+    diagnostics.push({
+      code: constants.DIAGNOSTIC.INVALID_PERSISTED_WORKSPACE_STATE,
+      message: "Invalid text_entry persisted state."
+    });
+    return { ok: false, diagnostics: diagnostics };
+  }
+  if (Number(state.stateVersion) !== constants.WORKSPACE_STATE_VERSION) {
+    diagnostics.push({
+      code: constants.DIAGNOSTIC.INVALID_PERSISTED_WORKSPACE_STATE,
+      message: "Unsupported text_entry state version."
+    });
+    return { ok: false, diagnostics: diagnostics };
+  }
+  var input = q(workspaceElement, "textarea.util-learner-workspace__input");
+  if (!input) {
+    diagnostics.push({
+      code: constants.DIAGNOSTIC.STALE_PERSISTED_WORKSPACE,
+      message: "text_entry workspace input was not found."
+    });
+    return { ok: false, diagnostics: diagnostics };
+  }
+  input.value = String(state.value.text == null ? "" : state.value.text);
+  return { ok: true, diagnostics: diagnostics };
+}
+
+function clearTextEntry(workspaceElement) {
+  var input = q(workspaceElement, "textarea.util-learner-workspace__input");
+  if (input) input.value = "";
+  return { ok: true, diagnostics: [] };
+}
+
+function serializeTableEntry(workspaceElement) {
+  var cells = Object.create(null);
+  qa(workspaceElement, ".util-learner-table-workspace__input").forEach(function (input) {
+    var cellId = input.getAttribute("data-learner-cell") || input.getAttribute("id") || "";
+    if (!cellId) return;
+    cells[cellId] = String(input.value || "");
+  });
+  return envelope.createWorkspaceState("table_entry", { cells: cells });
+}
+
+function restoreTableEntry(workspaceElement, state) {
+  var diagnostics = [];
+  if (!state || state.kind !== "table_entry" || !state.value || typeof state.value !== "object") {
+    diagnostics.push({
+      code: constants.DIAGNOSTIC.INVALID_PERSISTED_WORKSPACE_STATE,
+      message: "Invalid table_entry persisted state."
+    });
+    return { ok: false, diagnostics: diagnostics };
+  }
+  if (Number(state.stateVersion) !== constants.WORKSPACE_STATE_VERSION) {
+    diagnostics.push({
+      code: constants.DIAGNOSTIC.INVALID_PERSISTED_WORKSPACE_STATE,
+      message: "Unsupported table_entry state version."
+    });
+    return { ok: false, diagnostics: diagnostics };
+  }
+  var cells = state.value.cells && typeof state.value.cells === "object" ? state.value.cells : null;
+  if (!cells) {
+    diagnostics.push({
+      code: constants.DIAGNOSTIC.INVALID_PERSISTED_WORKSPACE_STATE,
+      message: "table_entry state is missing cells."
+    });
+    return { ok: false, diagnostics: diagnostics };
+  }
+  var known = Object.create(null);
+  qa(workspaceElement, ".util-learner-table-workspace__input").forEach(function (input) {
+    var cellId = input.getAttribute("data-learner-cell") || input.getAttribute("id") || "";
+    if (!cellId) return;
+    known[cellId] = input;
+  });
+  Object.keys(cells).forEach(function (cellId) {
+    if (!known[cellId]) return;
+    known[cellId].value = String(cells[cellId] == null ? "" : cells[cellId]);
+  });
+  return { ok: true, diagnostics: diagnostics };
+}
+
+function clearTableEntry(workspaceElement) {
+  qa(workspaceElement, ".util-learner-table-workspace__input").forEach(function (input) {
+    input.value = "";
+  });
+  return { ok: true, diagnostics: [] };
+}
+
+function currentOrderingIds(workspaceElement) {
+  return qa(workspaceElement, "[data-ordering-list] .util-ordering-item").map(function (item) {
+    return String(item.getAttribute("data-ordering-item-id") || "");
+  });
+}
+
+function candidateOrderingIds(workspaceElement) {
+  var attr = workspaceElement.getAttribute("data-initial-item-order") || "";
+  if (attr) {
+    try {
+      var parsed = JSON.parse(attr);
+      if (Array.isArray(parsed) && parsed.length) {
+        return parsed.map(function (id) {
+          return String(id);
+        });
+      }
+    } catch (_err) {
+      // fall through
+    }
+  }
+  return currentOrderingIds(workspaceElement).slice().sort();
+}
+
+function validateOrderingValue(itemOrder, candidateIds) {
+  var diagnostics = [];
+  if (!Array.isArray(itemOrder)) {
+    diagnostics.push({
+      code: constants.DIAGNOSTIC.INVALID_PERSISTED_ORDERING_STATE,
+      message: "Ordering state must be an array of item ids."
+    });
+    return { ok: false, diagnostics: diagnostics };
+  }
+  if (itemOrder.length !== candidateIds.length) {
+    diagnostics.push({
+      code: constants.DIAGNOSTIC.INVALID_PERSISTED_ORDERING_STATE,
+      message: "Ordering state length does not match candidate items."
+    });
+    return { ok: false, diagnostics: diagnostics };
+  }
+  var seen = Object.create(null);
+  var candidateSet = Object.create(null);
+  candidateIds.forEach(function (id) {
+    candidateSet[String(id)] = true;
+  });
+  for (var i = 0; i < itemOrder.length; i += 1) {
+    var id = String(itemOrder[i] || "");
+    if (!id || !candidateSet[id]) {
+      diagnostics.push({
+        code: constants.DIAGNOSTIC.INVALID_PERSISTED_ORDERING_STATE,
+        message: "Ordering state references an unknown or missing item id."
+      });
+      return { ok: false, diagnostics: diagnostics };
+    }
+    if (seen[id]) {
+      diagnostics.push({
+        code: constants.DIAGNOSTIC.INVALID_PERSISTED_ORDERING_STATE,
+        message: "Ordering state contains duplicate item ids."
+      });
+      return { ok: false, diagnostics: diagnostics };
+    }
+    seen[id] = true;
+  }
+  return { ok: true, diagnostics: diagnostics };
+}
+
+function applyOrderingIds(workspaceElement, itemOrder, options) {
+  var opts = options || {};
+  var list = q(workspaceElement, "[data-ordering-list]");
+  if (!list) return { ok: false };
+  var byId = Object.create(null);
+  qa(list, ".util-ordering-item").forEach(function (item) {
+    byId[String(item.getAttribute("data-ordering-item-id") || "")] = item;
+  });
+  itemOrder.forEach(function (id) {
+    var item = byId[String(id)];
+    if (item) list.appendChild(item);
+  });
+  if (typeof opts.refresh === "function") {
+    opts.refresh(workspaceElement);
+  } else if (
+    typeof window !== "undefined" &&
+    window.PRISM_ORDERING_RUNTIME &&
+    typeof window.PRISM_ORDERING_RUNTIME.refresh === "function"
+  ) {
+    window.PRISM_ORDERING_RUNTIME.refresh(workspaceElement);
+  }
+  return { ok: true };
+}
+
+function serializeOrdering(workspaceElement) {
+  return envelope.createWorkspaceState("ordering", {
+    itemOrder: currentOrderingIds(workspaceElement)
+  });
+}
+
+function restoreOrdering(workspaceElement, state, options) {
+  var diagnostics = [];
+  if (!state || state.kind !== "ordering" || !state.value || typeof state.value !== "object") {
+    diagnostics.push({
+      code: constants.DIAGNOSTIC.INVALID_PERSISTED_ORDERING_STATE,
+      message: "Invalid ordering persisted state."
+    });
+    return { ok: false, diagnostics: diagnostics };
+  }
+  if (Number(state.stateVersion) !== constants.WORKSPACE_STATE_VERSION) {
+    diagnostics.push({
+      code: constants.DIAGNOSTIC.INVALID_PERSISTED_ORDERING_STATE,
+      message: "Unsupported ordering state version."
+    });
+    return { ok: false, diagnostics: diagnostics };
+  }
+  var itemOrder = state.value.itemOrder;
+  var candidates = candidateOrderingIds(workspaceElement);
+  var validation = validateOrderingValue(itemOrder, candidates);
+  if (!validation.ok) {
+    var initial = candidateOrderingIds(workspaceElement);
+    applyOrderingIds(workspaceElement, initial, options);
+    return { ok: false, diagnostics: validation.diagnostics, fellBackToInitial: true };
+  }
+  applyOrderingIds(workspaceElement, itemOrder.map(String), options);
+  return { ok: true, diagnostics: diagnostics };
+}
+
+function clearOrdering(workspaceElement, options) {
+  var initial = candidateOrderingIds(workspaceElement);
+  applyOrderingIds(workspaceElement, initial, options);
+  return { ok: true, diagnostics: [] };
+}
+
+function serializeAssessmentSelection(workspaceElement) {
+  var checked = q(workspaceElement, 'input[type="radio"][data-assessment-option]:checked');
+  var selectedOption = checked ? String(checked.value || "") : "";
+  var checkedAttr = String(workspaceElement.getAttribute("data-assessment-checked") || "");
+  return envelope.createWorkspaceState("assessment_selection", {
+    selectedOption: selectedOption,
+    checked: checkedAttr === "true"
+  });
+}
+
+function restoreAssessmentSelection(workspaceElement, state) {
+  var diagnostics = [];
+  if (
+    !state ||
+    state.kind !== "assessment_selection" ||
+    !state.value ||
+    typeof state.value !== "object"
+  ) {
+    diagnostics.push({
+      code: constants.DIAGNOSTIC.INVALID_PERSISTED_WORKSPACE_STATE,
+      message: "Invalid assessment_selection persisted state."
+    });
+    return { ok: false, diagnostics: diagnostics };
+  }
+  if (Number(state.stateVersion) !== constants.WORKSPACE_STATE_VERSION) {
+    diagnostics.push({
+      code: constants.DIAGNOSTIC.INVALID_PERSISTED_WORKSPACE_STATE,
+      message: "Unsupported assessment_selection state version."
+    });
+    return { ok: false, diagnostics: diagnostics };
+  }
+
+  qa(workspaceElement, 'input[type="radio"][data-assessment-option]').forEach(function (input) {
+    input.checked = false;
+  });
+  var selected = String(state.value.selectedOption || "");
+  if (selected) {
+    qa(workspaceElement, 'input[type="radio"][data-assessment-option]').forEach(function (input) {
+      if (String(input.value || "") === selected) input.checked = true;
+    });
+  }
+
+  var resultRegion = q(workspaceElement, "[data-assessment-result]");
+  if (resultRegion) {
+    resultRegion.hidden = true;
+    resultRegion.textContent = "";
+  }
+  workspaceElement.setAttribute("data-assessment-checked", state.value.checked ? "true" : "false");
+  if (typeof workspaceElement.removeAttribute === "function") {
+    workspaceElement.removeAttribute("data-assessment-last-result");
+  } else if (workspaceElement.attributes) {
+    delete workspaceElement.attributes["data-assessment-last-result"];
+  }
+
+  if (state.value.checked && selected) {
+    var correct = String(workspaceElement.getAttribute("data-assessment-correct") || "");
+    var rationale = String(workspaceElement.getAttribute("data-assessment-rationale") || "").trim();
+    var ok = selected === correct;
+    if (resultRegion) {
+      resultRegion.hidden = false;
+      var html =
+        ok
+          ? "<p><strong>Correct.</strong></p>"
+          : "<p><strong>Not quite.</strong> The correct answer is " +
+            String(correct)
+              .replace(/&/g, "&amp;")
+              .replace(/</g, "&lt;")
+              .replace(/>/g, "&gt;") +
+            ".</p>";
+      if (rationale) {
+        html +=
+          '<p class="util-assessment-rationale">' +
+          String(rationale)
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;") +
+          "</p>";
+      }
+      resultRegion.innerHTML = html;
+      workspaceElement.setAttribute(
+        "data-assessment-last-result",
+        ok ? "correct" : "incorrect"
+      );
+    }
+  }
+
+  return { ok: true, diagnostics: diagnostics };
+}
+
+function clearAssessmentSelection(workspaceElement) {
+  qa(workspaceElement, 'input[type="radio"][data-assessment-option]').forEach(function (input) {
+    input.checked = false;
+  });
+  var resultRegion = q(workspaceElement, "[data-assessment-result]");
+  if (resultRegion) {
+    resultRegion.hidden = true;
+    resultRegion.textContent = "";
+  }
+  workspaceElement.setAttribute("data-assessment-checked", "false");
+  if (typeof workspaceElement.removeAttribute === "function") {
+    workspaceElement.removeAttribute("data-assessment-last-result");
+  } else if (workspaceElement.attributes) {
+    delete workspaceElement.attributes["data-assessment-last-result"];
+  }
+  return { ok: true, diagnostics: [] };
+}
+
+function serializeChecklistEntry(workspaceElement) {
+  var items = Object.create(null);
+  qa(workspaceElement, 'input[type="checkbox"][data-checklist-item-id]').forEach(function (input) {
+    var itemId = input.getAttribute("data-checklist-item-id") || input.getAttribute("id") || "";
+    if (!itemId) return;
+    items[itemId] = Boolean(input.checked);
+  });
+  return envelope.createWorkspaceState("checklist_entry", { items: items });
+}
+
+function restoreChecklistEntry(workspaceElement, state) {
+  var diagnostics = [];
+  if (
+    !state ||
+    state.kind !== "checklist_entry" ||
+    !state.value ||
+    typeof state.value !== "object"
+  ) {
+    diagnostics.push({
+      code: constants.DIAGNOSTIC.INVALID_PERSISTED_WORKSPACE_STATE,
+      message: "Invalid checklist_entry persisted state."
+    });
+    return { ok: false, diagnostics: diagnostics };
+  }
+  if (Number(state.stateVersion) !== constants.WORKSPACE_STATE_VERSION) {
+    diagnostics.push({
+      code: constants.DIAGNOSTIC.INVALID_PERSISTED_WORKSPACE_STATE,
+      message: "Unsupported checklist_entry state version."
+    });
+    return { ok: false, diagnostics: diagnostics };
+  }
+  var items =
+    state.value.items && typeof state.value.items === "object" ? state.value.items : null;
+  if (!items) {
+    diagnostics.push({
+      code: constants.DIAGNOSTIC.INVALID_PERSISTED_WORKSPACE_STATE,
+      message: "checklist_entry state is missing items."
+    });
+    return { ok: false, diagnostics: diagnostics };
+  }
+  qa(workspaceElement, 'input[type="checkbox"][data-checklist-item-id]').forEach(function (input) {
+    var itemId = input.getAttribute("data-checklist-item-id") || input.getAttribute("id") || "";
+    if (!itemId) return;
+    input.checked = Boolean(items[itemId]);
+  });
+  return { ok: true, diagnostics: diagnostics };
+}
+
+function clearChecklistEntry(workspaceElement) {
+  qa(workspaceElement, 'input[type="checkbox"][data-checklist-item-id]').forEach(function (input) {
+    input.checked = false;
+  });
+  return { ok: true, diagnostics: [] };
+}
+
+registerLearnerStateAdapter("text_entry", {
+  serialize: serializeTextEntry,
+  restore: restoreTextEntry,
+  clear: clearTextEntry,
+  validate: function (state) {
+    if (!state || state.kind !== "text_entry") {
+      return {
+        ok: false,
+        diagnostics: [
+          {
+            code: constants.DIAGNOSTIC.INVALID_PERSISTED_WORKSPACE_STATE,
+            message: "Invalid text_entry state kind."
+          }
+        ]
+      };
+    }
+    return { ok: true, diagnostics: [] };
+  }
+});
+
+registerLearnerStateAdapter("table_entry", {
+  serialize: serializeTableEntry,
+  restore: restoreTableEntry,
+  clear: clearTableEntry,
+  validate: function (state) {
+    if (!state || state.kind !== "table_entry") {
+      return {
+        ok: false,
+        diagnostics: [
+          {
+            code: constants.DIAGNOSTIC.INVALID_PERSISTED_WORKSPACE_STATE,
+            message: "Invalid table_entry state kind."
+          }
+        ]
+      };
+    }
+    return { ok: true, diagnostics: [] };
+  }
+});
+
+registerLearnerStateAdapter("ordering", {
+  serialize: serializeOrdering,
+  restore: restoreOrdering,
+  clear: clearOrdering,
+  validate: function (state) {
+    if (!state || state.kind !== "ordering") {
+      return {
+        ok: false,
+        diagnostics: [
+          {
+            code: constants.DIAGNOSTIC.INVALID_PERSISTED_ORDERING_STATE,
+            message: "Invalid ordering state kind."
+          }
+        ]
+      };
+    }
+    return { ok: true, diagnostics: [] };
+  }
+});
+
+registerLearnerStateAdapter("assessment_selection", {
+  serialize: serializeAssessmentSelection,
+  restore: restoreAssessmentSelection,
+  clear: clearAssessmentSelection,
+  validate: function (state) {
+    if (!state || state.kind !== "assessment_selection") {
+      return {
+        ok: false,
+        diagnostics: [
+          {
+            code: constants.DIAGNOSTIC.INVALID_PERSISTED_WORKSPACE_STATE,
+            message: "Invalid assessment_selection state kind."
+          }
+        ]
+      };
+    }
+    return { ok: true, diagnostics: [] };
+  }
+});
+
+registerLearnerStateAdapter("checklist_entry", {
+  serialize: serializeChecklistEntry,
+  restore: restoreChecklistEntry,
+  clear: clearChecklistEntry,
+  validate: function (state) {
+    if (!state || state.kind !== "checklist_entry") {
+      return {
+        ok: false,
+        diagnostics: [
+          {
+            code: constants.DIAGNOSTIC.INVALID_PERSISTED_WORKSPACE_STATE,
+            message: "Invalid checklist_entry state kind."
+          }
+        ]
+      };
+    }
+    return { ok: true, diagnostics: [] };
+  }
+});
+
+function serializeWorkspaceState(workspaceElement) {
+  var kind = String(
+    (workspaceElement &&
+      (workspaceElement.getAttribute("data-workspace-kind") ||
+        workspaceElement.getAttribute("data-workspace-capability"))) ||
+      ""
+  );
+  var adapter = getLearnerStateAdapter(kind);
+  if (!adapter) {
+    return {
+      ok: false,
+      diagnostic: {
+        code: constants.DIAGNOSTIC.UNSUPPORTED_WORKSPACE_STATE_ADAPTER,
+        message: "No learner state adapter is registered for workspace kind.",
+        kind: kind
+      }
+    };
+  }
+  return { ok: true, state: adapter.serialize(workspaceElement) };
+}
+
+function restoreWorkspaceState(workspaceElement, persistedState, options) {
+  var kind = String(
+    (workspaceElement &&
+      (workspaceElement.getAttribute("data-workspace-kind") ||
+        workspaceElement.getAttribute("data-workspace-capability"))) ||
+      ""
+  );
+  var adapter = getLearnerStateAdapter(kind);
+  if (!adapter) {
+    return {
+      ok: false,
+      diagnostics: [
+        {
+          code: constants.DIAGNOSTIC.UNSUPPORTED_WORKSPACE_STATE_ADAPTER,
+          message: "No learner state adapter is registered for workspace kind.",
+          kind: kind
+        }
+      ]
+    };
+  }
+  return adapter.restore(workspaceElement, persistedState, options || {});
+}
+
+function clearWorkspaceState(workspaceElement, options) {
+  var kind = String(
+    (workspaceElement &&
+      (workspaceElement.getAttribute("data-workspace-kind") ||
+        workspaceElement.getAttribute("data-workspace-capability"))) ||
+      ""
+  );
+  var adapter = getLearnerStateAdapter(kind);
+  if (!adapter || !adapter.clear) {
+    return {
+      ok: false,
+      diagnostics: [
+        {
+          code: constants.DIAGNOSTIC.UNSUPPORTED_WORKSPACE_STATE_ADAPTER,
+          message: "No clear handler for workspace kind.",
+          kind: kind
+        }
+      ]
+    };
+  }
+  return adapter.clear(workspaceElement, options || {});
+}
+
+module.exports = {
+  registerLearnerStateAdapter: registerLearnerStateAdapter,
+  getLearnerStateAdapter: getLearnerStateAdapter,
+  listRegisteredAdapterKinds: listRegisteredAdapterKinds,
+  serializeWorkspaceState: serializeWorkspaceState,
+  restoreWorkspaceState: restoreWorkspaceState,
+  clearWorkspaceState: clearWorkspaceState,
+  validateOrderingValue: validateOrderingValue,
+  applyOrderingIds: applyOrderingIds,
+  currentOrderingIds: currentOrderingIds,
+  candidateOrderingIds: candidateOrderingIds
+};
+
+  };
+
+  __modules["lib/learner-renderer-vnext/learner-draft-persistence.js"] = function (module, exports, __bundleRequire) {
+var constants = __bundleRequire("lib/learner-renderer-vnext/learner-draft-constants.js");
+var envelopeHelpers = __bundleRequire("lib/learner-renderer-vnext/learner-draft-envelope.js");
+var storageFactory = __bundleRequire("lib/learner-renderer-vnext/learner-draft-storage.js");
+var adapters = __bundleRequire("lib/learner-renderer-vnext/learner-draft-adapters.js");
+
+function queryAll(root, selector) {
+  return Array.prototype.slice.call(root.querySelectorAll(selector));
+}
+
+function findWorkspaceElements(root) {
+  return queryAll(root, "[data-workspace-kind]").filter(function (node) {
+    var kind = String(node.getAttribute("data-workspace-kind") || "");
+    return constants.SUPPORTED_KINDS.indexOf(kind) >= 0;
+  });
+}
+
+function ensureControls(root) {
+  var existing = root.querySelector("[data-learner-draft-controls]");
+  if (existing) return existing;
+
+  var controls = root.ownerDocument
+    ? root.ownerDocument.createElement("div")
+    : null;
+  if (!controls) return null;
+
+  controls.className = "util-learner-draft-controls";
+  controls.setAttribute("data-learner-draft-controls", "true");
+  controls.innerHTML =
+    '<p class="util-learner-draft-status" aria-live="polite" data-learner-draft-status>' +
+    constants.STATUS.NOT_SAVED +
+    "</p>" +
+    '<button type="button" class="util-learner-draft-clear" data-learner-draft-clear ' +
+    'aria-label="Clear saved responses for this page">Clear saved responses</button>';
+
+  var activities = root.querySelector('[data-region="activities"]');
+  if (activities && activities.parentNode === root) {
+    root.insertBefore(controls, activities);
+  } else if (root.firstChild) {
+    root.insertBefore(controls, root.firstChild);
+  } else {
+    root.appendChild(controls);
+  }
+  return controls;
+}
+
+function setStatus(root, message) {
+  var status = root.querySelector("[data-learner-draft-status]");
+  if (!status) return;
+  status.textContent = String(message || "");
+}
+
+/**
+ * Idempotent page-level learner draft persistence initialiser.
+ *
+ * @param {Element} root
+ * @param {{
+ *   pageKey?: string,
+ *   storage?: object,
+ *   debounceMs?: number,
+ *   confirm?: Function,
+ *   document?: Document,
+ *   now?: Function
+ * }} [options]
+ */
+function initializeLearnerDraftPersistence(root, options) {
+  if (!root) {
+    return { ok: false, reason: "missing-root" };
+  }
+  if (root.__prismDraftPersistence) {
+    return root.__prismDraftPersistence;
+  }
+
+  var opts = options || {};
+  var diagnostics = [];
+  var pageKey = String(opts.pageKey || root.getAttribute("data-persistence-page-key") || "").trim();
+  if (!pageKey) {
+    diagnostics.push({
+      code: constants.DIAGNOSTIC.UNSTABLE_PERSISTENCE_PAGE_IDENTITY,
+      message: "Learner draft initialisation is missing a page key."
+    });
+  }
+
+  if (root.getAttribute("data-persistence-identity-unstable") === "true") {
+    diagnostics.push({
+      code: constants.DIAGNOSTIC.UNSTABLE_PERSISTENCE_PAGE_IDENTITY,
+      message: "Learner draft page identity is unstable."
+    });
+  }
+
+  var storageBackend = Object.prototype.hasOwnProperty.call(opts, "storage")
+    ? opts.storage
+    : storageFactory.resolveDefaultBrowserStorage();
+  var storage = storageFactory.createLearnerDraftStorage(storageBackend);
+  var debounceMs =
+    Number.isFinite(opts.debounceMs) && opts.debounceMs >= 0
+      ? Number(opts.debounceMs)
+      : constants.DEFAULT_SAVE_DEBOUNCE_MS;
+  var confirmFn =
+    typeof opts.confirm === "function"
+      ? opts.confirm
+      : function (message) {
+          if (typeof window !== "undefined" && typeof window.confirm === "function") {
+            return window.confirm(message);
+          }
+          return false;
+        };
+
+  ensureControls(root);
+  var dirty = false;
+  var timer = null;
+  var lastStatus = constants.STATUS.NOT_SAVED;
+  var restored = false;
+
+  function collectEnvelope() {
+    var draft = envelopeHelpers.createEmptyEnvelope(pageKey);
+    findWorkspaceElements(root).forEach(function (workspace) {
+      var workspaceId = String(workspace.getAttribute("data-workspace-id") || "").trim();
+      if (!workspaceId) return;
+      var serialized = adapters.serializeWorkspaceState(workspace);
+      if (!serialized.ok) {
+        diagnostics.push(serialized.diagnostic);
+        return;
+      }
+      draft.workspaces[workspaceId] = serialized.state;
+    });
+    return draft;
+  }
+
+  function persistNow(statusOnSuccess) {
+    if (!storage.available) {
+      lastStatus = constants.STATUS.UNAVAILABLE;
+      setStatus(root, lastStatus);
+      return { ok: false, unavailable: true };
+    }
+    setStatus(root, constants.STATUS.SAVING);
+    var draft = collectEnvelope();
+    var result = storage.saveLearnerDraft(pageKey, draft);
+    diagnostics = diagnostics.concat(result.diagnostics || []);
+    if (!result.ok) {
+      lastStatus = constants.STATUS.UNABLE;
+      setStatus(root, lastStatus);
+      return result;
+    }
+    dirty = false;
+    lastStatus = statusOnSuccess || constants.STATUS.SAVED;
+    setStatus(root, lastStatus);
+    return result;
+  }
+
+  function scheduleSave() {
+    dirty = true;
+    if (!storage.available) {
+      lastStatus = constants.STATUS.UNAVAILABLE;
+      setStatus(root, lastStatus);
+      return;
+    }
+    if (timer) {
+      clearTimeout(timer);
+      timer = null;
+    }
+    timer = setTimeout(function () {
+      timer = null;
+      persistNow(constants.STATUS.SAVED);
+    }, debounceMs);
+  }
+
+  function flushPendingSave() {
+    if (timer) {
+      clearTimeout(timer);
+      timer = null;
+    }
+    if (!dirty) return { ok: true, skipped: true };
+    return persistNow(constants.STATUS.SAVED);
+  }
+
+  function restoreFromStorage() {
+    if (!storage.available) {
+      lastStatus = constants.STATUS.UNAVAILABLE;
+      setStatus(root, lastStatus);
+      return { ok: false, unavailable: true };
+    }
+    var loaded = storage.loadLearnerDraft(pageKey);
+    diagnostics = diagnostics.concat(loaded.diagnostics || []);
+    if (!loaded.ok) {
+      if (loaded.unavailable) {
+        lastStatus = constants.STATUS.UNAVAILABLE;
+      } else if (
+        (loaded.diagnostics || []).some(function (row) {
+          return row.code === constants.DIAGNOSTIC.UNSUPPORTED_DRAFT_SCHEMA_VERSION;
+        })
+      ) {
+        lastStatus = constants.STATUS.NOT_SAVED;
+      } else {
+        lastStatus = constants.STATUS.NOT_SAVED;
+      }
+      setStatus(root, lastStatus);
+      return loaded;
+    }
+    if (!loaded.envelope) {
+      lastStatus = constants.STATUS.NOT_SAVED;
+      setStatus(root, lastStatus);
+      return loaded;
+    }
+
+    var known = Object.create(null);
+    findWorkspaceElements(root).forEach(function (workspace) {
+      var workspaceId = String(workspace.getAttribute("data-workspace-id") || "").trim();
+      if (workspaceId) known[workspaceId] = workspace;
+    });
+
+    var workspaces = loaded.envelope.workspaces || {};
+    var anyRestored = false;
+    Object.keys(workspaces).forEach(function (workspaceId) {
+      var workspace = known[workspaceId];
+      if (!workspace) {
+        diagnostics.push({
+          code: constants.DIAGNOSTIC.STALE_PERSISTED_WORKSPACE,
+          message: "Ignoring persisted workspace that is not present on the page."
+        });
+        return;
+      }
+      var state = workspaces[workspaceId];
+      var result = adapters.restoreWorkspaceState(workspace, state, { silent: true });
+      diagnostics = diagnostics.concat(result.diagnostics || []);
+      if (result.ok) anyRestored = true;
+    });
+
+    restored = anyRestored;
+    lastStatus = anyRestored ? constants.STATUS.RESTORED : constants.STATUS.NOT_SAVED;
+    setStatus(root, lastStatus);
+    return { ok: true, restored: anyRestored, diagnostics: diagnostics };
+  }
+
+  function clearDraft() {
+    var confirmed = confirmFn(
+      "Clear saved responses for this page? This removes the draft saved on this device."
+    );
+    if (!confirmed) {
+      return { ok: false, cancelled: true };
+    }
+    findWorkspaceElements(root).forEach(function (workspace) {
+      adapters.clearWorkspaceState(workspace, { silent: true });
+    });
+    var deleted = storage.deleteLearnerDraft(pageKey);
+    diagnostics = diagnostics.concat(deleted.diagnostics || []);
+    dirty = false;
+    if (timer) {
+      clearTimeout(timer);
+      timer = null;
+    }
+    if (!deleted.ok) {
+      lastStatus = constants.STATUS.UNABLE;
+      setStatus(root, lastStatus);
+      return deleted;
+    }
+    lastStatus = constants.STATUS.NOT_SAVED;
+    setStatus(root, lastStatus);
+    return { ok: true };
+  }
+
+  function onInput(event) {
+    var target = event.target;
+    if (!target || !target.closest) return;
+    if (
+      target.matches("textarea.util-learner-workspace__input") ||
+      target.matches(".util-learner-table-workspace__input") ||
+      target.matches('input[type="radio"][data-assessment-option]') ||
+      target.matches('input[type="checkbox"][data-checklist-item-id]')
+    ) {
+      scheduleSave();
+    }
+  }
+
+  function onWorkspaceChange() {
+    scheduleSave();
+  }
+
+  function onClearClick(event) {
+    var btn = event.target && event.target.closest
+      ? event.target.closest("[data-learner-draft-clear]")
+      : null;
+    if (!btn || !root.contains(btn)) return;
+    clearDraft();
+  }
+
+  function onVisibilityChange() {
+    if (typeof document !== "undefined" && document.visibilityState === "hidden") {
+      flushPendingSave();
+    }
+  }
+
+  function onPageHide() {
+    flushPendingSave();
+  }
+
+  root.addEventListener("input", onInput, true);
+  root.addEventListener("change", onInput, true);
+  root.addEventListener("prism:learner-workspace-change", onWorkspaceChange);
+  root.addEventListener("click", onClearClick);
+  if (typeof document !== "undefined" && document.addEventListener) {
+    document.addEventListener("visibilitychange", onVisibilityChange);
+  }
+  if (typeof window !== "undefined" && window.addEventListener) {
+    window.addEventListener("pagehide", onPageHide);
+  }
+
+  restoreFromStorage();
+
+  function notifyDraftRestored() {
+    try {
+      if (typeof CustomEvent === "function") {
+        root.dispatchEvent(
+          new CustomEvent("prism:learner-draft-restored", { bubbles: true })
+        );
+      }
+    } catch (_err) {
+      // lifecycle notification for maths-entry resync after restore
+    }
+  }
+  notifyDraftRestored();
+
+  var api = {
+    ok: true,
+    pageKey: pageKey,
+    diagnostics: diagnostics,
+    getDiagnostics: function () {
+      return diagnostics.slice();
+    },
+    isDirty: function () {
+      return dirty;
+    },
+    getStatus: function () {
+      return lastStatus;
+    },
+    wasRestored: function () {
+      return restored;
+    },
+    scheduleSave: scheduleSave,
+    flushPendingSave: flushPendingSave,
+    persistNow: persistNow,
+    restoreFromStorage: restoreFromStorage,
+    clearDraft: clearDraft,
+    collectEnvelope: collectEnvelope,
+    storageAvailable: storage.available,
+    debounceMs: debounceMs
+  };
+
+  root.__prismDraftPersistence = api;
+  return api;
+}
+
+module.exports = {
+  initializeLearnerDraftPersistence: initializeLearnerDraftPersistence,
+  findWorkspaceElements: findWorkspaceElements,
+  ensureControls: ensureControls
+};
+
+  };
+
+  __modules["lib/learner-renderer-vnext/export-runtime-entry.js"] = function (module, exports, __bundleRequire) {
+/**
+ * Standalone export runtime entry for learner-renderer vNext.
+ * Persistence/API surface only — used by portable HTML exports.
+ * Bundled by scripts/build-learner-renderer-vnext-browser.js.
+ */
+var initializeLearnerDraftPersistence =
+  __bundleRequire("lib/learner-renderer-vnext/learner-draft-persistence.js").initializeLearnerDraftPersistence;
+var createLearnerDraftStorage =
+  __bundleRequire("lib/learner-renderer-vnext/learner-draft-storage.js").createLearnerDraftStorage;
+var learnerDraftConstants = __bundleRequire("lib/learner-renderer-vnext/learner-draft-constants.js");
+var learnerDraftAdapters = __bundleRequire("lib/learner-renderer-vnext/learner-draft-adapters.js");
+var learnerDraftEnvelope = __bundleRequire("lib/learner-renderer-vnext/learner-draft-envelope.js");
+var learnerDraftPageKey = __bundleRequire("lib/learner-renderer-vnext/learner-draft-page-key.js");
+
+module.exports = {
+  initializeLearnerDraftPersistence: initializeLearnerDraftPersistence,
+  createLearnerDraftStorage: createLearnerDraftStorage,
+  learnerDraftConstants: learnerDraftConstants,
+  learnerDraftAdapters: learnerDraftAdapters,
+  learnerDraftEnvelope: learnerDraftEnvelope,
+  buildLearnerDraftPageIdentity: learnerDraftPageKey.buildLearnerDraftPageIdentity,
+  attachLearnerPageIdentityFromWorkflow:
+    learnerDraftPageKey.attachLearnerPageIdentityFromWorkflow
+};
+
+  };
+
+  return __bundleRequire("lib/learner-renderer-vnext/export-runtime-entry.js");
+});
+</script><header class="util-learning-header"><div class="util-learning-header__intro"><h1 class="util-learning-header__title">Bayes&#39; theorem: updating probability with evidence</h1><p class="util-learning-header__subtitle">This resource develops an intuitive account of Bayes&#39; theorem before connecting that reasoning to the formal equation.</p></div></header><main class="util-learner-page util-page util-learner-renderer-vnext" data-renderer="vnext" data-persistence-page-key="v1::f5727bb0-4ffa-4729-ab34-40d05c6b490f::learner-page::2.0.0::no-activities::bayes-theorem:-updating-probability-with-evidence" data-persistence-storage-key="learner-renderer-vnext:draft:v1::f5727bb0-4ffa-4729-ab34-40d05c6b490f::learner-page::2.0.0::no-activities::bayes-theorem:-updating-probability-with-evidence" data-composition-mode="moments" data-composed-activity-count="0" data-beats-fallback-activity-count="0"><section class="util-page-orientation" data-region="orientation"><div id="journey-orient" data-journey-section="true"><section class="util-orientation-section util-overview" data-orientation-type="overview"><h2 class="util-section-heading util-icon-heading"><span class="util-semantic-icon" aria-hidden="true"><svg class="util-lucide-icon util-lucide-icon--md util-material-icon util-semantic-icon__svg util-section-icon--overview" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4"></path><path d="M12 8h.01"></path></svg></span><span class="util-semantic-icon__label">Overview</span></h2><div class="util-orientation-content util-overview__content util-prose-measure"><p>This resource develops an intuitive account of Bayes&#39; theorem before connecting that reasoning to the formal equation. A screening-test example makes the relationship between prior probability, evidence and posterior probability visible, while a comparison of different base rates shows why the same evidence can support different updated probabilities.</p></div></section><section class="util-orientation-section util-learning_purpose" data-orientation-type="learning_purpose"><h2 class="util-section-heading util-icon-heading"><span class="util-semantic-icon" aria-hidden="true"><svg class="util-lucide-icon util-lucide-icon--md util-material-icon util-semantic-icon__svg util-section-icon--learning-purpose" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg></span><span class="util-semantic-icon__label">Learning purpose</span></h2><div class="util-orientation-content util-learning_purpose__content util-prose-measure"><p>By following the explanation from natural frequencies to the Bayesian formula, you will develop a way to distinguish conditional probability questions, relate a prior probability to a posterior probability, and interpret how base rates affect the meaning of evidence.</p></div></section><section class="util-orientation-section util-knowledge_summary" data-orientation-type="knowledge_summary"><h2 class="util-section-heading util-icon-heading"><span class="util-semantic-icon" aria-hidden="true"><svg class="util-lucide-icon util-lucide-icon--md util-material-icon util-semantic-icon__svg util-section-icon--knowledge-summary" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"></path><path d="M9 18h6"></path><path d="M10 22h4"></path></svg></span><span class="util-semantic-icon__label">Knowledge summary</span></h2><div class="util-orientation-content util-knowledge_summary__content util-prose-measure"><p>Bayesian updating combines a prior probability with evidence to produce a posterior probability. The probability of evidence given a hypothesis, \(P(E\mid H)\), is not the same as the probability of the hypothesis given the evidence, \(P(H\mid E)\). Natural frequencies make this distinction concrete by showing all the ways the evidence can arise. The base rate matters because changing the prior can substantially change the posterior even when the characteristics of the evidence remain unchanged. Bayes&#39; theorem expresses these relationships compactly, while the usefulness of any resulting probability still depends on the appropriateness of its inputs and assumptions.</p></div><figure class="util-visual-asset util-visual-asset--expandable util-visual-asset--knowledge-summary-after-content" data-visual-slot="knowledge-summary-after-content" data-learner-content-kind="image" data-figure-number="1" data-figure-id="asset-vb-38-4-va-knowledge-summary-update-01-page-page-knowledge-summary-after-content"><div class="util-visual-asset-media"><img class="util-visual-asset-image" src="assets/knowledge-summary-after-content.png" alt="Concept map showing a prior probability updated through evidence to a posterior probability, with interpretation shaped by conditional…" aria-describedby="figure-description-asset-vb-38-4-va-knowledge-summary-update-01-page-page-knowledge-summary-after-content" loading="lazy" decoding="async" /><button type="button" class="util-learner-content-expand" aria-label="View image larger" title="View image larger"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg></button></div><figcaption class="util-visual-asset-caption" id="figure-description-asset-vb-38-4-va-knowledge-summary-update-01-page-page-knowledge-summary-after-content"><strong>Figure 1.</strong> A central left-to-right structure connects prior probability to evidence and then to posterior probability. Around the evidence stage, concise annotations indicate that conditional direction matters and that the overall probability of evidence accounts for different ways the evidence can occur. The prior is linked to the base rate. The posterior is labelled as revised uncertainty rather than certainty. A surrounding qualification notes that interpretation depends on the appropriateness of the probabilities and assumptions supplied to the update.</figcaption></figure></section></div></section><section class="util-exposition-sections" data-region="exposition"><section class="util-exposition-section" data-region-item="exposition-section" data-section-id="S1"><h2 class="util-section-heading util-icon-heading"><span class="util-semantic-icon" aria-hidden="true"><svg class="util-lucide-icon util-lucide-icon--md util-material-icon util-semantic-icon__svg util-section-icon--overview" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4"></path><path d="M12 8h.01"></path></svg></span><span class="util-semantic-icon__label">Updating what seems plausible</span></h2><div class="util-exposition-explanation util-prose-measure" data-exposition-field="explanation"><p>Bayes&#39; theorem is fundamentally about a simple question: how should new evidence change what you think is plausible?</p><p>Suppose you are uncertain whether a particular hypothesis is true. Before receiving any new evidence, you may already have some basis for judging how plausible it is. That starting probability is called the prior probability, or simply the prior.</p><p>Now suppose you observe some relevant evidence. If that evidence tells you something about the hypothesis, your original probability may need to change. The revised probability, after taking the evidence into account, is called the posterior probability.</p><p>The basic pattern is therefore:</p><p>prior probability → evidence → posterior probability</p><p>This is Bayesian updating. The important word is updating. The evidence does not simply erase what was known beforehand and replace it with a new judgement. Instead, it changes an existing probability. How much it changes that probability depends both on the starting point and on how informative the evidence is.</p><p>Nor does an update necessarily produce certainty. A probability might move from 1% to 15%, or from 20% to 82%. Either can be a substantial change while still leaving some uncertainty. Bayes&#39; theorem provides a disciplined way of making such revisions explicit.</p><p>To understand how that works, however, we first need to distinguish two probability questions that are very easy to confuse.</p></div><div class="util-exposition-materials" data-region="exposition-materials"><article class="util-material-block util-material-unsupported util-exposition-material" data-material-id="XM-MAT-S1-01" data-material-kind="conceptual process graphic" data-material-type="expository_structured_unsupported" data-section-id="S1" data-render-status="unsupported" data-expository-structured="unsupported"><p class="util-support-note">Structured material body is not supported for learner rendering.</p></article></div></section><section class="util-exposition-section" data-region-item="exposition-section" data-section-id="S2"><h2 class="util-section-heading util-icon-heading"><span class="util-semantic-icon" aria-hidden="true"><svg class="util-lucide-icon util-lucide-icon--md util-material-icon util-semantic-icon__svg util-section-icon--overview" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4"></path><path d="M12 8h.01"></path></svg></span><span class="util-semantic-icon__label">The direction of the question matters</span></h2><div class="util-exposition-explanation util-prose-measure" data-exposition-field="explanation"><p>Consider a screening test for a condition. Two questions about the test might initially sound almost identical:</p><p>What is the probability of a positive result if a person has the condition?</p><p>What is the probability that a person has the condition if their result is positive?</p><p>These are different questions.</p><p>If H represents the hypothesis that the person has the condition, and E represents the evidence of a positive test result, the first question is written P(E|H). The vertical bar means &#39;given&#39;, so this reads as &#39;the probability of E given H&#39;: the probability of a positive result given that the condition is present.</p><p>The second question is P(H|E): &#39;the probability of H given E&#39;. Here we already know that the result is positive, and we want to know how probable the condition is in light of that result.</p><p>Changing what comes before and after the vertical bar changes the question. P(E|H) tells us how likely the evidence is under the hypothesis. P(H|E) tells us how plausible the hypothesis is after observing the evidence.</p><p>This distinction is crucial because the two probabilities are not generally equal. Imagine being told that 90% of people with a particular condition receive a positive test result. That gives you P(positive|condition). It does not, by itself, tell you that someone with a positive result has a 90% probability of having the condition.</p><p>Why not? Because positive results may also occur among people who do not have the condition. And before interpreting a positive result, it also matters how common the condition was in the first place.</p><p>Bayes&#39; theorem connects these different pieces of information. Before introducing the formula, we can make the relationship much easier to see by thinking about actual numbers of people.</p></div><div class="util-exposition-materials" data-region="exposition-materials"><article class="util-material-block util-material-unsupported util-exposition-material" data-material-id="XM-MAT-S2-01" data-material-kind="conditional probability comparison" data-material-type="expository_structured_unsupported" data-section-id="S2" data-render-status="unsupported" data-expository-structured="unsupported"><p class="util-support-note">Structured material body is not supported for learner rendering.</p></article></div></section><section class="util-exposition-section" data-region-item="exposition-section" data-section-id="S3"><h2 class="util-section-heading util-icon-heading"><span class="util-semantic-icon" aria-hidden="true"><svg class="util-lucide-icon util-lucide-icon--md util-material-icon util-semantic-icon__svg util-section-icon--overview" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4"></path><path d="M12 8h.01"></path></svg></span><span class="util-semantic-icon__label">Why the starting probability cannot be ignored</span></h2><div class="util-exposition-explanation util-prose-measure" data-exposition-field="explanation"><p>Suppose the condition in our example affects 1% of the relevant population. Before knowing anyone&#39;s test result, a randomly selected person therefore has a 1% probability of having the condition. In this setting, the 1% prevalence is our prior probability.</p><p>It may seem that the test result should quickly overwhelm such a starting probability. But the size of the two underlying groups matters.</p><p>Imagine 1,000 people. If 1% have the condition, we expect 10 people to have it and 990 not to have it. Before we have considered any test results, there is already a large imbalance between these groups.</p><p>That imbalance matters because a positive result can arise in either group. Some of the 10 people with the condition will test positive. But some of the 990 people without the condition may also test positive. Because the second group is so much larger, even a relatively small false-positive rate can generate a noticeable number of positive results.</p><p>This is why the underlying prevalence, or base rate, cannot simply be ignored when interpreting evidence. The evidence has to be understood against the population from which it arose.</p><p>We can now add the test results to our 1,000 people and see exactly what happens.</p></div><div class="util-exposition-materials" data-region="exposition-materials"><article class="util-material-block util-material-unsupported util-exposition-material" data-material-id="XM-MAT-S3-01" data-material-kind="population split graphic" data-material-type="expository_structured_unsupported" data-section-id="S3" data-render-status="unsupported" data-expository-structured="unsupported"><p class="util-support-note">Structured material body is not supported for learner rendering.</p></article></div></section><section class="util-exposition-section" data-region-item="exposition-section" data-section-id="S4"><h2 class="util-section-heading util-icon-heading"><span class="util-semantic-icon" aria-hidden="true"><svg class="util-lucide-icon util-lucide-icon--md util-material-icon util-semantic-icon__svg util-section-icon--overview" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4"></path><path d="M12 8h.01"></path></svg></span><span class="util-semantic-icon__label">Seeing Bayesian updating in 1,000 people</span></h2><div class="util-exposition-explanation util-prose-measure" data-exposition-field="explanation"><p>Now suppose the test produces a positive result for 90% of people who have the condition. Of our 10 people with the condition, we would therefore expect 9 to test positive.</p><p>If that were the only way to obtain a positive result, interpretation would be straightforward. But suppose the test also produces a false positive for 5% of people who do not have the condition.</p><p>There are 990 people in that second group. Five per cent of 990 is 49.5, so in a population of this size we would expect about 50 of them to receive a positive result even though they do not have the condition.</p><p>We can now bring the two routes to a positive result together:</p><ul><li>about 9 positive results come from people who have the condition;</li><li>about 50 positive results come from people who do not.</li></ul><p>That gives about 59 positive results altogether.</p><p>Now return to the question we actually want to answer: if a person has received a positive result, what is the probability that they have the condition?</p><p>We are no longer interested in all 1,000 people. We are looking specifically at the roughly 59 people with positive results. Of those, about 9 have the condition. The relevant proportion is therefore approximately 9 out of 59, which is about 15%.</p><p>This result is worth comparing with two other numbers in the example. Before the test, the probability was 1%. After a positive result, it is roughly 15%. The evidence has therefore made a substantial difference. But the result is nowhere near 90%.</p><p>The 90% figure answered a different question: how often do people with the condition test positive? Our 15% figure answers: among people who tested positive, how many have the condition?</p><p>Natural frequencies make the difference visible. They also reveal why the base rate matters: the group without the condition began almost 100 times larger than the group with it, so a 5% false-positive rate in that large group generated more positive results than the 90% positive rate did in the much smaller group with the condition.</p><p>Nothing mysterious has happened. We have simply accounted for all the ways in which the evidence—a positive result—can arise.</p></div><div class="util-exposition-materials" data-region="exposition-materials"><article class="util-material-block util-material-unsupported util-exposition-material" data-material-id="XM-MAT-S4-01" data-material-kind="natural-frequency diagram" data-material-type="expository_structured_unsupported" data-section-id="S4" data-render-status="unsupported" data-expository-structured="unsupported"><p class="util-support-note">Structured material body is not supported for learner rendering.</p></article></div><figure class="util-visual-asset util-visual-asset--expandable util-visual-asset--section-after-content" data-visual-slot="section-after-content" data-learner-content-kind="image" data-figure-number="2" data-figure-id="asset-vb-38-4-va-s4-natural-frequency-01-section-s4-section-after-content"><div class="util-visual-asset-media"><img class="util-visual-asset-image" src="assets/section-after-content.png" alt="Natural-frequency diagram for 1,000 people showing 10 with the condition and 990 without it; about 9 and 50 respectively test positive…" aria-describedby="figure-description-asset-vb-38-4-va-s4-natural-frequency-01-section-s4-section-after-content" loading="lazy" decoding="async" /><button type="button" class="util-learner-content-expand" aria-label="View image larger" title="View image larger"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg></button></div><figcaption class="util-visual-asset-caption" id="figure-description-asset-vb-38-4-va-s4-natural-frequency-01-section-s4-section-after-content"><strong>Figure 2.</strong> A branching process begins with 1,000 people. One branch contains 10 people with the condition, of whom about 9 receive a positive result. The other contains 990 people without the condition, of whom about 50 receive a positive result. The two positive-result branches converge into a group of about 59 positive results. Approximately 9 of those 59 come from people with the condition, visually establishing a posterior probability of about 15%.</figcaption></figure></section><section class="util-exposition-section" data-region-item="exposition-section" data-section-id="S5"><h2 class="util-section-heading util-icon-heading"><span class="util-semantic-icon" aria-hidden="true"><svg class="util-lucide-icon util-lucide-icon--md util-material-icon util-semantic-icon__svg util-section-icon--overview" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4"></path><path d="M12 8h.01"></path></svg></span><span class="util-semantic-icon__label">From the population picture to Bayes&#39; theorem</span></h2><div class="util-exposition-explanation util-prose-measure" data-exposition-field="explanation"><p>The population example gives us the logic of Bayesian updating without requiring a formula. Bayes&#39; theorem expresses that same logic more compactly.</p><p>If H is our hypothesis and E is the observed evidence, Bayes&#39; theorem is:</p><p>P(H|E) = P(E|H) × P(H) / P(E)</p><p>Each part now has a familiar role.</p><p>P(H) is the prior probability: the probability of the hypothesis before considering the new evidence. In our example, the prevalence of the condition is 1%, so P(H) = 0.01.</p><p>P(E|H) is the probability of observing the evidence if the hypothesis is true. The test produces a positive result for 90% of people with the condition, so P(E|H) = 0.90.</p><p>P(H|E) is what we want to find: the posterior probability that the person has the condition given that the test result is positive.</p><p>That leaves P(E), the overall probability of observing the evidence. This term matters because positive results do not occur only among people who have the condition. Our natural-frequency example showed two routes to a positive result, and both must contribute to the overall probability of seeing one.</p><p>For the group with the condition, the contribution is 0.90 × 0.01. For the group without the condition, the contribution is 0.05 × 0.99. Together:</p><p>P(E) = (0.90 × 0.01) + (0.05 × 0.99) = 0.0585.</p><p>We can now substitute the values into Bayes&#39; theorem:</p><p>P(H|E) = (0.90 × 0.01) / 0.0585 ≈ 0.154.</p><p>So the posterior probability is approximately 15.4%.</p><p>This closely matches the roughly 15% obtained from the natural-frequency representation. The small difference comes from using rounded whole-person counts in the population example.</p><p>The formula has not changed the reasoning. It has compressed it. The prior describes where we started. P(E|H) describes how compatible the evidence is with the hypothesis. P(E) makes us account for how often that evidence occurs overall. The result, P(H|E), is the revised probability after observing the evidence.</p><p>This also explains why Bayes&#39; theorem is more than simply reversing P(E|H). Moving from the probability of evidence given a hypothesis to the probability of a hypothesis given evidence requires information about the prior and about the other ways the evidence can occur.</p></div><div class="util-exposition-materials" data-region="exposition-materials"><article class="util-material-block util-material-unsupported util-exposition-material" data-material-id="XM-MAT-S5-01" data-material-kind="annotated equation" data-material-type="expository_structured_unsupported" data-section-id="S5" data-render-status="unsupported" data-expository-structured="unsupported"><p class="util-support-note">Structured material body is not supported for learner rendering.</p></article></div><figure class="util-visual-asset util-visual-asset--expandable util-visual-asset--section-after-content" data-visual-slot="section-after-content" data-learner-content-kind="image" data-figure-number="3" data-figure-id="asset-vb-38-4-va-s5-bayes-equation-01-section-s5-section-after-content"><div class="util-visual-asset-media"><img class="util-visual-asset-image" src="assets/section-after-content-vb-38-4-va-s5-bayes-equa.png" alt="Annotated Bayes&#39; theorem showing the prior, probability of evidence given the hypothesis, overall probability of evidence and posterior…" aria-describedby="figure-description-asset-vb-38-4-va-s5-bayes-equation-01-section-s5-section-after-content" loading="lazy" decoding="async" /><button type="button" class="util-learner-content-expand" aria-label="View image larger" title="View image larger"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg></button></div><figcaption class="util-visual-asset-caption" id="figure-description-asset-vb-38-4-va-s5-bayes-equation-01-section-s5-section-after-content"><strong>Figure 3.</strong> Bayes&#39; theorem is displayed centrally as \(P(H\mid E)=P(E\mid H)P(H)/P(E)\). Annotations identify \(P(H)\) as the 0.01 prior, \(P(E\mid H)\) as 0.90, and \(P(E)\) as 0.0585 calculated from both routes to a positive result. The resulting \(P(H\mid E)\) is shown as approximately 0.154, or 15.4%, linking the equation directly to the preceding natural-frequency reasoning.</figcaption></figure></section><section class="util-exposition-section" data-region-item="exposition-section" data-section-id="S6"><h2 class="util-section-heading util-icon-heading"><span class="util-semantic-icon" aria-hidden="true"><svg class="util-lucide-icon util-lucide-icon--md util-material-icon util-semantic-icon__svg util-section-icon--overview" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4"></path><path d="M12 8h.01"></path></svg></span><span class="util-semantic-icon__label">The same evidence, a different starting point</span></h2><div class="util-exposition-explanation util-prose-measure" data-exposition-field="explanation"><p>We can now see more precisely why the starting probability matters. Keep exactly the same test characteristics: 90% of people with the condition test positive, and 5% of people without it also test positive. Change only the prevalence of the condition.</p><p>Instead of 1%, suppose 20% of a population of 1,000 have the condition.</p><p>That gives 200 people with the condition and 800 without it. Applying the same test characteristics:</p><ul><li>90% of 200 gives 180 positive results among people with the condition;</li><li>5% of 800 gives 40 positive results among people without the condition.</li></ul><p>There are therefore 220 positive results altogether, and 180 of those come from people who have the condition.</p><p>The posterior probability is now 180 out of 220, or about 82%.</p><p>Compare the two situations. With a 1% prevalence, a positive result led to a posterior probability of about 15%. With a 20% prevalence, the same kind of positive result leads to a posterior probability of about 82%.</p><p>The test did not become more accurate. The 90% and 5% figures did not change. What changed was the prior probability.</p><p>This comparison isolates the base-rate effect. When the condition is rare, the population contains a very large group without it, creating many opportunities for false positives. When the condition is more common, a much larger proportion of positive results comes from people who actually have it.</p><p>So evidence cannot always be assigned a single meaning independently of context. A positive result is evidence in both cases, but the probability it supports after updating depends partly on what was plausible beforehand.</p><p>This returns us to the organising idea from the beginning: Bayesian reasoning does not ask what the evidence means in isolation. It asks how the evidence should revise a prior probability.</p></div><div class="util-exposition-materials" data-region="exposition-materials"><article class="util-material-block util-material-unsupported util-exposition-material" data-material-id="XM-MAT-S6-01" data-material-kind="controlled comparison table" data-material-type="expository_structured_unsupported" data-section-id="S6" data-render-status="unsupported" data-expository-structured="unsupported"><p class="util-support-note">Structured material body is not supported for learner rendering.</p></article></div><figure class="util-visual-asset util-visual-asset--expandable util-visual-asset--section-after-content" data-visual-slot="section-after-content" data-learner-content-kind="image" data-figure-number="4" data-figure-id="asset-vb-38-4-va-s6-base-rate-comparison-01-section-s6-section-after-content"><div class="util-visual-asset-media"><img class="util-visual-asset-image" src="assets/section-after-content-vb-38-4-va-s6-base-rate-.png" alt="Side-by-side comparison of 1% and 20% prevalence cases with identical 90% positive and 5% false-positive rates, producing posterior…" aria-describedby="figure-description-asset-vb-38-4-va-s6-base-rate-comparison-01-section-s6-section-after-content" loading="lazy" decoding="async" /><button type="button" class="util-learner-content-expand" aria-label="View image larger" title="View image larger"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg></button></div><figcaption class="util-visual-asset-caption" id="figure-description-asset-vb-38-4-va-s6-base-rate-comparison-01-section-s6-section-after-content"><strong>Figure 4.</strong> Two aligned cases each begin with 1,000 people and use the same test characteristics: a 90% positive rate among people with the condition and a 5% false-positive rate among people without it. The first case has a 1% prior and produces a posterior of about 15%. The second has a 20% prior and produces a posterior of about 82%. The layout visually holds the evidence characteristics constant while highlighting the changed prior and posterior.</figcaption></figure></section><section class="util-exposition-section" data-region-item="exposition-section" data-section-id="S7"><h2 class="util-section-heading util-icon-heading"><span class="util-semantic-icon" aria-hidden="true"><svg class="util-lucide-icon util-lucide-icon--md util-material-icon util-semantic-icon__svg util-section-icon--overview" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4"></path><path d="M12 8h.01"></path></svg></span><span class="util-semantic-icon__label">A pattern that extends beyond screening tests</span></h2><div class="util-exposition-explanation util-prose-measure" data-exposition-field="explanation"><p>Screening tests provide a useful way to see Bayesian updating because the different groups and outcomes can be represented clearly. But the underlying reasoning is not limited to tests or medical contexts.</p><p>The same structure applies whenever new information changes the probability assigned to a possibility.</p><p>A researcher may begin with different degrees of plausibility for competing explanations and revise them in light of observed data. A system classifying email may revise the probability that a message is unwanted after observing particular features. In practical reasoning, an initially plausible explanation may become more or less plausible as new information arrives.</p><p>The details of these situations differ, but the organising pattern is familiar:</p><p>prior probability → evidence → posterior probability</p><p>In each case there is some starting degree of plausibility, some new evidence, and a revised degree of plausibility after the evidence has been taken into account.</p><p>The conditional-probability distinction still matters. We need to distinguish between asking how likely particular evidence would be under a hypothesis and asking how plausible the hypothesis is after observing that evidence. The prior still matters because evidence updates a starting probability rather than being interpreted in a vacuum.</p><p>The screening example therefore provides more than a calculation to remember. It exposes a general structure for reasoning under uncertainty: begin with what is plausible, consider the evidence in relation to the possibilities, and update accordingly.</p></div></section><section class="util-exposition-section" data-region-item="exposition-section" data-section-id="S8"><h2 class="util-section-heading util-icon-heading"><span class="util-semantic-icon" aria-hidden="true"><svg class="util-lucide-icon util-lucide-icon--md util-material-icon util-semantic-icon__svg util-section-icon--overview" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4"></path><path d="M12 8h.01"></path></svg></span><span class="util-semantic-icon__label">What a Bayesian conclusion depends on</span></h2><div class="util-exposition-explanation util-prose-measure" data-exposition-field="explanation"><p>Bayes&#39; theorem tells us how a set of probabilities relate. It does not, by itself, guarantee that every probability supplied to the calculation is appropriate.</p><p>This distinction matters when interpreting a posterior probability. In our worked example, the calculation used a 1% prior, a 90% positive rate among people with the condition, and a 5% false-positive rate. Given those inputs, Bayes&#39; theorem specifies how they combine. But the usefulness of the resulting posterior depends on the appropriateness of those inputs for the situation being considered.</p><p>The mathematics of updating and the basis for the inputs are therefore related but distinct questions. A calculation can correctly apply Bayes&#39; theorem while its interpretation still depends on the assumptions and information from which the probabilities were obtained.</p><p>The posterior should also remain a probability. Bayesian updating revises uncertainty; it does not necessarily remove it. In the first screening example, a positive result moved the probability from 1% to about 15%. That was a substantial update, but it did not establish the condition with certainty. In the second case, the posterior rose to about 82%, which again represented a revised degree of uncertainty rather than an automatic certainty.</p><p>We can now return to the simple structure with which we began:</p><p>prior probability → evidence → posterior probability</p><p>That compact representation carries more meaning than it did at the outset. The prior provides the starting probability. The evidence must be interpreted through the correct conditional relationship. The overall probability of the evidence matters because the same evidence can arise in more than one way. The base rate helps determine how strongly the evidence changes the starting point. Bayes&#39; theorem brings these quantities together to produce the posterior.</p><p>The central idea is therefore not simply a formula. It is a disciplined way of answering a recurring question under uncertainty: given what was plausible beforehand and the evidence now observed, what should the revised probability be?</p></div><div class="util-exposition-materials" data-region="exposition-materials"><article class="util-material-block util-material-unsupported util-exposition-material" data-material-id="XM-MAT-S8-01" data-material-kind="synthesis graphic" data-material-type="expository_structured_unsupported" data-section-id="S8" data-render-status="unsupported" data-expository-structured="unsupported"><p class="util-support-note">Structured material body is not supported for learner rendering.</p></article></div></section></section><section class="util-page-closing" data-region="page-closing" aria-label="Closing"><h2 class="util-section-heading">Closing</h2><div class="util-page-closing__content util-prose-measure"><p>The key idea to carry forward is that evidence changes a probability in relation to where that probability started. Bayes&#39; theorem makes that update explicit: begin with a prior, interpret the evidence in the correct conditional direction, and arrive at a posterior that represents revised rather than necessarily eliminated uncertainty.</p></div></section></main><dialog id="prism-learner-content-viewer" class="util-learner-content-viewer" aria-labelledby="prism-learner-content-viewer-title"><div class="util-learner-content-viewer__panel"><div class="util-learner-content-viewer__header"><h2 id="prism-learner-content-viewer-title" class="util-learner-content-viewer__title">Expanded view</h2><button type="button" class="util-learner-content-viewer__close" data-learner-content-close>Close</button></div><div class="util-learner-content-viewer__body" data-learner-content-kind-host><img class="util-learner-content-viewer__image" alt="" hidden /><div class="util-learner-content-viewer__table-host" hidden></div><p class="util-learner-content-viewer__caption" hidden></p></div></div></dialog><script>(function(){var dialog=document.getElementById('prism-learner-content-viewer');if(!dialog||typeof dialog.showModal!=='function')return;var imgEl=dialog.querySelector('.util-learner-content-viewer__image');var captionEl=dialog.querySelector('.util-learner-content-viewer__caption');var tableHost=dialog.querySelector('.util-learner-content-viewer__table-host');var closeBtn=dialog.querySelector('[data-learner-content-close]');var lastOpener=null;function clearHosts(){if(imgEl){imgEl.hidden=true;imgEl.removeAttribute('src');imgEl.alt='';}if(tableHost){tableHost.hidden=true;tableHost.textContent='';}if(captionEl){captionEl.hidden=true;captionEl.textContent='';}}function openFromFigure(figure,opener){if(!figure)return;var kind=figure.getAttribute('data-learner-content-kind')||'image';clearHosts();if(kind==='image'){var sourceImg=figure.querySelector('img.util-visual-asset-image');if(!sourceImg||!imgEl)return;var src=sourceImg.getAttribute('src')||'';if(!src)return;imgEl.src=src;imgEl.alt=sourceImg.getAttribute('alt')||'';imgEl.hidden=false;}else{return;}var cap=figure.querySelector('figcaption');if(captionEl&&cap&&cap.textContent&&String(cap.textContent).trim()){captionEl.textContent=String(cap.textContent).trim();captionEl.hidden=false;}lastOpener=opener||null;if(!dialog.open)dialog.showModal();if(closeBtn&&typeof closeBtn.focus==='function')closeBtn.focus();}function closeViewer(){if(dialog.open)dialog.close();}dialog.addEventListener('close',function(){var opener=lastOpener;lastOpener=null;clearHosts();if(opener&&typeof opener.focus==='function'){try{opener.focus();}catch(e){}}});if(closeBtn)closeBtn.addEventListener('click',function(ev){ev.preventDefault();closeViewer();});function onViewerKeydown(ev){if(!dialog.open)return;if(ev.key==='Escape'){ev.preventDefault();closeViewer();}}document.addEventListener('keydown',onViewerKeydown);dialog.addEventListener('keydown',onViewerKeydown);document.addEventListener('click',function(ev){var t=ev.target;if(!t||!t.closest)return;var btn=t.closest('.util-learner-content-expand');if(btn){ev.preventDefault();openFromFigure(btn.closest('figure.util-visual-asset'),btn);return;}var hit=t.closest('img.util-visual-asset-image');if(hit){var fig=hit.closest('figure.util-visual-asset');if(!fig||!fig.querySelector('.util-learner-content-expand'))return;ev.preventDefault();openFromFigure(fig,fig.querySelector('.util-learner-content-expand')||hit);}});})();</script></body></html>

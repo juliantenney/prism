@@ -1,0 +1,170 @@
+{
+  "_comment": "S87-T-007 repair 1 — blank-table key-mismatch + learner-facing leakage shapes. Bodies reconstructed from live QA mechanisms (S87-AD-003: XM object bodies not archived in export zips).",
+  "blank_table_label_columns_mismatched_row_keys": {
+    "material_id": "XM-MAT-S3-BLANK-01",
+    "kind": "comparison table",
+    "title": "Comparative causal accounts",
+    "body": {
+      "title": "Comparative causal accounts",
+      "columns": ["Dimension", "Account A", "Account B"],
+      "rows": [
+        {
+          "dim": "Initiating pressure",
+          "a": "Alliance timetable forces early mobilisation.",
+          "b": "Local crisis choices escalate without timetable pressure."
+        },
+        {
+          "dim": "Evidence warrant",
+          "a": "Military schedules constrain deliberation windows.",
+          "b": "Diplomatic signals leave room for de-escalation."
+        }
+      ],
+      "caption": "Two accounts of the same crisis week; compare the warrant each uses."
+    }
+  },
+  "good_keyed_table": {
+    "material_id": "XM-MAT-S6-01",
+    "kind": "controlled comparison table",
+    "body": {
+      "title": "Base-rate versus hit-rate",
+      "columns": [
+        { "key": "quantity", "label": "Quantity" },
+        { "key": "natural", "label": "Natural frequencies" },
+        { "key": "percent", "label": "Percent framing" }
+      ],
+      "rows": [
+        {
+          "quantity": "Base rate",
+          "natural": "1 in 1000",
+          "percent": "0.1%"
+        },
+        {
+          "quantity": "Hit rate",
+          "natural": "99 in 100",
+          "percent": "99%"
+        }
+      ],
+      "caption": "Same facts; different framing changes how easy the comparison is to hold."
+    }
+  },
+  "graph_with_machine_ids": {
+    "material_id": "XM-MAT-S4-01",
+    "kind": "causal network",
+    "title": "XM-MAT-S4-01",
+    "body": {
+      "title": "July 1914 causal pressures",
+      "nodes": [
+        {
+          "id": "great_power_rivalry",
+          "label": "Great-power rivalry",
+          "description": "Long-run competition among major states."
+        },
+        {
+          "id": "military_preparation",
+          "label": "Military preparation",
+          "description": "Timetables and mobilisation plans."
+        },
+        {
+          "id": "threat_perception",
+          "label": "Threat perception",
+          "description": "How actors read each other's moves."
+        },
+        {
+          "id": "crisis_vulnerability",
+          "label": "Crisis vulnerability",
+          "description": "How brittle the July week became."
+        }
+      ],
+      "edges": [
+        {
+          "from": "great_power_rivalry",
+          "to": "military_preparation",
+          "label": "drives armament races"
+        },
+        {
+          "from": "military_preparation",
+          "to": "threat_perception",
+          "label": "shortens decision windows"
+        },
+        {
+          "from": "threat_perception",
+          "to": "crisis_vulnerability",
+          "label": "raises miscalculation risk"
+        }
+      ]
+    }
+  },
+  "continuation_internal_ref": {
+    "material_id": "XM-MAT-S4-02",
+    "kind": "continuation packet",
+    "body": {
+      "title": "XM-MAT-S4-02",
+      "continuation_of": "XM-MAT-S4-01",
+      "overview": "Continuation keeps the rivalry thread visible.",
+      "claim": "Unique continuation claim KEEP-CONT-91"
+    }
+  },
+  "generic_nested": {
+    "material_id": "GENERIC-NESTED-01",
+    "kind": "mystery_structure",
+    "body": {
+      "title": "Nested instructional packet",
+      "overview": "Keep unique nested content visible.",
+      "claims": [
+        "Claim A remains learner-visible.",
+        "Claim B remains learner-visible."
+      ],
+      "nested": {
+        "guiding_question": "What must remain after fallback rendering?",
+        "detail": {
+          "must_keep": "Unique instructional phrase UNIQUE-KEEP-77"
+        }
+      }
+    }
+  },
+  "worked_example": {
+    "material_id": "we-1",
+    "kind": "compact_worked_example",
+    "body": {
+      "title": "Worked title",
+      "scenario": "A seminar scenario.",
+      "stages": [
+        { "label": "Stage A", "description": "Do A." },
+        { "label": "Stage B", "description": "Do B." }
+      ],
+      "synthesis": "Synthesis closes the example."
+    }
+  },
+  "diagram": {
+    "material_id": "diag-1",
+    "kind": "conceptual_diagram",
+    "body": {
+      "title": "Loop title",
+      "elements": [
+        { "id": "a", "label": "Alpha", "supporting_text": "HIDDEN-ELEMENT-TEXT" }
+      ],
+      "relationships": [{ "from": "a", "to": "a", "meaning": "HIDDEN-REL-TEXT" }],
+      "caption": "Visible caption only."
+    }
+  },
+  "c05_style_property_pack": {
+    "material_id": "XM-MAT-S5-PROP",
+    "kind": "analytic packet",
+    "body": {
+      "title": "Argument pattern pack",
+      "patterns": [
+        "Validity concerns form, not worldly truth.",
+        "Soundness requires both valid form and true premises."
+      ],
+      "dimensions": [
+        "Form",
+        "Content",
+        "Use in enquiry"
+      ],
+      "diagram_logic": {
+        "note": "Internal diagram wiring must not headline the learner view.",
+        "wire": "n1->n2"
+      }
+    }
+  }
+}

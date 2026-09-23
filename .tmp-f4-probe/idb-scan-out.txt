@@ -1,0 +1,56 @@
+﻿
+==== 000098.log 2633953 ====
+va-s5-base-rate stringHits 1
+---ctx---
+brief_id"Fvb-38-4-va-s5-base-rate-comparison-01-section-s5-section-after-content"
+15.4 stringHits 43
+---ctx---
+      "title": "A positive result: from 1% to about 15.4%",
+---ctx---
+        "Use 90 out of 585 to obtain approximately 15.4%, then map the same quantities onto Bayes' theorem.",
+---ctx---
+        "Explicitly contrast the 90% likelihood with the approximately 15.4% posterior so the reversal-of-conditionals misconception becomes visible."
+81.8 stringHits 13
+---ctx---
+        "Use the change from approximately 15.4% to approximately 81.8% to isolate the effect of the prior rather than introducing a new evidence mechanism.",
+---ctx---
+        "Use the change from approximately 15.4% to approximately 81.8% to isolate the effect of the prior rather than introducing a new evidence mechanism.",
+---ctx---
+        "Use the change from approximately 15.4% to approximately 81.8% to isolate the effect of the prior rather than introducing a new evidence mechanism.",
+Lower prevalence stringHits 0
+Higher prevalence stringHits 2
+---ctx---
+        "Higher prevalence makes the test itself more accurate."
+---ctx---
+        "Higher prevalence makes the test itself more accurate."
+generation_instruction stringHits 0
+must_show stringHits 0
+base-rate stringHits 10
+---ctx---
+es the updating question from S1, conditional distinction from S2, theorem structure from S3, worked reasoning from S4, base-rate comparison from S5, and qualified evidence interpretation from S6.",
+---ctx---
+es the updating question from S1, conditional distinction from S2, theorem structure from S3, worked reasoning from S4, base-rate comparison from S5, and qualified evidence interpretation from S6.",
+---ctx---
+es the updating question from S1, conditional distinction from S2, theorem structure from S3, worked reasoning from S4, base-rate comparison from S5, and qualified evidence interpretation from S6.",
+Only the prior probability changes stringHits 0
+Posterior probability stringHits 2
+---ctx---
+        "Posterior probability as the updated result",
+---ctx---
+        "Posterior probability as the updated result",
+content_requirements stringHits 0
+human_prompt stringHits 0
+
+==== 000100.ldb 1697368 ====
+va-s5-base-rate stringHits 0
+15.4 stringHits 0
+81.8 stringHits 0
+Lower prevalence stringHits 0
+Higher prevalence stringHits 0
+generation_instruction stringHits 0
+must_show stringHits 0
+base-rate stringHits 0
+Only the prior probability changes stringHits 0
+Posterior probability stringHits 0
+content_requirements stringHits 0
+human_prompt stringHits 0

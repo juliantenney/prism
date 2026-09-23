@@ -1,0 +1,12 @@
+2026/09/23-09:24:55.324 5a8c Reusing MANIFEST C:\Users\cczjrt\AppData\Local\Microsoft\Edge\User Data\Default\IndexedDB\http_localhost_0.indexeddb.leveldb/MANIFEST-000001
+2026/09/23-09:24:55.348 5a8c Recovering log #94
+2026/09/23-09:24:55.350 5a8c Reusing old log C:\Users\cczjrt\AppData\Local\Microsoft\Edge\User Data\Default\IndexedDB\http_localhost_0.indexeddb.leveldb/000094.log 
+2026/09/23-10:46:16.983 5a8c Level-0 table #99: started
+2026/09/23-10:46:17.001 5a8c Level-0 table #99: 1554745 bytes OK
+2026/09/23-10:46:17.004 5a8c Delete type=0 #94
+2026/09/23-11:00:19.689 5a8c Compacting 1@1 + 1@2 files
+2026/09/23-11:00:19.724 5a8c Generated table #100@1: 1007 keys, 1697368 bytes
+2026/09/23-11:00:19.724 5a8c Compacted 1@1 + 1@2 files => 1697368 bytes
+2026/09/23-11:00:19.725 5a8c compacted to: files[ 0 0 1 0 0 0 0 ]
+2026/09/23-11:00:19.726 5a8c Delete type=2 #96
+2026/09/23-11:00:19.726 5a8c Delete type=2 #99

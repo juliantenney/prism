@@ -1,0 +1,49 @@
+es",
+        "Additional prevalence scenarios"
+      ],
+      "allowed_claims": [
+        "The same test characteristics can yield different posterior probabilities when the prior changes.",
+        "The prior contributes to the interpretation of the evidence."
+      ],
+      "disallowed_claims": [
+        "Higher prevalence makes the test itself more accurate."
+      ],
+      "source_basis": "S5 controlled prevalence comparison, synthesis, and commissioned matched base-rate comparison.",
+      "caption_intent": "Changing the prior from 1% to 20% changes the posterior even though the test characteristics remain fixed.",
+      "alt_text": "Matched comparison showing identical 90% and 5% test rates with prevalence changing from 1% to 20%, producing posterior probabilities of about 15.4% and 81.8%.",
+      "detailed_description": "Two parallel scenarios use populations of 10,000 and identical test characteristics. The first begins with 1% prevalence and ends with a posterior of about 15.4%. The second begins with 20% prevalence and ends with a posterior of about 81.8%. Shared annotations make clear that the test rates are held constant while prevalence changes.",
+      "discipline_risk_level": "high"
+    },
+    {
+      "affordance_id": "va-S7-update-synthesis-01",
+      "scope": "section",
+      "section_id": "S7",
+      "rationale": "The final section integrates several distinctions developed across the resource. A synthesis map can consolidate the update from prior to posterior while preserving the crucial qualification that the calculation does not validate the quality or contextual appropriateness of its inputs.",
+      "subject": "Bayesian updating from prior probability through the evidence model to posterior probability, qualified by input quality and context.",
+      "context": "Place after the final substantive exposition as a compact visual consolidation of the mental model already developed, without adding a second textual conclusion.",
+      "evidence_anchors": [
+        "S7.knowledge_focus",
+        "S7.synthesis",
+        "S7.representation_needs"
+      ],
+      "visual_decision": "generate",
+      "visual_slot": "section-after-content",
+      "tier": "valuable",
+      "purpose": "synthesis",
+      "preferred_representation": "process",
+      "reasoning_supported": "Learners integrate prior probability, evidence under the hypothesis, competing sources of evidence, and posterior probability while retaining the boundary between mathematical updating and confidence in the inputs.",
+      "learner_stage": "post_reasoning",
+      "anti_spoiler": false,
+      "representation_avoid": [
+        "generic_infographic",
+        "topic_hero_image",
+        "unsupported_causal_arrow"
+      ],
+      "canonical_discipline_note": "Represent Bayes' theorem as conditional probability updating, not as a mechanism that establishes the reliability of its own inputs.",
+      "requires_exact_data_match": false,
+      "must_show": [
+        "Prior probability as the starting point",
+        "Evidence under the hypothesis",
+        "Competing sources of the evidence",
+        "Posterior probability as the updated result",
+        "A qualification that interpretation depends on the quality and contextual appropriateness of the supplied probabilities and a

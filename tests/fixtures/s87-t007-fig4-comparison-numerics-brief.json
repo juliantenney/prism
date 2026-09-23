@@ -1,0 +1,56 @@
+{
+  "_comment": "S87-T-007 Figure 4 failure shape — controlled comparison with requires_exact_data_match and numeric must_show pairs. Reconstructed from live DP affordance va-S5-base-rate-comparison-01 (genericised labels only where needed for fixture clarity; values and relationships match the live defect).",
+  "visual_affordance": {
+    "affordance_id": "va-S5-base-rate-comparison-01",
+    "scope": "section",
+    "section_id": "S5",
+    "rationale": "The conceptual point depends on changing only the prior while holding test characteristics fixed.",
+    "subject": "Comparison of 1% and 20% prevalence scenarios with identical test characteristics.",
+    "context": "Place after the section comparison to consolidate how changing prevalence alters the posterior.",
+    "evidence_anchors": [
+      "S5.knowledge_focus",
+      "S5.synthesis",
+      "S5.representation_needs"
+    ],
+    "visual_decision": "generate",
+    "visual_slot": "section-after-content",
+    "tier": "valuable",
+    "purpose": "synthesis",
+    "preferred_representation": "annotated_system",
+    "reasoning_supported": "Learners isolate the prior as the changing quantity and compare its effect on posterior probability while recognising that the evidence model remains constant.",
+    "learner_stage": "post_reasoning",
+    "anti_spoiler": false,
+    "representation_avoid": [
+      "summary_table",
+      "generic_infographic",
+      "topic_hero_image",
+      "numeric_claim_without_source"
+    ],
+    "canonical_discipline_note": "Hold the 90% positive rate with the condition and 5% positive rate without the condition constant across both scenarios.",
+    "requires_exact_data_match": true,
+    "must_show": [
+      "1% prevalence leading to a posterior of about 15.4%",
+      "20% prevalence leading to a posterior of about 81.8%",
+      "90% positive rate among people with the condition in both scenarios",
+      "5% positive rate among people without the condition in both scenarios",
+      "A clear indication that prevalence is the quantity that changes"
+    ],
+    "must_not_show": [
+      "Different test characteristics between the two scenarios",
+      "An implication that the test becomes more accurate when prevalence rises",
+      "Additional prevalence scenarios"
+    ],
+    "allowed_claims": [
+      "The same test characteristics can yield different posterior probabilities when the prior changes.",
+      "The prior contributes to the interpretation of the evidence."
+    ],
+    "disallowed_claims": [
+      "Higher prevalence makes the test itself more accurate."
+    ],
+    "source_basis": "Controlled prevalence comparison with matched evidence characteristics.",
+    "caption_intent": "Changing the prior from 1% to 20% changes the posterior even though the test characteristics remain fixed.",
+    "alt_text": "Matched comparison showing identical 90% and 5% test rates with prevalence changing from 1% to 20%, producing posterior probabilities of about 15.4% and 81.8%.",
+    "detailed_description": "Two parallel scenarios use identical test characteristics. The first begins with 1% prevalence and ends with a posterior of about 15.4%. The second begins with 20% prevalence and ends with a posterior of about 81.8%. Shared annotations make clear that the test rates are held constant while prevalence changes.",
+    "discipline_risk_level": "high"
+  }
+}

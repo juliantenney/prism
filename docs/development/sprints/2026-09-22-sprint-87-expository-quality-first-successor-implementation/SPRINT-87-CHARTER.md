@@ -1,7 +1,7 @@
 # Sprint 87 — Charter
 
 **Sprint:** 87 — Expository Quality — First Successor Implementation  
-**Status:** **IN PROGRESS** (T-001 complete 2026-09-23)  
+**Status:** **COMPLETE / CLOSED** (2026-09-23) — [S87-D14](decisions.md#s87-d14--close-sprint-87--expository-quality--first-successor-implementation) · [T-008-SPRINT-87-CLOSURE.md](T-008-SPRINT-87-CLOSURE.md)  
 **Type:** Implementation + validation  
 **Predecessor:** Sprint 86 — COMPLETE / CLOSED ([T-012](../2026-09-22-sprint-86-expository-editorial-quality-and-qa/T-012-SPRINT-86-CLOSURE.md))  
 **Backlog item:** [PB-FA-012 — Expository Editorial Quality & QA](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-012--expository-editorial-quality--qa)  
@@ -56,7 +56,7 @@ QA v0.2
   → sprint evaluation / closure
 ```
 
-**First substantive task:** draft **Expository QA v0.2** before production coding — **COMPLETE** ([EXPOSITORY-QA-v0.2.md](EXPOSITORY-QA-v0.2.md)). Next: **S87-T-002**.
+**First substantive task:** draft **Expository QA v0.2** before production coding — **COMPLETE**. All T-001…T-008 **COMPLETE**; sprint **CLOSED**.
 
 ---
 

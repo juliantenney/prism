@@ -1,0 +1,50 @@
+n": "generate",
+      "visual_slot": "section-after-content",
+      "tier": "essential",
+      "purpose": "mechanism",
+      "preferred_representation": "causal_chain",
+      "reasoning_supported": "Learners trace positive results back to the two population groups and see why the posterior is based on 90 out of 585 rather than on the 90% likelihood alone.",
+      "learner_stage": "post_reasoning",
+      "anti_spoiler": false,
+      "representation_avoid": [
+        "generic_infographic",
+        "topic_hero_image",
+        "numeric_claim_without_source"
+      ],
+      "canonical_discipline_note": "Preserve the exact commissioned population counts and rates; the visual represents conditional-probability structure rather than causal effects.",
+      "requires_exact_data_match": true,
+      "must_show": [
+        "10,000 people in total",
+        "100 people with the condition and 9,900 without it",
+        "90 positive results from people with the condition",
+        "495 positive results from people without the condition",
+        "585 positive results in total",
+        "\\(90/585\\approx 0.154\\), or about 15.4%"
+      ],
+      "must_not_show": [
+        "A posterior probability of 90%",
+        "Different population counts or test rates",
+        "An implication that the branches represent causal effects"
+      ],
+      "allowed_claims": [
+        "Positive results arise from both people with and without the condition.",
+        "Among the 585 positive results, 90 are from people with the condition.",
+        "The posterior probability is about 15.4%."
+      ],
+      "disallowed_claims": [
+        "A positive result proves that the condition is present.",
+        "The 5% false-positive rate means that only 5% of all positive results are false positives."
+      ],
+      "source_basis": "S4 worked example, synthesis, and commissioned natural-frequency population diagram.",
+      "caption_intent": "Natural frequencies reveal where the 585 positive results come from and why the posterior is about 15.4%.",
+      "alt_text": "Population diagram for 10,000 people showing 100 with the condition and 9,900 without, producing 90 and 495 positive results respectively, for 585 positive results in total.",
+      "detailed_description": "A branching population diagram begins with 10,000 people. One branch contains 100 people with the condition and shows 90 positive results. The other contains 9,900 people without the condition and shows 495 positive results. The branches converge on a pool of 585 positive results, of which 90 are associated with the condition, yielding about 15.4%.",
+      "discipline_risk_level": "high"
+    },
+    {
+      "affordance_id": "va-S5-base-rate-comparison-01",
+      "scope": "section",
+      "section_id": "S5",
+      "rationale": "The conceptual point of the section depends on changing only the prior while holding the test characteristics fixed. A matched comparison makes that controlled contrast clearer than two isolated calculations.",
+      "subject": "Comparison of 1% and 20% prevalence scenarios with identical test characteristics.",
+      "context": "Place after the section's comparison to consolidate how changing the starting prevalence alters the composition of positive results and therefore the posterior probability

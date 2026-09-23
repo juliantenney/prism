@@ -1,0 +1,150 @@
+Generate a finished rendered educational image.
+
+Return one complete learner-facing visual.
+Do not respond with prose, ASCII art, Markdown, code, Mermaid, a text diagram, a written outline or instructions for making the image.
+The result must be an actual image rather than a textual scaffold.
+
+Educational goal:
+Synthesis. Learners isolate the prior as the changing quantity and compare its effect on posterior probability while recognising that the evidence model remains constant.
+
+Audience:
+Learners working through an educational activity.
+
+Educational mode:
+Educational visual mode: activity learning support.
+Provide visual scaffolding that supports learner reasoning.
+Support learner investigation rather than replacing it.
+Minimise explanatory prose; prefer scaffold-style visual structure.
+The image should explain concepts while surrounding learner text carries the task.
+Authorised Show / must_show values (including numeric results) are required on-image content — render them; do not leave labelled value fields blank.
+Do not add answer-key content beyond Show / must_show and allowed_claims.
+
+Preferred visual output:
+- Explanatory diagrams
+- Process illustrations
+- Labelled systems
+- Maps
+- Reconstructions
+- Comparison visuals
+- Conceptual relationship diagrams
+- Annotated educational graphics
+
+Resource visual language:
+- Restrained, high-quality university-level educational illustration.
+- Explanatory diagram character — not a promotional poster, marketing infographic, or decorative collage.
+- Prefer coherent diagrammatic / schematic treatment by default.
+- Use richer spatial or landscape treatment only when the chosen representation genuinely benefits from spatial geography.
+- Keep palette character restrained and coherent across figures for this learner resource.
+- Use consistent annotation, label, arrow and callout character.
+- Keep backgrounds uncluttered; avoid decorative chrome that competes with instructional labels.
+- Figures for this learner resource should feel like members of the same visual family.
+- Do not force different representation types into identical compositions — layout follows Visual structure / Representation.
+
+Representation:
+Annotated System
+
+Concept boundary:
+Only depict the concepts, processes, categories and relationships supplied in Show / must_show and supported by allowed_claims in this brief.
+Obey must_not_show and disallowed_claims.
+Do not introduce additional concepts, processes, categories, relationships, examples, historical details, or outcomes.
+Do not invent additional concepts, subtopics, historical actors, locations, institutions, technologies, processes, or consequences.
+Scientifically or disciplinarily plausible extras that are not authorised by this brief must still be omitted.
+Do not strengthen qualified or conditional claims.
+Subject and context are commissioning cues only — not authoritative on-image claim labels.
+Learner-facing on-image labels and captions must stay within allowed_claims, disallowed_claims, and canonical_discipline_note.
+
+Material role:
+This visual explains concepts or relationships only.
+Do not instantiate activity-specific scenario numerics, symbols, units, or labels unless explicitly authorised in Show / must_show.
+Where Show / must_show authorises specific numeric or labelled values, render those values on the image; use qualitative labels only for relationships that are not given specific values in Show / must_show.
+
+Claim discipline:
+- Do not strengthen qualified or conditional claims.
+- Do not claim: Higher prevalence makes the test itself more accurate.
+- Supported claim boundary: The same test characteristics can yield different posterior probabilities when the prior changes.
+- Supported claim boundary: The prior contributes to the interpretation of the evidence.
+- Model-class scope (canonical_discipline_note): Hold the 90% positive rate with the condition and 5% positive rate without the condition constant across both scenarios.
+- Subject and context are commissioning cues only — not authoritative on-image claim labels.
+- Learner-facing on-image labels and captions must stay within allowed_claims, disallowed_claims, and canonical_discipline_note.
+Use only claims supported by the supplied brief. Do not invent unsupported factual detail.
+Do not introduce mathematical forms, constraint classes, or optimality/evidence claims stronger or broader than the allowed claims, disallowed claims, and exclusions in this brief.
+If a relationship is authorised only qualitatively and no exact formal relationship is supplied, do not invent an equation — use arrows, grouping or short labels.
+
+Authorised source evidence:
+- knowledge focus: base-rate comparison
+- synthesis: same evidence, different prior
+- representation needs: matched comparison
+
+Visual structure:
+A coherent central system or object with labels pointing to relevant components.
+Prefer: Concise callouts; clear leader lines; spatial or functional relationships.
+Avoid: Label clutter; unsupported components; paragraphs around the image.
+
+Show:
+- 1% prevalence leading to a posterior of about 15.4%
+- 20% prevalence leading to a posterior of about 81.8%
+- 90% positive rate among people with the condition in both scenarios
+- 5% positive rate among people without the condition in both scenarios
+- A clear indication that prevalence is the quantity that changes
+
+Show fidelity:
+Every Show item above must appear as on-image content.
+Do not substitute qualitative stand-ins (for example lower/higher) for authorised numeric values, and do not leave labelled numeric result fields blank.
+
+Relationships:
+- Show relationships visually through arrows, grouping, hierarchy or spatial organisation.
+- Do not explain those relationships in prose or as a causal essay.
+- Make visible: Learners isolate the prior as the changing quantity and compare its effect on posterior probability while recognising that the evidence model remains constant.
+
+Text and labels:
+- Use short noun-phrase labels (about 2–6 words).
+- Communicate primarily through visual organisation rather than explanatory prose.
+- Use layout, grouping, arrows, shapes, icons and spatial relationships.
+- Do not use paragraph text or repeated explanations.
+- Use only the text necessary to identify concepts and relationships.
+
+Avoid:
+- Different test characteristics between the two scenarios
+- An implication that the test becomes more accurate when prevalence rises
+- Additional prevalence scenarios
+- summary_table
+- generic_infographic
+- topic_hero_image
+- numeric_claim_without_source
+- Prose-only or text-only responses
+- ASCII art, Markdown diagrams, code or Mermaid
+- Paragraph-length explanations on the image
+- Worksheets or activity sheets
+- Quizzes or test-question layouts
+- Answer boxes, writing frames, or fill-in-the-blank fields
+- Printable classroom handouts
+- Tables intended for learner completion
+- Blank organisers or revision-sheet templates
+- Question prompts inside the image
+- Numbered exercises or completion checklists
+- Additional concepts not listed in this brief
+- Answer-key style completed interpretations
+- Explanatory paragraphs that finish learner reasoning
+- Moving learner exercises into the image itself
+
+Commissioning cues (subordinate):
+- Subject and context are commissioning cues only — not authoritative on-image claim labels.
+- Learner-facing on-image labels and captions must stay within allowed_claims, disallowed_claims, and canonical_discipline_note.
+- Subject cue: Comparison of 1% and 20% prevalence scenarios with identical test characteristics.
+- Context cue: Place after the section's comparison to consolidate how changing the starting prevalence alters the composition of positive results and therefore the posterior probability.
+
+Precision-critical fidelity:
+Preserve authorised equations, values, symbolic relationships, units and technical labels exactly where they are represented.
+Harmless typography or spacing variation is allowed.
+You may arrange or visually explain authorised formal claims without changing their notation, convention, or algebraic form.
+Do NOT derive, invent, substitute, average, simplify into a different relationship, or create a new equation merely to make the visual coherent.
+Do not reparameterise, normalise, rearrange, or substitute an authorised precision-critical expression into a different formal convention unless that alternate form is also explicitly authorised.
+If the authorised source does not specify an exact formal relationship, represent the connection qualitatively (arrows, grouping, short labels) rather than inventing a formula.
+Before rendering, silently verify every mathematical or formal label against the authorised precision-critical relationships and claims.
+This brief requires exact data match: numeric values, units and symbolic forms must match authorised evidence.
+
+Caption guidance:
+Changing the prior from 1% to 20% changes the posterior even though the test characteristics remain fixed.
+Keep any on-image caption labels short.
+
+Return the finished visual itself, not instructions for creating it.

@@ -1,0 +1,51 @@
+y of the evidence",
+        "\\(P(H\\mid E)\\) labelled posterior probability"
+      ],
+      "must_not_show": [
+        "Additional Bayesian quantities not established upstream",
+        "An implication that likelihood and posterior probability are interchangeable"
+      ],
+      "allowed_claims": [
+        "Bayes' theorem combines a prior probability with information about the evidence to obtain a posterior probability.",
+        "The overall probability of the evidence accounts for the evidence across the relevant possibilities."
+      ],
+      "disallowed_claims": [
+        "Bayes' theorem independently establishes that its probability inputs are reliable."
+      ],
+      "source_basis": "S3 knowledge focus, synthesis, and commissioned annotated Bayes' theorem representation.",
+      "caption_intent": "Bayes' theorem as a relationship among the starting probability, evidence model, and updated probability.",
+      "alt_text": "Annotated Bayes' theorem equation identifying the prior probability, likelihood, overall probability of evidence, and posterior probability.",
+      "detailed_description": "The Bayes equation is centred with four callouts. The prior identifies the starting probability of the hypothesis; the likelihood identifies the probability of the evidence under the hypothesis; the denominator identifies the overall probability of the evidence; and the left side identifies the posterior probability after the evidence is incorporated.",
+      "discipline_risk_level": "medium"
+    },
+    {
+      "affordance_id": "va-S4-natural-frequency-01",
+      "scope": "section",
+      "section_id": "S4",
+      "rationale": "The main worked example depends on understanding how a rare condition and a small false-positive rate combine to produce the pool of positive results. A natural-frequency representation makes the denominator and the competing sources of positive results directly visible.",
+      "subject": "Natural-frequency structure of the 10,000-person positive-test example.",
+      "context": "Place after the worked explanation so learners can inspect the population split and see why 90 positive cases with the condition form only part of the 585 positive results.",
+      "evidence_anchors": [
+        "S4.knowledge_focus",
+        "S4.synthesis",
+        "S4.representation_needs"
+      ],
+      "visual_decision": "generate",
+      "visual_slot": "section-after-content",
+      "tier": "essential",
+      "purpose": "mechanism",
+      "preferred_representation": "causal_chain",
+      "reasoning_supported": "Learners trace positive results back to the two population groups and see why the posterior is based on 90 out of 585 rather than on the 90% likelihood alone.",
+      "learner_stage": "post_reasoning",
+      "anti_spoiler": false,
+      "representation_avoid": [
+        "generic_infographic",
+        "topic_hero_image",
+        "numeric_claim_without_source"
+      ],
+      "canonical_discipline_note": "Preserve the exact commissioned population counts and rates; the visual represents conditional-probability structure rather than causal effects.",
+      "requires_exact_data_match": true,
+      "must_show": [
+        "10,000 people in total",
+        "100 people with the condition and 9,900 without it",
+        "90 positive results fro

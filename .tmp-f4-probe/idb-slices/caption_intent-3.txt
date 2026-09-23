@@ -1,0 +1,51 @@
+that the condition after the vertical bar is what is being treated as given"
+      ],
+      "must_not_show": [
+        "The two conditional probabilities as equivalent",
+        "A 90% value attached to \\(P(\\text{condition}\\mid\\text{positive})\\)",
+        "Additional statistical notation not established upstream"
+      ],
+      "allowed_claims": [
+        "Reversing the conditional changes the probability question.",
+        "The two conditional probabilities are generally not equal."
+      ],
+      "disallowed_claims": [
+        "A 90% positive rate among people with the condition implies a 90% probability of the condition after a positive result."
+      ],
+      "source_basis": "S2 knowledge focus, synthesis, and commissioned directional conditional-probability comparison.",
+      "caption_intent": "The direction of conditioning determines which probability is being asked for.",
+      "alt_text": "Paired comparison of two conditional probabilities showing that probability of a positive test given a condition and probability of the condition given a positive test ask different questions.",
+      "detailed_description": "Two parallel annotated expressions show the same test and condition terms in reversed positions. In the first, the condition appears after the vertical bar and is treated as given while the probability of a positive result is evaluated. In the second, the positive result is given and the probability of the condition is evaluated. The visual emphasises that reversing the terms changes the question.",
+      "discipline_risk_level": "medium"
+    },
+    {
+      "affordance_id": "va-S3-bayes-components-01",
+      "scope": "section",
+      "section_id": "S3",
+      "rationale": "Bayes' theorem introduces several related quantities at once. Annotating the equation allows learners with little formal statistical training to connect each symbol directly to its conceptual role without treating the formula as an unexplained calculation.",
+      "subject": "The four principal quantities related by Bayes' theorem.",
+      "context": "Place after the prose introduction of the theorem so the equation can be read as an updating relationship among prior probability, likelihood, overall evidence probability, and posterior probability.",
+      "evidence_anchors": [
+        "S3.knowledge_focus",
+        "S3.synthesis",
+        "S3.representation_needs"
+      ],
+      "visual_decision": "generate",
+      "visual_slot": "section-after-content",
+      "tier": "essential",
+      "purpose": "mechanism",
+      "preferred_representation": "annotated_system",
+      "reasoning_supported": "Learners map each term in Bayes' theorem to its role in moving from a prior probability to a posterior probability.",
+      "learner_stage": "post_reasoning",
+      "anti_spoiler": false,
+      "representation_avoid": [
+        "generic_infographic",
+        "topic_hero_image",
+        "numeric_claim_without_source"
+      ],
+      "canonical_discipline_note": "Use the notation and terminology established upstream and do not introduce additional Bayesian formalism.",
+      "requires_exact_data_match": true,
+      "must_show": [
+        "\\[P(H\\mid E)=\\frac{P(E\\mid H)P(H)}{P(E)}\\]",
+        "\\(P(H)\\) labelled prior probability",
+        "\\(P(E\\mid H)\\) lab

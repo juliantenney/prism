@@ -11366,7 +11366,7 @@
       );
     }
     if (stage === "design_page") {
-      return validateDesignPagePartialPageCapture(parsed);
+      return validateDesignPagePartialPageCapture(parsed, wf);
     }
     if (stage === "assessment_design") {
       return validateDesignAssessmentPartialPageCapture(parsed);
@@ -12133,7 +12133,15 @@
     ].join("\n");
   }
 
-  function validateDesignPagePartialPageCapture(parsed) {
+  /**
+   * Design Page partial capture validator.
+   * Interactive: knowledge_summary (page_synthesis and/or sections) remains required.
+   * First-class Expository (S87 EQ7 / T-003 + T-007 live fix): do NOT require
+   * page_synthesis.knowledge_summary, overview, learning_purpose, closing_paragraph,
+   * or sections[].section_id="knowledge_summary". Empty page_synthesis {} is valid.
+   * Product discriminator: isExpositoryResourceWorkflow(wf) — not content heuristics.
+   */
+  function validateDesignPagePartialPageCapture(parsed, wf) {
     if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
       return { ok: false, errors: ["invalid capture object"] };
     }
@@ -12150,6 +12158,7 @@
     if (parsed.page_synthesis === undefined && parsed.sections === undefined) {
       errors.push("page_synthesis and/or sections required");
     }
+    var expositoryWorkflow = isExpositoryResourceWorkflow(wf);
     var hasPageSynthesisKnowledgeSummary =
       parsed.page_synthesis &&
       typeof parsed.page_synthesis === "object" &&
@@ -12163,7 +12172,13 @@
           String(section.section_id || "").trim().toLowerCase() === "knowledge_summary"
         );
       });
-    if (!hasPageSynthesisKnowledgeSummary && !hasKnowledgeSummarySection) {
+    // EQ7: Expository Design Page must not require Knowledge Summary furniture.
+    // Interactive partial Design Page retains the historical requirement.
+    if (
+      !expositoryWorkflow &&
+      !hasPageSynthesisKnowledgeSummary &&
+      !hasKnowledgeSummarySection
+    ) {
       errors.push(
         'knowledge summary required: include page_synthesis.knowledge_summary and/or sections[].section_id="knowledge_summary"'
       );
@@ -12309,7 +12324,7 @@
         (partialMode && (stageFromStep === "design_page" || (!step && partialMode))) ||
         (isExpositoryResourceWorkflow(workflow) && expositoryPartialShape)
       ) {
-        return validateDesignPagePartialPageCapture(parsed);
+        return validateDesignPagePartialPageCapture(parsed, workflow);
       }
       var errors = [];
       if (!Array.isArray(parsed.activities)) errors.push("activities array required");
@@ -14679,6 +14694,15 @@
       ) {
         draftBody = (
           draftBody + strictMod.buildStrictEpisodePlansOutputContractBlock()
+        ).trim();
+      }
+    } else if (kind === "expository_journey_plan") {
+      if (
+        typeof strictMod.buildStrictExpositoryJourneyPlanOutputContractBlock === "function" &&
+        !/Output contract \(strict — fenced JSON block only\)/i.test(draftBody)
+      ) {
+        draftBody = (
+          draftBody + strictMod.buildStrictExpositoryJourneyPlanOutputContractBlock()
         ).trim();
       }
     }

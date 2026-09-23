@@ -1,9 +1,10 @@
 # Sprint 87 — Index
 
 **Sprint:** 87 — Expository Quality — First Successor Implementation  
-**Status:** **READY / NOT STARTED** (2026-09-22)  
+**Status:** **IN PROGRESS** (2026-09-23) — T-001…T-006 complete; WP5 in progress  
 **Entry:** [SPRINT-87-START-HERE.md](SPRINT-87-START-HERE.md)  
 **Charter:** [SPRINT-87-CHARTER.md](SPRINT-87-CHARTER.md)  
+**Acceptance instrument:** [EXPOSITORY-QA-v0.2.md](EXPOSITORY-QA-v0.2.md)  
 **Predecessor:** [Sprint 86 COMPLETE / CLOSED](../2026-09-22-sprint-86-expository-editorial-quality-and-qa/T-012-SPRINT-86-CLOSURE.md)  
 **Design:** [S86 T-011](../2026-09-22-sprint-86-expository-editorial-quality-and-qa/T-011-SUCCESSOR-IMPLEMENTATION-DESIGN.md)
 
@@ -11,9 +12,10 @@
 | -------- | ---- |
 | [SPRINT-87-START-HERE.md](SPRINT-87-START-HERE.md) | Session entry |
 | [SPRINT-87-CHARTER.md](SPRINT-87-CHARTER.md) | Mission, scope, acceptance, out-of-scope |
+| [EXPOSITORY-QA-v0.2.md](EXPOSITORY-QA-v0.2.md) | **Acceptance instrument** (T-001) |
 | [STATUS.md](STATUS.md) | Dashboard |
 | [PLAN.md](PLAN.md) | WP / task sequence |
-| [decisions.md](decisions.md) | S87-D01… |
+| [decisions.md](decisions.md) | S87-D01…S87-D07 |
 | [HANDOVER.md](HANDOVER.md) | Continuity |
 | [next-chat-briefing.md](next-chat-briefing.md) | Compact load |
 | [ARCHITECTURAL-DEBT.md](ARCHITECTURAL-DEBT.md) | Sprint-local ledger |

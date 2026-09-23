@@ -41,7 +41,7 @@ Debt / observations relevant to Sprint 86 scope. **Investigation/design only.**
 
 | ID | Finding | Notes |
 | -- | ------- | ----- |
-| **S86-AD-010** | Learner-facing fallback: “Structured material body is not supported for learner rendering.” | T-008 root cause (unsupported structured XM shapes). **T-011 FIRST slice:** repair without dropping unique content. |
+| **S86-AD-010** | Learner-facing fallback: “Structured material body is not supported for learner rendering.” | T-008 root cause (unsupported structured XM shapes). **RESOLVED in Sprint 87 T-004** ([S87-D05](../2026-09-22-sprint-87-expository-quality-first-successor-implementation/decisions.md#s87-d05--ad-010-structured-material-semantic-rendering)) — specialised + generic semantic fallback; live re-export confirm at S87-T-007. |
 | S86-AD-011 | P2/P8 and P5/P6 overlap candidates | **Resolved in T-007** → EQ4–EQ6 |
 | S86-AD-012 | Representation over-generation (low-visual) | Case-sensitive (C02/C05/C03). EQ5 |
 | S86-AD-013 | “Remove image ⇒ understanding must fall” vs a11y equivalence | QA v0.2 candidate; EQ5 |

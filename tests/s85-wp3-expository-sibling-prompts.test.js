@@ -92,7 +92,7 @@ test("Expository GLC/LO/DP siblings differ from Interactive emphasis and forbid 
   assert.doesNotMatch(lo, /suitable for downstream assessment and activity design/i);
 
   const dp = sibling.resolveTemplate("design_page");
-  assert.match(dp, /THIN ORIENTATION/i);
+  assert.match(dp, /CHAPTER PRESENTATION|NO PROSPECTUS FURNITURE|Do NOT generate by default/i);
   assert.match(dp, /Must not:[\s\S]*coherence rewrite/i);
   assert.match(dp, /Invent Interactive activities/i);
 

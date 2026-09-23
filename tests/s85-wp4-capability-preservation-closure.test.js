@@ -346,13 +346,15 @@ test("WP4 domain guidance: cold WGC cache still loads filtered General+LD rules"
 // C. Closing paragraph
 // ---------------------------------------------------------------------------
 
-test("WP4 closing_paragraph: DP → assemble → model → HTML after exposition", () => {
+test("WP4 closing_paragraph: Expository assemble strips page-level close (S87 EQ8)", () => {
   const ejp = {
     artifact_type: "expository_journey_plan",
     schema_version: "1.0.0",
     title: "Formative assessment",
     audience: "Lecturers",
     journey_intent: "Build a practical model.",
+    commissioned_purpose: "Explain formative assessment as an evidence-to-action loop.",
+    epistemic_form: "practical conceptual model",
     sections: [
       {
         section_id: "S1",
@@ -386,9 +388,9 @@ test("WP4 closing_paragraph: DP → assemble → model → HTML after exposition
       },
       {
         section_id: "S2",
-        explanation_intent: "Establish loop.",
+        explanation_intent: "Establish loop and consolidate.",
         exposition:
-          "Intended learning, evidence, interpretation and action form a recurring relationship.",
+          "Intended learning, evidence, interpretation and action form a recurring relationship the learner can now carry forward.",
         invitations_to_think: [],
         continuity_hooks: [],
         materials_commission: []
@@ -415,20 +417,20 @@ test("WP4 closing_paragraph: DP → assemble → model → HTML after exposition
     design_page: dp
   });
   assert.equal(assembled.ok, true);
-  assert.match(assembled.page.page_synthesis.closing_paragraph, /Carry away the loop/i);
+  assert.equal(assembled.page.page_synthesis.closing_paragraph, undefined);
+  assert.equal(assembled.page.page_synthesis.overview, undefined);
+  assert.match(assembled.page.sections[1].exposition, /recurring relationship/i);
 
   const model = buildPageModel(assembled.page);
   assert.equal(model.ok, true, JSON.stringify(model.errors || []));
-  assert.match(model.model.closingParagraph, /Carry away the loop/i);
-  assert.ok(!model.model.studyTips);
+  assert.equal(String(model.model.closingParagraph || "").trim(), "");
+  assert.equal(model.model.orientationSections.length, 0);
 
   const html = String(renderLearnerPageHtml(assembled.page).html || "");
-  const closingIdx = html.indexOf('data-region="page-closing"');
-  const expoIdx = html.indexOf('data-region="exposition"');
-  assert.ok(closingIdx > 0, "closing region present");
-  assert.ok(expoIdx > 0, "exposition region present");
-  assert.ok(closingIdx > expoIdx, "closing appears after exposition");
-  assert.match(html, /Carry away the loop/i);
+  assert.doesNotMatch(html, /data-region="page-closing"/);
+  assert.doesNotMatch(html, /data-region="orientation"/);
+  assert.match(html, /data-region="exposition"/);
+  assert.match(html, /recurring relationship/i);
   assert.doesNotMatch(html, /data-region="study-tips"/);
   assert.doesNotMatch(html, /data-workspace-kind=/);
   assert.doesNotMatch(html, /data-region="activities"/);

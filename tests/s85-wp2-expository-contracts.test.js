@@ -279,6 +279,10 @@ test("Expository assembly merges EJP→XD→XM into section-primary page without
 
     scope_scale: "10 minutes",
 
+    commissioned_purpose: "Explain how light energy is captured and used in the light reactions.",
+
+    epistemic_form: "mechanism and causal sequence",
+
     sections: [
 
       {

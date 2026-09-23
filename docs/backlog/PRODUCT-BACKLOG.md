@@ -2,8 +2,8 @@
 
 **Canonical location:** `docs/backlog/PRODUCT-BACKLOG.md`  
 **Status:** Active — **alpha-use period** (Alpha development complete, 2026-09-02)  
-**Last updated:** 2026-09-22 (Sprint 87 pack created)  
-**Active sprint:** [Sprint 87 — Expository Quality — First Successor Implementation](../development/sprints/2026-09-22-sprint-87-expository-quality-first-successor-implementation/SPRINT-87-START-HERE.md) — **READY / NOT STARTED** (implementation + validation; first task = QA v0.2)
+**Last updated:** 2026-09-23 (Sprint 87 T-003 complete)  
+**Active sprint:** [Sprint 87 — Expository Quality — First Successor Implementation](../development/sprints/2026-09-22-sprint-87-expository-quality-first-successor-implementation/SPRINT-87-START-HERE.md) — **IN PROGRESS** (chapter form shipped; next = T-004 AD-010)
 
 This file answers: **what might we actually choose to work on next?**
 
@@ -49,9 +49,9 @@ Investigate and design the **editorial** quality layer for first-class Expositor
 
 **Explicit non-scope:** production implementation in the investigation sprint; fixed chapter templates; Interactive prompt edits; reopening S83–S85 architecture without compelling evidence; Research Synthesis resolution; Expository→Interactive; CAS/table-maths.
 
-**Sprint allocation:** **Sprint 86 COMPLETE / CLOSED** — [closure](../development/sprints/2026-09-22-sprint-86-expository-editorial-quality-and-qa/T-012-SPRINT-86-CLOSURE.md) ([S86-D02](../development/sprints/2026-09-22-sprint-86-expository-editorial-quality-and-qa/decisions.md#s86-d02--close-sprint-86--expository-editorial-quality--qa)). Investigation/design outputs accepted (EQ1–EQ8, T-007–T-011, frozen C01–C05). **Sprint 87 READY / NOT STARTED** — [First Successor Implementation](../development/sprints/2026-09-22-sprint-87-expository-quality-first-successor-implementation/SPRINT-87-START-HERE.md) ([S87-D01](../development/sprints/2026-09-22-sprint-87-expository-quality-first-successor-implementation/decisions.md#s87-d01--open-sprint-87--expository-quality--first-successor-implementation)): implement T-011 first slice; **QA v0.2 first**; production coding not begun.
+**Sprint allocation:** **Sprint 86 COMPLETE / CLOSED**. **Sprint 87 IN PROGRESS** — QA v0.2 · EQ1 · chapter form **shipped**; next = T-004 AD-010 ([START HERE](../development/sprints/2026-09-22-sprint-87-expository-quality-first-successor-implementation/SPRINT-87-START-HERE.md)).
 
-**Readiness:** Sprint 87 pack open. First authorised task = draft QA v0.2. PB-FA-012 remains **active** (not closed). T-011 first slice **not yet implemented**.
+**Readiness:** PB-FA-012 remains **active**. Remaining first-slice work: AD-010 · typography · validation.
 
 ### PB-FA-002 — Programming / code learning-resource support
 

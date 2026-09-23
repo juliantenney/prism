@@ -135,18 +135,18 @@ test("assembled learner HTML uses exposition, not explanation_intent authorial d
   assert.equal(rendered.error, null, rendered.error || "");
   const html = String(rendered.html || "");
 
-  assert.match(html, /data-region="orientation"/);
-  assert.match(html, /Overview/i);
-  assert.match(html, /Learning purpose/i);
-  assert.match(html, /Knowledge summary/i);
   assert.match(html, /data-region="exposition"/);
+  assert.doesNotMatch(html, /data-region="orientation"/);
+  assert.doesNotMatch(html, /data-orientation-type="overview"/);
+  assert.doesNotMatch(html, /Learning purpose/i);
+  assert.doesNotMatch(html, /Knowledge summary/i);
+  assert.doesNotMatch(html, /data-region="page-closing"/);
   assert.doesNotMatch(html, /data-region="activities"/);
   assert.doesNotMatch(html, /data-workspace-kind=/);
   assert.doesNotMatch(html, /data-guided-review=/);
 
-  const orientationIdx = html.indexOf('data-region="orientation"');
   const expositionIdx = html.indexOf('data-region="exposition"');
-  assert.ok(orientationIdx >= 0 && expositionIdx > orientationIdx);
+  assert.ok(expositionIdx >= 0);
 
   let cursor = expositionIdx;
   for (const section of assembled.page.sections) {

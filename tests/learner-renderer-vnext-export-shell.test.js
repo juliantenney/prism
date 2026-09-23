@@ -529,7 +529,13 @@ test("vNext export: sticky navigation shell uses full width intro and nav-only s
   assert.doesNotMatch(html, /\.util-learning-header::before/);
   assert.doesNotMatch(html, /\.util-journey-nav::before/);
   assert.doesNotMatch(html, /\.util-journey-nav\{[^}]*100vw/);
-  assert.doesNotMatch(html, /position:fixed/);
+  // Shell header/nav must stay sticky (not fixed). Revision-reminder accompaniment
+  // legitimately uses position:fixed inside composition-moment CSS bundled with vNext.
+  const shellCssMatch = html.match(/<style>([\s\S]*?)<\/style>/);
+  assert.ok(shellCssMatch, "Expected export shell stylesheet.");
+  assert.doesNotMatch(shellCssMatch[1], /\.util-learning-header\{[^}]*position:\s*fixed/);
+  assert.doesNotMatch(shellCssMatch[1], /\.util-journey-nav\{[^}]*position:\s*fixed/);
+  assert.match(shellCssMatch[1], /\.util-journey-nav\{[^}]*position:\s*sticky/);
   assert.match(html, /@media print\{[^}]*\.util-learning-header,.util-journey-nav\{display:none!important/);
   assert.match(html, /stickyClearanceHeight\(\)\+8/);
   assert.doesNotMatch(html, /header\|\|nav\)\.offsetHeight/);

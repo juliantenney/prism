@@ -50459,6 +50459,110 @@
     ].join("");
   }
 
+  /**
+   * S87-T-005 / T-010 first-slice Expository publishing presentation.
+   * Scoped ONLY to Expository pages via data-page-kind / util-page-export--expository.
+   * Does not alter shared Interactive visual rules.
+   */
+  function getUtilityExpositoryPublishingCss() {
+    var root = '.util-learner-renderer-vnext[data-page-kind="expository"]';
+    var exportBody = 'body.util-page-export--expository';
+    return (
+      root +
+      ' .util-page-header>h1{margin:0 0 var(--learner-space-4);font-size:var(--learner-text-title);line-height:var(--learner-leading-tight);font-weight:650;letter-spacing:-.01em;color:#0f172a;text-align:left}' +
+      exportBody +
+      ' .util-learning-header__title{font-weight:650;letter-spacing:-.01em;text-align:left}' +
+      exportBody +
+      ':not(.util-page-export--with-journey-nav){padding-bottom:2rem}' +
+      root +
+      ' .util-exposition-sections{margin:0}' +
+      root +
+      ' .util-exposition-section{margin:0 0 2.75rem;padding:0;border:0;background:transparent;box-shadow:none}' +
+      root +
+      ' .util-exposition-section:last-child{margin-bottom:var(--learner-space-5)}' +
+      root +
+      ' .util-exposition-section .util-section-heading{margin:0 0 var(--learner-space-3);font-weight:650}' +
+      root +
+      ' .util-exposition-explanation{margin:0 0 var(--learner-space-3)}' +
+      root +
+      ' .util-exposition-explanation p{margin:0 0 var(--learner-space-3)}' +
+      root +
+      ' .util-exposition-explanation p:last-child{margin-bottom:0}' +
+      root +
+      ' .util-exposition-explanation ul,' +
+      root +
+      ' .util-exposition-explanation ol,' +
+      root +
+      ' .util-exposition-material ul,' +
+      root +
+      ' .util-exposition-material ol{margin:0 0 var(--learner-space-3);padding-left:1.35rem;list-style-position:outside}' +
+      root +
+      ' .util-exposition-explanation li,' +
+      root +
+      ' .util-exposition-material li{margin:0 0 .4rem}' +
+      root +
+      ' .util-visual-asset{margin:var(--learner-space-4) 0;max-width:100%}' +
+      root +
+      ' .util-visual-asset-image{border:0;border-radius:0;box-shadow:none;background:transparent}' +
+      root +
+      ' .util-visual-asset-caption,' +
+      root +
+      ' .util-exposition-diagram-caption__text{margin-top:var(--learner-space-2);font-size:var(--learner-text-sm);line-height:1.5;font-weight:400;color:#4b5563}' +
+      root +
+      ' .util-exposition-material{margin:var(--learner-space-4) 0;padding:var(--learner-space-3) 0 0;border:0;border-top:1px solid #e8edf2;border-radius:0;background:transparent;box-shadow:none;overflow-x:auto;-webkit-overflow-scrolling:touch}' +
+      root +
+      ' .util-exposition-material:first-child{margin-top:var(--learner-space-3)}' +
+      root +
+      ' .util-exposition-material h3{margin:0 0 var(--learner-space-2);font-size:var(--learner-text-md);line-height:var(--learner-leading-heading);font-weight:650;color:#111827}' +
+      root +
+      ' .util-exposition-material h4{margin:var(--learner-space-3) 0 var(--learner-space-1);font-size:var(--learner-text-base);line-height:var(--learner-leading-heading);font-weight:600;color:#1f2937}' +
+      root +
+      ' .util-exposition-worked-stages,' +
+      root +
+      ' .util-exposition-material [data-field="steps"],' +
+      root +
+      ' .util-exposition-material [data-field="elements"],' +
+      root +
+      ' .util-exposition-material [data-field="contrasts"]{margin:var(--learner-space-2) 0 var(--learner-space-3)}' +
+      root +
+      ' .util-exposition-equation{margin:var(--learner-space-4) 0;padding:0;border:0;background:transparent;font-size:1.05em}' +
+      root +
+      ' .util-exposition-equation code{font-size:1em;background:transparent;padding:0;border:0}' +
+      root +
+      ' table,' +
+      root +
+      ' .util-exposition-structured-table{width:100%;min-width:0;max-width:100%;border-collapse:collapse;margin:var(--learner-space-3) 0}' +
+      root +
+      ' th{background:transparent;border:0;border-bottom:1px solid #94a3b8;padding:.55rem .65rem;font-size:var(--learner-text-sm);font-weight:650;color:#0f172a}' +
+      root +
+      ' td{border:0;border-bottom:1px solid #e5e7eb;padding:.55rem .65rem;font-size:var(--learner-text-base);color:#1f2937}' +
+      root +
+      ' caption{caption-side:bottom;text-align:left;padding-top:var(--learner-space-2);font-size:var(--learner-text-sm);line-height:1.5;color:#4b5563}' +
+      root +
+      ' mjx-container[display="true"],' +
+      root +
+      ' .MathJax_Display,' +
+      root +
+      ' .MathJax_SVG_Display,' +
+      root +
+      ' .MathJax_CHTML_Display{display:block;margin:var(--learner-space-4) 0;padding:0;border:0;background:transparent;overflow-x:auto;max-width:100%}' +
+      root +
+      ' strong,' +
+      root +
+      ' b{font-weight:600}' +
+      '@media (max-width:720px){' +
+      root +
+      ' .util-exposition-section{margin-bottom:2rem}' +
+      root +
+      ' .util-page-header>h1{font-size:var(--learner-text-xl)}' +
+      root +
+      ' table,' +
+      root +
+      ' .util-exposition-structured-table{display:block;overflow-x:auto;-webkit-overflow-scrolling:touch}' +
+      '}'
+    );
+  }
+
   function getUtilityVnextProseMeasureCss() {
     var iconCss = "";
     var lib =
@@ -50615,6 +50719,7 @@
       ".util-visual-affordance{display:none!important}" +
       getUtilityVnextCompositionMomentPresentationCss() +
       iconCss +
+      getUtilityExpositoryPublishingCss() +
       "@media (max-width:700px){.util-journey-sequential{width:100%;max-width:100%}.util-journey-sequential__row{grid-template-columns:44px minmax(0,1fr);grid-template-areas:\"btn current\" \"prev prev\" \"next next\";column-gap:.65rem;row-gap:.4rem;justify-content:stretch}.util-journey-all-btn{position:static;inset-inline-end:auto;top:auto;z-index:auto;grid-area:btn}.util-journey-current-wrap{grid-area:current;justify-items:center}.util-journey-adjacent--prev{grid-area:prev}.util-journey-adjacent--next{grid-area:next}.util-journey-adjacent--placeholder{display:none}.util-journey-all-panel{max-width:100%}}" +
       "@media (max-width:720px){:root{--learner-page-gutter:.75rem}.util-learning-header__intro{padding-block:.65rem var(--learner-space-2)}.util-journey-nav{padding-block:.65rem .75rem}.util-learning-header__title{font-size:var(--learner-text-xl)}.util-learner-renderer-vnext .util-section-heading{font-size:var(--learner-text-lg)}.util-learner-renderer-vnext .util-activity+.util-activity,.util-learner-renderer-vnext .util-page-orientation+.util-learning-activities>.util-activity:first-child{margin-top:2.5rem;padding-top:2rem}}" +
       "@media (max-width:390px){.util-journey-sequential{width:100%;max-width:100%}.util-journey-sequential__row{column-gap:.5rem}}" +
@@ -55869,6 +55974,10 @@
     var bodyClass =
       "util-page-export util-page-export--vnext util-page-export--with-learning-header";
     if (hasJourneyNav) bodyClass += " util-page-export--with-journey-nav";
+    var isExpositoryExport =
+      (model && model.pageKind === "expository") ||
+      /data-page-kind="expository"/.test(String(contentHtml || ""));
+    if (isExpositoryExport) bodyClass += " util-page-export--expository";
     var bodyParts = [];
     if (headerHtml) bodyParts.push(headerHtml);
     bodyParts.push(content);

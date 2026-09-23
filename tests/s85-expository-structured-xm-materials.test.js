@@ -33,6 +33,8 @@ function loadStructuredXmPage() {
     title: "Formative assessment: from evidence to action",
     audience: "University lecturers",
     journey_intent: "Build a practical formative model.",
+    commissioned_purpose: "Explain formative assessment as an evidence-to-action loop.",
+    epistemic_form: "practical conceptual model",
     sections: [
       {
         section_id: "S2",
@@ -181,7 +183,7 @@ test("structured XM renders without [object Object]; S5 worked example is learne
   assert.match(html, /data-affordance-id="va-S6-synthesis-01"/);
 });
 
-test("unknown structured XM body fails safely without [object Object]", () => {
+test("unknown structured XM body renders semantic fallback without [object Object] (S87-T-004)", () => {
   const page = {
     artifact_type: "page",
     schema_version: "2.0.0",
@@ -211,11 +213,13 @@ test("unknown structured XM body fails safely without [object Object]", () => {
   };
   const model = buildPageModel(page);
   assert.equal(model.ok, true);
-  assert.equal(model.model.expositionSections[0].materials[0].type, "expository_structured_unsupported");
+  assert.equal(model.model.expositionSections[0].materials[0].type, "expository_structured_fallback");
   const html = String(renderLearnerPageHtml(page).html || "");
   assert.doesNotMatch(html, /\[object Object\]/);
   assert.doesNotMatch(html, /AUTHOR-ONLY mystery/);
-  assert.match(html, /not supported for learner rendering/i);
+  assert.doesNotMatch(html, /not supported for learner rendering/i);
+  assert.match(html, /data-expository-structured="fallback"/);
+  assert.match(html, /bar/);
   assert.match(html, /Section prose remains visible/);
 });
 

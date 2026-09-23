@@ -394,6 +394,8 @@ test("raw Expository DP paste proceeds through deterministic assembly after enve
     title: "Formative assessment",
     audience: "lecturers",
     journey_intent: "Evidence to action",
+    commissioned_purpose: "Explain formative assessment as an evidence-to-action loop.",
+    epistemic_form: "practical conceptual model",
     sections: [
       {
         section_id: "S2",
@@ -600,6 +602,8 @@ test("captured Expository DP proceeds through deterministic assembly", () => {
     title: "Feedback loops",
     audience: "learners",
     journey_intent: "Integrate a closed loop.",
+    commissioned_purpose: "Explain how feedback loops integrate signal and control.",
+    epistemic_form: "mechanism and causal sequence",
     sections: [
       {
         section_id: "S1",

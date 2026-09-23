@@ -1,0 +1,180 @@
+{
+  "_comment": "Regression shapes for S86-AD-010 / S87-T-004. Export HTML preserved kinds only; bodies are reconstructed from those kinds + T-008 diagnosis (non-stages / non-elements+relationships objects).",
+  "cases": [
+    {
+      "case_id": "C01",
+      "material_id": "XM-MAT-S5-01",
+      "kind": "annotated equation",
+      "body": {
+        "title": "Bayes update",
+        "equation": "P(H|E) = P(E|H)P(H) / P(E)",
+        "annotations": [
+          { "symbol": "P(H)", "meaning": "Prior belief in the hypothesis" },
+          { "symbol": "P(E|H)", "meaning": "Likelihood of the evidence given H" },
+          { "symbol": "P(H|E)", "meaning": "Updated posterior after seeing E" }
+        ],
+        "caption": "Posterior reweights the prior by how well the hypothesis predicts the evidence."
+      }
+    },
+    {
+      "case_id": "C01",
+      "material_id": "XM-MAT-S6-01",
+      "kind": "controlled comparison table",
+      "body": {
+        "title": "Base-rate versus hit-rate",
+        "columns": [
+          { "key": "quantity", "label": "Quantity" },
+          { "key": "natural", "label": "Natural frequencies" },
+          { "key": "percent", "label": "Percent framing" }
+        ],
+        "rows": [
+          {
+            "quantity": "Base rate",
+            "natural": "1 in 1000",
+            "percent": "0.1%"
+          },
+          {
+            "quantity": "Hit rate",
+            "natural": "99 in 100",
+            "percent": "99%"
+          }
+        ],
+        "caption": "Same facts; different framing changes how easy the comparison is to hold."
+      }
+    },
+    {
+      "case_id": "C02",
+      "material_id": "XM1",
+      "kind": "conceptual flow diagram",
+      "body": {
+        "title": "Question design flow",
+        "elements": [
+          {
+            "id": "purpose",
+            "label": "Purpose",
+            "supporting_text": "What judgement the question must support."
+          },
+          {
+            "id": "wording",
+            "label": "Wording",
+            "supporting_text": "How the prompt invites that judgement."
+          },
+          {
+            "id": "probe",
+            "label": "Probe",
+            "supporting_text": "Follow-up that tests the same criterion."
+          }
+        ],
+        "caption": "Purpose shapes wording; wording is checked by a matching probe."
+      }
+    },
+    {
+      "case_id": "C03",
+      "material_id": "XM-MAT-S7-01",
+      "kind": "worked causal reconstruction",
+      "body": {
+        "title": "Reconstructing a camouflage causal chain",
+        "scenario": "A field guide claims coloration reduces predation. Reconstruct the warranted chain without inventing extra mechanisms.",
+        "steps": [
+          {
+            "label": "Identify the outcome",
+            "description": "Reduced detection by visually hunting predators."
+          },
+          {
+            "label": "Name the mediating condition",
+            "description": "Background matching that lowers contrast."
+          },
+          {
+            "label": "State the selective pressure",
+            "description": "Higher survival where contrast is lower."
+          }
+        ],
+        "synthesis": "The reconstruction stays inside the evidence chain; it does not add unstated physiological stages."
+      }
+    },
+    {
+      "case_id": "C04",
+      "material_id": "XM-MAT-S1-01",
+      "kind": "multi-level causal frame",
+      "body": {
+        "title": "Levels of explanation for July 1914",
+        "elements": [
+          {
+            "label": "Structural",
+            "supporting_text": "Alliance commitments and military timetables."
+          },
+          {
+            "label": "Contingent",
+            "supporting_text": "Choices in the Sarajevo crisis week."
+          },
+          {
+            "label": "Interpretive",
+            "supporting_text": "How actors read each other's signals."
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "C05",
+      "material_id": "XM-MAT-S2-01",
+      "kind": "concept contrast",
+      "body": {
+        "title": "Truth versus validity",
+        "contrasts": [
+          {
+            "label": "Core distinction",
+            "left": "A statement can be true or false about the world.",
+            "right": "An argument can be valid or invalid in form.",
+            "note": "Truth is about content; validity is about structure."
+          },
+          {
+            "label": "Failure modes",
+            "a": "False premises can still yield a valid form.",
+            "b": "True premises do not guarantee a sound argument if the form fails."
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "C05",
+      "material_id": "XM-MAT-S5-02",
+      "kind": "argument-appraisal sequence",
+      "body": {
+        "title": "Appraising an argument",
+        "sequence": [
+          {
+            "label": "Identify premises and conclusion",
+            "description": "Separate what is assumed from what is claimed."
+          },
+          {
+            "label": "Test validity",
+            "description": "Ask whether the conclusion must follow if premises are granted."
+          },
+          {
+            "label": "Test soundness",
+            "description": "Ask whether the premises are actually true."
+          }
+        ]
+      }
+    },
+    {
+      "case_id": "generic",
+      "material_id": "GENERIC-NESTED-01",
+      "kind": "mystery_structure",
+      "body": {
+        "title": "Nested instructional packet",
+        "overview": "Keep unique nested content visible.",
+        "claims": [
+          "Claim A remains learner-visible.",
+          "Claim B remains learner-visible."
+        ],
+        "nested": {
+          "guiding_question": "What must remain after fallback rendering?",
+          "detail": {
+            "must_keep": "Unique instructional phrase UNIQUE-KEEP-77"
+          }
+        }
+      }
+    }
+  ]
+}

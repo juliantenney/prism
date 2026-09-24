@@ -435,9 +435,10 @@ test("M: Research retains Supporting + Constraints; objective_type still resolva
 });
 
 test("N: No new LD product options added", () => {
-  assert.equal(api.LD_CREATE_OUTPUT_TYPE_CHOICES.length, 2);
+  assert.equal(api.LD_CREATE_OUTPUT_TYPE_CHOICES.length, 3);
   assert.equal(api.LD_CREATE_OUTPUT_TYPE_CHOICES[0].value, "self_study_resource");
   assert.equal(api.LD_CREATE_OUTPUT_TYPE_CHOICES[1].value, "workshop");
+  assert.equal(api.LD_CREATE_OUTPUT_TYPE_CHOICES[2].value, "expository_resource");
   assert.doesNotMatch(indexHtml, /value="slideshow"|value="assessment_pack"|value="module_outline"/);
   assert.match(indexHtml, /What source material will you be working from\?/);
   assert.match(indexHtml, /id="wfDesignDesiredOutputsGroup"/);

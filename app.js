@@ -7066,7 +7066,11 @@
     state.workflowSelectedDomains = next;
     if (els && els.wfDesignDomainSelect) {
       var extraId = next.length > 1 ? next[1] : "";
-      if (extraId && !els.wfDesignDomainSelect.querySelector('option[value="' + extraId + '"]')) {
+      if (
+        extraId &&
+        typeof els.wfDesignDomainSelect.querySelector === "function" &&
+        !els.wfDesignDomainSelect.querySelector('option[value="' + extraId + '"]')
+      ) {
         extraId = "";
       }
       els.wfDesignDomainSelect.value = extraId || "";
@@ -7123,7 +7127,11 @@
       els.wfDesignDomainSelect.appendChild(option);
     });
 
-    if (selectedExtra && !els.wfDesignDomainSelect.querySelector('option[value="' + selectedExtra + '"]')) {
+    if (
+      selectedExtra &&
+      typeof els.wfDesignDomainSelect.querySelector === "function" &&
+      !els.wfDesignDomainSelect.querySelector('option[value="' + selectedExtra + '"]')
+    ) {
       selectedExtra = "";
     }
     els.wfDesignDomainSelect.value = selectedExtra || "";
@@ -7596,8 +7604,10 @@
   function initWorkflowDomainSelector() {
     var fallbackDomains = getWorkflowFactoryDomainSelectFallbackDomains();
 
-    // Baseline "general" is always implied; runnable domain is explicit until the user chooses one.
-    state.workflowSelectedDomains = ["general"];
+    // Baseline "general" is always implied. Create defaults to Learning Design so the
+    // Product selector (Self-study / Workshop / Expository) is visible immediately;
+    // Research remains available via the Domain dropdown.
+    state.workflowSelectedDomains = ["general", "learning-design"];
 
     if (
       !window.WorkflowGenerationContext ||
@@ -31129,14 +31139,8 @@
         videoIntroText: String(pageRefs.videoIntroText || ""),
         additionalResourcesIntro: String(pageRefs.additionalResourcesIntro || ""),
         additionalResources: Array.isArray(pageRefs.additionalResources)
-          ? pageRefs.additionalResources.map(function (row) {
-              var item = row && typeof row === "object" ? row : {};
-              return {
-                resource_id: String(item.resource_id || "").trim(),
-                link_text: String(item.link_text || "").trim(),
-                order:
-                  typeof item.order === "number" && isFinite(item.order) ? Math.floor(item.order) : 0
-              };
+          ? pageRefs.additionalResources.map(function (row, idx) {
+              return normalizeAdditionalResourceRefRow(row, idx);
             })
           : []
       }
@@ -31213,23 +31217,11 @@
           ? String(live.additionalResourcesIntro)
           : String(durable.additionalResourcesIntro || ""),
       additionalResources: liveAdditional.length
-        ? liveAdditional.map(function (row) {
-            var item = row && typeof row === "object" ? row : {};
-            return {
-              resource_id: String(item.resource_id || "").trim(),
-              link_text: String(item.link_text || "").trim(),
-              order:
-                typeof item.order === "number" && isFinite(item.order) ? Math.floor(item.order) : 0
-            };
+        ? liveAdditional.map(function (row, idx) {
+            return normalizeAdditionalResourceRefRow(row, idx);
           })
-        : durableAdditional.map(function (row) {
-            var item = row && typeof row === "object" ? row : {};
-            return {
-              resource_id: String(item.resource_id || "").trim(),
-              link_text: String(item.link_text || "").trim(),
-              order:
-                typeof item.order === "number" && isFinite(item.order) ? Math.floor(item.order) : 0
-            };
+        : durableAdditional.map(function (row, idx) {
+            return normalizeAdditionalResourceRefRow(row, idx);
           })
     };
   }
@@ -32283,16 +32275,8 @@
               rec.workflowPageResourceRefs.additionalResourcesIntro || ""
             ),
             additionalResources: Array.isArray(rec.workflowPageResourceRefs.additionalResources)
-              ? rec.workflowPageResourceRefs.additionalResources.map(function (row) {
-                  var item = row && typeof row === "object" ? row : {};
-                  return {
-                    resource_id: String(item.resource_id || "").trim(),
-                    link_text: String(item.link_text || "").trim(),
-                    order:
-                      typeof item.order === "number" && isFinite(item.order)
-                        ? Math.floor(item.order)
-                        : 0
-                  };
+              ? rec.workflowPageResourceRefs.additionalResources.map(function (row, idx) {
+                  return normalizeAdditionalResourceRefRow(row, idx);
                 })
               : []
           }
@@ -50533,7 +50517,7 @@
       root +
       ' .util-exposition-diagram-caption__text{margin-top:var(--learner-space-2);font-size:var(--learner-text-sm);line-height:1.5;font-weight:400;color:#4b5563}' +
       root +
-      ' .util-exposition-material{margin:var(--learner-space-4) 0;padding:var(--learner-space-3) 0 0;border:0;border-top:1px solid #e8edf2;border-radius:0;background:transparent;box-shadow:none;overflow-x:auto;-webkit-overflow-scrolling:touch}' +
+      ' .util-exposition-material{margin:var(--learner-space-4) 0;padding:var(--learner-space-3) 0 0;border:0;border-top:1px solid #e8edf2;border-radius:0;background:transparent;box-shadow:none}' +
       root +
       ' .util-exposition-material:first-child{margin-top:var(--learner-space-3)}' +
       root +
@@ -50553,13 +50537,49 @@
       root +
       ' .util-exposition-equation code{font-size:1em;background:transparent;padding:0;border:0}' +
       root +
+      // Expository table breakout (layout only): same principle as Interactive
+      // util-material-table-block — left-aligned with prose, expands right into
+      // available viewport width. overflow-x is a narrow/fallback only.
+      // Does not adopt Interactive min-width:34rem / cell floors / filled headers.
+      ' .util-exposition-table-breakout,' +
+      root +
+      ' .util-exposition-table-scroll,' +
+      root +
+      ' .util-exposition-explanation > .util-table-scroll,' +
+      root +
+      ' .util-exposition-material > .util-table-scroll{' +
+      '--learner-breakout-left:max(var(--learner-page-gutter),calc((100vw - var(--learner-reading-width)) / 2));' +
+      'display:block;' +
+      'width:min(75rem,calc(100vw - var(--learner-breakout-left) - var(--learner-page-gutter)));' +
+      'max-width:none;' +
+      'margin-left:0;' +
+      'margin-right:0;' +
+      'margin-top:var(--learner-space-3);' +
+      'margin-bottom:var(--learner-space-3);' +
+      'padding:0;' +
+      'border:0;' +
+      'border-radius:0;' +
+      'background:transparent;' +
+      'box-shadow:none;' +
+      'overflow-x:auto;' +
+      '-webkit-overflow-scrolling:touch' +
+      '}' +
+      root +
       ' table,' +
       root +
-      ' .util-exposition-structured-table{width:100%;min-width:0;max-width:100%;border-collapse:collapse;margin:var(--learner-space-3) 0}' +
+      ' .util-exposition-structured-table{width:100%;min-width:0;max-width:none;border-collapse:collapse;margin:0;table-layout:auto}' +
       root +
-      ' th{background:transparent;border:0;border-bottom:1px solid #94a3b8;padding:.55rem .65rem;font-size:var(--learner-text-sm);font-weight:650;color:#0f172a}' +
+      ' .util-exposition-table-breakout > table,' +
       root +
-      ' td{border:0;border-bottom:1px solid #e5e7eb;padding:.55rem .65rem;font-size:var(--learner-text-base);color:#1f2937}' +
+      ' .util-exposition-table-scroll > table,' +
+      root +
+      ' .util-exposition-explanation .util-table-scroll > table,' +
+      root +
+      ' .util-exposition-material .util-table-scroll > table{margin:0}' +
+      root +
+      ' th{background:transparent;border:0;border-bottom:1px solid #94a3b8;padding:.55rem .65rem;font-size:var(--learner-text-sm);font-weight:650;color:#0f172a;white-space:normal}' +
+      root +
+      ' td{border:0;border-bottom:1px solid #e5e7eb;padding:.55rem .65rem;font-size:var(--learner-text-base);color:#1f2937;white-space:normal}' +
       root +
       ' caption{caption-side:bottom;text-align:left;padding-top:var(--learner-space-2);font-size:var(--learner-text-sm);line-height:1.5;color:#4b5563}' +
       root +
@@ -50579,10 +50599,6 @@
       ' .util-exposition-section{margin-bottom:2rem}' +
       root +
       ' .util-page-header>h1{font-size:var(--learner-text-xl)}' +
-      root +
-      ' table,' +
-      root +
-      ' .util-exposition-structured-table{display:block;overflow-x:auto;-webkit-overflow-scrolling:touch}' +
       '}'
     );
   }
@@ -54024,6 +54040,41 @@
     return typeof PRISM_WORKFLOW_RESOURCES !== "undefined" ? PRISM_WORKFLOW_RESOURCES : null;
   }
 
+  function normalizeAdditionalResourceRefRow(item, idx) {
+    var row = item && typeof item === "object" ? item : {};
+    var externalUrl = String(row.external_url || row.externalUrl || "").trim();
+    var out = {
+      resource_id: String(row.resource_id || "").trim(),
+      link_text: String(row.link_text || row.linkText || "").trim(),
+      order:
+        typeof row.order === "number" && isFinite(row.order) ? Math.floor(row.order) : idx
+    };
+    if (externalUrl) out.external_url = externalUrl;
+    return out;
+  }
+
+  function isValidExternalResourceUrl(value) {
+    var raw = String(value == null ? "" : value).trim();
+    if (!raw) return false;
+    try {
+      var parsed = new URL(raw);
+      return parsed.protocol === "http:" || parsed.protocol === "https:";
+    } catch (_err) {
+      return false;
+    }
+  }
+
+  function createExternalAdditionalResourceId() {
+    var resourcesMod = getWorkflowResourcesMod();
+    if (resourcesMod && typeof resourcesMod.generateResourceId === "function") {
+      return resourcesMod.generateResourceId();
+    }
+    if (typeof crypto !== "undefined" && crypto.randomUUID) {
+      return "wr-" + crypto.randomUUID();
+    }
+    return "wr-url-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2, 10);
+  }
+
   function cloneWorkflowPageResourceRefs() {
     var src =
       state.workflowPageResourceRefs && typeof state.workflowPageResourceRefs === "object"
@@ -54036,13 +54087,7 @@
       additionalResourcesIntro: String(src.additionalResourcesIntro || ""),
       additionalResources: Array.isArray(src.additionalResources)
         ? src.additionalResources.map(function (row, idx) {
-            var item = row && typeof row === "object" ? row : {};
-            return {
-              resource_id: String(item.resource_id || "").trim(),
-              link_text: String(item.link_text || "").trim(),
-              order:
-                typeof item.order === "number" && isFinite(item.order) ? Math.floor(item.order) : idx
-            };
+            return normalizeAdditionalResourceRefRow(row, idx);
           })
         : []
     };
@@ -54060,11 +54105,7 @@
         return a.order - b.order;
       })
       .map(function (row, idx) {
-        return {
-          resource_id: row.resource_id,
-          link_text: row.link_text,
-          order: idx
-        };
+        return normalizeAdditionalResourceRefRow(row, idx);
       });
     state.workflowPageResourceRefs = next;
     return next;
@@ -54093,6 +54134,7 @@
         videoIntroText: "",
         videoEmbedCode: "",
         resourceLinkText: "",
+        resourceUrl: "",
         resourceIntroText: ""
       };
     } else {
@@ -54101,6 +54143,7 @@
       if (!Object.prototype.hasOwnProperty.call(drafts, "videoIntroText")) drafts.videoIntroText = "";
       if (!Object.prototype.hasOwnProperty.call(drafts, "videoEmbedCode")) drafts.videoEmbedCode = "";
       if (!Object.prototype.hasOwnProperty.call(drafts, "resourceLinkText")) drafts.resourceLinkText = "";
+      if (!Object.prototype.hasOwnProperty.call(drafts, "resourceUrl")) drafts.resourceUrl = "";
       if (!Object.prototype.hasOwnProperty.call(drafts, "resourceIntroText")) drafts.resourceIntroText = "";
     }
   }
@@ -54131,12 +54174,7 @@
       additional_resources_intro: String(refs.additionalResourcesIntro || ""),
       additional_resources: Array.isArray(refs.additionalResources)
         ? refs.additionalResources.map(function (row, idx) {
-            return {
-              resource_id: String(row.resource_id || "").trim(),
-              link_text: String(row.link_text || "").trim(),
-              order:
-                typeof row.order === "number" && isFinite(row.order) ? Math.floor(row.order) : idx
-            };
+            return normalizeAdditionalResourceRefRow(row, idx);
           })
         : []
     };
@@ -54208,14 +54246,20 @@
     });
   }
 
-  function addWorkflowAdditionalResourceRef(resourceId, linkText) {
+  function addWorkflowAdditionalResourceRef(resourceId, linkText, externalUrl) {
     var workflowId = String(state.selectedWorkflowId || "").trim();
     var refs = normalizeWorkflowPageResourceRefsInState();
-    refs.additionalResources.push({
-      resource_id: String(resourceId || "").trim(),
-      link_text: String(linkText || "").trim(),
-      order: refs.additionalResources.length
-    });
+    refs.additionalResources.push(
+      normalizeAdditionalResourceRefRow(
+        {
+          resource_id: String(resourceId || "").trim(),
+          link_text: String(linkText || "").trim(),
+          external_url: String(externalUrl || "").trim(),
+          order: refs.additionalResources.length
+        },
+        refs.additionalResources.length
+      )
+    );
     state.workflowPageResourceRefs = refs;
     if (workflowId) persistWorkflowRunStateForWorkflow(workflowId, { toastType: "" });
   }
@@ -54229,11 +54273,15 @@
         return String(row.resource_id || "").trim() !== target;
       })
       .map(function (row, idx) {
-        return {
-          resource_id: row.resource_id,
-          link_text: row.link_text,
-          order: idx
-        };
+        return normalizeAdditionalResourceRefRow(
+          {
+            resource_id: row.resource_id,
+            link_text: row.link_text,
+            external_url: row.external_url || "",
+            order: idx
+          },
+          idx
+        );
       });
     state.workflowPageResourceRefs = refs;
     if (workflowId) persistWorkflowRunStateForWorkflow(workflowId, { toastType: "" });
@@ -54253,7 +54301,15 @@
     refs.additionalResources[idx] = refs.additionalResources[nextIdx];
     refs.additionalResources[nextIdx] = tmp;
     refs.additionalResources = refs.additionalResources.map(function (row, i) {
-      return { resource_id: row.resource_id, link_text: row.link_text, order: i };
+      return normalizeAdditionalResourceRefRow(
+        {
+          resource_id: row.resource_id,
+          link_text: row.link_text,
+          external_url: row.external_url || "",
+          order: i
+        },
+        i
+      );
     });
     state.workflowPageResourceRefs = refs;
     if (workflowId) persistWorkflowRunStateForWorkflow(workflowId, { toastType: "" });
@@ -54384,6 +54440,21 @@
 
     refs.additionalResources.forEach(function (ref, idx) {
       chain = chain.then(function () {
+        var externalUrl = String(ref.external_url || "").trim();
+        if (externalUrl && isValidExternalResourceUrl(externalUrl)) {
+          ws.additionalResourceProjection.items.push({
+            resource_id: ref.resource_id,
+            order: idx,
+            link_text: String(ref.link_text || "").trim(),
+            filename: "",
+            mime_type: "text/uri-list",
+            byte_size: 0,
+            href: externalUrl,
+            external_url: externalUrl,
+            package_path: ""
+          });
+          return null;
+        }
         return resourcesMod
           .getResourceMetadata(ref.resource_id)
           .then(function (meta) {
@@ -54522,6 +54593,7 @@
         videoIntroText: "",
         videoEmbedCode: "",
         resourceLinkText: "",
+        resourceUrl: "",
         resourceIntroText: ""
       }
     };
@@ -55361,30 +55433,52 @@
     var fileInput = els.utilitiesVisualJobsPanel.querySelector("[data-resource-file-input]");
     var file = fileInput && fileInput.files && fileInput.files[0] ? fileInput.files[0] : null;
     var linkText = getUtilitiesVisualJobsPanelInputValue("[data-resource-link-text-input]").trim();
-    if (!file) {
-      showToast("Choose a file first.", "error");
-      return;
-    }
+    var externalUrl = getUtilitiesVisualJobsPanelInputValue("[data-resource-url-input]").trim();
     if (!linkText) {
       showToast("Enter learner-facing link text.", "error");
       return;
     }
-    persistWorkflowAdditionalFileResource(file).then(function (result) {
-      if (!result || !result.ok || !result.resource_id) {
-        showToast((result && result.message) || "Could not persist resource file.", "error");
-        return;
-      }
-      mod.addAdditionalResourceReference(ws, result.resource_id, linkText);
-      addWorkflowAdditionalResourceRef(result.resource_id, linkText);
+    if (file && externalUrl) {
+      showToast("Choose either a file or a URL, not both.", "error");
+      return;
+    }
+    if (!file && !externalUrl) {
+      showToast("Choose a file or enter an http(s) URL.", "error");
+      return;
+    }
+    if (!file && !isValidExternalResourceUrl(externalUrl)) {
+      showToast("Enter a valid http:// or https:// URL.", "error");
+      return;
+    }
+
+    function finishAdd(resourceId, urlValue) {
+      mod.addAdditionalResourceReference(ws, resourceId, linkText, urlValue || "");
+      addWorkflowAdditionalResourceRef(resourceId, linkText, urlValue || "");
       ensureWorkspaceAdditionalResourceState();
       ws.pageResourceDrafts.resourceLinkText = "";
+      ws.pageResourceDrafts.resourceUrl = "";
       if (fileInput) fileInput.value = "";
+      var urlInput = els.utilitiesVisualJobsPanel.querySelector("[data-resource-url-input]");
+      if (urlInput) urlInput.value = "";
       rehydrateWorkflowPageResourcesIntoWorkspace().then(function () {
         refreshUtilitiesLearnerPreviewWithVisualAssets("resource_add");
         updateUtilitiesOutputViewControls();
         renderUtilitiesVisualJobsView();
         showToast("Additional resource added.", "success");
       });
+    }
+
+    if (externalUrl) {
+      finishAdd(createExternalAdditionalResourceId(), externalUrl);
+      return;
+    }
+
+    persistWorkflowAdditionalFileResource(file).then(function (result) {
+      if (!result || !result.ok || !result.resource_id) {
+        showToast((result && result.message) || "Could not persist resource file.", "error");
+        return;
+      }
+      finishAdd(result.resource_id, "");
     });
   }
 
@@ -56153,6 +56247,52 @@
     );
   }
 
+    function findBalancedSectionEnd(source, openIndex) {
+      var re = /<\/?section\b[^>]*>/gi;
+      re.lastIndex = openIndex;
+      var depth = 0;
+      var match;
+      while ((match = re.exec(source))) {
+        var token = match[0];
+        if (/^<\//.test(token)) {
+          depth -= 1;
+          if (depth === 0) return match.index + token.length;
+        } else if (!/\/>$/.test(token)) {
+          depth += 1;
+        }
+      }
+      return -1;
+    }
+
+    function injectExpositoryResourceSectionsByString(source, videoSectionHtml, resourcesSectionHtml) {
+      if (!/data-page-kind="expository"|util-page--expository/i.test(source)) return null;
+      var mainOpen = source.search(/<main\b[^>]*(?:data-page-kind="expository"|util-page--expository)[^>]*>/i);
+      if (mainOpen < 0) return null;
+      var headerOpen = source.indexOf("<header", mainOpen);
+      if (headerOpen < 0) return null;
+      var headerClose = source.indexOf("</header>", headerOpen);
+      if (headerClose < 0) return null;
+      headerClose += "</header>".length;
+      var expositionOpen = source.search(/<section\b[^>]*data-region="exposition"[^>]*>/i);
+      if (expositionOpen < 0 || expositionOpen < headerClose) return null;
+      var expositionEnd = findBalancedSectionEnd(source, expositionOpen);
+      if (expositionEnd < 0) return null;
+      var closingOpen = source.slice(expositionEnd).search(/<section\b[^>]*data-region="page-closing"[^>]*>/i);
+      var insertResourcesAt = expositionEnd;
+      if (closingOpen >= 0) {
+        var absoluteClosingOpen = expositionEnd + closingOpen;
+        var closingEnd = findBalancedSectionEnd(source, absoluteClosingOpen);
+        if (closingEnd > 0) insertResourcesAt = closingEnd;
+      }
+      return (
+        source.slice(0, headerClose) +
+        videoSectionHtml +
+        source.slice(headerClose, insertResourcesAt) +
+        resourcesSectionHtml +
+        source.slice(insertResourcesAt)
+      );
+    }
+
   function injectWorkflowResourceSectionsIntoLearnerHtml(htmlText, options) {
     var html = String(htmlText || "");
     var opts = options && typeof options === "object" ? options : {};
@@ -56166,12 +56306,69 @@
         var doc = parser.parseFromString(html, "text/html");
         var main = doc.querySelector("main.util-learner-renderer-vnext");
         if (main) {
+          var isExpository =
+            main.getAttribute("data-page-kind") === "expository" ||
+            /\butil-page--expository\b/.test(String(main.className || ""));
+          var container = doc.createElement("div");
+          if (isExpository) {
+            var header = main.querySelector("header.util-page-header, header.util-learning-header");
+            var exposition = main.querySelector('section[data-region="exposition"]');
+            var closing = main.querySelector('section[data-region="page-closing"]');
+            if (videoHtml) {
+              container.innerHTML = videoHtml;
+              var videoNodes = [];
+              while (container.firstChild) {
+                videoNodes.push(container.firstChild);
+                container.removeChild(container.firstChild);
+              }
+              var videoAnchor = exposition || closing || main.firstChild;
+              for (var vi = 0; vi < videoNodes.length; vi += 1) {
+                if (header && header.parentNode === main) {
+                  if (header.nextSibling) {
+                    main.insertBefore(videoNodes[vi], header.nextSibling);
+                  } else {
+                    main.appendChild(videoNodes[vi]);
+                  }
+                  header = videoNodes[vi];
+                } else if (videoAnchor && videoAnchor.parentNode === main) {
+                  main.insertBefore(videoNodes[vi], videoAnchor);
+                } else {
+                  main.insertBefore(videoNodes[vi], main.firstChild);
+                }
+              }
+            }
+            if (resourcesHtml) {
+              container.innerHTML = resourcesHtml;
+              var resourceNodes = [];
+              while (container.firstChild) {
+                resourceNodes.push(container.firstChild);
+                container.removeChild(container.firstChild);
+              }
+              var afterNode = closing || exposition;
+              for (var ri = 0; ri < resourceNodes.length; ri += 1) {
+                if (afterNode && afterNode.parentNode === main && afterNode.nextSibling) {
+                  main.insertBefore(resourceNodes[ri], afterNode.nextSibling);
+                  afterNode = resourceNodes[ri];
+                } else if (afterNode && afterNode.parentNode === main) {
+                  main.appendChild(resourceNodes[ri]);
+                  afterNode = resourceNodes[ri];
+                } else {
+                  main.appendChild(resourceNodes[ri]);
+                  afterNode = resourceNodes[ri];
+                }
+              }
+            }
+            var trimmedExpository = html.trim();
+            if (/^<main[\s>]/i.test(trimmedExpository)) {
+              return doc.body.innerHTML;
+            }
+            return "<!doctype html>\n" + doc.documentElement.outerHTML;
+          }
           var orient = main.querySelector('section[data-region="orientation"]');
           var journeyOrient = orient
             ? orient.querySelector("#journey-orient") || orient
             : null;
           var activities = main.querySelector('section[data-region="activities"]');
-          var container = doc.createElement("div");
           container.innerHTML = insertHtml;
           var nodes = [];
           while (container.firstChild) {
@@ -56196,6 +56393,8 @@
         }
       } catch (_domErr) {}
     }
+    var expositoryPlaced = injectExpositoryResourceSectionsByString(html, videoHtml, resourcesHtml);
+    if (expositoryPlaced != null) return expositoryPlaced;
     var orientBeforeActivitiesPattern =
       /(<div id="journey-orient"[^>]*>[\s\S]*)(<\/div>\s*<\/section>\s*<section[^>]*(?:data-region="activities"|class="[^"]*util-learning-activities))/i;
     if (orientBeforeActivitiesPattern.test(html)) {

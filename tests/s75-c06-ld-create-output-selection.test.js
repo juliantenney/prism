@@ -196,6 +196,35 @@ test("I: Fresh load / Create show sync does not require manual domain reselectio
   assert.match(source, /els\.wfLdCreateOutputType = document\.getElementById\("wfLdCreateOutputType"\)/);
 });
 
+test("I2: Create Domain defaults to Learning Design so Product is visible on first paint", () => {
+  const initMatch = source.match(
+    /function initWorkflowDomainSelector\(\)\s*\{([\s\S]*?)\n  function refreshWorkflowStepPatternCatalogForDomains/
+  );
+  assert.ok(initMatch, "expected initWorkflowDomainSelector");
+  const initBody = initMatch[1];
+  assert.match(
+    initBody,
+    /state\.workflowSelectedDomains\s*=\s*\[\s*"general"\s*,\s*"learning-design"\s*\]/
+  );
+  assert.doesNotMatch(
+    initBody,
+    /state\.workflowSelectedDomains\s*=\s*\[\s*"general"\s*\]\s*;/
+  );
+  // Product remains LD-gated; Research remains selectable; established product values intact.
+  assert.match(source, /var isLd = String\(structuredDomainId \|\| ""\) === "learning-design"/);
+  assert.match(indexHtml, /value="self_study_resource"/);
+  assert.match(indexHtml, /value="workshop"/);
+  assert.match(indexHtml, /value="expository_resource"/);
+  assert.equal(api.LD_CREATE_OUTPUT_TYPE_SELF_STUDY, "self_study_resource");
+  assert.equal(api.LD_CREATE_OUTPUT_TYPE_EXPOSITORY, "expository_resource");
+  assert.ok(
+    api.LD_CREATE_OUTPUT_TYPE_CHOICES.some((c) => c.value === "self_study_resource")
+  );
+  assert.ok(
+    api.LD_CREATE_OUTPUT_TYPE_CHOICES.some((c) => c.value === "expository_resource")
+  );
+});
+
 test("J: Research hides the LD dropdown and retains existing Research UI", () => {
   assert.match(indexHtml, /class="[^"]*\bhidden\b[^"]*"[^>]*id="wfLdCreateOutputTypeGroup"|id="wfLdCreateOutputTypeGroup"[^>]*\bhidden\b/);
   assert.match(source, /var isLd = String\(structuredDomainId \|\| ""\) === "learning-design"/);

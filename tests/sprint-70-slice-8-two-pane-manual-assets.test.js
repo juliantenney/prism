@@ -373,6 +373,7 @@ test("Slice 73: workspace splits Graphics, Video, and Resources panels", () => {
   assert.match(resourcesHtml, />Resources</);
   assert.match(resourcesHtml, /util-vj-authoring-form/);
   assert.match(resourcesHtml, /data-add-resource-ref/);
+  assert.match(resourcesHtml, /data-resource-url-input/);
   assert.doesNotMatch(resourcesHtml, /data-video-embed-input/);
 });
 

@@ -29,3 +29,24 @@ test("additional resource assets are included and rewritten to package paths", (
   assert.match(built.package.html, /target="_blank"/);
   assert.match(built.package.html, /opens in a new tab/);
 });
+
+test("external https additional resources remain absolute links in package HTML", () => {
+  const htmlIn =
+    '<main><section class="learner-additional-resources"><a href="https://www.nottingham.ac.uk" target="_blank" rel="noopener noreferrer">Nottingham<span class="sr-only"> (opens in a new tab)</span></a></section></main>';
+  const built = learnerPackage.buildLearnerPackage({
+    html: htmlIn,
+    visualAssetManifest: { assets: [] },
+    additionalResourceAssets: [
+      {
+        resource_id: "wr-url-1",
+        href: "https://www.nottingham.ac.uk",
+        mime_type: "text/uri-list",
+        package_path: ""
+      }
+    ]
+  });
+  assert.equal(built.ok, true);
+  assert.equal(built.package.assets.length, 0);
+  assert.match(built.package.html, /href="https:\/\/www\.nottingham\.ac\.uk"/);
+  assert.equal(built.warnings.length, 0);
+});

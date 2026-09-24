@@ -116,7 +116,21 @@ test("~70ch prose measure retained; Expository publishing CSS is scoped", () => 
   assert.match(expositoryCssSlice, /data-page-kind="expository"/);
   assert.match(expositoryCssSlice, /body\.util-page-export--expository/);
   assert.match(expositoryCssSlice, /\.util-visual-asset-image\{border:0;border-radius:0/);
-  assert.match(expositoryCssSlice, /min-width:0/);
+  // Wide tables: Expository-scoped breakout (not measure-locked scroll-as-primary)
+  assert.match(expositoryCssSlice, /util-exposition-table-breakout/);
+  assert.match(expositoryCssSlice, /util-exposition-table-scroll/);
+  assert.match(
+    expositoryCssSlice,
+    /width:min\(75rem,calc\(100vw - var\(--learner-breakout-left\) - var\(--learner-page-gutter\)\)\)/
+  );
+  assert.match(
+    expositoryCssSlice,
+    /\.util-exposition-structured-table\{width:100%;min-width:0;max-width:none/
+  );
+  assert.doesNotMatch(
+    expositoryCssSlice,
+    /\.util-exposition-structured-table\{width:auto;min-width:100%/
+  );
   // Shared Interactive figure chrome remains in base CSS
   assert.match(
     appJs,

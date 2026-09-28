@@ -6951,10 +6951,16 @@
   function syncWorkflowFactoryDesignAssistantChrome() {
     var hasKey = hasConfiguredOpenAiApiKey();
     if (els.wfDesignStartBtn) {
-      els.wfDesignStartBtn.disabled = !hasKey;
+      var allowFirstClassWithoutKey =
+        typeof isNormalFirstClassLearningDesignCreate === "function" &&
+        isNormalFirstClassLearningDesignCreate(
+          getSelectedWorkflowDomains(),
+          getSelectedLdCreateOutputTypeFromUi()
+        );
+      els.wfDesignStartBtn.disabled = !hasKey && !allowFirstClassWithoutKey;
     }
     if (els.wfDesignApiKeyRequiredBtn) {
-      var showKeyAction = !hasKey;
+      var showKeyAction = !hasKey && !allowFirstClassWithoutKey;
       els.wfDesignApiKeyRequiredBtn.classList.toggle("hidden", !showKeyAction);
       els.wfDesignApiKeyRequiredBtn.setAttribute("aria-hidden", showKeyAction ? "false" : "true");
       if (showKeyAction) {
@@ -22920,6 +22926,79 @@
       });
   }
 
+  function getFirstClassWorkflowFamilyMod() {
+    if (typeof PRISM_FIRST_CLASS_WORKFLOW_FAMILY !== "undefined") {
+      return PRISM_FIRST_CLASS_WORKFLOW_FAMILY;
+    }
+    if (typeof window !== "undefined" && window.PRISM_FIRST_CLASS_WORKFLOW_FAMILY) {
+      return window.PRISM_FIRST_CLASS_WORKFLOW_FAMILY;
+    }
+    return null;
+  }
+
+  function isNormalFirstClassLearningDesignCreate(selectedDomains, ldCreateOutputType) {
+    var domains = Array.isArray(selectedDomains) ? selectedDomains : [];
+    var hasLearningDesign = domains.some(function (id) {
+      return String(id || "").toLowerCase().trim() === "learning-design";
+    });
+    var hasResearch = domains.some(function (id) {
+      return String(id || "").toLowerCase().trim() === "research";
+    });
+    if (!hasLearningDesign || hasResearch) return false;
+    return !!normalizeLdCreateOutputType(ldCreateOutputType);
+  }
+
+  function applyLocalFirstClassWorkflowDesign(base, ldCreateOutputType, focus, startingArtefact, audience, scopeScale) {
+    var mod = getFirstClassWorkflowFamilyMod();
+    if (!mod || typeof mod.buildFirstClassWorkflowFamily !== "function") {
+      return { ok: false, code: "family_module_unavailable" };
+    }
+    var built = mod.buildFirstClassWorkflowFamily({
+      ldCreateOutputType: ldCreateOutputType,
+      focus: focus,
+      startingArtefact: startingArtefact,
+      audience: audience,
+      scopeScale: scopeScale
+    });
+    if (!built || !built.ok) return built || { ok: false, code: "family_build_failed" };
+    var deliverySeed = built.deliverySeed || {};
+    state.workflowBriefElicitation = null;
+    state.workflowDomainSuggestionPending = null;
+    state.workflowBriefInferenceConfirmation = null;
+    state.workflowDesignResult = {
+      status: "complete",
+      summary: String(focus || "").trim(),
+      steps: built.steps,
+      firstClassLocal: true,
+      firstClassIdentity: built.identity,
+      callsModel: false
+    };
+    state.workflowBriefResolved = {
+      initialBrief: Object.assign({}, base, {
+        ldCreateOutputType: built.identity.ldCreateOutputType,
+        product: built.identity.product,
+        variant: built.identity.variant,
+        startingPoint: built.identity.startingPoint,
+        topic: String(focus || "").trim()
+      }),
+      askedFactors: [],
+      inferredFactors: {},
+      resolvedFactors: Object.assign({}, deliverySeed, { topic: String(focus || "").trim() }),
+      mappedBindings: {
+        workflowOutputSpecPatch: {},
+        workflowConstraintPatch: {},
+        stepParamPatch: {},
+        mapped: [],
+        warnings: []
+      },
+      missing: [],
+      firstClassLocal: true
+    };
+    renderWorkflowBriefResolvedPanel(state.workflowBriefResolved);
+    renderWorkflowDesignResult();
+    return { ok: true, built: built };
+  }
+
   function handleStartWorkflowDesign() {
     if (!els.wfDesignName || !els.wfDesignIntent || !els.wfDesignInputs) return;
     var name = (els.wfDesignName.value || "").trim();
@@ -22975,9 +23054,47 @@
       );
       return;
     }
-    // API-action gate (S75-D09 revised): Design workflow is the first Create
-    // action that leads to OpenAI calls (intent interpretation → design).
-    // Keep the user on Create with brief state intact; do not navigate away.
+    if (isNormalFirstClassLearningDesignCreate(selectedDomains, ldCreateOutputType)) {
+      var localBase = buildWorkflowDesignBase({
+        name: name,
+        goal: goal,
+        designIntent: designIntent,
+        audience: audience,
+        scopeScale: scopeScale,
+        inputs: inputs,
+        startingArtefact: startingArtefact,
+        desiredOutputs: "",
+        domainExtraValues: collectWorkflowDomainExtraFieldValues(),
+        scopeConstraints: "",
+        selectedDomains: selectedDomains,
+        ldCreateOutputType: ldCreateOutputType
+      });
+      var localResult = applyLocalFirstClassWorkflowDesign(
+        localBase,
+        ldCreateOutputType,
+        focusOrIntent,
+        startingArtefact,
+        audience,
+        scopeScale
+      );
+      if (!localResult || !localResult.ok) {
+        var localCode = localResult && localResult.code;
+        showToast(
+          localCode === "starting_point_required"
+            ? "Choose how this workflow begins."
+            : "Could not build the first-class workflow.",
+          "error"
+        );
+        return;
+      }
+      appendWorkflowDesignLog(
+        "assistant",
+        "Local first-class workflow ready. Save it to keep this graph."
+      );
+      return;
+    }
+    // API-action gate (S75-D09 revised; S88-D07): model-backed design still requires a key.
+    // Normal first-class Learning Design creation returns above and does not.
     if (!ensureCreateWorkflowApiKeyPrerequisite()) {
       return;
     }
@@ -38537,6 +38654,14 @@
       createdAt: now,
       updatedAt: now
     };
+    if (design.firstClassIdentity && design.firstClassLocal) {
+      wf.product = design.firstClassIdentity.product;
+      if (design.firstClassIdentity.variant) wf.variant = design.firstClassIdentity.variant;
+      wf.startingPoint = design.firstClassIdentity.startingPoint;
+      if (!wf.ldCreateOutputType && design.firstClassIdentity.ldCreateOutputType) {
+        wf.ldCreateOutputType = design.firstClassIdentity.ldCreateOutputType;
+      }
+    }
     if (wf.workflowOutputSpec && typeof wf.workflowOutputSpec === "object") {
       // Sprint 58 default for newly generated learner-facing workflows.
       wf.workflowOutputSpec.pageEnrichmentV2 = true;
@@ -57222,6 +57347,12 @@
     if (els.wfDesignStartBtn) {
       els.wfDesignStartBtn.addEventListener("click", handleStartWorkflowDesign);
     }
+    if (els.wfLdCreateOutputType) {
+      els.wfLdCreateOutputType.addEventListener("change", syncWorkflowFactoryDesignAssistantChrome);
+    }
+    if (els.wfDesignDomainSelect) {
+      els.wfDesignDomainSelect.addEventListener("change", syncWorkflowFactoryDesignAssistantChrome);
+    }
     if (els.wfDesignApiKeyRequiredBtn) {
       els.wfDesignApiKeyRequiredBtn.addEventListener(
         "click",
@@ -58305,6 +58436,17 @@
         : ["general"];
     };
     prismTestApi.applyWorkflowDesignHeuristics = applyWorkflowDesignHeuristics;
+    prismTestApi.buildFirstClassWorkflowFamilyForTest = function (input) {
+      var mod = getFirstClassWorkflowFamilyMod();
+      if (!mod) return { ok: false, code: "family_module_unavailable" };
+      return mod.buildFirstClassWorkflowFamily(input);
+    };
+    prismTestApi.readFirstClassIdentityForTest = function (workflow) {
+      var mod = getFirstClassWorkflowFamilyMod();
+      if (!mod) return null;
+      return mod.readFirstClassIdentity(workflow);
+    };
+    prismTestApi.isNormalFirstClassLearningDesignCreateForTest = isNormalFirstClassLearningDesignCreate;
     prismTestApi.suggestWorkflowOutputNameForStepTitle = suggestWorkflowOutputNameForStepTitle;
     prismTestApi.buildWorkflowStepInstructions = buildWorkflowStepInstructions;
     prismTestApi.applyGamPageEnrichPromptBlockToDraftForTest = applyGamPageEnrichPromptBlockToDraft;

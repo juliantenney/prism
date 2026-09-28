@@ -73,11 +73,10 @@ test("C: Navigation into Create Workflow is not API-gated", () => {
   assert.ok(initSlice.includes('switchTab("workflowFactory")'));
 });
 
-test("D: Local brief controls remain editable without a key; Design is disabled until key present", () => {
+test("D: Local brief controls remain editable without a key; model-backed Design stays key-gated", () => {
   const { source, api } = loadPrismTestApi();
-  // S75-D23 progressive disclosure: Design is disabled without a key, while
-  // Create remains navigable and brief fields stay editable (unchanged).
-  assert.match(source, /els\.wfDesignStartBtn\.disabled\s*=\s*!hasKey/);
+  assert.match(source, /els\.wfDesignStartBtn\.disabled\s*=\s*!hasKey && !allowFirstClassWithoutKey/);
+  assert.match(source, /isNormalFirstClassLearningDesignCreate/);
   assert.match(source, /syncWorkflowFactoryDesignAssistantChrome/);
   assert.match(indexHtml, /id="wfDesignName"/);
   assert.match(indexHtml, /id="wfDesignIntent"/);
@@ -85,6 +84,10 @@ test("D: Local brief controls remain editable without a key; Design is disabled 
   assert.match(indexHtml, /id="wfDesignApiKeyRequiredBtn"/);
   api.setOpenAiApiKeyForTest(null);
   assert.equal(api.hasConfiguredOpenAiApiKeyForTest(), false);
+  assert.equal(
+    api.isNormalFirstClassLearningDesignCreateForTest(["research"], ""),
+    false
+  );
 });
 
 test("E: Entering Create Workflow does not itself invoke OpenAI callers", () => {
@@ -96,16 +99,18 @@ test("E: Entering Create Workflow does not itself invoke OpenAI callers", () => 
   assert.doesNotMatch(switchBody, /fetch\s*\(/);
 });
 
-test("F: First API-dependent Create action is Design workflow / handleStartWorkflowDesign", () => {
+test("F: Model-backed Design remains behind the API-key gate; first-class local create returns first", () => {
   const { source, api } = loadPrismTestApi();
   assert.match(source, /function handleStartWorkflowDesign\s*\(/);
   const start = source.indexOf("function handleStartWorkflowDesign");
   assert.ok(start > 0);
-  const slice = source.slice(start, start + 5000);
+  const slice = source.slice(start, start + 8000);
+  const localIdx = slice.indexOf("isNormalFirstClassLearningDesignCreate(");
   const gateIdx = slice.indexOf("ensureCreateWorkflowApiKeyPrerequisite()");
   const statusIdx = slice.indexOf('setWorkflowDesignStatusBadge("Designing');
   const intentCall = source.indexOf("callOpenAIForWorkflowIntentInterpretation", start);
-  assert.ok(gateIdx > 0, "action gate present in handleStartWorkflowDesign");
+  assert.ok(localIdx > 0, "local first-class branch present");
+  assert.ok(gateIdx > localIdx, "API gate remains after the local first-class return");
   assert.ok(statusIdx > gateIdx, "gate before Designing status mutation");
   assert.ok(intentCall > start + gateIdx, "intent API call occurs after the gate");
   api.setOpenAiApiKeyForTest(null);
@@ -115,7 +120,7 @@ test("F: First API-dependent Create action is Design workflow / handleStartWorkf
 test("G: Blocking Design preserves brief — gate runs before design log / result reset", () => {
   const { source } = loadPrismTestApi();
   const start = source.indexOf("function handleStartWorkflowDesign");
-  const slice = source.slice(start, start + 5000);
+  const slice = source.slice(start, start + 8000);
   const gateIdx = slice.indexOf("ensureCreateWorkflowApiKeyPrerequisite()");
   const clearLogIdx = slice.indexOf("wfDesignLog.innerHTML");
   const clearResultIdx = slice.indexOf("state.workflowDesignResult = null");

@@ -1,7 +1,7 @@
 # Sprint 88 — Status
 
 **Last updated:** 2026-09-28  
-**Sprint status:** **OPEN** — Assessment Pack amendments recorded (S88-D17–D21); not implemented; not closed  
+**Sprint status:** **OPEN** — Assessment Pack no longer exposes custom component mix (S88-D28); not closed  
 **Implementation:** [S88-D11](decisions.md#s88-d11--authorise-the-first-local-instantiation-implementation-slice) · S88-T-012  
 **Judgements:** [S88-D03](decisions.md#s88-d03--workshop-remains-an-interactive-variant-for-current-sprint-88-scope) · [S88-D04](decisions.md#s88-d04--preserve-design-assessment-do-not-repair-it-in-sprint-88) · [S88-D05](decisions.md#s88-d05--adopt-the-first-class-workflow-family-invariant)–[S88-D10](decisions.md#s88-d10--open-the-bounded-architecture-planning-pass)  
 **Start here:** [SPRINT-88-START-HERE.md](SPRINT-88-START-HERE.md)
@@ -15,12 +15,12 @@
 | Alpha | **Development complete** (unchanged) |
 | First-class gate at alpha close | **339/339** |
 | Sprint 82–87 | **CLOSED** |
-| Sprint 88 | **OPEN** — architecture plan recorded; implementation not authorised |
-| Production changes authorised? | **No** |
-| Task breakdown | **S88-T-001…T-011 complete** — no implementation tasks |
-| Findings | [S88-ARCHITECTURE-PLAN.md](S88-ARCHITECTURE-PLAN.md) |
-| Evidence | In that report |
-| Validation | **Not started** |
+| Sprint 88 | **OPEN** — local families and Assessment Pack starting points implemented; not closed |
+| Production changes authorised? | **Yes** — bounded slices only (S88-T-012, S88-T-015, S88-T-016) |
+| Task breakdown | **S88-T-001…T-016 complete** |
+| Findings | [S88-ARCHITECTURE-PLAN.md](S88-ARCHITECTURE-PLAN.md) · [S88-ASSESSMENT-PACK-ARCHITECTURE-PLAN.md](S88-ASSESSMENT-PACK-ARCHITECTURE-PLAN.md) |
+| Evidence | Focused tests and first-class gate **339/339** after S88-T-016 |
+| Validation | First-class gate **339/339**; topic and source create smoked in the browser |
 | Closure | **Not begun** |
 | Backlog | None assigned at open |
 
@@ -39,10 +39,12 @@
 | S88-D05…D09 | **Accepted** — architecture direction |
 | S88-D10 Planning pass | **Accepted** — specification only |
 | S88-T-011 | **COMPLETE** |
-| Implementation | **S88-T-012 complete** — bounded slice only; sprint not closed |
-| Canonical workflow families | **Specified** — not built |
-| Assessment product architecture | **Not specified** |
+| Implementation | **S88-T-012, T-015, T-016 complete** — sprint not closed |
+| Canonical workflow families | **Built** for normal first-class create |
+| Assessment Pack | **Implemented** — existing outcomes, topic, and authoritative source; later forms and a full renderer are not |
 | Sprint close | **Not begun** |
+| S88-AD-005 | **Recorded** — product-family extensibility debt; not a defect; no refactor authorised |
+| S88-AD-006 | **Recorded** — domain-pack responsibility debt; not a defect; no refactor or removal authorised |
 
 ---
 

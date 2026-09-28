@@ -128,7 +128,7 @@ One “feedback mode” enum is not justified. Posture (when, and whether) is pa
 
 **Ordinary parameters.** Principal purpose (formative or summative). Diagnostic intent, orthogonal to that purpose, and not a stage. Extent. Difficulty or challenge. Outcome coverage emphasis. Which response forms may appear. How many components, as a target rather than a stage switch. Optional weighting when components must contribute to a combined result. Feedback posture. Judgement posture at pack level (the design still decides per component). Source or knowledge grounding as context, not as a different product.
 
-**Explicit structural choices.** Starting point: learning outcomes supplied directly; an existing Interactive Resource, whose established outcomes are passed in and not regenerated; topic; authoritative source. Learner choice is a field on the evidence plan (a choice set), not a separate workflow.
+**Explicit structural choices.** Starting point: topic; authoritative source; or a completed Interactive or Expository product output treated as that source. Learner choice is a field on the evidence plan (a choice set), not a separate workflow. Target component count is a scope parameter, not a starting point.
 
 **Downstream reasoning.** How to sample a topic into outcomes. How to phrase a stem. Whether a particular essay needs a rubric sentence. Those belong to the prefix stages or to authoring.
 
@@ -147,7 +147,7 @@ One “feedback mode” enum is not justified. Posture (when, and whether) is pa
 | Topic | Generate Learning Content → Model Knowledge → Define Learning Outcomes | The same two assessment stages |
 | Authoritative source | Normalize Content → Generate Learning Content → Model Knowledge → Define Learning Outcomes | The same two assessment stages |
 
-**Adopted (S88-D17, S88-D18).** Topic and source are not different products. They use the established Learning Design prefix. There is no shortcut from topic to Learning Outcomes. An existing Interactive Resource is an input, not a fourth product and not a composed workflow. Passing an authoritative artefact forward, rather than regenerating it from the original brief, is a cautious principle for this case only. It does not authorise a product-composition framework. Create stays minimal: product, focus, starting point, plus optional purpose, diagnostic intent, extent, and audience.
+**Adopted (S88-D17, S88-D18), corrected (S88-D24).** Topic and ordinary source are not different products. They use the established Learning Design prefix. There is no shortcut from topic to Learning Outcomes. A completed Interactive or Expository output may be selected as source material and then uses the same source pipeline, including Normalize Content. Internal artefacts such as saved Learning Outcomes are not the product-to-product input. The upstream workflow is not copied. This does not authorise a product-composition framework. Create stays minimal: product, focus, starting point, target component count, plus purpose, diagnostic intent, and optional weighting.
 
 The earlier open choice — whether a topic start may skip content and model knowledge — is **closed**. It may not.
 
@@ -199,7 +199,7 @@ Plan Assessment Evidence
 
 | Stage | Responsibility | Input | Output | Why it is its own stage |
 | --- | --- | --- | --- | --- |
-| Plan Assessment Evidence | Decide what evidence would support a judgement of the intended learning, and how that evidence can be judged, including distinctions in understanding when diagnostic intent is set | Learning outcomes, taken from an existing Interactive Resource when that is the starting point and not regenerated; purpose; diagnostic intent; extent; focus | Evidence plan | Writing that plan is not writing the questions |
+| Plan Assessment Evidence | Decide what evidence would support a judgement of the intended learning, and how that evidence can be judged, including distinctions in understanding when diagnostic intent is set | Learning outcomes produced in this workflow; purpose; diagnostic intent; target component count; extent; focus | Evidence plan | Writing that plan is not writing the questions |
 | Author Assessment Components | Create the heterogeneous components that elicit the evidence, including keys, guidance, criteria, or exemplars as the form requires | Evidence plan; outcomes | Assessment Pack | A different transformation: designed evidence becomes learner-facing tasks |
 
 **Documented prefixes, not extra assessment stages.**
@@ -212,7 +212,7 @@ Plan Assessment Evidence
 → Author Assessment Components
 ```
 
-When outcomes are supplied directly, or taken from an existing Interactive Resource, the prefix is omitted. Normalize Content is not used for a topic-only start. No model invents this graph. Purpose, diagnostic intent, difficulty, response mix, feedback posture, optional weighting, and component count parameterise the two assessment stages.
+Topic starts omit Normalize Content. A completed Interactive or Expository output uses the source prefix, including Normalize Content (S88-D24). The prefix is not omitted in order to reuse another product’s Learning Outcomes. No model invents this graph. Purpose, diagnostic intent, optional weighting, and target component count parameterise the assessment stages and do not change the prefix. Design Page is not an Assessment Pack stage: its contract and the deterministic page assembly expect a learning page, and the renderer does not publish an assessment pack.
 
 ---
 
@@ -228,10 +228,11 @@ When outcomes are supplied directly, or taken from an existing Interactive Resou
 | ---- | --- |
 | **Adopted** | S88-D13 product and definition; S88-D14 product and capability; S88-D15 design distinct from authoring; S88-D17–D21 amendments |
 | **Planned architecture** | Evidence plan, component pack, two assessment stages, Interactive-resource outcomes as input, Learning Design prefix when outcomes are not supplied, feedback as posture plus component fields, judgement split between design and authoring, diagnostic intent as a parameter |
-| **Reuse** | Outcomes stages and Normalize as prefixes; Check for checkable items; the idea of item authoring; an existing Interactive Resource’s learning outcomes as input |
+| **Reuse** | Outcomes stages and Normalize as prefixes; Check for checkable items; the idea of item authoring; a completed product output as source material |
 | **Supersede or preserve** | §10 |
 | **Unresolved** | None of the previous three planning choices remain open |
-| **Not authorised** | Create control, prompts, contracts in code, renderer, repair of Design Assessment, any change to Interactive, a product-composition framework |
+| **Implemented** | The three starting points in §11, local create, and the first two component forms |
+| **Not authorised** | Later response forms, a complete renderer, marking, a Design Feedback stage, repair of Design Assessment, any change to Interactive, a product-composition framework |
 
 ---
 
@@ -239,24 +240,24 @@ When outcomes are supplied directly, or taken from an existing Interactive Resou
 
 Resolved by [S88-D17](decisions.md#s88-d17--an-existing-interactive-resource-may-supply-assessment-pack-outcomes) through [S88-D21](decisions.md#s88-d21--first-implementation-forms-are-not-the-products-scope):
 
-1. Topic and source use Generate Learning Content, Model Knowledge, and Define Learning Outcomes. There is no shortcut from topic to outcomes. An existing Interactive Resource supplies its outcomes instead of that prefix.
+1. Topic and ordinary source use Generate Learning Content, Model Knowledge, and Define Learning Outcomes. There is no shortcut from topic to outcomes. A completed Interactive or Expository output is source material for that same source pipeline (S88-D24). Saved Learning Outcomes are not the product-to-product input.
 2. Single-answer multiple choice and short constructed response are the first implementation forms only, not the product’s scope.
 3. Weighting is optional whenever a combined quantitative result is required. It is not limited to summative packs.
 
-No further product judgement is required before this architecture can stand. Implementation remains unauthorised.
+No further product judgement is required before this architecture can stand. The three starting points are implemented (S88-D23 / S88-T-016). Later forms and a complete renderer are not.
 
 ---
 
 ## 14. Smallest plausible first implementation boundary
 
-Not authorised. When it is, the smallest build is:
+Implemented (S88-T-015, S88-T-016):
 
-- new Assessment Pack creates whose learning outcomes are supplied directly, or taken from an existing Interactive Resource without regenerating them;
-- local instantiation of Plan Assessment Evidence → Author Assessment Components only;
+- new Assessment Pack creates from a topic, ordinary source material, or a completed Interactive or Expository output used as source material, using the prefixes in §11;
+- local instantiation of that graph, ending in Plan Assessment Evidence → Author Assessment Components;
 - evidence-plan and component contracts that can later hold further forms, with single-answer multiple choice and short constructed response as the first forms implemented;
 - no Create menu change until that instantiation exists;
 - no renderer work beyond what Check can already do, and no Check on constructed responses;
 - no rewrite of saved graphs;
 - no repair of Design Assessment;
 - no change to Interactive formative assessment;
-- no topic or source prefix, essays, or choice sets in that first slice.
+- no topic or source prefix left unimplemented; essays and choice sets remain later forms.

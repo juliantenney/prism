@@ -16,7 +16,7 @@
 | [PLAN.md](PLAN.md) | Task index through S88-T-011 |
 | [HANDOVER.md](HANDOVER.md) | Continuity for the open sprint |
 | [next-chat-briefing.md](next-chat-briefing.md) | Compact load |
-| [ARCHITECTURAL-DEBT.md](ARCHITECTURAL-DEBT.md) | S88-AD-001…AD-003 |
+| [ARCHITECTURAL-DEBT.md](ARCHITECTURAL-DEBT.md) | S88-AD-001…AD-006 |
 
 Programme pointer: [NEXT-SPRINT.md](../../../sprints/NEXT-SPRINT.md)  
 Backlog: none assigned at open — [PRODUCT-BACKLOG.md](../../../backlog/PRODUCT-BACKLOG.md)

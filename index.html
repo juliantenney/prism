@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Barlow+Condensed:wght@400;500;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css?v=20260825-s78-t043-gam-verify-layout" />
+  <link rel="stylesheet" href="style.css?v=20260928-s88-config" />
 </head>
 <body>
       <div class="app-shell">
@@ -825,7 +825,70 @@
                 <option value="self_study_resource">Self-study resource</option>
                 <option value="workshop">Workshop</option>
                 <option value="expository_resource">Expository Resource</option>
+                <option value="assessment_pack">Assessment Pack</option>
               </select>
+            </div>
+            <div class="form-group wf-span-2 hidden" id="wfAssessmentPackSourceGroup">
+              <label for="wfAssessmentPackStart">How this pack begins</label>
+              <select id="wfAssessmentPackStart" autocomplete="off">
+                <option value="topic">From a topic</option>
+                <option value="authoritative_source">From source material</option>
+                <option value="product_output">From an existing PRISM product</option>
+              </select>
+              <div id="wfAssessmentPackProductOutput" class="hidden" hidden>
+                <label for="wfAssessmentPackSource">Existing product output</label>
+                <p id="wfAssessmentPackSourceHint" class="helper-text">A completed Interactive or Expository output is used as source material. Assessment Pack runs its own workflow.</p>
+                <select id="wfAssessmentPackSource" autocomplete="off" aria-describedby="wfAssessmentPackSourceHint">
+                  <option value="">Select a completed product output…</option>
+                </select>
+              </div>
+              <div class="wf-assessment-config">
+                <div class="form-group">
+                  <label for="wfAssessmentPackDepth">Assessment depth</label>
+                  <p id="wfAssessmentPackDepthHint" class="helper-text">How much useful evidence PRISM should seek. This is not a difficulty setting or a question quota.</p>
+                  <select id="wfAssessmentPackDepth" autocomplete="off" aria-describedby="wfAssessmentPackDepthHint">
+                    <option value="quick">Quick</option>
+                    <option value="standard" selected>Standard</option>
+                    <option value="thorough">Thorough</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="wfAssessmentPackIntent">How the learner will use this pack</label>
+                  <select id="wfAssessmentPackIntent" autocomplete="off">
+                    <option value="formative_check">Formative check — how well do I understand this?</option>
+                    <option value="pretest_diagnostic">Pre-test diagnostic — what should I concentrate on?</option>
+                  </select>
+                </div>
+                <fieldset class="form-group" id="wfAssessmentPackCountMode">
+                  <legend>Number of components</legend>
+                  <p id="wfAssessmentPackComponentCountHint" class="helper-text">PRISM chooses how many components to use from the requested depth and the learning outcomes.</p>
+                  <div class="wf-assessment-count-choices">
+                    <label><input type="radio" name="wfAssessmentPackCountMode" id="wfAssessmentPackCountAuto" value="auto" checked /> PRISM decides</label>
+                    <label><input type="radio" name="wfAssessmentPackCountMode" id="wfAssessmentPackCountExact" value="exact" /> Exactly</label>
+                    <input
+                      type="number"
+                      id="wfAssessmentPackComponentCount"
+                      min="1"
+                      step="1"
+                      value="6"
+                      autocomplete="off"
+                      class="hidden"
+                      hidden
+                      aria-label="Exact number of components"
+                    />
+                  </div>
+                </fieldset>
+                <div class="form-group">
+                  <label for="wfAssessmentPackFeedback">Feedback</label>
+                  <select id="wfAssessmentPackFeedback" autocomplete="off">
+                    <option value="per_component" selected>After each component</option>
+                    <option value="end_of_pack">At end of assessment</option>
+                  </select>
+                </div>
+                <div class="form-group wf-assessment-weighting">
+                  <label><input type="checkbox" id="wfAssessmentPackWeighting" /> Components combine into a quantitative result</label>
+                </div>
+              </div>
             </div>
             <div class="form-group wf-span-2">
               <label for="wfDesignIntent" id="wfDesignIntentLabel">What should this cover?</label>
@@ -1365,6 +1428,7 @@
   <script src="lib/expository-sibling-prompts.js?v=20260923-s87-t007-ejp"></script>
   <script src="lib/expository-domain-guidance.js?v=20260921-s85-wp3"></script>
   <script src="lib/page-vnext-assemble.js?v=20260923-s87-t003"></script>
+  <script src="lib/assessment-pack-publish.js?v=20260928-s88-assessment-publish"></script>
   <script src="lib/ld-activity-title-contract.js?v=20260803-2"></script>
   <script src="lib/ld-dla-page-enrich-contract.js?v=20260814-dla-material-type-vocab"></script>
   <script src="lib/ld-instructional-archetype.js?v=20260715-e01w"></script>
@@ -1483,7 +1547,8 @@
       </div>
     </form>
   </dialog>
-  <script src="lib/first-class-workflow-family.js?v=20260928-s88-local-family"></script>
-  <script src="app.js?v=20260928-s88-local-instantiate"></script>
+  <script src="lib/assessment-component-forms.js?v=20260928-s88-forms"></script>
+  <script src="lib/first-class-workflow-family.js?v=20260928-s88-forms"></script>
+  <script src="app.js?v=20260928-s88-config"></script>
 </body>
 </html>

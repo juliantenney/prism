@@ -84,7 +84,7 @@ test("B: Select contains placeholder + Self-study + Workshop + Expository Resour
   const options = [...selectMatch[1].matchAll(/<option[^>]*value="([^"]*)"[^>]*>([\s\S]*?)<\/option>/g)].map(
     (m) => ({ value: m[1], label: m[2].replace(/\s+/g, " ").trim() })
   );
-  assert.equal(options.length, 4);
+  assert.equal(options.length, 5);
   assert.equal(options[0].value, "");
   assert.match(options[0].label, /Select what you are creating/);
   assert.equal(options[1].value, "self_study_resource");
@@ -93,7 +93,9 @@ test("B: Select contains placeholder + Self-study + Workshop + Expository Resour
   assert.equal(options[2].label, "Workshop");
   assert.equal(options[3].value, "expository_resource");
   assert.equal(options[3].label, "Expository Resource");
-  assert.equal(api.LD_CREATE_OUTPUT_TYPE_CHOICES.length, 3);
+  assert.equal(options[4].value, "assessment_pack");
+  assert.equal(options[4].label, "Assessment Pack");
+  assert.equal(api.LD_CREATE_OUTPUT_TYPE_CHOICES.length, 4);
 });
 
 test("C: Internal values remain self_study_resource / workshop / expository_resource", () => {
@@ -272,11 +274,10 @@ test("L: Prompt Studio #outputType remains unchanged", () => {
   assert.ok(indexHtml.indexOf('id="outputTypeGroup"') < indexHtml.indexOf('id="wfLdCreateOutputTypeGroup"'));
 });
 
-test("M: No Other / slideshow / assessment-pack Create options", () => {
-  assert.doesNotMatch(indexHtml, /value="other"|value="slideshow"|value="slide_deck"|value="assessment_pack"/);
-  const choiceLabels = api.LD_CREATE_OUTPUT_TYPE_CHOICES.map((c) => String(c.label).toLowerCase());
-  assert.ok(!choiceLabels.some((l) => /other|slideshow|assessment|module|lesson|xerte|vle/.test(l)));
-  assert.equal(api.normalizeLdCreateOutputType("assessment_pack"), "");
+test("M: No Other / slideshow Create options; Assessment Pack is a first-class product", () => {
+  assert.doesNotMatch(indexHtml, /value="other"|value="slideshow"|value="slide_deck"/);
+  assert.match(indexHtml, /value="assessment_pack"/);
+  assert.equal(api.normalizeLdCreateOutputType("assessment_pack"), "assessment_pack");
   assert.equal(api.normalizeLdCreateOutputType("other"), "");
 });
 

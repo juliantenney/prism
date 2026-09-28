@@ -308,9 +308,9 @@ No architectural decision about default workflows or Assessment has been taken. 
 
   Broader principle, recorded cautiously and not generalised: when an existing PRISM product already contains an authoritative artefact required by another product, prefer passing that artefact forward as an input rather than regenerating it from the original brief. This decision does not authorise a product-composition framework or cross-product infrastructure.
 
-- **Status:** **Accepted** (2026-09-28) — architecture amendment
+- **Status:** **Superseded for product input** by [S88-D24](decisions.md#s88-d24--product-output-is-source-material) (2026-09-28). The earlier amendment is kept as history. A completed product output is source material for the new product’s own pipeline. Saved Learning Outcomes are not the user-facing input.
 
-- **Consequences:** No production change. No composition framework.
+- **Consequences:** No production change at the time of this amendment. No composition framework. The shortcut itself is withdrawn by S88-D24.
 
 - **Evidence:** Operator judgement; [S88-ASSESSMENT-PACK-ARCHITECTURE-PLAN.md](S88-ASSESSMENT-PACK-ARCHITECTURE-PLAN.md) §8.
 
@@ -375,6 +375,85 @@ No architectural decision about default workflows or Assessment has been taken. 
 
 ---
 
+## S88-D22 — Implement the Assessment Pack first slice
+
+- **Decision:** Implement the smallest Assessment Pack slice: a new Learning Design product created locally from an existing Interactive Resource’s saved Learning Outcomes, with exactly Plan Assessment Evidence → Author Assessment Components. Recorded as [S88-T-015](PLAN.md). Topic and source prefixes, later component forms, renderer work, and Design Assessment repair are not included.
+
+- **Status:** **Accepted** (2026-09-28) — this slice only
+
+- **Consequences:** Sprint 88 stays **OPEN**. No saved graph is rewritten.
+
+- **Evidence:** `lib/first-class-workflow-family.js`; `tests/s88-assessment-pack-first-slice.test.js`.
+
+---
+
+## S88-D23 — Assessment Pack starting points are implemented
+
+- **Decision:** Assessment Pack is usable without an existing Interactive Resource. That resource remains an optional route: its saved Learning Outcomes are reused, not regenerated, and the workflow begins at Plan Assessment Evidence. A topic start uses the existing Learning Design stages Generate Learning Content → Model Knowledge → Define Learning Outcomes, then Plan Assessment Evidence → Author Assessment Components. An authoritative-source start prefixes Normalize Content. Purpose, diagnostic intent, and optional weighting change prompt wording, not the graph of a chosen starting point. There is no general workflow-composition framework and no Assessment-specific replacement for the upstream stages.
+
+- **Status:** **Accepted** (2026-09-28) — [S88-T-016](PLAN.md). The saved-Learning-Outcomes route in this decision is **superseded** by [S88-D24](decisions.md#s88-d24--product-output-is-source-material). Topic and ordinary source starts remain.
+
+- **Consequences:** Completes the starting-point limit recorded in S88-D22. Later response forms, a complete renderer, marking, feedback stages, and Design Assessment repair stay out of scope. Sprint 88 stays **OPEN**.
+
+- **Evidence:** `lib/first-class-workflow-family.js`; `tests/s88-assessment-pack-first-slice.test.js`; `npm run test:first-class` **339/339**.
+
+---
+
 ## Further decisions
 
-Assessment Pack direction is adopted (S88-D13–D15) and amended (S88-D17–D21). It is not implemented. Design Assessment is not repaired. Interactive is not redesigned. No product-composition framework is authorised.
+Assessment Pack direction is adopted (S88-D13–D15) and amended (S88-D17–D21). Product input is [S88-D24](decisions.md#s88-d24--product-output-is-source-material): every first-class product is independently creatable, and a completed output of another first-class product may be source material. Design Assessment is not repaired. Interactive is not redesigned. No product-composition framework is authorised. Design Page is not an Assessment Pack stage (S88-D24).
+
+---
+
+## S88-D24 — Product output is source material
+
+- **Decision:** Every first-class PRISM product is independently creatable. A completed output from another first-class product may also be supplied as source material for a new product. The user selects that product output, not an internal workflow artefact. For Assessment Pack, a completed Interactive output or Expository output is authoritative source material and follows Normalize Content → Generate Learning Content → Model Knowledge → Define Learning Outcomes → Plan Assessment Evidence → Author Assessment Components. The upstream workflow is not copied. Saved Learning Outcomes are not extracted. Topic and ordinary source starts remain. Target component count is an author scope constraint passed into Plan Assessment Evidence and then into Author Assessment Components. It does not change topology. Purpose, diagnostic intent, and optional weighting also do not change topology.
+
+- **Status:** **Accepted** (2026-09-28) — [S88-T-017](PLAN.md)
+
+- **Design Page:** Not added. Existing Design Page emits a partial learning page (`artifact_type: page`) whose deterministic assembly expects Interactive activity/material captures or Expository chapter partials already produced upstream. The renderer publishes that page. It has no consumer for `artifact_type: assessment_pack`. Using Design Page for Assessment Pack would require a new page contract and a new renderer path. That is a material architecture change, so Assessment Pack ends at Author Assessment Components.
+
+- **Consequences:** Supersedes the saved-Learning-Outcomes shortcut in S88-D17 and S88-D23. Sprint 88 stays **OPEN**. Later response forms, marking, feedback stages, and a complete assessment renderer stay out of scope.
+
+- **Evidence:** `lib/first-class-workflow-family.js`; `lib/ld-design-page-partial-contract.js`; `lib/page-vnext-assemble.js`; `tests/s88-assessment-pack-first-slice.test.js`.
+
+---
+
+## S88-D25 — Assessment Pack is a formative product with deterministically judged forms
+
+- **Decision:** A real Assessment Pack end-to-end run has assembled and rendered. The product is primarily formative. Two learner-facing uses share that architecture: a formative check ("How well do I understand this?") and a pre-test diagnostic ("What should I concentrate on?"). Recommendations are advisory. PRISM does not skip, lock, unlock, or route content. The initial first-class forms are those PRISM can judge deterministically: single-answer MCQ, multiple-answer MCQ, ordering, classification, and matching. Open constructed responses are deferred until a credible judgement and feedback model exists. Component mix is either PRISM deciding among those forms or an author allocation that must total the target count. Diagnostic summary uses component results mapped to intended learning, not an overall percentage alone.
+
+- **Status:** **Accepted** (2026-09-28)
+
+- **Consequences:** Summative mode is not a first-class create option. Short constructed response is not commissioned by the current family. Sprint 88 stays **OPEN**. Later forms, model-assisted marking, and adaptive routing stay out of scope.
+
+---
+
+## S88-D26 — First generated formative pack: feedback depth and learner-facing outcomes
+
+- **Decision:** A fresh model-generated 12-component formative Assessment Pack completed the pipeline and rendered. Twelve components was a deliberate test size, not an error. The five-form repertoire produced a viable varied assessment. Real use showed thinner feedback on ordering, classification, and matching than on multiple-choice, unexplained internal outcome ids in the summary, and clumsy ordering and classification controls. Author Assessment Components must write substantive learner-facing `feedback_note` text for every supported form. Assembly reads outcome statements from the Learning Outcomes artefact. The page orients with "What this assessment checks" and names outcomes by those statements. No change to Plan Assessment Evidence variety or stimulus kinds.
+
+- **Status:** **Accepted** (2026-09-28)
+
+- **Consequences:** One generated pack is not evidence of a systematic diversity defect. Sprint 88 stays **OPEN**.
+
+---
+
+## S88-D27 — Evidence depth, automatic count, evidence profile, and feedback timing
+
+- **Decision:** Assessment depth is quick, standard, or thorough. It is an alpha hypothesis about how much evidence to seek, not difficulty and not a calibrated scale. Component count stays available because an exact count can be a legitimate design constraint. The default is that PRISM decides the count. Plan Assessment Evidence chooses that count from the outcomes, use, and depth. There is no universal questions-per-outcome rule. An exact count constrains the plan and does not redefine whether the evidence is sufficient. The outcome summary is an evidence profile: successful checked opportunities over checked opportunities, with the count written out, not a mastery report. One successful component is limited evidence. Feedback timing is independent of formative or diagnostic use. After each component and at the end of the assessment are both supported. Later calibration should look at counts from real packs before changing these defaults.
+
+- **Status:** **Accepted** (2026-09-28)
+
+- **Consequences:** Sprint 88 stays **OPEN**. No psychometric model, mastery threshold, or adaptive routing is added.
+
+---
+
+## S88-D28 — No author-controlled component-form allocation in the current Assessment Pack
+
+- **Decision:** The first-class Assessment Pack does not currently expose author-controlled component-form allocation. Plan Assessment Evidence selects among the supported forms according to the intended learning and the evidence plan. An exact component count remains a separate hard limit, and the default is still that PRISM decides the count. Author form constraints may be reconsidered if real use or expert review establishes a concrete need. A custom allocation passed to a new build is ignored, so it does not constrain that pack. Saved workflows keep the prompts they were created with.
+
+- **Status:** **Accepted** (2026-09-28)
+
+- **Consequences:** Sprint 88 stays **OPEN**. This is an alpha scope decision about current usefulness, not a finding that author form constraints are invalid.
+

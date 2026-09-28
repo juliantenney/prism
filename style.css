@@ -958,6 +958,52 @@ textarea:focus {
   grid-column: 1 / -1;
 }
 
+.wf-assessment-config {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 12px 16px;
+  margin-top: 12px;
+}
+
+.wf-assessment-config > .form-group,
+.wf-assessment-config > fieldset.form-group {
+  min-width: 0;
+}
+
+.wf-assessment-config fieldset {
+  border: 0;
+  margin: 0;
+  padding: 0;
+}
+
+.wf-assessment-config legend {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  padding: 0;
+}
+
+.wf-assessment-config select {
+  width: 100%;
+  max-width: 100%;
+}
+
+.wf-assessment-count-choices {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.55rem 1rem;
+}
+
+.wf-assessment-count-choices input[type="number"] {
+  width: 5.5rem;
+  flex: 0 0 auto;
+}
+
+.wf-assessment-weighting {
+  grid-column: 1 / -1;
+}
+
 #workflowFactoryPanel .workflow-factory-basics-grid .form-group {
   gap: 2px;
 }
@@ -2282,7 +2328,8 @@ textarea:focus {
     flex: 1;
   }
 
-  .workflow-factory-basics-grid {
+  .workflow-factory-basics-grid,
+  .wf-assessment-config {
     grid-template-columns: 1fr;
   }
 

@@ -1,6 +1,6 @@
 # Sprint 88 — Plan
 
-**Status:** **OPEN** — architecture direction adopted; planning specified; implementation not authorised  
+**Status:** **OPEN** — Assessment Pack starting points implemented (S88-T-016); not closed  
 **Dashboard:** [STATUS.md](STATUS.md)  
 **Charter:** [SPRINT-88-CHARTER.md](SPRINT-88-CHARTER.md)
 
@@ -19,7 +19,7 @@ Architecture planning              OPEN (S88-D10) — [S88-ARCHITECTURE-PLAN.md]
 Architecture direction             ADOPTED (S88-D05…D09)
 Findings                           ALSO [S88-ASSESSMENT-ARCHITECTURE-INVESTIGATION.md](S88-ASSESSMENT-ARCHITECTURE-INVESTIGATION.md) (S88-D12 / T-013)
 Assessment product                 ADOPTED as direction (S88-D13–D15) — [S88-ASSESSMENT-PACK-ARCHITECTURE-PLAN.md](S88-ASSESSMENT-PACK-ARCHITECTURE-PLAN.md)
-Assessment implementation           NOT AUTHORISED
+Assessment implementation           STARTING POINTS IMPLEMENTED (S88-T-015, S88-T-016)
 ```
 
 Investigation comes **before** implementation. S88-D02 authorises investigation and documentation only. It does not approve a workflow model or an Assessment product.
@@ -44,8 +44,11 @@ Investigation comes **before** implementation. S88-D02 authorises investigation 
 | S88-T-012 | Local first-class instantiation (bounded slice) | **COMPLETE** |
 | S88-T-013 | Assessment architecture investigation (no product, no topology) | **COMPLETE** |
 | S88-T-014 | Assessment Pack architecture plan (no implementation) | **COMPLETE** |
+| S88-T-015 | Assessment Pack first slice — local create from existing Interactive outcomes | **COMPLETE** |
+| S88-T-016 | Assessment Pack topic and authoritative-source starting points | **COMPLETE** |
+| S88-T-017 | Product output as source, target component count, Design Page check | **COMPLETE** |
 
-These are investigation tasks. They do not authorise implementation.
+T-001…T-011 and T-013…T-014 are investigation or planning tasks. T-012, T-015, T-016, and T-017 are the authorised implementation slices, and they are complete. They do not authorise later response forms, a complete renderer, or further workflow work.
 
 ---
 

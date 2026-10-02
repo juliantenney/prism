@@ -1,7 +1,7 @@
 # Sprint 89 — Plan
 
-**Status:** **OPEN**  
-This is the sequence. It is not a list of code changes. Nothing below step 1 has been done. [S89-D02](decisions.md#s89-d02--first-class-product-pipelines-are-predetermined) is already decided: first-class pipelines are predetermined, and workflow elicitation is not how they are created.
+**Status:** **COMPLETE / CLOSED**  
+The sequence below is the plan as written at open. The work was done in investigations 1, 1B, and 2, then implementation slices 1–4. Close: [SPRINT-89-CLOSURE.md](SPRINT-89-CLOSURE.md).
 
 1. Establish the repository-grounded pipeline baseline from Domain Packs onward. The conceptual path to account for, without assuming the code is organised this way, is: domain responsibilities → product selection → author input and product parameters → persisted authoring state → topic, source, or product-output input mode → predetermined first-class workflow selection and construction → stage definitions and subsystem contracts → model execution → authoritative artefact creation → artefact transport and transformation → product-specific design and authorship → deterministic assembly → preview and rendering → publishing → final first-class output → optional reuse as source for another product.  
 2. Trace Interactive Resource end to end, including where they apply: topic or focus, source, product output as source, product parameters, predetermined workflow construction, model stages, the artefact chain, deterministic operations, assembly, preview and rendering, and publishing.  

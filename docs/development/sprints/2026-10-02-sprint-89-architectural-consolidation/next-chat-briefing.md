@@ -1,23 +1,11 @@
 # Sprint 89 — Next-chat briefing
 
-**Sprint status:** **OPEN** — setup only (2026-10-02)
+**Sprint status:** **COMPLETE / CLOSED.** No successor sprint is open.
 
 ## One-liner
 
-Align the implementation with the first-class product and pipeline model before Outcomes Map, Course Home, or another product. No investigation has been done. No code has been changed for this sprint.
+Sprint 89 aligned the implementation with the three first-class products. They are declared in `lib/first-class-workflow-family.js`. The broad suite is not green: 517 failures remain for [PB-S-007](../../../backlog/PRODUCT-BACKLOG.md#pb-s-007--broad-suite-rendererpage-render-failure-reconciliation). See [SPRINT-89-CLOSURE.md](SPRINT-89-CLOSURE.md).
 
-## First substantive task
+## Next
 
-Trace the current pipeline from Domain Packs through Interactive, then Expository, then Assessment, including topic, source, and product-output paths where they exist. Compare the three. Reconcile with S88-AD-001…006. Only then run the hypothetical fourth-product check against that picture. Do not implement during the traces. Do not decide to remove Domain Packs.
-
-## Hold these principles
-
-Known product uses a predetermined pipeline (S89-D02). Workflow elicitation is not first-class creation. Asking for topic, source, or parameters is input acquisition. Custom stays for processes outside those pipelines. Model stages do intellectual work; deterministic code transports and assembles authoritative artefacts without loss. Products stay independent; another product’s output is source material, not a spliced workflow. Reuse subsystem contracts, not instructional prompts. Family membership is a direction, not a plugin or registry decision.
-
-## Out of scope
-
-Outcomes Map (PB-FA-014), Course Home (PB-FA-016), and the PB-FA-015 candidates (Scenario, Problem, guided practice / worked example, Situated Task). Not every Outcomes Map job becomes a product. Assessment Pack real-use calibration is unfinished and is not this sprint.
-
-## Read
-
-[SPRINT-89-START-HERE.md](SPRINT-89-START-HERE.md) · [SPRINT-89-CHARTER.md](SPRINT-89-CHARTER.md) · [PLAN.md](PLAN.md) · [ARCHITECTURAL-DEBT.md](ARCHITECTURAL-DEBT.md)
+Choose the next sprint deliberately from the backlog. Do not open one from this briefing. Do not investigate the 517 failures unless that investigation is the chosen work.

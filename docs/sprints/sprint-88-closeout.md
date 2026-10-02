@@ -11,4 +11,4 @@ Deterministic first-class create and the Assessment Pack sibling product are in 
 
 ## Next
 
-[Sprint 89 — Architectural Consolidation](../development/sprints/2026-10-02-sprint-89-architectural-consolidation/SPRINT-89-START-HERE.md) is **OPEN**. Assessment calibration remains a backlog follow-on, not that sprint. See [NEXT-SPRINT.md](NEXT-SPRINT.md).
+[Sprint 89 — Architectural Consolidation](../development/sprints/2026-10-02-sprint-89-architectural-consolidation/SPRINT-89-CLOSURE.md) is **COMPLETE / CLOSED**. Assessment calibration remains a backlog follow-on. See [NEXT-SPRINT.md](NEXT-SPRINT.md).

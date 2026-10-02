@@ -230,29 +230,25 @@ test("D: API key required invokes revealOpenAiApiKeyEntry with direct file picke
   assert.match(source, /openPrismStatusDisclosure/);
 });
 
-test("E: Assistant asking a question reveals answer controls", () => {
-  const { api, ensure } = loadPrism();
+test("E: Workflow-design elicitation does not reveal answer controls", () => {
+  const { api, ensure, source } = loadPrism();
   api.setOpenAiApiKeyForTest("sk-test");
-  assert.equal(api.isWorkflowDesignAssistantAwaitingAnswer(), false);
-  assert.equal(isHidden(ensure("wfDesignAnswerGroup")), true);
   api.setWorkflowDomainSuggestionPendingForTest({ name: "demo" });
-  assert.equal(api.isWorkflowDesignAssistantAwaitingAnswer(), true);
-  assert.equal(isHidden(ensure("wfDesignAnswerGroup")), false);
-  api.setWorkflowDomainSuggestionPendingForTest(null);
   api.setWorkflowBriefElicitationForTest({
     queue: [{ id: "audience" }],
     index: 0,
     stage: "pre_generation"
   });
-  assert.equal(api.isWorkflowDesignAssistantAwaitingAnswer(), true);
-  assert.equal(isHidden(ensure("wfDesignAnswerGroup")), false);
+  assert.equal(api.isWorkflowDesignAssistantAwaitingAnswer(), false);
+  assert.equal(isHidden(ensure("wfDesignAnswerGroup")), true);
+  assert.equal(source.includes("function handleWorkflowAnswer"), false);
 });
 
-test("F: Submitting an answer still uses handleWorkflowAnswer", () => {
+test("F: Create does not submit answers into generated workflow design", () => {
   const { source } = loadPrism();
-  assert.match(source, /function handleWorkflowAnswer\s*\(/);
-  assert.match(source, /wfDesignSendBtn\.addEventListener\("click",\s*handleWorkflowAnswer\)/);
-  assert.match(source, /appendWorkflowDesignLog\("user",\s*raw\)/);
+  assert.equal(source.includes("function handleWorkflowAnswer"), false);
+  assert.equal(source.includes("function continueWorkflowDesignGeneration"), false);
+  assert.doesNotMatch(source, /wfDesignSendBtn\.addEventListener\("click",\s*handleWorkflowAnswer\)/);
 });
 
 test("G: Meaningful active statuses remain available", () => {
@@ -263,8 +259,7 @@ test("G: Meaningful active statuses remain available", () => {
   assert.equal(isHidden(ensure("wfDesignStatus")), false);
   api.setWorkflowDesignStatusBadgeForTest("Needs essentials", "badge badge-muted");
   assert.equal(ensure("wfDesignStatus").textContent, "Needs essentials");
-  assert.match(source, /setWorkflowDesignStatusBadge\("Refining quality"/);
-  assert.match(source, /setWorkflowDesignStatusBadge\("Confirm inferred"/);
+  assert.equal(source.includes("function handleWorkflowAnswer"), false);
 });
 
 test("H: Neighbouring Create contracts remain intact in markup/source", () => {
@@ -272,5 +267,5 @@ test("H: Neighbouring Create contracts remain intact in markup/source", () => {
   assert.match(source, /ensureCreateWorkflowApiKeyPrerequisite/);
   assert.match(source, /S75-D22|ONE WORKFLOW → ONE PRODUCT/);
   assert.match(indexHtml, /id="wfLdCreateOutputType"/);
-  assert.match(indexHtml, /app\.js\?v=20260812-s75-ps-progressive/);
+  assert.match(indexHtml, /app\.js\?v=/);
 });

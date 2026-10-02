@@ -23,14 +23,6 @@ function loadFixture(name) {
   return JSON.parse(fs.readFileSync(path.join(fixturesDir, name), "utf8"));
 }
 
-function extractLdWorkflowPolicy(md) {
-  const idx = md.indexOf("### Workflow Policy");
-  assert.ok(idx !== -1);
-  const fence = md.indexOf("```json", idx);
-  const close = md.indexOf("```", fence + 7);
-  return JSON.parse(md.slice(fence + 7, close).trim()).workflowPolicy;
-}
-
 function createElementStub() {
   return {
     value: "",
@@ -145,28 +137,6 @@ function buildPartialPageWorkflow(id) {
   };
 }
 
-function stepTitles(out) {
-  return (out.steps || []).map((s) => String(s.title || "").trim());
-}
-
-function indexOfTitle(titles, name) {
-  return titles.findIndex((t) => t.toLowerCase() === String(name).toLowerCase());
-}
-
-function applyLdHeuristics(api, workflowPolicy, parsed, hints) {
-  return api.applyWorkflowDesignHeuristics(JSON.parse(JSON.stringify(parsed)), {
-    selectedDomains: ["general", "learning-design"],
-    workflowPolicy,
-    stepPatternCatalog: [],
-    resolvedBriefFactors: hints.resolvedBriefFactors || {},
-    explicitBriefFactors: hints.explicitBriefFactors || {},
-    goal: hints.goal || "",
-    inputs: hints.inputs || "",
-    desiredOutputs: hints.desiredOutputs || "",
-    startingArtefact: hints.startingArtefact || ""
-  });
-}
-
 function syncCaptureAndAssert(api, wf, stepId, outputName, jsonText) {
   const { li, textarea } = buildRunLi(stepId, outputName, jsonText);
   api.syncWorkflowRunCapturedOutputToState(li);
@@ -193,76 +163,6 @@ const lsPartial = loadFixture("ls-partial.json");
 const dpPartial = loadFixture("dp-partial.json");
 const daPartial = loadFixture("assessment-design-partial.json");
 const gaiPartial = loadFixture("assessment-items-partial.json");
-
-const ldMd = fs.readFileSync(ldPatternsPath, "utf8");
-const ldWorkflowPolicy = extractLdWorkflowPolicy(ldMd);
-
-const TRANSCRIPT_BRIEF = {
-  goal: "Using the provided lecture transcript, create learning activities and a short formative assessment on RNA viruses.",
-  inputs: "Uploaded lecture transcript on RNA viruses and hepatitis C (HCV).",
-  desiredOutputs: "Learner-facing page",
-  startingArtefact: "provided_source_content",
-  resolvedBriefFactors: {
-    input_strategy: "provided_source_content",
-    delivery_context: "self_directed",
-    delivery_mode: "async",
-    session_materials: ["page"]
-  }
-};
-
-const SIMPLE_TOPIC_BRIEF = {
-  goal: "Create a self-directed learning page on inflation for Year 12 learners.",
-  inputs: "No uploaded files; generate from topic only.",
-  desiredOutputs: "Learner-facing page",
-  startingArtefact: "generate_from_topic",
-  resolvedBriefFactors: {
-    topic: "inflation",
-    input_strategy: "generate_from_topic",
-    delivery_context: "self_directed",
-    session_materials: ["page"]
-  }
-};
-
-test("transcript brief resolves source-ingest topology before page pipeline", () => {
-  const api = loadPrismTestApi();
-  const out = applyLdHeuristics(
-    api,
-    ldWorkflowPolicy,
-    {
-      steps: [
-        { title: "Define Learning Outcomes", role: "" },
-        { title: "Design Episode Plan", role: "" },
-        { title: "Design Learning Activities", role: "" },
-        { title: "Generate Activity Materials", role: "" },
-        { title: "Design Page", role: "" }
-      ]
-    },
-    TRANSCRIPT_BRIEF
-  );
-  const titles = stepTitles(out);
-  assert.ok(indexOfTitle(titles, "Normalize Content") !== -1, titles.join(" -> "));
-  assert.ok(indexOfTitle(titles, "Generate Learning Content") !== -1, titles.join(" -> "));
-  assert.ok(indexOfTitle(titles, "Model Knowledge") !== -1, titles.join(" -> "));
-});
-
-test("simple topic brief excludes Normalize and keeps topic-only GLC path", () => {
-  const api = loadPrismTestApi();
-  const out = applyLdHeuristics(
-    api,
-    ldWorkflowPolicy,
-    {
-      steps: [
-        { title: "Model Knowledge", role: "" },
-        { title: "Define Learning Outcomes", role: "" },
-        { title: "Design Page", role: "" }
-      ]
-    },
-    SIMPLE_TOPIC_BRIEF
-  );
-  const titles = stepTitles(out);
-  assert.equal(indexOfTitle(titles, "Normalize Content"), -1, titles.join(" -> "));
-  assert.ok(indexOfTitle(titles, "Generate Learning Content") !== -1, titles.join(" -> "));
-});
 
 test("transcript-origin partial page pipeline: capture, persist, assemble, render", () => {
   const api = loadPrismTestApi();

@@ -1,8 +1,8 @@
 # Sprint 89 — Index
 
 **Sprint:** 89 — Architectural Consolidation  
-**Status:** **OPEN** — established; investigation not started  
-**Entry:** [SPRINT-89-START-HERE.md](SPRINT-89-START-HERE.md)
+**Status:** **COMPLETE / CLOSED**  
+**Entry:** [SPRINT-89-CLOSURE.md](SPRINT-89-CLOSURE.md)
 
 | Document | Role |
 | -------- | ---- |
@@ -12,6 +12,6 @@
 | [decisions.md](decisions.md) | S89-D01 opens the sprint |
 | [HANDOVER.md](HANDOVER.md) | Continuity |
 | [next-chat-briefing.md](next-chat-briefing.md) | Compact load for a fresh chat |
-| [ARCHITECTURAL-DEBT.md](ARCHITECTURAL-DEBT.md) | Where existing debt lives; no new findings |
+| [SPRINT-89-CLOSURE.md](SPRINT-89-CLOSURE.md) | Closure record |
 
 Programme pointer: [NEXT-SPRINT.md](../../../sprints/NEXT-SPRINT.md)

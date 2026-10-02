@@ -12,6 +12,7 @@ const vm = require("node:vm");
 
 const sibling = require("../lib/expository-sibling-prompts.js");
 const contracts = require("../lib/expository-contracts.js");
+const family = require("../lib/first-class-workflow-family.js");
 
 const repoRoot = path.resolve(__dirname, "..");
 const appJsPath = path.join(repoRoot, "app.js");
@@ -21,13 +22,6 @@ const ldPatternsPath = path.join(
   "learning-design",
   "domain-learning-design-step-patterns.md"
 );
-
-function extractWorkflowPolicy(md) {
-  const idx = md.indexOf("### Workflow Policy");
-  const fence = md.indexOf("```json", idx);
-  const close = md.indexOf("```", fence + 7);
-  return JSON.parse(md.slice(fence + 7, close).trim()).workflowPolicy;
-}
 
 function loadPrismTestApi() {
   const { createRequire } = require("module");
@@ -52,6 +46,8 @@ function loadPrismTestApi() {
   windowStub.window = windowStub;
   windowStub.PrismExpositorySiblingPrompts = sibling;
   windowStub.PrismExpositoryContracts = contracts;
+  windowStub.PRISM_FIRST_CLASS_WORKFLOW_FAMILY = family;
+  sandbox.PRISM_FIRST_CLASS_WORKFLOW_FAMILY = family;
   vm.createContext(sandbox);
   vm.runInContext(source, sandbox, { filename: "app.js" });
   const api = sandbox.window.__PRISM_TEST_API;
@@ -60,7 +56,6 @@ function loadPrismTestApi() {
 }
 
 const api = loadPrismTestApi();
-const workflowPolicy = extractWorkflowPolicy(fs.readFileSync(ldPatternsPath, "utf8"));
 
 function makeExpositorySteps() {
   return [
@@ -260,15 +255,6 @@ test("E: EJP runtime binding includes LC + MK + LO when available", () => {
   assert.ok(arts.includes("learning_outcomes"), arts.join(","));
   assert.ok(arts.includes("knowledge_model"), arts.join(","));
   assert.ok(arts.includes("learning_content"), arts.join(","));
-
-  assert.equal(
-    workflowPolicy.dependencies["Expository Journey Plan"].requires.includes("learning_content"),
-    true
-  );
-  assert.equal(
-    workflowPolicy.dependencies["Expository Journey Plan"].requires.includes("knowledge_model"),
-    true
-  );
 });
 
 test("F/G/H: EJP/XD/XM capture producers accept valid artefacts and gate advance", () => {
@@ -325,45 +311,14 @@ test("F/G/H: EJP/XD/XM capture producers accept valid artefacts and gate advance
   );
 });
 
-test("I: Expository stage sequence constructs GLC→MK→LO→EJP→XD→XM→DP with DP purpose wording", () => {
-  const out = api.applyWorkflowDesignHeuristics(
-    {
-      status: "complete",
-      summary: "draft",
-      steps: [
-        { title: "Generate Learning Content", role: "" },
-        { title: "Model Knowledge", role: "" },
-        { title: "Define Learning Outcomes", role: "" },
-        { title: "Design Episode Plan", role: "" },
-        { title: "Design Learning Activities", role: "" },
-        { title: "Generate Activity Materials", role: "" },
-        { title: "Construct Learning Sequence", role: "" },
-        { title: "Design Page", role: "" }
-      ]
-    },
-    {
-      goal: "Create an Expository Resource: Photosynthesis",
-      inputs: "",
-      desiredOutputs: "",
-      startingArtefact: "generate_from_topic",
-      selectedDomains: ["learning-design"],
-      ldCreateOutputType: api.LD_CREATE_OUTPUT_TYPE_EXPOSITORY,
-      workflowPolicy,
-      stepPatternCatalog: [],
-      resolvedBriefFactors: {
-        delivery_context: "self_directed",
-        session_materials: ["page"],
-        page_profile: "learner",
-        activities_required: false,
-        input_strategy: "generate_from_topic"
-      },
-      explicitBriefFactors: {
-        session_materials: ["page"],
-        activities_required: false
-      }
-    }
-  );
-  const titles = (out.steps || []).map((s) => String(s.title || "").trim());
+test("I: Expository family is GLC, MK, LO, EJP, XD, XM, Design Page", () => {
+  const built = api.buildFirstClassWorkflowFamilyForTest({
+    ldCreateOutputType: api.LD_CREATE_OUTPUT_TYPE_EXPOSITORY,
+    focus: "Photosynthesis",
+    startingArtefact: "generate_from_topic"
+  });
+  assert.equal(built.ok, true);
+  const titles = (built.steps || []).map((s) => String(s.title || "").trim());
   assert.equal(titles.join(" > "), [
     "Generate Learning Content",
     "Model Knowledge",
@@ -373,9 +328,8 @@ test("I: Expository stage sequence constructs GLC→MK→LO→EJP→XD→XM→DP
     "Expository Materials",
     "Design Page"
   ].join(" > "));
-  const dp = (out.steps || []).find((s) => String(s.title || "").trim() === "Design Page");
+  const dp = (built.steps || []).find((s) => String(s.title || "").trim() === "Design Page");
   assert.ok(dp);
-  assert.match(String(dp.role || ""), /title, orientation and synthesis/i);
   assert.doesNotMatch(String(dp.role || ""), /page_synthesis|activities\[\]\.materials/i);
 });
 

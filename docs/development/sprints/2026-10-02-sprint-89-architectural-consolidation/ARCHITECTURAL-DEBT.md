@@ -1,16 +1,12 @@
 # Sprint 89 — Architectural debt
 
-**Sprint 89 is OPEN.** No new debt is declared by opening the sprint. No investigation has been done.
+**Sprint 89 is COMPLETE / CLOSED.** Resolution is [SPRINT-89-CLOSURE.md](SPRINT-89-CLOSURE.md). The Sprint 88 ledger remains the original wording.
 
-The authoritative register for the items this sprint may later examine is the Sprint 88 ledger: [ARCHITECTURAL-DEBT.md](../2026-09-28-sprint-88-default-product-workflows-and-assessment-architecture/ARCHITECTURAL-DEBT.md).
-
-| ID | As recorded there | This sprint |
-| -- | ----------------- | ----------- |
-| **S88-AD-001** | Dead Design Assessment blueprint-retention arm | Input only. Not resolved |
-| **S88-AD-002** | Expository replacement nested in an old topic-only guard | Input only. Not resolved |
-| **S88-AD-003** | `ldCreateOutputType` persisted without an authorising decision found | Input only. Not resolved |
-| **S88-AD-004** | Legacy workflow-generation complexity | Input only. Not resolved |
-| **S88-AD-005** | Product-family extensibility | Input only. Not resolved. Not a registry or plugin decision |
-| **S88-AD-006** | Domain-pack responsibilities after deterministic first-class creation | Input only. Not resolved |
-
-Those notes said, at the time, that Sprint 88 must not treat them as a cleanup programme. Sprint 89 may reconcile them with the real-product pipeline traces, and only afterwards with the fourth-product check. S89-D02 does not resolve any of them. It does not pre-authorise removal, migration, or a domain-pack redesign.
+| ID | At close |
+| -- | -------- |
+| **S88-AD-001** | **Resolved.** The graph heuristic and Design Assessment authority policy are gone. |
+| **S88-AD-002** | **Resolved.** There is no generated-graph Expository replacement. |
+| **S88-AD-003** | **Resolved.** Saved identity is `product`. Legacy type is mapped and dropped. |
+| **S88-AD-004** | **Resolved.** Create does not generate workflow topology. |
+| **S88-AD-005** | **Resolved.** The three products share the family declaration. |
+| **S88-AD-006** | **Resolved.** The Learning Design pack is catalogue and prompt material, not topology policy. |

@@ -2,8 +2,8 @@
 
 **Canonical location:** `docs/backlog/PRODUCT-BACKLOG.md`  
 **Status:** Active — **alpha-use period** (Alpha development complete, 2026-09-02)  
-**Last updated:** 2026-10-02 (Sprint 89 opened; Assessment calibration recorded as not done)  
-**Active sprint:** [Sprint 89 — Architectural Consolidation](../development/sprints/2026-10-02-sprint-89-architectural-consolidation/SPRINT-89-START-HERE.md) — **OPEN** (setup only; diagnostic not started)
+**Last updated:** 2026-10-02 (Sprint 89 closed; PB-S-007 recorded)  
+**Active sprint:** none. Last closed: [Sprint 89 — Architectural Consolidation](../development/sprints/2026-10-02-sprint-89-architectural-consolidation/SPRINT-89-CLOSURE.md) — **COMPLETE / CLOSED**
 
 This file answers: **what might we actually choose to work on next?**
 
@@ -101,7 +101,7 @@ Sprint 82 delivered first-class MathLive entry + MathJax display for dedicated m
 
 ### Assessment Pack real-use calibration (Sprint 88 remainder)
 
-**Status:** **Not done.** Not a new architecture, and not Sprint 89.
+**Status:** **Not done.** Not a new architecture. Sprint 89 is closed and did not do this work.
 
 Sprint 88 closed with the Assessment Pack architecture in place. Further real use was not completed. Remaining acceptance, before any change to depth, count, or form-selection defaults:
 
@@ -112,7 +112,34 @@ Sprint 88 closed with the Assessment Pack architecture in place. Further real us
 - inspect the learner experience;
 - fix only concrete findings from that use.
 
-Record: [Sprint 88 closure](../development/sprints/2026-09-28-sprint-88-default-product-workflows-and-assessment-architecture/SPRINT-88-CLOSURE.md).
+Record: [Sprint 88 closure](../development/sprints/2026-09-28-sprint-88-default-product-workflows-and-assessment-architecture/SPRINT-88-CLOSURE.md). Sprint 89 did not reopen Assessment architecture.
+
+### PB-S-007 — Broad-suite renderer/page-render failure reconciliation
+
+**Status:** **Not started.** Not sprint-allocated.
+
+After Sprint 89 the broad suite is not green.
+
+| | Tests | Passed | Failed | Skipped |
+| - | ----: | -----: | -----: | ------: |
+| After Slice 3 | 4214 | 3696 | 517 | 1 |
+| After Slice 4 | 4220 | 3702 | 517 | 1 |
+
+The six added Slice 4 tests passed. The failure count did not change. Failures were reported mainly in learner-renderer and page-render test families. Sprint 89 did not investigate or fix them.
+
+**Purpose:** determine whether each failing test family protects current PRISM behaviour, superseded behaviour, or a genuinely broken current contract. The purpose is not to make every test green at any cost.
+
+Classify by failure family, not by repairing 517 assertions one by one:
+
+- A. **Current contract / real defect** — the test describes behaviour current PRISM still promises and production code is wrong. Fix the code and keep the test.
+- B. **Current contract / stale test** — the intended behaviour still exists but the fixture, assertion, or API expectation is outdated. Update the test.
+- C. **Superseded architecture** — the test protects behaviour later architecture removed or replaced. Delete or rewrite the test. Do not restore the obsolete behaviour.
+- D. **Duplicate / invalid test** — the test no longer protects anything useful on its own. Remove it.
+- E. **Environment / harness failure** — setup, fixture loading, or the harness caused the failure. Repair that, then reassess the test.
+
+For each family, establish the failing files, common stack traces, shared assertions, common fixtures, affected production modules, the architectural era of the test, whether that production behaviour is still reachable, and whether current first-class tests already cover the contract. Compare the tests with the architecture in [Sprint 89 closure](../development/sprints/2026-10-02-sprint-89-architectural-consolidation/SPRINT-89-CLOSURE.md) before changing production code.
+
+**Readiness:** Baseline recorded. Approach for a future investigation is the classification above. Acceptance criteria for a repair programme are not written — **not sprint-allocated**.
 
 ---
 

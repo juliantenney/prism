@@ -68,21 +68,23 @@ test("generic workflow reviewer runtime is removed from app.js", () => {
   }
 });
 
-test("Prompt Studio prompt review and pack post-generation refinement remain", () => {
+test("Prompt Studio prompt review remains; workflow-topology refinement does not", () => {
   const src = fs.readFileSync(appJsPath, "utf8");
   assert.match(src, /function runPromptReview\s*\(/);
   assert.match(src, /function getReviewMaxOutputTokens\s*\(/);
-  assert.match(src, /post_generation_refinement/);
-  assert.match(src, /stepRefinementProfiles/);
   assert.match(src, /function handleSaveDesignedWorkflow\s*\(/);
+  assert.equal(src.includes("post_generation_refinement"), false);
+  assert.equal(src.includes("function handleWorkflowAnswer"), false);
 });
 
-test("assessment-specific QA / feedback pack steps remain declared", () => {
+test("old Interactive assessment-question stages are not current catalogue sections", () => {
   const md = fs.readFileSync(ldPatternsPath, "utf8");
-  assert.match(md, /## 8\. Design Feedback/);
-  assert.match(md, /## 18\. Validate Learning Design/);
-  assert.match(md, /## 19\. Revise Assessment Based on QA/);
-  assert.match(md, /step_design_feedback|step_validate_learning_design|step_revise_assessment_based_on_qa/);
+  assert.doesNotMatch(md, /## 8\. Design Feedback/);
+  assert.doesNotMatch(md, /## 18\. Validate Learning Design/);
+  assert.doesNotMatch(md, /## 19\. Revise Assessment Based on QA/);
+  assert.doesNotMatch(md, /"workflowPolicy"/);
+  assert.match(md, /## 13\. Design Page/);
+  assert.match(md, /## 5\. Design Learning Activities/);
 });
 
 test("retired reviewer failure class cannot recur via removed insertion path", () => {
@@ -93,7 +95,7 @@ test("retired reviewer failure class cannot recur via removed insertion path", (
   // Canonicalisation helper remains for legitimate save/generation paths.
   assert.match(src, /function pickCanonicalWorkflowStepTitle\s*\(/);
   const api = loadPrismTestApi();
-  assert.equal(typeof api.applyWorkflowDesignHeuristics, "function");
+  assert.equal(src.includes("function applyWorkflowDesignHeuristics"), false);
   assert.equal(typeof api.handleWorkflowReview, "undefined");
   assert.equal(typeof api.callOpenAIForWorkflowReview, "undefined");
 });

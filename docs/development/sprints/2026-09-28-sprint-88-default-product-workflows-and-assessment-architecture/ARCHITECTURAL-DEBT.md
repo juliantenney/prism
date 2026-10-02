@@ -1,6 +1,6 @@
 # Sprint 88 — Architectural debt ledger
 
-**Sprint 88 is COMPLETE / CLOSED.** The findings below are unchanged and unresolved. Sprint 89 may investigate them; this file does not.
+**Sprint 88 is COMPLETE / CLOSED.** The table below is the record at Sprint 88 close. Sprint 89 later resolved S88-AD-001 through S88-AD-006. See [SPRINT-89-CLOSURE.md](../2026-10-02-sprint-89-architectural-consolidation/SPRINT-89-CLOSURE.md). This file is not rewritten as the resolution.
 
 ## Protected prior programme state
 

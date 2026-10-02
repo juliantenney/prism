@@ -30,15 +30,6 @@
           "domains/learning-design/domain-learning-design-step-patterns.md",
           "domains/learning-design/domain-learning-design-prompt-rules.md"
         ]
-      },
-      research: {
-        label: "Research",
-        files: [
-          "domains/research/domain-research-principles.md",
-          "domains/research/domain-research-artefacts.md",
-          "domains/research/domain-research-step-patterns.md",
-          "domains/research/domain-research-prompt-rules.md"
-        ]
       }
     }
   };
@@ -171,58 +162,6 @@
     } catch (e) {
       return [];
     }
-  }
-
-  function buildWorkflowGenerationContext(options) {
-    var opts = options && typeof options === "object" ? options : {};
-    var brief = String(opts.brief || "").trim();
-    return loadManifest().then(function (manifest) {
-      var selectedDomains = normalizeSelectedDomains(opts.selectedDomains, manifest);
-      var platformFiles = manifest.platformFiles || [];
-      var domainFiles = [];
-      selectedDomains.forEach(function (domainId) {
-        var d = manifest.domains[domainId];
-        if (d && Array.isArray(d.files)) {
-          domainFiles = domainFiles.concat(d.files);
-        }
-      });
-      var allFiles = platformFiles.concat(domainFiles);
-      return loadFiles(allFiles).then(function (result) {
-        var platformTexts = [];
-        var domainTexts = [];
-        result.loaded.forEach(function (f) {
-          if (platformFiles.indexOf(f.path) !== -1) {
-            platformTexts.push("### File: " + f.path + "\n\n" + f.text.trim());
-          } else {
-            domainTexts.push("### File: " + f.path + "\n\n" + f.text.trim());
-          }
-        });
-
-        var parts = [];
-        parts.push(
-          section(
-            "PLATFORM CONTEXT",
-            platformTexts.join("\n\n---\n\n") ||
-              "No platform docs loaded."
-          )
-        );
-        parts.push(
-          section(
-            "DOMAIN CONTEXT",
-            "Selected domains: " + (selectedDomains.join(", ") || "none") + "\n\n" +
-              (domainTexts.join("\n\n---\n\n") || "No domain docs loaded.")
-          )
-        );
-        parts.push(section("WORKFLOW BRIEF", brief || "No brief provided."));
-
-        return {
-          promptContext: parts.join("\n\n====================\n\n"),
-          loadedFiles: result.loaded.map(function (f) { return f.path; }),
-          missingFiles: result.missing.slice(),
-          selectedDomains: selectedDomains.slice()
-        };
-      });
-    });
   }
 
   function buildPromptRefinementContext(options) {
@@ -483,62 +422,6 @@
     return out;
   }
 
-  function extractWorkflowPolicyFromText(text) {
-    var lines = String(text || "").split(/\r?\n/);
-    var inPolicySection = false;
-    var inJson = false;
-    var jsonLines = [];
-    var found = null;
-
-    function tryParsePolicy() {
-      if (found) return;
-      var raw = jsonLines.join("\n").trim();
-      jsonLines = [];
-      if (!raw) return;
-      try {
-        var parsed = JSON.parse(raw);
-        if (parsed && typeof parsed === "object") {
-          if (parsed.workflowPolicy && typeof parsed.workflowPolicy === "object") {
-            found = parsed.workflowPolicy;
-          } else {
-            found = parsed;
-          }
-        }
-      } catch (_e) {}
-    }
-
-    lines.forEach(function (line) {
-      var h3 = line.match(/^###\s+(.+?)\s*$/);
-      if (h3 && h3[1]) {
-        var heading = String(h3[1]).trim().toLowerCase();
-        inPolicySection = heading === "workflow policy";
-        if (!inPolicySection && inJson) {
-          inJson = false;
-          tryParsePolicy();
-        }
-        return;
-      }
-      if (!inPolicySection) return;
-      if (!inJson && /^\s*```(?:json)?\s*$/i.test(String(line || ""))) {
-        inJson = true;
-        jsonLines = [];
-        return;
-      }
-      if (inJson && /^\s*```\s*$/.test(String(line || ""))) {
-        inJson = false;
-        tryParsePolicy();
-        return;
-      }
-      if (inJson) {
-        jsonLines.push(line);
-      }
-    });
-    if (inJson) {
-      tryParsePolicy();
-    }
-    return found;
-  }
-
   function extractWorkflowBriefConfigFromText(text) {
     var lines = String(text || "").split(/\r?\n/);
     var inSection = false;
@@ -589,29 +472,6 @@
     });
     if (inJson) tryParse();
     return found;
-  }
-
-  function extractArtefactCatalogFromText(text) {
-    var lines = String(text || "").split(/\r?\n/);
-    var out = [];
-    var seen = {};
-    lines.forEach(function (line) {
-      var id = "";
-      var mNumbered = line.match(/^##\s+\d+\.\s+([a-zA-Z0-9_:-]+)\s*$/);
-      if (mNumbered && mNumbered[1]) {
-        id = String(mNumbered[1] || "").trim();
-      } else {
-        var mHeading = line.match(/^###\s+([a-zA-Z0-9_:-]+)\s*$/);
-        if (!mHeading || !mHeading[1]) return;
-        id = String(mHeading[1] || "").trim();
-      }
-      if (!id) return;
-      var key = id.toLowerCase();
-      if (seen[key]) return;
-      seen[key] = true;
-      out.push({ id: id, label: id.replace(/_/g, " ") });
-    });
-    return out;
   }
 
   function extractArtefactRenderCatalogFromText(text) {
@@ -711,44 +571,6 @@
     return out;
   }
 
-  function getDomainArtefactOptions(options) {
-    var opts = options && typeof options === "object" ? options : {};
-    return loadManifest().then(function (manifest) {
-      var selectedDomains = normalizeSelectedDomains(opts.selectedDomains, manifest);
-      var files = [];
-      selectedDomains.forEach(function (domainId) {
-        var d = manifest.domains[domainId];
-        if (!d || !Array.isArray(d.files)) return;
-        d.files.forEach(function (path) {
-          if (/artefacts/i.test(path)) files.push(path);
-        });
-      });
-      return loadFiles(files).then(function (result) {
-        var all = [];
-        var seen = {};
-        result.loaded.forEach(function (f) {
-          var domainId = "";
-          var path = String((f && f.path) || "");
-          var domainMatch = path.match(/domains\/([^/]+)\//i);
-          if (domainMatch && domainMatch[1]) {
-            domainId = String(domainMatch[1]);
-          }
-          extractArtefactCatalogFromText(f.text).forEach(function (item) {
-            var key = String((item && item.id) || "").toLowerCase();
-            if (!key || seen[key]) return;
-            seen[key] = true;
-            all.push({
-              id: item.id,
-              label: item.label,
-              domainId: domainId
-            });
-          });
-        });
-        return all;
-      });
-    });
-  }
-
   function getArtefactRenderCatalog(options) {
     var opts = options && typeof options === "object" ? options : {};
     return loadManifest().then(function (manifest) {
@@ -826,44 +648,6 @@
     });
   }
 
-  function getWorkflowPolicy(options) {
-    var opts = options && typeof options === "object" ? options : {};
-    return loadManifest().then(function (manifest) {
-      var selectedDomains = normalizeSelectedDomains(opts.selectedDomains, manifest);
-      var structuredIds = selectedDomains.filter(function (id) {
-        return String(id || "").toLowerCase() !== "general";
-      });
-      if (!structuredIds.length) {
-        return Promise.resolve(null);
-      }
-      // Single source of truth for Factory heuristics (applyWorkflowDesignHeuristics in app.js):
-      // load one domain pack's workflowPolicy, not "first file that parses" across all domains.
-      // When Research is active alongside another structured domain, use the Research pack so
-      // Design Page / researchValidationIntent / dependencies match research-shaped drafts;
-      // otherwise LD policy would win on file order and prune terminal Design Page (LD deps).
-      var policyDomainId = structuredIds[0];
-      if (structuredIds.indexOf("research") !== -1) {
-        policyDomainId = "research";
-      }
-      var d = manifest.domains[policyDomainId];
-      var stepPatternsPath = "";
-      if (d && Array.isArray(d.files)) {
-        stepPatternsPath = d.files.find(function (path) {
-          return /step-patterns/i.test(String(path || ""));
-        }) || "";
-      }
-      if (!stepPatternsPath) {
-        return Promise.resolve(null);
-      }
-      return readTextFile(stepPatternsPath).then(function (text) {
-        return extractWorkflowPolicyFromText(text) || null;
-      });
-    });
-  }
-
-  // Returns the domain pack's workflowBriefConfig JSON as stored (including
-  // extraFields / uiHints). Downstream UI must preserve those keys when
-  // normalising configs so Factory extras and constraint mapping stay aligned.
   function getWorkflowBriefConfig(options) {
     var opts = options && typeof options === "object" ? options : {};
     return loadManifest().then(function (manifest) {
@@ -991,13 +775,10 @@
   window.WorkflowGenerationContext = {
     loadManifest: loadManifest,
     getDomainOptions: getDomainOptions,
-    buildWorkflowGenerationContext: buildWorkflowGenerationContext,
     buildPromptRefinementContext: buildPromptRefinementContext,
     getStepPatternCatalog: getStepPatternCatalog,
     ensureDomainPromptRulesCached: ensureDomainPromptRulesCached,
-    getDomainArtefactOptions: getDomainArtefactOptions,
     getArtefactRenderCatalog: getArtefactRenderCatalog,
-    getWorkflowPolicy: getWorkflowPolicy,
     getCachedFileText: getCachedFileText,
     putCachedFileText: putCachedFileText,
     loadFileTextIntoCacheSync: loadFileTextIntoCacheSync,

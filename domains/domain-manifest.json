@@ -26,15 +26,6 @@
         "domains/learning-design/domain-learning-design-step-patterns.md",
         "domains/learning-design/domain-learning-design-prompt-rules.md"
       ]
-    },
-    "research": {
-      "label": "Research",
-      "files": [
-        "domains/research/domain-research-principles.md",
-        "domains/research/domain-research-artefacts.md",
-        "domains/research/domain-research-step-patterns.md",
-        "domains/research/domain-research-prompt-rules.md"
-      ]
     }
   }
 }

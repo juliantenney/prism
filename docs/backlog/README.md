@@ -4,7 +4,7 @@
 
 **Programme status:** **Alpha development complete** (2026-09-02). Current phase is the **alpha-use period**.
 
-**Active sprint:** [Sprint 89 — Architectural Consolidation](../development/sprints/2026-10-02-sprint-89-architectural-consolidation/SPRINT-89-START-HERE.md) — **OPEN** (setup only). Last closed: [Sprint 88](../development/sprints/2026-09-28-sprint-88-default-product-workflows-and-assessment-architecture/SPRINT-88-CLOSURE.md).
+**Active sprint:** none. Last closed: [Sprint 89](../development/sprints/2026-10-02-sprint-89-architectural-consolidation/SPRINT-89-CLOSURE.md) — **COMPLETE / CLOSED**.
 
 [PRODUCT-BACKLOG.md](PRODUCT-BACKLOG.md) is the **current planning authority**. It answers what PRISM might deliberately choose to work on next. It does **not** catalogue every historical deferred observation.
 
@@ -29,7 +29,7 @@ Do **not** promote historical sprint architectural-debt ledgers wholesale into t
 
 ## Navigation
 
-- Programme pointer: [NEXT-SPRINT.md](../sprints/NEXT-SPRINT.md) — **Sprint 89 OPEN** · alpha-use period  
+- Programme pointer: [NEXT-SPRINT.md](../sprints/NEXT-SPRINT.md) — **no sprint open** · last closed Sprint 89 · alpha-use period  
 
 - Alpha close: [SPRINT-82-CLOSURE.md](../development/sprints/2026-09-01-sprint-82-maths-entry-and-alpha-completion/SPRINT-82-CLOSURE.md)  
 - Sprint index: [docs/sprints/README.md](../sprints/README.md)  

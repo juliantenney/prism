@@ -7,7 +7,7 @@
 **Type:** Investigation, then bounded implementation  
 **Opening:** [S88-D01](decisions.md#s88-d01--open-sprint-88--default-product-workflows--assessment-architecture)  
 **Close:** [S88-D29](decisions.md#s88-d29--close-sprint-88--first-class-product-and-assessment-architecture-complete)  
-**Successor:** [Sprint 89 — Architectural Consolidation](../2026-10-02-sprint-89-architectural-consolidation/SPRINT-89-START-HERE.md) — **OPEN**
+**Successor:** [Sprint 89 — Architectural Consolidation](../2026-10-02-sprint-89-architectural-consolidation/SPRINT-89-CLOSURE.md) — **COMPLETE / CLOSED**
 
 ---
 

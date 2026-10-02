@@ -110,12 +110,11 @@ test("F/G: family builder does not call a model and records callsModel false", (
   assert.equal(built.deliverySeed.topic, "Topic text already supplied");
   const start = appSource.indexOf("function handleStartWorkflowDesign");
   const local = appSource.indexOf("applyLocalFirstClassWorkflowDesign(", start);
-  const gate = appSource.indexOf("ensureCreateWorkflowApiKeyPrerequisite()", start);
-  const intent = appSource.indexOf("callOpenAIForWorkflowIntentInterpretation", start);
-  const design = appSource.indexOf("callOpenAIForWorkflowDesign", start);
-  assert.ok(local > start && local < gate);
-  assert.ok(intent > gate);
-  assert.ok(design > gate);
+  const removed = appSource.indexOf("Model-designed workflow topology has been removed", start);
+  const designFn = appSource.indexOf("function callOpenAIForWorkflowDesign");
+  assert.ok(local > start);
+  assert.ok(removed > local);
+  assert.equal(designFn, -1);
 });
 
 test("H: quiz, slides, VLE, rubric, and QA wording does not add residual stages", () => {

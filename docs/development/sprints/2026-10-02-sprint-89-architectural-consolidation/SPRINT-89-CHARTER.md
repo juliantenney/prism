@@ -1,7 +1,6 @@
 # Sprint 89 — Charter
 
-**Status:** **OPEN**  
-**Opening:** [S89-D01](decisions.md#s89-d01--open-sprint-89--architectural-consolidation)
+**Status:** **COMPLETE / CLOSED** — [S89-D08](decisions.md#s89-d08--close-sprint-89--architectural-consolidation-complete)
 
 ## Why this sprint exists
 

@@ -2,8 +2,8 @@
 
 **Canonical location:** `docs/backlog/PRODUCT-BACKLOG.md`  
 **Status:** Active — **alpha-use period** (Alpha development complete, 2026-09-02)  
-**Last updated:** 2026-09-23 (Sprint 87 T-003 complete)  
-**Active sprint:** [Sprint 87 — Expository Quality — First Successor Implementation](../development/sprints/2026-09-22-sprint-87-expository-quality-first-successor-implementation/SPRINT-87-START-HERE.md) — **IN PROGRESS** (chapter form shipped; next = T-004 AD-010)
+**Last updated:** 2026-10-02 (Sprint 89 opened; Assessment calibration recorded as not done)  
+**Active sprint:** [Sprint 89 — Architectural Consolidation](../development/sprints/2026-10-02-sprint-89-architectural-consolidation/SPRINT-89-START-HERE.md) — **OPEN** (setup only; diagnostic not started)
 
 This file answers: **what might we actually choose to work on next?**
 
@@ -67,7 +67,11 @@ Genuine missing future capability for programming learning resources.
 
 Establish a repeatable path from active development to a **known-good stable release** (version/build identity, cache-bust discipline, regression gate, checklist, rollback, deployment/update procedure).
 
-**Evidence:** Sprint 75 operator/debug experience; governance release-packaging requirement (D-006).
+**Evidence:** Sprint 75 operator/debug experience; governance [D-006](../development/governance/ARCHITECTURAL-DEBT.md#d-006--release-packaging).
+
+**Immediate concern:** a clean, reproducible deployment folder/package that separates what a deployable PRISM build needs from development and repository material. D-006 already states this: produce a package from known-good source rather than deploying the working project folder, and record what is shipped and from which verified state. The wider release path already noted here (version/build identity, cache-bust discipline, regression gate, checklist, rollback, update procedure) stays part of the same item.
+
+**Boundary:** Do not use this item to design hosting, authentication, publishing, server-side user persistence, or other production infrastructure. Those are separate questions. Authentication is [PB-S-006](#pb-s-006--institutional-authentication-university-of-nottingham).
 
 **Readiness:** Problem documented; approach and acceptance criteria not yet written — **not sprint-allocated**.
 
@@ -95,6 +99,21 @@ Light future capabilities — **no commitment or scheduling**:
 
 Sprint 82 delivered first-class MathLive entry + MathJax display for dedicated maths fields. These remain optional post-alpha follow-ons.
 
+### Assessment Pack real-use calibration (Sprint 88 remainder)
+
+**Status:** **Not done.** Not a new architecture, and not Sprint 89.
+
+Sprint 88 closed with the Assessment Pack architecture in place. Further real use was not completed. Remaining acceptance, before any change to depth, count, or form-selection defaults:
+
+- exercise fresh Assessment Packs;
+- observe what automatic component count actually chooses;
+- compare Quick, Standard, and Thorough (still an uncalibrated hypothesis);
+- inspect Plan Assessment Evidence rationale and form selection;
+- inspect the learner experience;
+- fix only concrete findings from that use.
+
+Record: [Sprint 88 closure](../development/sprints/2026-09-28-sprint-88-default-product-workflows-and-assessment-architecture/SPRINT-88-CLOSURE.md).
+
 ---
 
 ## 3. Lightweight future product ideas
@@ -103,7 +122,7 @@ Concise only. **No implementation commitment.**
 
 | Idea | Note |
 | ---- | ---- |
-| **Podcast Script** | Distinct downstream product (speaker roles, conversational form, pacing, segment structure). Hypothesis only: Expository Resource could provide strong upstream material. Not TTS of an Expository Resource. |
+| **Audiovisual / podcast script** | Adaptation of an existing learning resource into a production-ready educational script. A Custom workflow has already shown a credible sequence: Expository Resource → Design Media Adaptation → Author Audiovisual Script (spoken treatment, semantic speech intent, purposeful visual direction). The intellectual workflow is prototyped. A later question is whether this deserves a first-class capability, and how production would be handled if it does. Keep script and design separate from production infrastructure (TTS, audio rendering, video assembly, hosting). Not TTS of an Expository Resource, and not a committed product. |
 | **Presentation / slideshow** | Distinct visual/presenter treatment. Hypothesis only: may be downstream of Expository Resource. **Not** PRISM's next architecture extensibility test (former PB-FA-008 superseded). |
 
 ---
@@ -124,7 +143,82 @@ The educator question concerns **actual behaviour**, not merely stated pedagogic
 
 ---
 
-## 5. Retired / superseded (planning authority only)
+## 5. Exploratory future directions
+
+**Not sprint-allocated. Not committed roadmap items.** Captured so the current line of thought is still intelligible later. Opening a sprint still requires an explicit decision and a concrete approach. Do not treat these as designs.
+
+### PB-FA-013 — PRISM-aware model context
+
+Explore what contextual understanding of PRISM itself should be available to model stages during a workflow: the product, its educational purposes, its terminology, and the relevant workflow boundaries.
+
+The aim is better PRISM-aware reasoning, not larger prompts or indiscriminately more context. Do not design a context subsystem from this note.
+
+### PB-FA-014 — Outcomes Map
+
+Explore a first-class planning capability whose backbone is intended learning.
+
+**Working principle:** An Outcomes Map connects intended learning to a designed learning journey: deriving the learning structure, modelling progression and dependencies, mapping that onto the delivery envelope, and commissioning the PRISM resources needed to realise it.
+
+Current insights, still exploratory:
+
+- PRISM should derive an appropriate outcome hierarchy. The author should not have to choose levels such as module, week, or lesson up front.
+- Outcome structure and delivery structure are different. Model learning dependencies and progression before packaging them into weeks, sessions, or other delivery units.
+- The same approach should be able to fit different envelopes (for example a 10-week undergraduate module, a 3-week CPD course, or a shorter sequence), each at a stated time budget.
+- The design should commission actual first-class PRISM resources and give their workflows sufficiently complete inputs.
+- Textbooks and other learner-facing sources can support the journey. Where PRISM is generating the designed resources, source structure should not mechanically determine the resource design. Design follows intended learning and the learning experiences required.
+
+**Optional author-supplied meta-design:** An author may specify a higher-level pedagogical pattern (for example diagnostic → exposition → application → formative check; problem-first; case-centred; worked example → scaffolded practice → independent performance; or another sequence they define). PRISM should derive a sensible design when no pattern is supplied, and respect one when it is. Do not hard-code a single pedagogical sequence as the Outcomes Map architecture.
+
+Do not implement an Outcomes Map from this note. Repeated unmet educational jobs noticed here may later inform [PB-FA-015](#pb-fa-015--additional-first-class-learning-resource-pipelines). How the designed journey would be assembled for the learner is [PB-FA-016](#pb-fa-016--course-home--course-assembly), to be explored with this item rather than apart from it.
+
+### PB-FA-016 — Course Home / course assembly
+
+Explore a learner-facing way to represent, and eventually publish, the whole journey an Outcomes Map designs — not only the individual PRISM resources inside it. This emerged from [PB-FA-014](#pb-fa-014--outcomes-map) experiments. Investigate it with Outcomes Map, not as an unrelated feature.
+
+**Opportunity:** An Outcomes Map can describe more than a list of resources: title and purpose, intended outcomes, progression and dependencies, delivery groupings, ordered learner sequences, generated resources, selected source material, activities outside PRISM, workplace application, reflection, approximate workload, and how one part leads to the next. If PRISM only emits the separate resources, that larger design is lost or has to be rebuilt by hand.
+
+**Working hypothesis, not architecture:** Outcomes Map is a design layer (the journey). First-class resources are a production layer (particular learner experiences). Course Home / course assembly is an assembly and delivery layer (the complete journey and the links among its parts). Do not treat Course Home as another first-class learning-resource product beside Expository, Interactive, and Assessment.
+
+A possible authoring flow, not a prescribed build: course brief → Outcomes Map → course skeleton → generate the commissioned resources → those resources take the places already reserved for them → publish. The skeleton could exist before the resources do, with not-yet-generated positions. Generating from a position might later pass that commission into the existing first-class workflow, so the finished resource occupies its place without the author reconstructing the course.
+
+**Product-discovery principle:** Not every educational job an Outcomes Map identifies needs to become a first-class PRISM product. A course may include selected reading, workplace activity, live interpersonal practice, discussion, reflection, learning done outside PRISM, or an organisation-specific investigation. Course Home can hold those in the sequence. A new first-class product still has to be justified by a materially different design process, not merely by needing a place in the course. See [PB-FA-015](#pb-fa-015--additional-first-class-learning-resource-pipelines).
+
+Emerging chain: Outcomes Map designs the journey → identifies the educational jobs → commissions first-class resources where appropriate → Course Home assembles the learner-facing journey → generated resources fill their commissioned positions.
+
+Do not prescribe UI, storage, publishing, URLs, navigation, linking, tracking, LMS integration, authentication, persistence, or the exact representation of an Outcomes Map or of generating from a course position.
+
+### PB-S-006 — Institutional authentication (University of Nottingham)
+
+Investigate the University's supported route for making PRISM available to authenticated University of Nottingham users.
+
+**Working intent:** If you can authenticate with a UoN account, you can use PRISM.
+
+The initial requirement is an institutional identity gate, not a PRISM allow-list, invitation system, approval process, role hierarchy, or administration system. The next step is to find the University's supported integration or application-registration route, not to infer a protocol or implement authentication speculatively.
+
+Keep this item to authentication. Publishing, server-side user-owned persistence, and broader multi-user architecture are related later concerns and are not part of this item. Deployment packaging remains [PB-S-005](#pb-s-005--release--deployment-packaging).
+
+### PB-FA-015 — Additional first-class learning-resource pipelines
+
+One exploratory question: whether any further first-class Learning Design product is justified.
+
+PRISM currently has three: Expository Resource (understanding through structured explanation), Interactive Resource (purposeful learner action), and Assessment Pack (interpretable evidence of what a learner knows or can do, with formative feedback).
+
+**Working criterion:** A new first-class product should exist because achieving its educational purpose needs a materially different design process, not because the finished resource has a familiar format. Video, podcast, debate, reflection, comparison, quiz, or worked example may simply be ways of realising an existing product. Do not open a backlog row for every named format.
+
+Candidates to retain, none of them agreed products:
+
+- **Scenario Resource — strongest candidate for experiment.** Purpose: develop judgement, interpretation, and decision-making through a situated, possibly unfolding context. The possible distinction from Interactive is that the central design object is the situation: what the learner can know, what they must decide or interpret, how the situation develops, what is disclosed when, and how debrief works. Relevant to professional judgement (management, clinical, ethics, law, policy, and similar). Experiment only.
+- **Problem Resource — candidate to investigate.** Purpose: organise learning around understanding and resolving a substantive problem (interpretation, what must be learned, attempt, feedback, revision, resolution). The problem might be the architecture, not only an activity inside an Interactive Resource. Not a committed product.
+- **Guided practice / worked example — hypothesis only, weaker than the other two.** A responsibility-fade sequence (model, explain, worked example, scaffolded attempt, fade support, independent performance, feedback) might be a distinct process, or it might already be an Interactive Resource, or Expository plus Interactive. First test: whether the existing workflows can design it convincingly.
+- **Situated Task — candidate to investigate, not a separate backlog item.** A Situated Task prepares and supports a learner to do purposeful learning in an authentic context outside PRISM, and to capture the evidence, observations, or experience needed to learn from it. Interactive is action inside a designed digital experience; here the significant action is outside PRISM (workplace observation, a real conversation, a delegation, a bounded intervention, local guidance, field or professional activity, collecting examples, and similar). It may need its own design process: fitness and safety of the task, the link from intended learning to the real activity, support while doing it, what to notice or collect, and how that experience feeds later learning. That is not the same job as explanation, bounded digital interaction, or formative judgement. Capturing experience does not make it an Assessment Pack; the purpose may be learning through the activity, and "capture" could be a worksheet, observation guide, or template the learner holds. Not every external activity qualifies — some stay ordinary course activities under [PB-FA-016](#pb-fa-016--course-home--course-assembly). It becomes interesting when the external activity itself needs enough deliberate design and learner support to warrant a generated resource. The candidate showed up in management-course Outcomes Map work, where the model kept naming experiences outside PRISM, rather than from a catalogue of formats. Possible chain, not a design: Outcomes Map decides authentic external action is required → decides whether a simple course activity is enough or a Situated Task is warranted → commissions one if justified → Course Home places it in the journey.
+
+**Discovery principle:** Do not invent a catalogue of resource types in advance. If Outcomes Map work repeatedly finds educational jobs that Expository, Interactive, and Assessment represent awkwardly, that is evidence to investigate another pipeline. The question is which PRISM product has the design process appropriate to the job. Not every such job becomes a product; [PB-FA-016](#pb-fa-016--course-home--course-assembly) can hold the others in the course sequence.
+
+No workflow stages, UI options, product-selector entries, or generic product registry follow from this note. Existing Expository, Interactive, and Assessment architecture stays as it is.
+
+---
+
+## 6. Retired / superseded (planning authority only)
 
 These IDs are **no longer live planning items**. Historical detail remains in prior backlog revisions, sprint packs, and governance records.
 

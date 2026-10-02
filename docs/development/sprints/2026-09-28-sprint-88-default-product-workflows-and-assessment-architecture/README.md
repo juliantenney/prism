@@ -1,8 +1,8 @@
 # Sprint 88 — Index
 
 **Sprint:** 88 — Default Product Workflows & Assessment Architecture  
-**Status:** **OPEN** — architecture plan recorded; implementation not authorised  
-**Entry:** [SPRINT-88-START-HERE.md](SPRINT-88-START-HERE.md)
+**Status:** **COMPLETE / CLOSED** (2026-10-02)  
+**Entry:** [SPRINT-88-CLOSURE.md](SPRINT-88-CLOSURE.md)
 
 | Document | Role |
 | -------- | ---- |

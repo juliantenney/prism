@@ -1,7 +1,10 @@
 # Sprint 88 — Handover
 
-**Kind:** Open-sprint continuity  
-**Sprint status:** **OPEN** — Assessment Pack configuration no longer exposes custom component mix (S88-D28)
+**Kind:** Closed-sprint record  
+**Sprint status:** **COMPLETE / CLOSED** (2026-10-02) — [S88-D29](decisions.md#s88-d29--close-sprint-88--first-class-product-and-assessment-architecture-complete)  
+**Continue in:** [Sprint 89](../2026-10-02-sprint-89-architectural-consolidation/SPRINT-89-START-HERE.md)
+
+The notes below are the state of the work when the sprint was still open. Assessment real-use calibration was not finished. See [SPRINT-88-CLOSURE.md](SPRINT-88-CLOSURE.md).
 
 Assessment Pack does not currently expose author-controlled component-form allocation. Plan Assessment Evidence selects forms according to the intended learning and evidence plan. Author form constraints may be reconsidered if real use or expert review establishes a concrete need. Component count, depth, use, and feedback timing stay as they were.
 

@@ -1,6 +1,6 @@
 # Sprint 88 — Architectural debt ledger
 
-**Sprint 88 is OPEN.** Investigation 1 and Product Judgement Pass 1 are recorded. Opening decision: [S88-D01](decisions.md#s88-d01--open-sprint-88--default-product-workflows--assessment-architecture). Judgements: [S88-D03](decisions.md#s88-d03--workshop-remains-an-interactive-variant-for-current-sprint-88-scope) · [S88-D04](decisions.md#s88-d04--preserve-design-assessment-do-not-repair-it-in-sprint-88).
+**Sprint 88 is COMPLETE / CLOSED.** The findings below are unchanged and unresolved. Sprint 89 may investigate them; this file does not.
 
 ## Protected prior programme state
 
@@ -8,7 +8,7 @@
 | ---- | ----- |
 | Alpha development | **Complete** |
 | Sprint 82–87 | **CLOSED** |
-| Sprint 88 | **OPEN** — judgement pass recorded; architecture not chosen |
+| Sprint 88 | **COMPLETE / CLOSED** — findings below not resolved |
 | First-class gate at alpha close | **339/339** |
 | Interactive prompt family | **Protected baseline** ([S83-D04](../2026-09-21-sprint-83-expository-resource-investigation/decisions.md#s83-d04--planning-handoff--sibling-prompt-family--protected-baseline)) |
 | Production changes in Sprint 88 | **Not authorised** |

@@ -1,10 +1,10 @@
 # Sprint 88 — Next-chat briefing
 
-**Sprint status:** **OPEN** — Assessment Pack starting points implemented (S88-D23); not closed
+**Sprint status:** **COMPLETE / CLOSED** (2026-10-02). Continue in [Sprint 89](../2026-10-02-sprint-89-architectural-consolidation/next-chat-briefing.md). Assessment real-use calibration is **not** done.
 
 ---
 
-## One-liner
+## One-liner (historical)
 
 Assessment Pack can be created locally on its own. From a topic it runs Generate Learning Content, Model Knowledge, and Define Learning Outcomes, then Plan Assessment Evidence and Author Assessment Components. From source material, including a completed Interactive or Expository product output, it prefixes Normalize Content and does not reuse that product’s saved Learning Outcomes or workflow. Target component count, purpose, diagnostic intent, and weighting do not change the graph. Design Page is not included, because the existing page assembly and renderer do not publish an assessment pack. Later response forms and a full renderer are not implemented. Sprint 88 stays open.
 

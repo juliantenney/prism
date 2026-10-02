@@ -1,49 +1,42 @@
 # Next sprint — active programme
 
-**Status:** **Sprint 88 OPEN** — Assessment Pack starting points implemented (2026-09-28). Sprint 87 **COMPLETE / CLOSED**. Sprint 86 **COMPLETE / CLOSED**. Sprint 85 **COMPLETE / CLOSED**. Sprint 84–82 **CLOSED**. Alpha development **complete**.  
-**Updated:** 2026-09-28
+**Status:** **Sprint 89 OPEN** — Architectural Consolidation, setup only (2026-10-02). Sprint 88 **COMPLETE / CLOSED**. Sprint 87–82 **CLOSED**. Alpha development **complete**.  
+**Updated:** 2026-10-02
 
 ---
 
 ## Current programme
 
-**Open sprint:** [Sprint 88 — Default Product Workflows & Assessment Architecture](../development/sprints/2026-09-28-sprint-88-default-product-workflows-and-assessment-architecture/SPRINT-88-START-HERE.md) — **OPEN** — Assessment Pack starting points implemented ([programme stub](sprint-88-default-product-workflows-and-assessment-architecture.md))
+**Open sprint:** [Sprint 89 — Architectural Consolidation](../development/sprints/2026-10-02-sprint-89-architectural-consolidation/SPRINT-89-START-HERE.md) — **OPEN** — investigation not started ([programme stub](sprint-89-architectural-consolidation.md))
 
-**Type:** Open sprint — bounded implementation slices complete; not closed  
-**Opening decision:** [S88-D01](../development/sprints/2026-09-28-sprint-88-default-product-workflows-and-assessment-architecture/decisions.md#s88-d01--open-sprint-88--default-product-workflows--assessment-architecture)  
-**Production changes:** Bounded slices S88-T-012, T-015, and T-016 are complete. Further Assessment work is not authorised.  
-**Backlog:** none assigned at open
+**Type:** Open sprint — setup complete; no implementation authorised  
+**Opening decision:** [S89-D01](../development/sprints/2026-10-02-sprint-89-architectural-consolidation/decisions.md#s89-d01--open-sprint-89--architectural-consolidation)  
+**Production changes:** None authorised.  
+**First substantive task:** trace the real pipeline from Domain Packs through Interactive, Expository, and Assessment. The hypothetical fourth-product check comes after that. Not done. [S89-D02](../development/sprints/2026-10-02-sprint-89-architectural-consolidation/decisions.md#s89-d02--first-class-product-pipelines-are-predetermined) decides that first-class pipelines are predetermined.
 
-**Last closed sprint:** [Sprint 87 — Expository Quality — First Successor Implementation](../development/sprints/2026-09-22-sprint-87-expository-quality-first-successor-implementation/T-008-SPRINT-87-CLOSURE.md) — **COMPLETE / CLOSED** ([closeout](sprint-87-closeout.md))
+**Last closed sprint:** [Sprint 88 — Default Product Workflows & Assessment Architecture](../development/sprints/2026-09-28-sprint-88-default-product-workflows-and-assessment-architecture/SPRINT-88-CLOSURE.md) — **COMPLETE / CLOSED** ([closeout](sprint-88-closeout.md))
 
 ### Alpha milestone (still authoritative)
 
 > **Alpha development complete.** First-class journeys have been manually exercised and engineering-gated; known remaining issues and deferred capabilities are documented for post-alpha work.
 
-**Not claimed:** production-ready · formally WCAG conformant · bug-free · feature-complete for every future product/output type.
+**Not claimed:** production-ready · formally WCAG conformant · bug-free · feature-complete for every future product/output type · Assessment Pack depth and automatic count calibrated.
 
 ### Protected state
 
 | Item | State |
 | ---- | ----- |
-| First-class gate | `npm run test:first-class` → **339/339** |
-| Sprint 82–87 | **CLOSED** |
-| Sprint 87 | **COMPLETE / CLOSED** |
-| Sprint 88 | **OPEN** — not closed |
-| Production changes from Sprint 88 | Bounded slices complete; further work not authorised |
-| Canonical/default workflows | **Implemented** for normal first-class create |
-| Assessment Pack starting points | **Implemented** — existing outcomes, topic, authoritative source |
-| Interactive prompt family | **Protected baseline** (S83-D04) |
-
-Sprint 88 questions are hypotheses. They are not architectural decisions.
+| First-class gate last recorded | **339/339** (not rerun at Sprint 89 open) |
+| Sprint 82–88 | **CLOSED** |
+| Sprint 89 | **OPEN** — setup only |
+| Outcomes Map, Course Home, PB-FA-015 candidates | **Out of scope** for Sprint 89 |
+| Assessment real-use calibration | **Not done** — [backlog](../backlog/PRODUCT-BACKLOG.md#assessment-pack-real-use-calibration-sprint-88-remainder) |
 
 ---
 
 ## Immediate next
 
-Sprint 88 stays open. Do not add later Assessment response forms, a complete renderer, marking, or Design Assessment repair unless a later decision authorises them.
-
-Sprint 87 follow-on remains unauthorised. Deferred Sprint 87 capabilities stay future/backlog only if later explicitly authorised.
+Start Sprint 89 from [SPRINT-89-START-HERE.md](../development/sprints/2026-10-02-sprint-89-architectural-consolidation/SPRINT-89-START-HERE.md). Do not implement before the fourth-product trace. Do not spend this sprint on Assessment calibration or on Outcomes Map.
 
 Canonical planning authority remains [PRODUCT-BACKLOG.md](../backlog/PRODUCT-BACKLOG.md).
 
@@ -51,7 +44,7 @@ Canonical planning authority remains [PRODUCT-BACKLOG.md](../backlog/PRODUCT-BAC
 
 ## Previous sprints
 
-- [Sprint 88](sprint-88-default-product-workflows-and-assessment-architecture.md) — **OPEN / investigation beginning**
+- [Sprint 89](sprint-89-architectural-consolidation.md) — **OPEN / setup only**
+- [Sprint 88 closeout](sprint-88-closeout.md) — **COMPLETE / CLOSED**
 - [Sprint 87 closeout](sprint-87-closeout.md) — **COMPLETE / CLOSED**
 - [Sprint 86 closeout](sprint-86-closeout.md) — **COMPLETE / CLOSED**
-- [Sprint 85](../development/sprints/2026-09-21-sprint-85-expository-resource-implementation/) — **COMPLETE / CLOSED**

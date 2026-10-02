@@ -1,9 +1,10 @@
 # Sprint 88 — Decision Log
 
-**Sprint status:** **OPEN** — Investigation 1 recorded; Product Judgement Pass 1 recorded; not closed  
+**Sprint status:** **COMPLETE / CLOSED** (2026-10-02)  
+**Closure:** [SPRINT-88-CLOSURE.md](SPRINT-88-CLOSURE.md) · [S88-D29](#s88-d29--close-sprint-88--first-class-product-and-assessment-architecture-complete)  
 **Format:** ID · Decision · Status · Rationale · Consequences
 
-No architectural decision about default workflows or Assessment has been taken. The entry below only opens the investigation sprint.
+Earlier entries opened the sprint before any architectural decision. S88-D29 closes it. Historical sentences that say the sprint stays open describe the state at the time of that entry.
 
 ---
 
@@ -455,5 +456,15 @@ Assessment Pack direction is adopted (S88-D13–D15) and amended (S88-D17–D21)
 
 - **Status:** **Accepted** (2026-09-28)
 
-- **Consequences:** Sprint 88 stays **OPEN**. This is an alpha scope decision about current usefulness, not a finding that author form constraints are invalid.
+- **Consequences:** This is an alpha scope decision about current usefulness, not a finding that author form constraints are invalid.
+
+---
+
+## S88-D29 — Close Sprint 88 — first-class product and Assessment architecture complete
+
+- **Decision:** Close Sprint 88 as **COMPLETE / CLOSED** for its architectural and implementation purpose. Interactive, Expository, and Assessment Pack are sibling first-class products. Normal first-class create is deterministic. Assessment Pack can be created from a topic, an authoritative source, or another first-class product output used as source material, and it publishes through its own artefact chain. Real-use calibration of fresh packs is **not** complete and is **not** claimed. That remainder is follow-on acceptance work, recorded in the closure and in the product backlog. It does not keep this sprint open. Architectural consolidation is the next sprint, not further Assessment design.
+
+- **Status:** **Accepted** (2026-10-02)
+
+- **Consequences:** Sprint 89 is opened separately. Outcomes Map, Course Home, and candidate future products stay out of scope. S88-AD-001 through S88-AD-006 remain recorded and unresolved.
 

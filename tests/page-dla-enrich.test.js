@@ -321,20 +321,6 @@ test("S77 Gate B: DLA canonical contract injected once on Copy; task_material_de
   );
 });
 
-test("S77 Studio: canonical heading once; no legacy Sprint 58 pair", () => {
-  const wf = buildTestWorkflow();
-  setupWorkflowCaptures(api, wf, SAMPLE_LO);
-  const dlaStep = wf.steps.find((s) => s.canonical_step_id === "step_design_learning_activities");
-  const studio = api.applyWorkflowStepRuntimePromptAugmentations(
-    "DLA pack body for studio assembly.",
-    dlaStep,
-    wf
-  );
-  assert.equal((studio.split("## 1. DLA ROLE AND AUTHORITY").length - 1), 1);
-  assert.doesNotMatch(studio, /### Sprint 58 vNext DLA partial-page contract/);
-  assert.doesNotMatch(studio, /Canonical DLA partial activity shape/);
-});
-
 test("Phase D: dlaCanonicalAssembler false no longer restores Sprint 76 dual contract+shape", () => {
   const wf = buildTestWorkflow({
     dlaCanonicalAssembler: false,

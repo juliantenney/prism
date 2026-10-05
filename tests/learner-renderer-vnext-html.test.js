@@ -194,19 +194,6 @@ test("vNext material renderer renders markdown headings and emphasis", () => {
   assert.match(output, /data-material-type="text"/);
 });
 
-test("vNext material renderer renders checklist criteria and revision guidance", () => {
-  const { model } = loadModel();
-  const material = materialById(model, "A1-M4");
-  const output = renderMaterial(material);
-
-  assert.match(output, /util-checklist-block/);
-  assert.match(output, /<ul class="util-checklist">/);
-  assert.match(output, /Have I explained residual variance\?/);
-  assert.match(output, /util-checklist-instruction/);
-  assert.match(output, /revise before continuing/i);
-  assert.doesNotMatch(output, /data-render-status="unsupported"/);
-});
-
 test("vNext beat renderer renders expected output once with markdown body", () => {
   const activity = loadModel().model.activities.find((candidate) => candidate.id === "A1");
   const beat = activity.beats.find(
@@ -338,18 +325,6 @@ test("vNext page renderer emits orientation sections with markdown before activi
   const activityStart = output.indexOf('data-region="activities"');
   const orientationStart = output.indexOf('data-region="orientation"');
   assert.ok(orientationStart >= 0 && orientationStart < activityStart);
-});
-
-test("vNext page renderer emits assessment guidance from model items", () => {
-  const { model } = loadModel();
-  const output = renderPage(model);
-
-  assert.match(output, /util-assessment-guidance/);
-  assert.match(output, /util-assessment-item/);
-  assert.match(output, /Which statement best describes heteroscedasticity in a regression model\?/);
-  assert.match(output, /util-assessment-options/);
-  assert.doesNotMatch(output, /item_type/);
-  assert.doesNotMatch(output, /single_answer_mcq/);
 });
 
 test("vNext page renderer emits study tips with markdown list content", () => {

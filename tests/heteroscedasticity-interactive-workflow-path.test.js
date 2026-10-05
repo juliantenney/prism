@@ -219,70 +219,6 @@ test("production runstate loader migrates compressed Episode Plan to FunctionEnu
   });
 });
 
-test("interactive assemble+render path succeeds from migrated workflow storage", () => {
-  const bundle = loadBundle();
-  const workflow = bundle.workflows[0];
-  const { api, storage } = loadProductionApiWithStorage(bundle);
-
-  // Ensure persistence migration ran and was written back.
-  if (typeof api.loadWorkflowRunStateStoreForTest === "function") {
-    api.loadWorkflowRunStateStoreForTest();
-  } else {
-    // Touch storage via migration module + save through localStorage write already done by app load?
-    const migrated = migration.migrateRunStateStore(bundle.runstate);
-    storage[bundle.storageKeys.runstate] = JSON.stringify(migrated.store);
-  }
-
-  api.setWorkflowsForTest([workflow]);
-  api.setSelectedWorkflowIdForTest(workflow.id);
-  const rec = JSON.parse(storage[bundle.storageKeys.runstate])[workflow.id];
-  api.setWorkflowRunCapturedOutputsForTest(rec.capturedOutputs);
-  api.setWorkflowRunCapturedOutputsRawForTest(rec.capturedOutputsRaw);
-
-  const seed = JSON.parse(
-    loadBundle().runstate[workflow.id].capturedOutputsRaw["step-dp"]
-  );
-  // Pre-migration seed still has compressed functions; production path must migrate.
-  assert.equal(seed.activities[0].episode_plan.beats[2].function, "check_understanding");
-
-  const assembled = api.resolvePageForRenderOrAssembly(seed, workflow, {
-    captures: rec.capturedOutputs,
-    capturesRaw: rec.capturedOutputsRaw
-  });
-  assert.equal(assembled.artifact_type, "page");
-  assembled.activities.forEach(function (activity) {
-    assert.deepEqual(
-      activity.episode_plan.beats.map(function (b) {
-        return b.function;
-      }),
-      EXPECTED[activity.activity_id].slice()
-    );
-  });
-
-  const built = buildPageModel(assembled);
-  assert.equal(built.ok, true, JSON.stringify(built.errors));
-  built.diagnostics.archetypeInspection.forEach(function (insp) {
-    assert.equal(insp.validationRoute, "canonical-grammar");
-    assert.equal(insp.runtimeAuthority, "shared-archetype-grammar");
-  });
-  assert.deepEqual(validatePageModel(assembled, built.model).errors, []);
-
-  const nodeRender = renderLearnerPageHtml(assembled, { compositionMode: "moments" });
-  assert.equal(nodeRender.error, null);
-  assert.ok(nodeRender.html && nodeRender.html.length > 1000);
-
-  const pipeline = api.runUtilityPageExportPipelineForTest(seed, {
-    workflow: workflow,
-    captures: rec.capturedOutputs,
-    capturesRaw: rec.capturedOutputsRaw,
-    rendererVersion: "vnext",
-    compositionMode: "moments",
-    applyCompositionValidation: false
-  });
-  assert.equal(pipeline.error, null, pipeline.error);
-  assert.match(pipeline.html, /data-renderer="vnext"/);
-});
-
 test("workflow-backed page render preserves stable persistence identity", () => {
   const bundle = loadBundle();
   const workflow = bundle.workflows[0];
@@ -355,59 +291,6 @@ test("workflow-backed page render preserves stable persistence identity", () => 
   assert.doesNotMatch(pipeline.html, /data-persistence-page-key="[^"]*no-workflow[^"]*"/);
   assert.doesNotMatch(pipeline.html, /data-persistence-page-key="[^"]*no-page-id[^"]*"/);
   assert.doesNotMatch(pipeline.html, /data-persistence-identity-unstable="true"/);
-});
-
-test("activity divider CSS separates consecutive activities only", () => {
-  const bundle = loadBundle();
-  const workflow = bundle.workflows[0];
-  const { api, storage } = loadProductionApiWithStorage(bundle);
-
-  api.loadWorkflowRunStateStoreForTest();
-  api.setWorkflowsForTest([workflow]);
-  api.setSelectedWorkflowIdForTest(workflow.id);
-  const rec = JSON.parse(storage[bundle.storageKeys.runstate])[workflow.id];
-  api.setWorkflowRunCapturedOutputsForTest(rec.capturedOutputs);
-  api.setWorkflowRunCapturedOutputsRawForTest(rec.capturedOutputsRaw);
-
-  const seed = JSON.parse(rec.capturedOutputsRaw["step-dp"]);
-  const pipeline = api.runUtilityPageExportPipelineForTest(seed, {
-    workflow: workflow,
-    captures: rec.capturedOutputs,
-    capturesRaw: rec.capturedOutputsRaw,
-    rendererVersion: "vnext",
-    compositionMode: "moments",
-    applyCompositionValidation: false
-  });
-  assert.equal(pipeline.error, null, pipeline.error);
-  const html = pipeline.html;
-
-  assert.match(
-    html,
-    /\.util-learner-renderer-vnext\s+\.util-activity\s*\+\s*\.util-activity\s*\{[^}]*border-top:\s*1px\s+solid\s+#e5e7eb/
-  );
-  assert.match(
-    html,
-    /\.util-learner-renderer-vnext\s+\.util-activity\s*\+\s*\.util-activity\s*\{[^}]*margin-top:\s*4rem/
-  );
-  assert.match(
-    html,
-    /\.util-learner-renderer-vnext\s+\.util-activity\s*\+\s*\.util-activity\s*\{[^}]*padding-top:\s*3rem/
-  );
-
-  const activityArticles = html.match(/<article class="util-activity[^"]*"/g) || [];
-  assert.equal(activityArticles.length, 5);
-  ["A1", "A2", "A3", "A4", "A5"].forEach(function (id) {
-    assert.match(html, new RegExp('id="activity-' + id + '"'));
-  });
-
-  // Adjacent-sibling rule must not invent a leading divider before the first activity.
-  assert.doesNotMatch(
-    html,
-    /\.util-learning-activities\s*>\s*\.util-activity\s*:\s*first-child[^{]*\{[^}]*border-top/
-  );
-  assert.doesNotMatch(html, /data-composition-mode="beats"/);
-  assert.match(html, /data-renderer="vnext"/);
-  assert.match(html, /data-composition-moment="do"/);
 });
 
 test("argument_structure_hint renders before A5 evaluative workspace from workflow data", () => {

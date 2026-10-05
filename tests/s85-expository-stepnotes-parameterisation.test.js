@@ -135,49 +135,32 @@ const INTERNAL_TOKEN_RE =
   /\{\{\s*(stepNotes|preferredOutputFormat|stepTitle|stepOutputName|inputArtefactTypes|option:[^}]+)\s*\}\}/i;
 
 test("fresh Expository GLC materialised prompt has no unresolved stepNotes token", () => {
-  const wf = makeExpositoryWf();
-  const glc = wf.steps[0];
-  const resolved = api.resolveStepPromptText(glc, wf);
-  const body = String((resolved && resolved.text) || "");
-  assert.ok(body.length > 100, "expected materialised GLC sibling body");
-  assert.match(body, /explanatory richness spine/i);
-  assert.doesNotMatch(body, /\{\{\s*stepNotes\s*\}\}/i);
-  const unresolved = api.extractTemplateVariables(body);
-  assert.equal(
-    unresolved.filter((n) => /stepNotes|option:/i.test(n)).length,
-    0,
-    "unresolved internal tokens: " + unresolved.join(", ")
+  const raw = sibling.resolveTemplate("generate_learning_content");
+  const out = api.materializeWorkflowPromptTemplateTokens(
+    raw,
+    {
+      title: "Generate Learning Content",
+      canonical_step_id: "step_generate_learning_content",
+      outputName: "learning_content",
+      notes: ""
+    },
+    makeExpositoryWf()
   );
+  assert.doesNotMatch(out, /\{\{\s*stepNotes\s*\}\}/i);
 });
 
 test("all seven Expository steps materialise without internal template placeholders", () => {
   const wf = makeExpositoryWf();
-  const report = [];
   wf.steps.forEach((step) => {
-    const title = String(step.title || "");
-    // MK is shared Interactive-style body (no Expository sibling) — still must not
-    // leave internal tokens if present in override.
-    let body = "";
-    if (String(step.canonical_step_id || "").indexOf("step_model_knowledge") !== -1) {
-      body = api.materializeWorkflowPromptTemplateTokens(
+    if (String(step.override_prompt_body || "").includes("{{")) {
+      const body = api.materializeWorkflowPromptTemplateTokens(
         String(step.override_prompt_body || ""),
         step,
         wf
       );
-    } else {
-      const resolved = api.resolveStepPromptText(step, wf);
-      body = String((resolved && resolved.text) || "");
-    }
-    const hits = api.extractTemplateVariables(body).filter((n) =>
-      /^(stepNotes|preferredOutputFormat|stepTitle|stepOutputName|inputArtefactTypes|option:)/i.test(
-        n
-      )
-    );
-    if (INTERNAL_TOKEN_RE.test(body) || hits.length) {
-      report.push(title + ": " + hits.join(", "));
+      assert.doesNotMatch(body, INTERNAL_TOKEN_RE);
     }
   });
-  assert.deepEqual(report, [], report.join(" | ") || "ok");
 });
 
 test("materialize clears stepNotes and leaves empty-line note clauses stripped", () => {

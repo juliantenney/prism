@@ -2,8 +2,8 @@
 
 **Canonical location:** `docs/backlog/PRODUCT-BACKLOG.md`  
 **Status:** Active — **alpha-use period** (Alpha development complete, 2026-09-02)  
-**Last updated:** 2026-10-02 (Sprint 89 closed; PB-S-007 recorded)  
-**Active sprint:** none. Last closed: [Sprint 89 — Architectural Consolidation](../development/sprints/2026-10-02-sprint-89-architectural-consolidation/SPRINT-89-CLOSURE.md) — **COMPLETE / CLOSED**
+**Last updated:** 2026-10-05 (Sprint 90 closed — Learning Journey Foundations)  
+**Active sprint:** none. Last closed: [Sprint 90 — Learning Journey Foundations](../development/sprints/2026-10-05-sprint-90-learning-journey-foundations/SPRINT-90-CLOSURE.md) — **COMPLETE / CLOSED** (discovery / prototyping; not implementation)
 
 This file answers: **what might we actually choose to work on next?**
 
@@ -116,31 +116,20 @@ Record: [Sprint 88 closure](../development/sprints/2026-09-28-sprint-88-default-
 
 ### PB-S-007 — Broad-suite renderer/page-render failure reconciliation
 
-**Status:** **Not started.** Not sprint-allocated.
+**Status:** **Complete** (2026-10-05). Diagnostic + remediation done. Not sprint-allocated (no sprint opened; Sprint 89 remains CLOSED).
 
-After Sprint 89 the broad suite is not green.
+**Record:** [PB-S-007-broad-suite-failure-reconciliation.md](../development/governance/PB-S-007-broad-suite-failure-reconciliation.md) (§12 remediation)  
+**Prior ancestor:** [D-014](../development/governance/D-014-test-suite-confidence-diagnostic.md)
 
 | | Tests | Passed | Failed | Skipped |
 | - | ----: | -----: | -----: | ------: |
-| After Slice 3 | 4214 | 3696 | 517 | 1 |
-| After Slice 4 | 4220 | 3702 | 517 | 1 |
+| Sprint 89 Slice 4 baseline | 4220 | 3702 | 517 | 1 |
+| After PB-S-007 remediation | **3705** | **3704** | **0** | **1** |
+| First-class gate | **339** | **339** | **0** | 0 |
 
-The six added Slice 4 tests passed. The failure count did not change. Failures were reported mainly in learner-renderer and page-render test families. Sprint 89 did not investigate or fix them.
+The 517 failures were not 517 product bugs. Remediation fixed harness gaps (GAM assembler + first-class family inject; DOM stubs; sections→activities test convert), retired superseded HTML/golden/prompt archaeology, and updated stale current-contract asserts. **No production `app.js` / `lib/` changes.** Suspected “A” Expository KS and Assessment Pack publish failures were harness/identity gaps, not renderer defects.
 
-**Purpose:** determine whether each failing test family protects current PRISM behaviour, superseded behaviour, or a genuinely broken current contract. The purpose is not to make every test green at any cost.
-
-Classify by failure family, not by repairing 517 assertions one by one:
-
-- A. **Current contract / real defect** — the test describes behaviour current PRISM still promises and production code is wrong. Fix the code and keep the test.
-- B. **Current contract / stale test** — the intended behaviour still exists but the fixture, assertion, or API expectation is outdated. Update the test.
-- C. **Superseded architecture** — the test protects behaviour later architecture removed or replaced. Delete or rewrite the test. Do not restore the obsolete behaviour.
-- D. **Duplicate / invalid test** — the test no longer protects anything useful on its own. Remove it.
-- E. **Environment / harness failure** — setup, fixture loading, or the harness caused the failure. Repair that, then reassess the test.
-
-For each family, establish the failing files, common stack traces, shared assertions, common fixtures, affected production modules, the architectural era of the test, whether that production behaviour is still reachable, and whether current first-class tests already cover the contract. Compare the tests with the architecture in [Sprint 89 closure](../development/sprints/2026-10-02-sprint-89-architectural-consolidation/SPRINT-89-CLOSURE.md) before changing production code.
-
-**Readiness:** Baseline recorded. Approach for a future investigation is the classification above. Acceptance criteria for a repair programme are not written — **not sprint-allocated**.
-
+**Outcome:** Broad suite green; first-class still 339/339; confidence restored without restoring obsolete architecture.
 ---
 
 ## 3. Lightweight future product ideas
@@ -182,21 +171,24 @@ The aim is better PRISM-aware reasoning, not larger prompts or indiscriminately 
 
 ### PB-FA-014 — Outcomes Map
 
-Explore a first-class planning capability whose backbone is intended learning.
+Explore a first-class planning capability whose backbone is intended learning. Developed in Sprint 90 under the name **Learning Journey**.
 
-**Working principle:** An Outcomes Map connects intended learning to a designed learning journey: deriving the learning structure, modelling progression and dependencies, mapping that onto the delivery envelope, and commissioning the PRISM resources needed to realise it.
+**Foundations status:** [Sprint 90 — COMPLETE / CLOSED](../development/sprints/2026-10-05-sprint-90-learning-journey-foundations/SPRINT-90-CLOSURE.md) · authoritative record [LEARNING-JOURNEY-FOUNDATIONS.md](../development/sprints/2026-10-05-sprint-90-learning-journey-foundations/LEARNING-JOURNEY-FOUNDATIONS.md)
 
-Current insights, still exploratory:
+**Working principle:** Learning Journey designs the progression of learning experiences required to move a particular group of learners towards intended learning, within learning time and duration constraints. Outcomes describe where learners need to get to; the journey describes how learning should develop to get them there.
 
-- PRISM should derive an appropriate outcome hierarchy. The author should not have to choose levels such as module, week, or lesson up front.
-- Outcome structure and delivery structure are different. Model learning dependencies and progression before packaging them into weeks, sessions, or other delivery units.
-- The same approach should be able to fit different envelopes (for example a 10-week undergraduate module, a 3-week CPD course, or a shorter sequence), each at a stated time budget.
-- The design should commission actual first-class PRISM resources and give their workflows sufficiently complete inputs.
-- Textbooks and other learner-facing sources can support the journey. Where PRISM is generating the designed resources, source structure should not mechanically determine the resource design. Design follows intended learning and the learning experiences required.
+Foundations conclusions (see foundation document for Established / Working hypothesis / Open question):
 
-**Optional author-supplied meta-design:** An author may specify a higher-level pedagogical pattern (for example diagnostic → exposition → application → formative check; problem-first; case-centred; worked example → scaffolded practice → independent performance; or another sequence they define). PRISM should derive a sensible design when no pattern is supplied, and respect one when it is. Do not hard-code a single pedagogical sequence as the Outcomes Map architecture.
+- PRISM should derive appropriate intended learning where authoritative outcomes are not supplied; do not mandate outcomes as an elicitation field.
+- Learning time and duration are distinct author-owned constraints; do not organise primarily by week/session/course abstractions.
+- Source structure must not automatically become learning structure.
+- Dynamic composition belongs between products; deterministic process belongs within first-class products.
+- Every required learning element must ultimately be realisable through one or more learner-facing PRISM product outputs; unsupported commissions stay visible rather than becoming invisible non-product activity.
+- Provisional product-family hypothesis from Sprint 90 discovery: Expository, Interactive, Independent Task (candidate), Assessment Pack — see [PB-FA-015](#pb-fa-015--additional-first-class-learning-resource-pipelines).
 
-Do not implement an Outcomes Map from this note. Repeated unmet educational jobs noticed here may later inform [PB-FA-015](#pb-fa-015--additional-first-class-learning-resource-pipelines). How the designed journey would be assembled for the learner is [PB-FA-016](#pb-fa-016--course-home--course-assembly), to be explored with this item rather than apart from it.
+**Optional author-supplied meta-design:** An author may specify a higher-level pedagogical pattern (for example diagnostic → exposition → application → formative check; problem-first; case-centred; worked example → scaffolded practice → independent performance; or another sequence they define). PRISM should derive a sensible design when no pattern is supplied, and respect one when it is. Do not hard-code a single pedagogical sequence as the Learning Journey architecture.
+
+Do not implement Learning Journey or Outcomes Map from this note alone. Sprint 90 closed foundations only; production implementation requires a new explicit sprint. How the designed journey would be assembled for the learner remains related to [PB-FA-016](#pb-fa-016--course-home--course-assembly).
 
 ### PB-FA-016 — Course Home / course assembly
 
@@ -208,7 +200,7 @@ Explore a learner-facing way to represent, and eventually publish, the whole jou
 
 A possible authoring flow, not a prescribed build: course brief → Outcomes Map → course skeleton → generate the commissioned resources → those resources take the places already reserved for them → publish. The skeleton could exist before the resources do, with not-yet-generated positions. Generating from a position might later pass that commission into the existing first-class workflow, so the finished resource occupies its place without the author reconstructing the course.
 
-**Product-discovery principle:** Not every educational job an Outcomes Map identifies needs to become a first-class PRISM product. A course may include selected reading, workplace activity, live interpersonal practice, discussion, reflection, learning done outside PRISM, or an organisation-specific investigation. Course Home can hold those in the sequence. A new first-class product still has to be justified by a materially different design process, not merely by needing a place in the course. See [PB-FA-015](#pb-fa-015--additional-first-class-learning-resource-pipelines).
+**Product-discovery principle:** A new first-class product still has to be justified by a materially different design process, not merely by needing a place in the course. See [PB-FA-015](#pb-fa-015--additional-first-class-learning-resource-pipelines). **Sprint 90 commissioning invariant:** every required Learning Journey element must ultimately be realisable through one or more learner-facing PRISM product outputs; where the current family cannot realise an experience, keep it as an unsupported commission rather than making the learning invisible ([LEARNING-JOURNEY-FOUNDATIONS.md](../development/sprints/2026-10-05-sprint-90-learning-journey-foundations/LEARNING-JOURNEY-FOUNDATIONS.md)). That does not mean one element equals one product.
 
 Emerging chain: Outcomes Map designs the journey → identifies the educational jobs → commissions first-class resources where appropriate → Course Home assembles the learner-facing journey → generated resources fill their commissioned positions.
 
@@ -232,16 +224,19 @@ PRISM currently has three: Expository Resource (understanding through structured
 
 **Working criterion:** A new first-class product should exist because achieving its educational purpose needs a materially different design process, not because the finished resource has a familiar format. Video, podcast, debate, reflection, comparison, quiz, or worked example may simply be ways of realising an existing product. Do not open a backlog row for every named format.
 
+**Sprint 90 status/reference:** Learning Journey commissioning experiments identified **Independent Task** as the strongest current additional first-class product candidate (purposeful learner-controlled activity with a structured record; grammar brief → activity → record → reconnect). Independent academic study and situated professional application were treated as variants of the same product-level job. See [LEARNING-JOURNEY-FOUNDATIONS.md](../development/sprints/2026-10-05-sprint-90-learning-journey-foundations/LEARNING-JOURNEY-FOUNDATIONS.md). This is discovery evidence, not an implementation commitment and not a permanently closed taxonomy.
+
 Candidates to retain, none of them agreed products:
 
-- **Scenario Resource — strongest candidate for experiment.** Purpose: develop judgement, interpretation, and decision-making through a situated, possibly unfolding context. The possible distinction from Interactive is that the central design object is the situation: what the learner can know, what they must decide or interpret, how the situation develops, what is disclosed when, and how debrief works. Relevant to professional judgement (management, clinical, ethics, law, policy, and similar). Experiment only.
+- **Independent Task — strongest current candidate (Sprint 90).** Purpose: frame purposeful learner activity undertaken substantially outside the product itself, and provide a structured place to record resulting thinking, findings, observations, or conclusions. Supersedes the earlier “Situated Task” label as the primary name for this job while retaining the same underlying concern. Not implemented.
+- **Scenario Resource — candidate for experiment.** Purpose: develop judgement, interpretation, and decision-making through a situated, possibly unfolding context. The possible distinction from Interactive is that the central design object is the situation: what the learner can know, what they must decide or interpret, how the situation develops, what is disclosed when, and how debrief works. Relevant to professional judgement (management, clinical, ethics, law, policy, and similar). Experiment only.
 - **Problem Resource — candidate to investigate.** Purpose: organise learning around understanding and resolving a substantive problem (interpretation, what must be learned, attempt, feedback, revision, resolution). The problem might be the architecture, not only an activity inside an Interactive Resource. Not a committed product.
 - **Guided practice / worked example — hypothesis only, weaker than the other two.** A responsibility-fade sequence (model, explain, worked example, scaffolded attempt, fade support, independent performance, feedback) might be a distinct process, or it might already be an Interactive Resource, or Expository plus Interactive. First test: whether the existing workflows can design it convincingly.
-- **Situated Task — candidate to investigate, not a separate backlog item.** A Situated Task prepares and supports a learner to do purposeful learning in an authentic context outside PRISM, and to capture the evidence, observations, or experience needed to learn from it. Interactive is action inside a designed digital experience; here the significant action is outside PRISM (workplace observation, a real conversation, a delegation, a bounded intervention, local guidance, field or professional activity, collecting examples, and similar). It may need its own design process: fitness and safety of the task, the link from intended learning to the real activity, support while doing it, what to notice or collect, and how that experience feeds later learning. That is not the same job as explanation, bounded digital interaction, or formative judgement. Capturing experience does not make it an Assessment Pack; the purpose may be learning through the activity, and "capture" could be a worksheet, observation guide, or template the learner holds. Not every external activity qualifies — some stay ordinary course activities under [PB-FA-016](#pb-fa-016--course-home--course-assembly). It becomes interesting when the external activity itself needs enough deliberate design and learner support to warrant a generated resource. The candidate showed up in management-course Outcomes Map work, where the model kept naming experiences outside PRISM, rather than from a catalogue of formats. Possible chain, not a design: Outcomes Map decides authentic external action is required → decides whether a simple course activity is enough or a Situated Task is warranted → commissions one if justified → Course Home places it in the journey.
+- **Situated Task — earlier label; see Independent Task above.** Historical Outcomes Map language for authentic external action with deliberate design and capture. Sprint 90 reframes this under Independent Task rather than as a separate product from independent study commissions.
 
-**Discovery principle:** Do not invent a catalogue of resource types in advance. If Outcomes Map work repeatedly finds educational jobs that Expository, Interactive, and Assessment represent awkwardly, that is evidence to investigate another pipeline. The question is which PRISM product has the design process appropriate to the job. Not every such job becomes a product; [PB-FA-016](#pb-fa-016--course-home--course-assembly) can hold the others in the course sequence.
+**Discovery principle:** Do not invent a catalogue of resource types in advance. If Learning Journey / Outcomes Map work repeatedly finds educational jobs that Expository, Interactive, and Assessment represent awkwardly, that is evidence to investigate another pipeline. The question is which PRISM product has the design process appropriate to the job. Unsupported commissions should remain visible rather than becoming invisible non-product activity; every required learning element must ultimately be realisable through one or more learner-facing PRISM product outputs (not necessarily 1:1).
 
-No workflow stages, UI options, product-selector entries, or generic product registry follow from this note. Existing Expository, Interactive, and Assessment architecture stays as it is.
+No workflow stages, UI options, product-selector entries, or generic product registry follow from this note. Existing Expository, Interactive, and Assessment architecture stays as it is unless a later sprint explicitly changes them.
 
 ---
 

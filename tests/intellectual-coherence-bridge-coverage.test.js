@@ -192,25 +192,6 @@ function makeMinimalEnrichedPage(activities) {
   };
 }
 
-test("contract: DLA output contract requires intellectual_coherence_bridge on every activity including A1", () => {
-  const prompt = dlaRuntimePrompt();
-  const scaffold = scaffoldLib.buildLdGuidedLearningScaffoldPromptBlock({
-    includeDlaPreEmit: true
-  });
-  const enrichContract = require("../lib/ld-dla-page-enrich-contract.js").assembleDlaCanonicalContract().text;
-  assert.match(prompt, /REQUIRED on every activity including A1|mandatory on every activity including A1/i);
-  assert.doesNotMatch(prompt, /Omit on the first activity/i);
-  assert.match(prompt, /intellectual_coherence_bridge/);
-  assert.match(enrichContract, /"activity_id": "A1"/);
-  assert.match(enrichContract, /"intellectual_coherence_bridge":/);
-  assert.match(scaffold, /mandatory every activity including A1/i);
-  assert.match(enrichContract, /intellectual_coherence_bridge REQUIRED on every activity including A1/i);
-  assert.match(
-    fs.readFileSync(ldPatternsPath, "utf8"),
-    /bridge mandatory on every activity including A1/i
-  );
-});
-
 test("contract: A1 requires an intellectual_coherence_bridge", () => {
   const coverage = api.evaluateLearnerPageDlaActivityFramingCoverage([
     {

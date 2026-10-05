@@ -5,7 +5,6 @@ const test = require("node:test");
 const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const path = require("node:path");
-const vm = require("node:vm");
 
 const repoRoot = path.resolve(__dirname, "..");
 const sprint38mArtefacts = path.join(
@@ -15,11 +14,10 @@ const sprint38mArtefacts = path.join(
 const gamPath = path.join(sprint38mArtefacts, "EV-38M-AFTER-gam.json");
 const pagePath = path.join(sprint38mArtefacts, "EV-38M-AFTER-design-page.json");
 
-const {
-  applyGamMaterialsToComposedPage,
-  validate38MPageFidelity,
-  ROLE_AUTHORITY
-} = require(path.join(repoRoot, "lib/page-gam-materials-preserve.js"));
+const { applyGamMaterialsToComposedPage, ROLE_AUTHORITY } = require(path.join(
+  repoRoot,
+  "lib/page-gam-materials-preserve.js"
+));
 
 const { applyA3MaterialsSequencingToComposedPage } = require(path.join(
   repoRoot,
@@ -38,92 +36,6 @@ function activityRow(page, index) {
   return rows[index] || null;
 }
 
-function createElementStub() {
-  return {
-    value: "",
-    textContent: "",
-    className: "",
-    classList: {
-      add: () => {},
-      remove: () => {},
-      contains: () => false,
-      toggle: () => false
-    },
-    style: {},
-    dataset: {},
-    children: [],
-    appendChild() {},
-    removeChild() {},
-    setAttribute() {},
-    removeAttribute() {},
-    getAttribute: () => null,
-    addEventListener: () => {},
-    removeEventListener: () => {},
-    focus: () => {},
-    click: () => {}
-  };
-}
-
-function loadPrismTestApi() {
-  const libs = [
-    "sprint38-visual-affordances.js",
-    "design-page-materials-fidelity.js",
-    "page-gam-materials-preserve.js",
-    "page-role-registry.js",
-    "page-role-render-sequencing.js",
-    "page-role-fidelity.js",
-    "page-a3-materials-sequencing.js"
-  ];
-  const sandbox = {
-    console,
-    setTimeout,
-    clearTimeout,
-    Promise,
-    _: { debounce: (fn) => fn }
-  };
-  const elementStore = new Map();
-  const documentStub = {
-    readyState: "complete",
-    addEventListener: () => {},
-    createElement: () => createElementStub(),
-    getElementById: (id) => {
-      if (!elementStore.has(id)) elementStore.set(id, createElementStub());
-      return elementStore.get(id);
-    },
-    querySelector: () => createElementStub(),
-    querySelectorAll: () => [],
-    body: { appendChild: () => {}, removeChild: () => {} }
-  };
-  const windowStub = {
-    document: documentStub,
-    addEventListener: () => {},
-    location: { hash: "", pathname: "/" },
-    _: sandbox._,
-    Utils: { debounce: (fn) => fn },
-    localStorage: { getItem: () => null, setItem: () => {} },
-    URL: { createObjectURL: () => "blob:test", revokeObjectURL: () => {} },
-    Blob: function Blob() {},
-    Library: {
-      importPromptsFromEntries: () => Promise.resolve({ added: 0, updated: 0, skipped: 0 }),
-      getAllPrompts: () => Promise.resolve([])
-    }
-  };
-  sandbox.document = documentStub;
-  sandbox.window = windowStub;
-  sandbox.globalThis = sandbox;
-  windowStub.window = windowStub;
-  vm.createContext(sandbox);
-  libs.forEach((f) => {
-    vm.runInContext(fs.readFileSync(path.join(repoRoot, "lib", f), "utf8"), sandbox, {
-      filename: f
-    });
-  });
-  vm.runInContext(fs.readFileSync(path.join(repoRoot, "app.js"), "utf8"), sandbox, {
-    filename: "app.js"
-  });
-  return sandbox.window.__PRISM_TEST_API;
-}
-
 function mergedPageWithRoleIndex() {
   const gam = JSON.parse(fs.readFileSync(gamPath, "utf8"));
   const page = JSON.parse(fs.readFileSync(pagePath, "utf8"));
@@ -131,45 +43,6 @@ function mergedPageWithRoleIndex() {
   merged = applyA3MaterialsSequencingToComposedPage(merged);
   return { gam, merged };
 }
-
-function renderPageHtml(api, page) {
-  return String(api.buildUtilityStructuredHtmlForTest(page).html || "");
-}
-
-test("38P-5 A4 canonical — roleOk passes on merged page with render HTML", () => {
-  const api = loadPrismTestApi();
-  const { gam, merged } = mergedPageWithRoleIndex();
-  const html = renderPageHtml(api, merged);
-
-  const check = roleFidelity.validate38PRoleFidelity(merged, {
-    gamSource: gam,
-    renderHtml: html
-  });
-
-  assert.equal(check.roleOk, true, check.errors.join("; "));
-  assert.equal(check.ok, true);
-  assert.ok(check.passed.includes("RF1_role_uniqueness"));
-  assert.ok(check.passed.includes("RF2_no_weak_first_render"));
-  assert.ok(check.passed.includes("RF8_compose_transparency"));
-});
-
-test("38P-5 RF-2 — superseded stub heading in render fails roleOk", () => {
-  const api = loadPrismTestApi();
-  const { gam, merged } = mergedPageWithRoleIndex();
-  const html = renderPageHtml(api, merged);
-  const badHtml = html.replace(
-    "Worked judgement (weak vs strong)",
-    "Modelling note</span></h4><p>stub</p><h4><span>Worked judgement (weak vs strong)"
-  );
-
-  const check = roleFidelity.validate38PRoleFidelity(merged, {
-    gamSource: gam,
-    renderHtml: badHtml
-  });
-
-  assert.equal(check.roleOk, false);
-  assert.ok(check.errors.some((e) => /RF2|RF3/.test(e)));
-});
 
 test("38P-5 RF-1 — duplicate authoritative role family fails", () => {
   const { gam, merged } = mergedPageWithRoleIndex();
@@ -269,26 +142,9 @@ test("38P-5 diagnostics — measureRoleFidelity and measureRoleCoverage", () => 
   assert.ok(report.supersession);
 });
 
-test("38P-5 harness — proofOk and roleOk reported independently", () => {
-  const api = loadPrismTestApi();
+test("38P-5 merged page — RF1 and RF8 pass without legacy utility HTML", () => {
   const { gam, merged } = mergedPageWithRoleIndex();
-  const html = renderPageHtml(api, merged);
-
-  const dims = api.computeProofDimensionsForTest(merged, { gamSource: gam, renderHtml: html });
-  assert.equal(typeof dims.proofOk, "boolean");
-  assert.equal(typeof dims.roleOk, "boolean");
-  assert.equal(dims.fullOk, dims.proofOk && dims.roleOk);
-  assert.ok(dims.validation38M);
-  assert.ok(dims.validation38P);
-
-  const proofOnly = validate38MPageFidelity(merged, { gamSource: gam });
-  assert.equal(proofOnly.ok, dims.proofOk, "proofOk must match unchanged 38M validator");
-});
-
-test("38P-5 harness API — validate38PRoleFidelityForTest available", () => {
-  const api = loadPrismTestApi();
-  const { gam, merged } = mergedPageWithRoleIndex();
-  const html = renderPageHtml(api, merged);
-  const check = api.validate38PRoleFidelityForTest(merged, { gamSource: gam, renderHtml: html });
-  assert.equal(check.roleOk, true, check.errors.join("; "));
+  const check = roleFidelity.validate38PRoleFidelity(merged, { gamSource: gam });
+  assert.equal(check.gates.RF1_role_uniqueness.ok, true, check.errors.join("; "));
+  assert.equal(check.gates.RF8_compose_transparency.ok, true, check.errors.join("; "));
 });

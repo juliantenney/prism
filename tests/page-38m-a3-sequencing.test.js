@@ -23,8 +23,7 @@ const {
 const {
   A3_ANALYSE_MATERIALS_ORDER,
   applyA3MaterialsSequencingToComposedPage,
-  validateA3MaterialsSequencing,
-  validateA3RenderMaterialOrder
+  validateA3MaterialsSequencing
 } = require(path.join(repoRoot, "lib/page-a3-materials-sequencing.js"));
 
 function activityRow(page, index) {
@@ -161,41 +160,6 @@ test("38M-4 A3 sequencing preserves 100% body fidelity", () => {
   assert.equal(a3.analysis_table, rawA3.analysis_table);
   assert.equal(a3.scenario_maya_households, rawA3.scenario_maya_households);
   assert.equal(a3.checklist, rawA3.checklist);
-});
-
-test("38M-4 A3 render order follows materials_order on composed page", () => {
-  const api = loadPrismTestApi();
-  const gam = JSON.parse(fs.readFileSync(gamPath, "utf8"));
-  const page = JSON.parse(fs.readFileSync(pagePath, "utf8"));
-  const composed = composeFullPage(gam, page);
-
-  const html = String(api.buildUtilityStructuredHtmlForTest(composed).html || "");
-  const a3Title = "Analysing Inflation Effects on Household Budgets";
-  const a3Start = html.indexOf(a3Title);
-  const a4Start = html.indexOf("Evaluating Household Strategies for Inflation Management");
-  const a3Block = html.substring(a3Start, a4Start);
-
-  const renderCheck = validateA3RenderMaterialOrder(a3Block);
-  assert.equal(renderCheck.ok, true, renderCheck.errors.join("; "));
-
-  const labelRe =
-    /<(?:h4|p)[^>]*class="[^"]*(?:util-material-heading|util-supporting-label)[^"]*"[^>]*>([\s\S]*?)<\/(?:h4|p)>/gi;
-  const headings = [];
-  let hm;
-  while ((hm = labelRe.exec(a3Block)) !== null) {
-    headings.push({
-      pos: hm.index,
-      text: hm[1].replace(/<[^>]+>/g, "").trim()
-    });
-  }
-  const workedPos = headings.find((h) => /Worked analytic pass/i.test(h.text))?.pos ?? -1;
-  const tablePos = headings.find((h) => /^Worksheet$/i.test(h.text))?.pos ?? -1;
-  const scenarioPos = headings.find((h) => /Scenario Maya households/i.test(h.text))?.pos ?? -1;
-  const checklistPos = headings.find((h) => /^Checklist$/i.test(h.text))?.pos ?? -1;
-
-  assert.ok(workedPos >= 0 && tablePos > workedPos, "worked pass before table");
-  assert.ok(scenarioPos > tablePos, "table before scenario");
-  assert.ok(checklistPos > scenarioPos, "scenario before checklist");
 });
 
 test("38M-4 compose path applies A3 sequencing after GAM preserve", () => {

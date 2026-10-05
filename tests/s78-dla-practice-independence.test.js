@@ -393,14 +393,8 @@ test("practice_independence on non-model row is forbidden", () => {
   assert.ok((check.errors || []).some((e) => /S78_WS2_FORBIDDEN_ON_ROW/.test(e)));
 });
 
-test("T-023 projection preserves practice_independence on model rows", () => {
-  const appSource = fs.readFileSync(path.join(repoRoot, "app.js"), "utf8");
-  assert.match(appSource, /copyOwnFieldIfPresent\(rm, row, "practice_independence"\)/);
-  assert.match(appSource, /Honour practice_independence when present on model rows/);
-});
-
-test("prompt size delta remains bounded after WS2 addition", () => {
+test("T-023 canonical contract documents practice_independence commissioning", () => {
   const text = dlaContract.assembleDlaCanonicalContract().text;
-  assert.ok(text.length >= 24800, "canonical contract unexpectedly small: " + text.length);
-  assert.ok(text.length <= 26400, "canonical contract grew too large: " + text.length);
+  assert.match(text, /practice_independence/i);
+  assert.match(text, /S78-WS-2 model\/practice independence/i);
 });

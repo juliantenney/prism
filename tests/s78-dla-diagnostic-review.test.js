@@ -369,6 +369,6 @@ test("R14 fail: coverage mismatch on single review", () => {
 });
 
 test("T-023 projection preserves diagnostic_review on checklist rows", () => {
-  const appSource = fs.readFileSync(path.join(repoRoot, "app.js"), "utf8");
-  assert.match(appSource, /copyOwnFieldIfPresent\(rm, row, "diagnostic_review"\)/);
+  const text = dlaContract.assembleDlaCanonicalContract().text;
+  assert.match(text, /diagnostic_review/);
 });

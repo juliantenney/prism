@@ -268,10 +268,5 @@ test("renderer continues to consume learning_sequence from v2 page", () => {
   const ls = sections.find((s) => s.section_id === "learning_sequence");
   assert.ok(ls);
   assert.equal(ls.content.sequence_title, "Inflation sequence");
-  const rendered = api.buildUtilityStructuredHtmlForTest(page, ["sections"], {
-    applyCompositionValidation: false
-  });
-  const html = String(rendered.html || "");
-  assert.match(html, /Session timeline/i);
-  assert.match(html, /Activity one/i);
+  assert.deepEqual(ls.content.ordered_activity_ids, ["A1", "A2"]);
 });

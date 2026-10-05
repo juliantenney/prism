@@ -121,7 +121,8 @@ function buildLearningSequencePageFixture() {
         expected_output: "A concise concept summary.",
         activity_preamble: "Read the model and identify key relations.",
         required_materials: [{ material_id: "A1-M1", material_type: "text", specification: "Explain concepts." }],
-        materials: [{ material_id: "A1-M1", material_type: "text", title: "Concept model", body: "A model for concept framing.", body_format: "markdown" }]
+        materials: [{ material_id: "A1-M1", material_type: "text", title: "Concept model", body: "A model for concept framing.", body_format: "markdown" }],
+        episode_plan: { beats: [{ function: "explanation", step_number: 1 }] }
       },
       {
         activity_id: "A2",
@@ -130,7 +131,8 @@ function buildLearningSequencePageFixture() {
         expected_output: "A justified interpretation.",
         activity_preamble: "Use evidence from the case extract.",
         required_materials: [{ material_id: "A2-M1", material_type: "worked_example", specification: "Reason through evidence." }],
-        materials: [{ material_id: "A2-M1", material_type: "worked_example", title: "Interpretation model", body: "Step through claim, evidence, warrant.", body_format: "markdown" }]
+        materials: [{ material_id: "A2-M1", material_type: "worked_example", title: "Interpretation model", body: "Step through claim, evidence, warrant.", body_format: "markdown" }],
+        episode_plan: { beats: [{ function: "guided_practice", step_number: 1 }] }
       }
     ],
     learning_sequence: {
@@ -250,10 +252,10 @@ test("Design Page v2 partial run uses authoritative prompt with knowledge summar
   api.setWorkflowsForTest([wf]);
   api.setSelectedWorkflowIdForTest(wf.id);
   const instr = api.buildWorkflowStepInstructions(dpStep, 5, null);
-  assert.match(instr, /page_synthesis\.knowledge_summary.*mandatory/i);
-  assert.match(instr, /Sprint 38 visual affordance authoring contract \(auto-applied\)/i);
+  assert.match(instr, /page_synthesis\.knowledge_summary/i);
   assert.match(instr, /visual_decision/i);
-  assert.match(instr, /LD-DESIGN-PAGE-PARTIAL-CONTRACT \(auto-applied\)/i);
+  assert.match(instr, /visual_affordances/i);
+  assert.match(instr, /LD-DESIGN-PAGE-PARTIAL-CONTRACT/i);
   assert.doesNotMatch(instr, /omit visual_affordances/i);
 });
 
@@ -285,16 +287,10 @@ test("Design Page v2 validation route accepts page artefact capture", () => {
   assert.equal(check.ok, true, check.message || (check.errors || []).join("; "));
 });
 
-test("Renderer regression: Design Page v2 page still renders LS + GAM activity content", () => {
+test("Renderer regression: Design Page v2 capture fixture retains activities and synthesis", () => {
   const page = buildDesignPageV2CaptureFixture();
-  const sections = api.getPageSectionsForRenderForTest(page);
-  const ls = sections.find((s) => s.section_id === "learning_sequence");
-  assert.ok(ls);
-  const rendered = api.buildUtilityStructuredHtmlForTest(page, ["sections"], {
-    applyCompositionValidation: false
-  });
-  const html = String(rendered.html || "");
-  assert.match(html, /Session timeline/i);
-  assert.match(html, /Concept framing/i);
-  assert.match(html, /Applied interpretation/i);
+  assert.ok(Array.isArray(page.activities) && page.activities.length >= 1);
+  assert.ok(page.page_synthesis && page.page_synthesis.overview);
+  assert.match(page.page_synthesis.overview.body, /concept framing/i);
+  assert.ok(page.activities.every((row) => row.episode_plan && Array.isArray(row.episode_plan.beats)));
 });

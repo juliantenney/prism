@@ -109,7 +109,11 @@ test("Sprint 50: captured-page compose uses binding upstream and persists merged
               artifactName: "learning_activities"
             }
           ])
-        : ""
+        : name === "data-step-id"
+          ? "page"
+          : "",
+    querySelector: () => ({ value: "" }),
+    querySelectorAll: () => []
   };
   const rawPage = JSON.stringify(marxPage, null, 2);
   const result = api.applyPageCompositionValidationForCapturedPage(stepLi, rawPage);

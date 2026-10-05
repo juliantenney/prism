@@ -6,11 +6,7 @@ const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const path = require("node:path");
 const vm = require("node:vm");
-const {
-  runPrismLibScriptsInSandbox,
-  PEDAGOGICAL_ICON_LIBS,
-  injectLearnerRendererVNextInSandbox
-} = require("./prism-vm-lib-bootstrap.js");
+const { runPrismLibScriptsInSandbox, PEDAGOGICAL_ICON_LIBS, injectLearnerRendererVNextInSandbox, installVnextPageShapeCompatForTests } = require("./prism-vm-lib-bootstrap.js");
 
 const repoRoot = path.resolve(__dirname, "..");
 const appJsPath = path.join(repoRoot, "app.js");
@@ -85,6 +81,7 @@ function loadPrismTestApi() {
   injectLearnerRendererVNextInSandbox(sandbox, repoRoot);
   vm.runInContext(source, sandbox, { filename: "app.js" });
   const api = sandbox.window.__PRISM_TEST_API;
+  installVnextPageShapeCompatForTests(api);
   assert.ok(api);
   return { api, normalize: sandbox.PRISM_PAGE_RENDER_NORMALIZE };
 }

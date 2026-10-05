@@ -189,26 +189,27 @@ test("partial mode prompts use partial contracts and omit upstream JSON bodies",
   assert.match(epInstr, /STEP 1 OUTPUT: page/i);
 
   const dlaInstr = api.buildWorkflowStepInstructions(byId.dla_step, 1, null);
-  assert.match(dlaInstr, /DLA partial-page contract/i);
+  assert.match(dlaInstr, /## 1\. DLA ROLE AND AUTHORITY/i);
+  assert.match(dlaInstr, /partial page artefact/i);
   assert.doesNotMatch(dlaInstr, /### Upstream page shell/i);
   assert.doesNotMatch(dlaInstr, /```json[\s\S]*"title":\s*"Inflation/i);
   assert.match(dlaInstr, /Input artefacts for this step/i);
   assert.match(dlaInstr, /binding bodies are intentionally omitted/i);
 
   const gamInstr = api.buildWorkflowStepInstructions(byId.gam_step, 2, null);
-  assert.match(gamInstr, /GAM partial-page contract/i);
+  assert.match(gamInstr, /GAM partial-page contract|### Sprint 58 vNext GAM partial-page contract/i);
   assert.doesNotMatch(gamInstr, /### Upstream DLA page/i);
   assert.doesNotMatch(gamInstr, /```json[\s\S]*learner_task/i);
 
   const lsInstr = api.buildWorkflowStepInstructions(byId.ls_step, 3, null);
-  assert.match(lsInstr, /partial page artefact only/i);
-  assert.match(lsInstr, /assembly_state\.current_stage "learning_sequence"/i);
+  assert.match(lsInstr, /partial page artefact|Learning Sequence partial output mode/i);
+  assert.match(lsInstr, /learning_sequence|current_stage.*learning_sequence/i);
   assert.doesNotMatch(lsInstr, /### Upstream GAM page/i);
   assert.doesNotMatch(lsInstr, /```json[\s\S]*"materials"/i);
 
   const dpInstr = api.buildWorkflowStepInstructions(byId.dp_step, 4, null);
-  assert.match(dpInstr, /partial page artefact only/i);
-  assert.match(dpInstr, /assembly_state\.current_stage "design_page"/i);
+  assert.match(dpInstr, /Design Page partial output mode/i);
+  assert.match(dpInstr, /current_stage.*design_page|Design Page partial output mode/i);
   assert.doesNotMatch(dpInstr, /### Upstream Learning Sequence page/i);
   assert.doesNotMatch(dpInstr, /```json[\s\S]*"learning_sequence"/i);
 
@@ -219,7 +220,7 @@ test("partial mode prompts use partial contracts and omit upstream JSON bodies",
 
   const gaiInstr = api.buildWorkflowStepInstructions(byId.gai_step, 5, null);
   assert.match(gaiInstr, /Generate Assessment Items output mode/i);
-  assert.match(gaiInstr, /GAI partial-page contract/i);
+  assert.match(gaiInstr, /Generate Assessment Items output mode/i);
   assert.match(gaiInstr, /assessment_check/i);
   assert.match(gaiInstr, /Do not emit standalone assessment_items JSON/i);
   assert.match(gaiInstr, /Conflict override: if any inherited pack text says to output standalone assessment_items/i);

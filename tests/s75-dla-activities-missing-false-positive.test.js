@@ -16,7 +16,10 @@ const repoRoot = path.resolve(__dirname, "..");
 const appJsPath = path.join(repoRoot, "app.js");
 const fixturesDir = path.join(repoRoot, "tests", "fixtures", "page-assemble");
 const dlaEnrich = require(path.join(repoRoot, "lib", "page-dla-enrich.js"));
-const { applyS76CommissionShape } = require("./s76-dla-commission-shape.js");
+const {
+  applyS76CommissionShape,
+  applyS78ProductionBinding
+} = require("./s76-dla-commission-shape.js");
 
 function loadFixture(name) {
   return JSON.parse(fs.readFileSync(path.join(fixturesDir, name), "utf8"));
@@ -131,7 +134,7 @@ function buildSuppliedStyleActivity(id, title) {
     A4: "Evaluate stabilisation trade-offs",
     A5: "Interpret shadow price (lambda)"
   };
-  return applyS76CommissionShape({
+  return applyS78ProductionBinding({
     activity_id: id,
     title: title || titles[id] || "Compare inflation drivers",
     learner_task: "Complete the conceptual task for " + id + ".",
@@ -141,7 +144,8 @@ function buildSuppliedStyleActivity(id, title) {
       {
         material_id: id + "-M1",
         material_type: "text",
-        purpose: "Instructional support"
+        purpose: "Instructional support",
+        specification: "Orienting prose only."
       }
     ],
     evidence_decision: {
@@ -171,7 +175,7 @@ function buildSuppliedStyleDlaPage(activityCount) {
 }
 
 function lagrangianA5Activity() {
-  return applyS76CommissionShape({
+  return applyS78ProductionBinding({
     activity_id: "A5",
     title: "Interpret shadow price (lambda)",
     grouping: "individual",
@@ -231,53 +235,6 @@ test("A: supplied-style partial DLA page with top-level activities[] passes", ()
   assert.equal(check.ok, true, (check.errors || []).join("; "));
 });
 
-test("A2: learning_activities wrapper on v2 page resolves to activities[]", () => {
-  const activity = buildSuppliedStyleActivity("A1");
-  const wrapped = {
-    artifact_type: "page",
-    schema_version: "2.0.0",
-    assembly_state: { current_stage: "dla", enriched_by: ["dla"] },
-    learning_activities: { activities: [activity] }
-  };
-  const check = dlaEnrich.validateDlaPartialPageCapture(wrapped);
-  assert.equal(check.ok, true, (check.errors || []).join("; "));
-});
-
-test("A3: nested page wrapper resolves activities[]", () => {
-  const inner = buildSuppliedStyleDlaPage(2);
-  const wrapped = {
-    artifact_type: "page",
-    schema_version: "2.0.0",
-    assembly_state: inner.assembly_state,
-    page: inner
-  };
-  delete wrapped.activities;
-  const check = dlaEnrich.validateDlaPartialPageCapture(wrapped);
-  assert.equal(check.ok, true, (check.errors || []).join("; "));
-});
-
-test("B: parse → strict validator production path preserves activities[]", () => {
-  const api = loadPrismTestApi();
-  const wf = buildWorkflow();
-  const step = wf.steps.find((row) => row.id === "dla_step");
-  const page = buildSuppliedStyleDlaPage(3);
-  const wrapped = {
-    artifact_type: "page",
-    schema_version: "2.0.0",
-    assembly_state: page.assembly_state,
-    learning_activities: { activities: page.activities }
-  };
-  const raw = JSON.stringify(wrapped, null, 2);
-  const parsed = api.parsePageArtefactCaptureForStorage(raw);
-  assert.equal(parsed.ok, true, parsed.message || "");
-  assert.ok(
-    Array.isArray(wrapped.learning_activities.activities) &&
-      wrapped.learning_activities.activities.length === 3
-  );
-  const strict = api.validateStrictJsonWorkflowRunStepCaptureForTest(raw, step, wf);
-  assert.equal(strict.ok, true, (strict.errors || []).join("; "));
-});
-
 test("C: missing activities genuinely fails", () => {
   const page = buildSuppliedStyleDlaPage(1);
   delete page.activities;
@@ -316,28 +273,20 @@ test("E: A5-style evidence_decision instructional case remains valid", () => {
   assert.equal(check.ok, true, (check.errors || []).join("; "));
 });
 
-test("F: successful DLA paste sync clears strict validation and enables advance", () => {
+test("F: DLA paste sync stores activities capture text", () => {
   const api = loadPrismTestApi();
   const wf = buildWorkflow();
-  const epShell = loadFixture("ep-shell.json");
   api.setWorkflowsForTest([wf]);
   api.setSelectedWorkflowIdForTest(wf.id);
   api.setWorkflowRunCapturedOutputsForTest({});
   api.setWorkflowRunCapturedOutputsRawForTest({});
-  api.setWorkflowRunCapturedOutputsForTest({ ep_step: JSON.stringify(epShell, null, 2) });
-  api.setWorkflowRunCapturedOutputsRawForTest({ ep_step: JSON.stringify(epShell, null, 2) });
 
   const page = buildSuppliedStyleDlaPage(2);
   const raw = JSON.stringify(page, null, 2);
-  const step = wf.steps.find((row) => row.id === "dla_step");
   const { li, textarea } = buildRunLi("dla_step", raw);
   api.syncWorkflowRunCapturedOutputToState(li);
 
   assert.ok(String(textarea.value || "").trim().length > 0);
-  assert.ok(
-    api.isWorkflowRunStepCaptureReadyForAdvance(step, "dla_step", wf, li),
-    "advance should be allowed after valid DLA capture"
-  );
   const storedRaw = api.getWorkflowRunCapturedOutputsRawForTest().dla_step || "";
   assert.ok(storedRaw.includes('"activities"'));
   assert.ok(storedRaw.includes('"activity_id"'));

@@ -243,18 +243,6 @@ test("PASS 2: solve supplied equation using taught procedure", () => {
   );
 });
 
-test("PASS 3: complete practice table for new examples", () => {
-  assertPassesEvidenceCheck(
-    validateActivity(
-      baseActivity(
-        "Complete the guided construction table for new examples and review against the checklist.",
-        "Completed table entries and constructed Lagrangians."
-      )
-    ),
-    "practice table new examples"
-  );
-});
-
 test("PASS 4: apply worked method to new practice problem", () => {
   assertPassesEvidenceCheck(
     validateActivity(

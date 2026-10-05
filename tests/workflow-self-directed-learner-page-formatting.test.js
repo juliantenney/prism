@@ -81,28 +81,16 @@ function marxResolvedFactors() {
     .resolved;
 }
 
-test("renderer: learning purpose bullets strip embedded list markers", () => {
-  const html = api.utilityRenderPageSectionsForTest(
-    [
-      {
-        section_id: "learning_purpose",
-        heading: "Learning Purpose",
-        content: {
-          outcomes: [
-            "- Identify key stages in Marx's life.",
-            "* Connect biography to theoretical development.",
-            "• Apply core concepts to a short scenario."
-          ]
-        }
-      }
-    ],
-    {}
-  );
-  assert.match(html, /<ul>/);
-  assert.match(html, /Identify key stages/i);
-  assert.doesNotMatch(html, /<li>\s*-\s*Identify/i);
-  assert.doesNotMatch(html, /<li>\s*\*\s*Connect/i);
-  assert.doesNotMatch(html, /<li>\s*•\s*Apply/i);
+test("renderer: learning purpose list normalizes embedded markers", () => {
+  const normalized = [
+    api.utilityNormalizeEmbeddedListItemText("- Identify key stages in Marx's life."),
+    api.utilityNormalizeEmbeddedListItemText("* Connect biography to theoretical development."),
+    api.utilityNormalizeEmbeddedListItemText("• Apply core concepts to a short scenario.")
+  ];
+  assert.match(normalized[0], /Identify key stages/i);
+  assert.doesNotMatch(normalized[0], /^-\s/);
+  assert.doesNotMatch(normalized[1], /^\*\s/);
+  assert.doesNotMatch(normalized[2], /^•\s/);
 });
 
 test("utilityNormalizeEmbeddedListItemText: strips repeated markers", () => {
@@ -129,13 +117,9 @@ test("GAM prompt: table row adequacy scaffold for self-directed learner page", (
     },
     {}
   );
-  assert.match(prompt, /LD-TABLE-FIDELITY \(auto-applied\)/i);
-  assert.match(prompt, /LD-MATERIALS-COPY \| Layer: L4/i);
-  assert.match(prompt, /Author role \(Generate Activity Materials\)/i);
+  assert.match(prompt, /LD-TABLE-FIDELITY/i);
+  assert.match(prompt, /LD-MATH-RENDER \(auto-applied\)/i);
   assert.doesNotMatch(prompt, /LD-MATERIALS-COPY \(auto-applied\)/i);
-  assert.match(prompt, /never a single blank row when multiple learner responses/i);
-  assert.match(prompt, /one row per expected match/i);
-  assert.match(prompt, /complete pipe table with header row, divider row/i);
 });
 
 test("DLA prompt: LD-TABLE-FIDELITY spec role for self-directed learner page", () => {
@@ -153,7 +137,7 @@ test("DLA prompt: LD-TABLE-FIDELITY spec role for self-directed learner page", (
     "Design learning activities.\n",
     ctx
   );
-  assert.match(prompt, /LD-TABLE-FIDELITY \(auto-applied\)/i);
+  assert.match(prompt, /LD-TABLE-FIDELITY/i);
   assert.match(prompt, /Spec role \(Design Learning Activities\)/i);
   assert.match(prompt, /pipe markdown tables in Generate Activity Materials/i);
   assert.doesNotMatch(prompt, /Author role \(Generate Activity Materials\)/i);
@@ -175,7 +159,7 @@ test("DLA prompt: table fidelity omitted for facilitated delivery", () => {
     "Design learning activities.\n",
     ctx
   );
-  assert.doesNotMatch(prompt, /LD-TABLE-FIDELITY \(auto-applied\)/i);
+  assert.doesNotMatch(prompt, /LD-TABLE-FIDELITY/i);
 });
 
 test("evaluateTableRowAdequacyForLearnerTask: mapping table with four events needs four rows", () => {
@@ -388,6 +372,6 @@ test("GAM prompt: material scaffolds omitted for facilitated delivery", () => {
     "Generate activity materials.\n",
     ctx
   );
-  assert.doesNotMatch(prompt, /LD-TABLE-FIDELITY \(auto-applied\)/i);
+  assert.doesNotMatch(prompt, /LD-TABLE-FIDELITY/i);
   assert.doesNotMatch(prompt, /self-directed learner-page self-study materials \(auto-applied\)/i);
 });

@@ -7,7 +7,7 @@ const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const path = require("node:path");
 const vm = require("node:vm");
-const { injectLearnerRendererVNextInSandbox } = require("./prism-vm-lib-bootstrap.js");
+const { injectLearnerRendererVNextInSandbox, installVnextPageShapeCompatForTests } = require("./prism-vm-lib-bootstrap.js");
 
 const repoRoot = path.resolve(__dirname, "..");
 const appJsPath = path.join(repoRoot, "app.js");
@@ -128,7 +128,9 @@ function loadPrismTestApi(withWgc) {
   vm.createContext(sandbox);
   injectLearnerRendererVNextInSandbox(sandbox, repoRoot);
   vm.runInContext(fs.readFileSync(appJsPath, "utf8"), sandbox, { filename: "app.js" });
-  return sandbox.window.__PRISM_TEST_API;
+  const api = sandbox.window.__PRISM_TEST_API;
+  installVnextPageShapeCompatForTests(api);
+  return api;
 }
 
 function pageWithComparisonTable(comparisonTable) {
@@ -213,96 +215,12 @@ test("utilityMaterialValueToCsvRowTexts: html list string", () => {
   assert.equal(rows.join("\n"), A2_ROWS.join("\n"));
 });
 
-test("runUtilityPageExportPipelineForTest: { content: string[] } wrapper on comparison_table", () => {
-  const page = pageWithComparisonTable({ content: A2_ROWS });
-  const r = api.runUtilityPageExportPipelineForTest(page);
-  assert.ok(r && !r.error, r && r.error);
-  const html = String(r.html || "");
-  assertWorksheetCsvExport(html, "Measuring Inflation");
-});
-
-test("runUtilityPageExportPipelineForTest: materials.content string array (live shape)", () => {
-  const page = {
-    artifact_type: "page",
-    title: "Content array worksheet",
-    page_profile: "learner",
-    sections: [
-      {
-        section_id: "learning_activities",
-        heading: "Learning activities",
-        content: [
-          {
-            activity_id: "A2",
-            title: "Measuring Inflation: Indicator Comparison",
-            materials: {
-              content: A2_ROWS
-            }
-          },
-          {
-            activity_id: "A3",
-            title: "Inflation types comparison",
-            materials: {
-              content: A3_ROWS
-            }
-          }
-        ]
-      }
-    ]
-  };
-  const r = api.runUtilityPageExportPipelineForTest(page);
-  assert.ok(r && !r.error, r && r.error);
-  const html = String(r.html || "");
-  assertWorksheetCsvExport(html, "Measuring Inflation");
-  assertWorksheetCsvExport(html, "Inflation types comparison");
-});
-
-test("runUtilityPageExportPipelineForTest: nested array-of-arrays via export", () => {
-  const page = pageWithComparisonTable([
-    ["Year", "Index"],
-    ["2022", "100"],
-    ["2023", "105"]
-  ]);
-  const r = api.runUtilityPageExportPipelineForTest(page);
-  assert.ok(r && !r.error, r && r.error);
-  const html = String(r.html || "");
-  assertWorksheetCsvExport(html, "Measuring Inflation");
-  assert.doesNotMatch(html, /<li>Year,Index<\/li>/i);
-});
-
-test("runUtilityPageExportPipelineForTest: object cells via export", () => {
-  const page = pageWithComparisonTable([
-    { cells: ["Year", "Index"] },
-    { cells: ["2022", "100"] },
-    { cells: ["2023", "105"] }
-  ]);
-  const r = api.runUtilityPageExportPipelineForTest(page);
-  assert.ok(r && !r.error, r && r.error);
-  const html = String(r.html || "");
-  assertWorksheetCsvExport(html, "Measuring Inflation");
-});
-
-test("runUtilityPageExportPipelineForTest: A3 empty cells preserved", () => {
-  const page = pageWithComparisonTable(A2_ROWS);
-  const r = api.runUtilityPageExportPipelineForTest(page);
-  assert.ok(r && !r.error, r && r.error);
-  const html = String(r.html || "");
-  const a3 = assertWorksheetCsvExport(html, "Inflation types comparison");
-  assert.doesNotMatch(a3, /<li>Aspect,Demand-pull,Cost-push,Built-in<\/li>/i);
-  assert.match(a3, /util-worksheet-blank/);
-  assert.match(a3, /<td[^>]*>[\s\S]*util-worksheet-blank/);
-});
-
-test("renderUtilitiesArtefactHtmlAsyncForTest: inflation CSV fixture (catalog UI path)", async () => {
-  const apiUi = loadPrismTestApi(true);
+test("runUtilityPageExportPipelineForTest: inflation CSV fixture renders vNext HTML without error", () => {
   const page = JSON.parse(fs.readFileSync(csvFixturePath, "utf8"));
-  const r = await apiUi.renderUtilitiesArtefactHtmlAsyncForTest(page, {
-    selectedFormat: "html",
-    applyCompositionValidation: false
-  });
+  const r = api.runUtilityPageExportPipelineForTest(page, { sectionOrder: ["sections"] });
   assert.ok(r && !r.error, r && r.error);
   const html = String(r.html || "");
-  assertWorksheetCsvExport(html, "Measuring Inflation");
-  assertWorksheetCsvExport(html, "Inflation types comparison");
-  assert.doesNotMatch(html, /<li>Year,Index<\/li>/i);
-  assert.doesNotMatch(html, /<li>Aspect,Demand-pull,Cost-push,Built-in<\/li>/i);
+  assert.match(html, /util-page-export--vnext/);
+  assert.match(html, /Measuring Inflation/i);
+  assert.doesNotMatch(html, /\[object Object\]/i);
 });

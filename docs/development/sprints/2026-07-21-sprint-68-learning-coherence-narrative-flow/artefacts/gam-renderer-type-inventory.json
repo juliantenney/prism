@@ -1,15 +1,15 @@
 {
-  "generated_at": "2026-08-28T08:43:50.031Z",
+  "generated_at": "2026-10-05T08:17:58.307Z",
   "reviewer_task": "S68-IMP-012",
   "methodology": "Merged lib/beat-material-registry.js (50 types), lib/learner-renderer-vnext/parse-material.js allowlist (19 types), and material_type scan of tests/fixtures/**/*.json.",
   "summary": {
     "canonical_material_types": 37,
     "vnext_supported_material_types": 19,
     "registry_material_types": 34,
-    "observed_in_fixtures": 20,
+    "observed_in_fixtures": 19,
     "schema_or_registry_only": 17,
-    "kitchen_sink_vnext_coverage": 18,
-    "kitchen_sink_coverage_pct": 95,
+    "kitchen_sink_vnext_coverage": 15,
+    "kitchen_sink_coverage_pct": 79,
     "prompt_fields": 6,
     "activity_interaction_types": 7
   },
@@ -539,11 +539,10 @@
       "category": "material",
       "aliases": [],
       "emittedByGam": false,
-      "observedInFixtures": true,
+      "observedInFixtures": false,
       "schemaOnly": false,
       "sourceLocations": [
-        "lib/learner-renderer-vnext/parse-material.js",
-        "tests/fixtures/**"
+        "lib/learner-renderer-vnext/parse-material.js"
       ],
       "legacyBeat": null,
       "educationalRoles": [
@@ -568,7 +567,7 @@
       "vnextSupported": true,
       "vnextCompatible": true,
       "kitchenSinkCoverage": true,
-      "kitchenSinkFixtureId": "KS03-M3b",
+      "kitchenSinkFixtureId": null,
       "notes": "Static when fully populated; table_entry in composed Do when blank cells present"
     },
     {
@@ -718,7 +717,7 @@
       "vnextSupported": true,
       "vnextCompatible": true,
       "kitchenSinkCoverage": true,
-      "kitchenSinkFixtureId": "KS04-M3b",
+      "kitchenSinkFixtureId": null,
       "notes": "Static when fully populated; table_entry in composed Do when blank cells present"
     },
     {
@@ -1023,7 +1022,7 @@
       "vnextSupported": true,
       "vnextCompatible": true,
       "kitchenSinkCoverage": true,
-      "kitchenSinkFixtureId": "KS02-M1b",
+      "kitchenSinkFixtureId": null,
       "notes": "Explanatory/criteria reference; static shared table path; type identity preserved"
     },
     {

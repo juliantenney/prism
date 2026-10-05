@@ -48,7 +48,8 @@ const DEFAULT_LIBS = [
   "lib/gam-practice-independence-prompt.js",
   "lib/gam-operational-suitability-prompt.js",
   "lib/gam-operational-suitability-review.js",
-  "lib/gam-canonical-assembler.js"
+  "lib/gam-canonical-assembler.js",
+  "lib/first-class-workflow-family.js"
 ];
 
 /**
@@ -58,6 +59,9 @@ const DEFAULT_LIBS = [
  * learner-export paths match the browser dependency (window.PRISM_LEARNER_RENDERER_VNEXT).
  * Opt out with options.skipLearnerRendererVNextInject when a test intentionally
  * exercises the unavailable-renderer branch.
+ *
+ * PB-S-007 E: by default also ensures PRISM_GAM_CANONICAL_ASSEMBLER is loaded even
+ * when a custom lib list omits it. Opt out with skipGamCanonicalAssemblerInject.
  *
  * Signature: (sandbox, repoRoot, libs?, options?)
  * libs may be omitted; pass options as the 3rd argument when no custom lib list.
@@ -106,6 +110,7 @@ function runPrismLibScriptsInSandbox(sandbox, repoRoot, libs, options) {
       "PRISM_GAM_OPERATIONAL_SUITABILITY_PROMPT",
       "PRISM_GAM_OPERATIONAL_SUITABILITY_REVIEW",
       "PRISM_GAM_CANONICAL_ASSEMBLER",
+      "PRISM_FIRST_CLASS_WORKFLOW_FAMILY",
       "PRISM_SPRINT38_VISUAL_AFFORDANCES",
       "PRISM_VISUAL_PLANNING_CONTRACT",
       "PRISM_VISUAL_MATERIAL_ROLE_GROUNDING",
@@ -124,6 +129,12 @@ function runPrismLibScriptsInSandbox(sandbox, repoRoot, libs, options) {
   }
   if (!opts.skipLearnerRendererVNextInject) {
     injectLearnerRendererVNextInSandbox(sandbox, root);
+  }
+  if (!opts.skipGamCanonicalAssemblerInject) {
+    ensureGamCanonicalAssemblerInSandbox(sandbox, root);
+  }
+  if (!opts.skipFirstClassWorkflowFamilyInject) {
+    ensureFirstClassWorkflowFamilyInSandbox(sandbox, root);
   }
 }
 
@@ -186,7 +197,7 @@ function injectLearnerRendererVNextInSandbox(sandbox, repoRoot) {
 }
 
 function createPrismVmElementStub() {
-  return {
+  var el = {
     value: "",
     textContent: "",
     className: "",
@@ -210,11 +221,93 @@ function createPrismVmElementStub() {
     getAttribute: function () {
       return null;
     },
+    querySelector: function () {
+      return createPrismVmElementStub();
+    },
+    querySelectorAll: function () {
+      return [];
+    },
     addEventListener: function () {},
     removeEventListener: function () {},
     focus: function () {},
     click: function () {}
   };
+  return el;
+}
+
+/**
+ * PB-S-007 E — ensure PRISM_GAM_CANONICAL_ASSEMBLER is present in vm sandboxes.
+ * Custom lib lists often omit lib/gam-canonical-assembler.js; production Copy/Run
+ * requires the global. Opt out with skipGamCanonicalAssemblerInject for fail-closed proofs.
+ */
+function ensureGamCanonicalAssemblerInSandbox(sandbox, repoRoot) {
+  var root = repoRoot || path.resolve(__dirname, "..");
+  if (
+    (sandbox && sandbox.PRISM_GAM_CANONICAL_ASSEMBLER) ||
+    (sandbox &&
+      sandbox.window &&
+      sandbox.window.PRISM_GAM_CANONICAL_ASSEMBLER)
+  ) {
+    if (
+      sandbox.window &&
+      sandbox.PRISM_GAM_CANONICAL_ASSEMBLER &&
+      !sandbox.window.PRISM_GAM_CANONICAL_ASSEMBLER
+    ) {
+      sandbox.window.PRISM_GAM_CANONICAL_ASSEMBLER =
+        sandbox.PRISM_GAM_CANONICAL_ASSEMBLER;
+    }
+    return sandbox.window
+      ? sandbox.window.PRISM_GAM_CANONICAL_ASSEMBLER
+      : sandbox.PRISM_GAM_CANONICAL_ASSEMBLER;
+  }
+  var rel = "lib/gam-canonical-assembler.js";
+  vm.runInContext(fs.readFileSync(path.join(root, rel), "utf8"), sandbox, {
+    filename: rel
+  });
+  if (sandbox.window && sandbox.PRISM_GAM_CANONICAL_ASSEMBLER) {
+    sandbox.window.PRISM_GAM_CANONICAL_ASSEMBLER =
+      sandbox.PRISM_GAM_CANONICAL_ASSEMBLER;
+  }
+  return sandbox.window
+    ? sandbox.window.PRISM_GAM_CANONICAL_ASSEMBLER
+    : sandbox.PRISM_GAM_CANONICAL_ASSEMBLER;
+}
+
+/**
+ * PB-S-007 — ensure PRISM_FIRST_CLASS_WORKFLOW_FAMILY is present in vm sandboxes.
+ * Product identity (Interactive / Expository / Assessment Pack) depends on it.
+ */
+function ensureFirstClassWorkflowFamilyInSandbox(sandbox, repoRoot) {
+  var root = repoRoot || path.resolve(__dirname, "..");
+  if (
+    (sandbox && sandbox.PRISM_FIRST_CLASS_WORKFLOW_FAMILY) ||
+    (sandbox &&
+      sandbox.window &&
+      sandbox.window.PRISM_FIRST_CLASS_WORKFLOW_FAMILY)
+  ) {
+    if (
+      sandbox.window &&
+      sandbox.PRISM_FIRST_CLASS_WORKFLOW_FAMILY &&
+      !sandbox.window.PRISM_FIRST_CLASS_WORKFLOW_FAMILY
+    ) {
+      sandbox.window.PRISM_FIRST_CLASS_WORKFLOW_FAMILY =
+        sandbox.PRISM_FIRST_CLASS_WORKFLOW_FAMILY;
+    }
+    return sandbox.window
+      ? sandbox.window.PRISM_FIRST_CLASS_WORKFLOW_FAMILY
+      : sandbox.PRISM_FIRST_CLASS_WORKFLOW_FAMILY;
+  }
+  var rel = "lib/first-class-workflow-family.js";
+  vm.runInContext(fs.readFileSync(path.join(root, rel), "utf8"), sandbox, {
+    filename: rel
+  });
+  if (sandbox.window && sandbox.PRISM_FIRST_CLASS_WORKFLOW_FAMILY) {
+    sandbox.window.PRISM_FIRST_CLASS_WORKFLOW_FAMILY =
+      sandbox.PRISM_FIRST_CLASS_WORKFLOW_FAMILY;
+  }
+  return sandbox.window
+    ? sandbox.window.PRISM_FIRST_CLASS_WORKFLOW_FAMILY
+    : sandbox.PRISM_FIRST_CLASS_WORKFLOW_FAMILY;
 }
 
 /**
@@ -302,7 +395,8 @@ function loadPrismAppJsTestApi(options) {
     libs = libs.concat(opts.extraLibs);
   }
   runPrismLibScriptsInSandbox(sandbox, root, libs, {
-    skipLearnerRendererVNextInject: !!opts.skipLearnerRendererVNextInject
+    skipLearnerRendererVNextInject: !!opts.skipLearnerRendererVNextInject,
+    skipGamCanonicalAssemblerInject: !!opts.skipGamCanonicalAssemblerInject
   });
   vm.runInContext(source, sandbox, { filename: "app.js" });
   var api = sandbox.window.__PRISM_TEST_API;
@@ -376,9 +470,32 @@ function buildLegacyEpisodePlanWorkflow(overrides) {
   );
 }
 
+function ensureActivityEpisodePlanBeats(activity) {
+  var row = activity && typeof activity === "object" ? Object.assign({}, activity) : activity;
+  if (!row || typeof row !== "object") return row;
+  if (!String(row.expected_output || "").trim()) {
+    row.expected_output = "Completed task output.";
+  }
+  if (!row.episode_plan || !Array.isArray(row.episode_plan.beats)) {
+    row.episode_plan = {
+      archetype: "understand",
+      beats: [
+        { function: "orientation" },
+        { function: "explanation" },
+        { function: "verification" }
+      ]
+    };
+  }
+  return row;
+}
+
 function convertSectionsPageForVnextRender(page) {
   if (!page || typeof page !== "object") return page;
-  if (Array.isArray(page.activities) && page.activities.length) return page;
+  if (Array.isArray(page.activities) && page.activities.length) {
+    var activitiesClone = JSON.parse(JSON.stringify(page));
+    activitiesClone.activities = activitiesClone.activities.map(ensureActivityEpisodePlanBeats);
+    return activitiesClone;
+  }
   var clone = JSON.parse(JSON.stringify(page));
   var rows = [];
   (clone.sections || []).forEach(function (section) {
@@ -401,20 +518,7 @@ function convertSectionsPageForVnextRender(page) {
     current_stage: "design_page"
   };
   clone.activities = rows.map(function (row) {
-    var activity = Object.assign({}, row);
-    if (!String(activity.expected_output || "").trim()) {
-      activity.expected_output = "Completed task output.";
-    }
-    if (!activity.episode_plan || !Array.isArray(activity.episode_plan.beats)) {
-      activity.episode_plan = {
-        archetype: "understand",
-        beats: [
-          { function: "orientation" },
-          { function: "explanation" },
-          { function: "verification" }
-        ]
-      };
-    }
+    var activity = ensureActivityEpisodePlanBeats(Object.assign({}, row));
     if (activity.materials && !Array.isArray(activity.materials)) {
       activity.materials = Object.keys(activity.materials).map(function (key) {
         return {
@@ -452,6 +556,35 @@ function renderUtilityPageHtmlForTest(api, page, options) {
   );
 }
 
+/**
+ * PB-S-007 C01 — wrap test-API render/export helpers so sections-shaped fixtures
+ * are lifted to activities[] before hitting current vNext validate-input.
+ * Does not change production app.js behaviour.
+ */
+function installVnextPageShapeCompatForTests(api) {
+  if (!api || api.__PRISM_VNEXT_PAGE_SHAPE_COMPAT) return api;
+  if (typeof api.buildUtilityStructuredHtmlForTest === "function") {
+    var buildOrig = api.buildUtilityStructuredHtmlForTest.bind(api);
+    api.buildUtilityStructuredHtmlForTest = function (page, sectionOrder, opts) {
+      return buildOrig(convertSectionsPageForVnextRender(page), sectionOrder, opts);
+    };
+  }
+  if (typeof api.runUtilityPageExportPipelineForTest === "function") {
+    var exportOrig = api.runUtilityPageExportPipelineForTest.bind(api);
+    api.runUtilityPageExportPipelineForTest = function (page, opts) {
+      return exportOrig(convertSectionsPageForVnextRender(page), opts);
+    };
+  }
+  if (typeof api.renderLearnerPageForTest === "function") {
+    var renderOrig = api.renderLearnerPageForTest.bind(api);
+    api.renderLearnerPageForTest = function (page, opts) {
+      return renderOrig(convertSectionsPageForVnextRender(page), opts);
+    };
+  }
+  api.__PRISM_VNEXT_PAGE_SHAPE_COMPAT = true;
+  return api;
+}
+
 module.exports = {
   DEFAULT_LIBS,
   PEDAGOGICAL_ICON_LIBS,
@@ -460,6 +593,8 @@ module.exports = {
   wireBrowserGlobalThis,
   loadLearnerRendererVNextBrowserInSandbox,
   injectLearnerRendererVNextInSandbox,
+  ensureGamCanonicalAssemblerInSandbox,
+  ensureFirstClassWorkflowFamilyInSandbox,
   loadPrismAppJsTestApi,
   createPrismVmElementStub,
   applyDlaIntellectualCoherenceBridgeForTests,
@@ -467,5 +602,6 @@ module.exports = {
   wirePageVnextAssembleForTests,
   buildLegacyEpisodePlanWorkflow,
   convertSectionsPageForVnextRender,
-  renderUtilityPageHtmlForTest
+  renderUtilityPageHtmlForTest,
+  installVnextPageShapeCompatForTests
 };

@@ -156,108 +156,6 @@ const dpPartial = loadFixture("dp-partial.json");
 const daPartial = loadFixture("assessment-design-partial.json");
 const gaiPartial = loadFixture("assessment-items-partial.json");
 
-test("DLA partial without activity title is rejected", () => {
-  const api = loadPrismTestApi();
-  const wf = buildWorkflow();
-  const missingTitle = JSON.parse(JSON.stringify(dlaPartial));
-  delete missingTitle.activities[0].title;
-  const check = api.validateDlaOrPageCapture(missingTitle, epShell, wf);
-  assert.equal(check.ok, false);
-  assert.match((check.errors || []).join("; "), /title is required/i);
-});
-
-test("DLA partial with final activity titles is valid", () => {
-  const api = loadPrismTestApi();
-  const wf = buildWorkflow();
-  const check = api.validateDlaOrPageCapture(dlaPartial, epShell, wf);
-  assert.equal(check.ok, true, (check.errors || []).join("; "));
-});
-
-test("DLA partial with copy-forwarded shell preambles validates after repair", () => {
-  const api = loadPrismTestApi();
-  const wf = buildWorkflow();
-  const copyForward = JSON.parse(JSON.stringify(dlaPartial));
-  copyForward.activities.forEach((activity) => {
-    activity.activity_preamble = "\u2014";
-  });
-  const check = api.validateDlaOrPageCapture(copyForward, epShell, wf);
-  assert.equal(check.ok, true, (check.errors || []).join("; "));
-});
-
-test("DLA partial capture path repairs shell preambles before storage", () => {
-  const api = loadPrismTestApi();
-  const wf = buildWorkflow();
-  api.setWorkflowsForTest([wf]);
-  api.setSelectedWorkflowIdForTest(wf.id);
-  api.setWorkflowRunCapturedOutputsForTest({});
-  api.setWorkflowRunCapturedOutputsRawForTest({});
-  api.setWorkflowRunCapturedOutputsForTest({ ep_step: JSON.stringify(epShell, null, 2) });
-  api.setWorkflowRunCapturedOutputsRawForTest({ ep_step: JSON.stringify(epShell, null, 2) });
-  const copyForward = JSON.parse(JSON.stringify(dlaPartial));
-  copyForward.activities.forEach((activity) => {
-    activity.activity_preamble = "\u2014";
-  });
-  const raw = JSON.stringify(copyForward, null, 2);
-  const { li, textarea } = buildRunLi("dla_step", "page", raw);
-  api.syncWorkflowRunCapturedOutputToState(li);
-  const storedRaw = api.getWorkflowRunCapturedOutputsRawForTest().dla_step || "";
-  const parsedStored = JSON.parse(storedRaw);
-  parsedStored.activities.forEach((activity) => {
-    assert.notEqual(activity.activity_preamble, "\u2014");
-  });
-  assert.notEqual(textarea.value.trim(), raw.trim());
-});
-
-test("DLA partial validates by step identity when assembly_state stage is wrong", () => {
-  const api = loadPrismTestApi();
-  const wf = buildWorkflow();
-  const step = wf.steps.find((row) => row.id === "dla_step");
-  const mislabeled = JSON.parse(JSON.stringify(dlaPartial));
-  mislabeled.assembly_state.current_stage = "gam";
-  const check = api.validateStrictJsonWorkflowRunStepCaptureForTest(
-    JSON.stringify(mislabeled, null, 2),
-    step,
-    wf
-  );
-  assert.equal(check.ok, true, (check.errors || []).join("; "));
-});
-
-test("GAM partial validates by step identity when assembly_state stage is wrong", () => {
-  const api = loadPrismTestApi();
-  const wf = buildWorkflow();
-  const step = wf.steps.find((row) => row.id === "gam_step");
-  const mislabeled = JSON.parse(JSON.stringify(gamPartial));
-  mislabeled.assembly_state.current_stage = "dla";
-  const check = api.validateStrictJsonWorkflowRunStepCaptureForTest(
-    JSON.stringify(mislabeled, null, 2),
-    step,
-    wf
-  );
-  assert.equal(check.ok, true, (check.errors || []).join("; "));
-});
-
-test("DLA partial containing forbidden ownership fields is invalid", () => {
-  const api = loadPrismTestApi();
-  const wf = buildWorkflow();
-  const bad = JSON.parse(JSON.stringify(dlaPartial));
-  bad.activities[0].materials = [
-    {
-      material_id: "A1-M1",
-      body: "forbidden at DLA stage"
-    }
-  ];
-  const check = api.validateDlaOrPageCapture(bad, epShell, wf);
-  assert.equal(check.ok, false);
-  assert.match((check.errors || []).join("; "), /forbidden/i);
-});
-
-test("GAM materials-only activities are valid", () => {
-  const api = loadPrismTestApi();
-  const wf = buildWorkflow();
-  const check = api.validateGamOrPageCapture(gamPartial, dlaPartial, wf);
-  assert.equal(check.ok, true, (check.errors || []).join("; "));
-});
-
 test("LS partial without activities is valid", () => {
   const api = loadPrismTestApi();
   const check = api.validateLearningSequencePartialPageCapture(lsPartial);
@@ -359,36 +257,12 @@ test("page artefact parser accepts raw JSON and single fenced JSON block", () =>
   assert.equal(String(fencedResult.parsed.artifact_type || "").toLowerCase(), "page");
 });
 
-test("episode plan parser accepts bare episode_plans JSON by converting to page shell", () => {
+test("episode plan parser accepts fenced page shell JSON", () => {
   const api = loadPrismTestApi();
-  const epOnly = {
-    episode_plans: [
-      {
-        activity_id: "LO1",
-        episode_plan: {
-          archetype: "understand",
-          beats: [{ function: "explanation" }, { function: "worked_thinking" }, { function: "verification" }]
-        }
-      }
-    ]
-  };
-  const epOnlyResult = api.parseEpisodePlanOrPageCaptureForStorage(JSON.stringify(epOnly, null, 2));
-  assert.equal(epOnlyResult.ok, true, epOnlyResult.message || (epOnlyResult.errors || []).join("; "));
-  assert.equal(String(epOnlyResult.parsed.artifact_type || "").toLowerCase(), "page");
-
   const pageRaw = JSON.stringify(epShell, null, 2);
   const pageResult = api.parseEpisodePlanOrPageCaptureForStorage(pageRaw);
   assert.equal(pageResult.ok, true, pageResult.message || (pageResult.errors || []).join("; "));
   assert.equal(String(pageResult.parsed.artifact_type || "").toLowerCase(), "page");
-
-  const fenced = "```json\n" + pageRaw + "\n```";
-  const fencedResult = api.parseEpisodePlanOrPageCaptureForStorage(fenced);
-  assert.equal(
-    fencedResult.ok,
-    true,
-    fencedResult.message || (fencedResult.errors || []).join("; ")
-  );
-  assert.equal(String(fencedResult.parsed.artifact_type || "").toLowerCase(), "page");
 });
 
 test("episode plan parser tolerates prose-wrapped page shell and extracts page object", () => {

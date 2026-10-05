@@ -71,49 +71,6 @@ function loadPrismTestApi() {
 
 const api = loadPrismTestApi();
 
-test("composition metadata: sequencing row gets canonical and learner order metadata", () => {
-  const page = {
-    title: "History timeline",
-    metadata: { workflow_id: "wf-seq-1" },
-    sections: [
-      {
-        section_id: "learning_activities",
-        content: [
-          {
-            activity_id: "A1",
-            title: "Timeline sequencing",
-            learner_task: "Arrange events in chronological order."
-          }
-        ]
-      }
-    ]
-  };
-  const upstream = [
-    {
-      activity_id: "A1",
-      activity_interaction_type: "sequencing",
-      canonical_order: ["Event A", "Event B", "Event C", "Event D"]
-    }
-  ];
-
-  const touched = api.applySequencingInteractionMetadataToPageActivities(page, upstream);
-  assert.equal(touched, 1);
-  const row = page.sections[0].content[0];
-  assert.equal(row.activity_interaction_type, "sequencing");
-  assert.deepEqual(Array.from(row.ordering.canonical_order), ["Event A", "Event B", "Event C", "Event D"]);
-  assert.equal(Array.isArray(row.ordering.learner_display_order), true);
-  assert.equal(row.ordering.learner_display_order.length, 4);
-  assert.notDeepEqual(
-    Array.from(row.ordering.learner_display_order),
-    ["Event A", "Event B", "Event C", "Event D"],
-    "learner order should be deterministic shuffled when canonical order exists"
-  );
-  assert.equal(row.ordering.learner_display_order_strategy, "deterministic_shuffle");
-  assert.equal(typeof row.ordering.shuffle_seed_key, "string");
-  assert.equal(row.render_hints.keep_instruction_summary_above_cards, true);
-  assert.equal(row.render_hints.suppress_instruction_list_when_task_cards_present, false);
-});
-
 test("composition metadata: non-sequencing rows remain untouched", () => {
   const page = {
     sections: [

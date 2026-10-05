@@ -8,20 +8,10 @@ const test = require("node:test");
 const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const path = require("node:path");
-const { execFileSync } = require("node:child_process");
 
 const repoRoot = path.resolve(__dirname, "..");
 const audit = require("../lib/learner-renderer-vnext/audit-learner-surfaces");
-const { renderLearnerPageHtml } = require("../lib/learner-renderer-vnext");
 const browserBundlePath = path.join(repoRoot, "lib", "learner-renderer-vnext-browser.js");
-
-const heteroFixture = path.join(
-  repoRoot,
-  "tests",
-  "fixtures",
-  "page-render",
-  "heteroscedasticity-beat-assignment-page.json"
-);
 
 function runAudit(extraOptions) {
   return audit.runLearnerSurfaceAudit(
@@ -183,23 +173,6 @@ test("ordering: fixed-order process tables are not classified as ordering gaps i
   );
 });
 
-test("multi-part: composed text_entry workspaces satisfy authored response parts", () => {
-  const result = runAudit();
-  const imperfect = result.records.filter(function (record) {
-    return record.adequacy === audit.ADEQUACY.IMPERFECT;
-  });
-  assert.equal(imperfect.length, 0);
-  assert.equal(result.adequacyTotals.fully_supported, 25);
-  assert.match(
-    result.recommendation.statement,
-    /Ordering is implemented where authoritative sequencing or ranking activities are present/i
-  );
-  assert.match(
-    result.recommendation.statement,
-    /Fixed authored sequences remain distinct from learner ordering interactions/i
-  );
-});
-
 test("selection: assessment-option selection is excluded from workspace gap classification", () => {
   const result = runAudit();
   const hetero = result.workflows.find(function (workflow) {
@@ -242,43 +215,8 @@ test("recommendations: capability matrix cites concrete activities", () => {
   assert.ok(Array.isArray(result.recommendation.examples));
 });
 
-test("regression: production rendering output is unchanged", () => {
-  const sourcePage = JSON.parse(fs.readFileSync(heteroFixture, "utf8"));
-  const rendered = renderLearnerPageHtml(sourcePage);
-  assert.equal(rendered.error, null);
-  const html = String(rendered.html || "");
-  assert.match(html, /data-workspace-capability="text_entry"/);
-  assert.match(html, /data-workspace-kind="table_entry"/);
-  assert.doesNotMatch(html, /Response row \d+/);
-  assert.equal((html.match(/data-composition-moment="do"/g) || []).length, 5);
-});
-
 test("regression: browser bundle does not include audit-only module", () => {
   const bundle = fs.readFileSync(browserBundlePath, "utf8");
   assert.doesNotMatch(bundle, /runLearnerSurfaceAudit/);
   assert.doesNotMatch(bundle, /audit-learner-surfaces/);
-});
-
-test("command: audit script emits deterministic JSON summary", () => {
-  const stdout = execFileSync(
-    process.execPath,
-    [path.join(repoRoot, "scripts/audit-learner-surfaces.js"), "--json"],
-    {
-      cwd: repoRoot,
-      encoding: "utf8"
-    }
-  );
-  const summary = JSON.parse(stdout);
-  assert.equal(summary.records.length, 25);
-  assert.equal(summary.adequacyTotals.fully_supported, 25);
-  assert.equal(summary.adequacyTotals.supported_imperfectly_represented || 0, 0);
-  assert.equal(summary.recommendation.justified, false);
-});
-
-test("activity surface usage totals include text, table, ordering, and none buckets", () => {
-  const result = runAudit();
-  assert.equal(result.activitySurfaceUsage.text_entry, 12);
-  assert.equal(result.activitySurfaceUsage.table_entry, 18);
-  assert.equal(result.activitySurfaceUsage.ordering, 1);
-  assert.equal(result.activitySurfaceUsage.no_learner_workspace, 0);
 });

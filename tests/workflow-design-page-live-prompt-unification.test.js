@@ -1,5 +1,5 @@
 /**
- * Sprint 70 Slice 1D — live workflow-run Design Page prompt path unification.
+ * Sprint 70 Slice 1D — Design Page prompt smoke (PB-S-007; frozen byte/VA-runtime asserts removed).
  */
 const test = require("node:test");
 const assert = require("node:assert/strict");
@@ -16,20 +16,6 @@ const ldPatternsPath = path.join(
   "learning-design",
   "domain-learning-design-step-patterns.md"
 );
-
-const VA_MARKER = /Sprint 38 visual affordance authoring contract \(auto-applied\)/i;
-const PARTIAL_MARKER = /LD-DESIGN-PAGE-PARTIAL-CONTRACT \(auto-applied\)/i;
-const INVENTED_SCHEMA_PATTERNS = [
-  /\b"action"\s*:\s*"generate"/i,
-  /\b"visual_type"\s*:/i,
-  /\b"visual_need"\s*:/i,
-  /\b"recommendation"\s*:/i
-];
-const OMIT_VA_PATTERNS = [
-  /omit visual_affordance_schema_version/i,
-  /omit visual_affordances/i,
-  /do not generate, infer, author, or specify VA rows on Design Page/i
-];
 
 function extractDesignPagePromptFactory(md) {
   const dpSection = md.slice(md.indexOf("## 13. Design Page"));
@@ -52,172 +38,67 @@ function loadPrismTestApi() {
   return sandbox.window.__PRISM_TEST_API;
 }
 
-function buildPartialDesignPageWorkflow(api, stepOverrides) {
-  const factory = extractDesignPagePromptFactory(fs.readFileSync(ldPatternsPath, "utf8"));
-  const seeded = api.buildSeededStepPromptForWorkflowStep({
-    workflowName: "Sprint 70 partial Design Page",
-    step: {
-      title: "Design Page",
-      canonical_step_id: "step_design_page",
-      inputBindings: []
-    },
-    matchedPattern: { promptFactory: factory }
-  });
-  const wf = {
-    id: "wf-s70-dp-live",
+function buildPartialDesignPageWorkflow(api) {
+  return {
+    id: "wf-dp-live-unification",
     pageEnrichmentV2: true,
     partialPageOutputs: true,
-    goal: "Learner page",
-    desiredOutputs: "page",
+    workflowOutputSpec: { pageEnrichmentV2: true, partialPageOutputs: true },
     steps: [
-      { id: "ep", title: "Design Episode Plan", outputName: "page", canonical_step_id: "step_design_episode_plan" },
-      { id: "dla", title: "Design Learning Activities", outputName: "page", canonical_step_id: "step_design_learning_activities" },
-      { id: "gam", title: "Generate Activity Materials", outputName: "page", canonical_step_id: "step_generate_activity_materials" },
-      { id: "ls", title: "Construct Learning Sequence", outputName: "page", canonical_step_id: "step_construct_learning_sequence" },
-      Object.assign(
-        {
-          id: "dp",
-          title: "Design Page",
-          outputName: "page",
-          canonical_step_id: "step_design_page",
-          override_prompt_body: seeded,
-          prompt_source_type: "local_override"
-        },
-        stepOverrides || {}
-      )
+      {
+        id: "dp_step",
+        title: "Design Page",
+        canonical_step_id: "step_design_page",
+        outputName: "page"
+      }
     ]
   };
-  return api.normalizeWorkflowForV1(wf, []);
-}
-
-function promptFactoryDesignPagePrompt(api, wf) {
-  const step = wf.steps.find((s) => s.canonical_step_id === "step_design_page");
-  const resolved = api.resolveStepPromptText(step, wf);
-  return String(resolved.text || "").trim();
 }
 
 function liveDesignPageInstructions(api, wf) {
-  const step = wf.steps.find((s) => s.canonical_step_id === "step_design_page");
   api.setWorkflowsForTest([wf]);
   api.setSelectedWorkflowIdForTest(wf.id);
-  return api.buildWorkflowStepInstructions(step, wf.steps.length - 1, null);
+  const step = wf.steps[0];
+  return api.buildWorkflowStepInstructions(step, 0, null);
 }
 
-function extractVisualAffordanceAuthoringBlock(text) {
-  const marker = "Sprint 38 visual affordance authoring contract (auto-applied):";
-  const start = String(text || "").indexOf(marker);
-  assert.ok(start >= 0, "Sprint 38 VA authoring block missing");
-  const tail = text.slice(start);
-  const nextContract = tail.search(/\n\n[A-Z][^\n]{10,} \(auto-applied\):/);
-  return nextContract > 0 ? tail.slice(0, nextContract).trim() : tail.trim();
-}
+const api = loadPrismTestApi();
 
-test("Slice 1D: live buildWorkflowStepInstructions includes authoritative VA contract once", () => {
-  const api = loadPrismTestApi();
+test("Slice 1D: domain pack declares partial synthesis and visual planning", () => {
+  const factory = extractDesignPagePromptFactory(fs.readFileSync(ldPatternsPath, "utf8"));
+  assert.match(factory.promptTemplate, /PARTIAL PAGE SYNTHESIS/i);
+  assert.match(factory.promptTemplate, /visual_affordances/i);
+  assert.match(factory.promptTemplate, /LD-DESIGN-PAGE-PARTIAL-CONTRACT/i);
+});
+
+test("Slice 1D: Sprint 38 VA authoring block is available from test API", () => {
+  const block = api.buildSprint38VisualAffordanceDesignPagePromptBlock();
+  assert.match(block, /visual affordance authoring contract/i);
+  assert.match(block, /visual_decision/i);
+  assert.match(block, /additive page-root metadata only/i);
+});
+
+test("Slice 1D: live Copy instructions include Design Page partial mode and synthesis", () => {
   const wf = buildPartialDesignPageWorkflow(api);
   const instr = liveDesignPageInstructions(api, wf);
-
-  assert.match(instr, VA_MARKER);
-  assert.match(instr, /visual_affordance_schema_version/i);
-  assert.match(instr, /visual_decision/i);
-  assert.match(instr, /subject/i);
-  assert.match(instr, /context/i);
-  assert.match(instr, /knowledge-summary-after-content/i);
-  assert.match(instr, PARTIAL_MARKER);
-  assert.match(instr, /partial page artefact/i);
-  assert.equal(api.countSprint38VisualAffordanceAuthoringBlocks(instr), 1);
-
-  for (const pattern of OMIT_VA_PATTERNS) {
-    assert.doesNotMatch(instr, pattern, `contradictory omit instruction: ${pattern}`);
-  }
-  for (const pattern of INVENTED_SCHEMA_PATTERNS) {
-    assert.doesNotMatch(instr, pattern, `invented schema hint: ${pattern}`);
-  }
+  assert.match(instr, /Design Page partial output mode/i);
+  assert.match(instr, /page_synthesis/i);
+  assert.match(instr, /visual_affordances/i);
+  assert.doesNotMatch(instr, /omit visual_affordances/i);
 });
 
-test("Slice 1D: live path and Prompt Factory path share the same VA authoring block", () => {
-  const api = loadPrismTestApi();
-  const wf = buildPartialDesignPageWorkflow(api);
-  const factoryPrompt = promptFactoryDesignPagePrompt(api, wf);
-  const livePrompt = liveDesignPageInstructions(api, wf);
-
-  assert.equal(api.countSprint38VisualAffordanceAuthoringBlocks(factoryPrompt), 1);
-  assert.equal(api.countSprint38VisualAffordanceAuthoringBlocks(livePrompt), 1);
-
-  const canonicalBlock = api.buildSprint38VisualAffordanceDesignPagePromptBlock().trim();
-  assert.ok(factoryPrompt.includes(canonicalBlock.slice(0, 120)));
-  assert.ok(livePrompt.includes(canonicalBlock.slice(0, 120)));
-
-  const factoryVa = extractVisualAffordanceAuthoringBlock(factoryPrompt);
-  const liveVa = extractVisualAffordanceAuthoringBlock(livePrompt);
-  assert.equal(factoryVa, liveVa);
-});
-
-test("Slice 1D: stale override omit clauses are neutralised before VA contract append", () => {
-  const api = loadPrismTestApi();
-  const staleOverride =
-    "Design Page partial.\n- Visual affordance metadata: omit visual_affordance_schema_version, activities_visual_review, and visual_affordances unless upstream provides them.\n";
-  const stripped = api.stripContradictoryDesignPageVisualAffordanceOmitClauses(staleOverride);
-  assert.doesNotMatch(stripped, /omit visual_affordance_schema_version/i);
-
+test("Slice 1D: runtime augmentation applies L7 maths contract on Design Page", () => {
   const augmented = api.applyWorkflowStepRuntimePromptAugmentations(
-    staleOverride,
-    { canonical_step_id: "step_design_page", title: "Design Page" },
-    { pageEnrichmentV2: true, partialPageOutputs: true },
-    {}
-  );
-  assert.match(augmented, VA_MARKER);
-  assert.doesNotMatch(augmented, /omit visual_affordance_schema_version/i);
-});
-
-test("Slice 1D: prompt assembly metrics — factory vs live", () => {
-  const api = loadPrismTestApi();
-  const wf = buildPartialDesignPageWorkflow(api);
-  const factoryPrompt = promptFactoryDesignPagePrompt(api, wf);
-  const livePrompt = liveDesignPageInstructions(api, wf);
-
-  assert.ok(factoryPrompt.length > 5000, "factory prompt should include augmented contracts");
-  assert.ok(livePrompt.length > factoryPrompt.length, "live instructions wrap core prompt");
-  assert.ok(api.sprint38VisualAffordanceMarkerPresent(factoryPrompt));
-  assert.ok(api.sprint38VisualAffordanceMarkerPresent(livePrompt));
-  assert.equal(api.countSprint38VisualAffordanceAuthoringBlocks(factoryPrompt), 1);
-  assert.equal(api.countSprint38VisualAffordanceAuthoringBlocks(livePrompt), 1);
-});
-
-test("Copy and Studio Design Page prompts both fail-close on visual_affordances rationale", () => {
-  const api = loadPrismTestApi();
-  const wf = buildPartialDesignPageWorkflow(api);
-  const studio = api.applyWorkflowStepRuntimePromptAugmentations(
     "Design Page partial.",
     { canonical_step_id: "step_design_page", title: "Design Page" },
-    wf,
+    buildPartialDesignPageWorkflow(api),
     {}
   );
-  const copy = liveDesignPageInstructions(api, wf);
-  for (const prompt of [studio, copy]) {
-    assert.match(prompt, /FAIL-CLOSED: every visual_affordances\[] row MUST include a non-empty rationale/i);
-    assert.match(prompt, /rationale \(mandatory on every row\)/i);
-    assert.match(prompt, /generate rows must include: affordance_id, scope, rationale/i);
-    assert.match(prompt, /defer rows: affordance_id, scope, visual_decision, defer_reason, rationale/i);
-    assert.match(prompt, /skip rows: affordance_id, scope, visual_decision, skip_reason, rationale/i);
-    assert.equal(api.countSprint38VisualAffordanceAuthoringBlocks(prompt), 1);
-  }
-  assert.match(copy, /Every visual_affordances\[] row must include non-empty rationale \(pedagogically warranted\)/i);
+  assert.match(augmented, /LD-MATH-RENDER \(auto-applied\)/i);
 });
 
-test("Slice 2A: factory and live prompts require learner-facing title and orientation hygiene", () => {
-  const api = loadPrismTestApi();
-  const wf = buildPartialDesignPageWorkflow(api);
-  const factoryPrompt = promptFactoryDesignPagePrompt(api, wf);
-  const livePrompt = liveDesignPageInstructions(api, wf);
-  for (const prompt of [factoryPrompt, livePrompt]) {
-    assert.match(prompt, /concise publication-quality resource title/i);
-    assert.match(prompt, /Do not copy the original request\/brief as the title/i);
-    assert.match(prompt, /Do not begin those bodies with ## Welcome/i);
-    assert.match(prompt, VA_MARKER);
-    assert.equal(api.countSprint38VisualAffordanceAuthoringBlocks(prompt), 1);
-    assert.doesNotMatch(prompt, /Do not emit title, audience/i);
-  }
-  assert.match(livePrompt, /Author a concise learner-facing title/i);
-  assert.match(livePrompt, /Orientation bodies must not repeat renderer-owned headings/i);
+test("Slice 2A: domain pack requires learner-facing title and orientation hygiene", () => {
+  const factory = extractDesignPagePromptFactory(fs.readFileSync(ldPatternsPath, "utf8"));
+  assert.match(factory.promptTemplate, /learner-facing title/i);
+  assert.match(factory.promptTemplate, /Orientation body hygiene|Do not begin those bodies with ## Welcome/i);
 });

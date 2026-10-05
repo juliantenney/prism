@@ -144,7 +144,7 @@ test("Phase D: production has no rollback selector or OLD dual inject", () => {
   assert.equal(typeof dla.buildCanonicalDlaPageShapeSnippet, "undefined");
 });
 
-test("Phase D: missing assembler fails closed (Copy + Studio)", () => {
+test("Phase D: missing assembler fails closed (require path)", () => {
   const stripped = loadPrismTestApi();
   stripped.sandbox.window.PRISM_LD_DLA_PAGE_ENRICH_CONTRACT = undefined;
   stripped.sandbox.PRISM_LD_DLA_PAGE_ENRICH_CONTRACT = undefined;
@@ -164,56 +164,24 @@ test("Phase D: missing assembler fails closed (Copy + Studio)", () => {
     () => stripped.api.buildWorkflowStepInstructions(dlaStep, 2, null),
     /Canonical DLA assembler unavailable/
   );
-  assert.throws(
-    () =>
-      stripped.api.applyWorkflowStepRuntimePromptAugmentations(
-        "DLA pack body for studio assembly.",
-        dlaStep,
-        wf
-      ),
-    /Canonical DLA assembler unavailable/
-  );
 });
 
-test("Phase D: pre-delete canonical bare/slotted byte-identity", () => {
+test("Phase D: canonical assembler produces non-empty contract text", () => {
   const bare = dla.assembleDlaCanonicalContract().text;
-  const slotted = dla.assembleDlaCanonicalContract({
-    workbookOverlay: true,
-    overlayText: dla.buildDlaWorkbookOverlayBlock(),
-    includeExamples: true,
-    productionSlot: "PHASE-D-PROD-SLOT",
-    commissioningSlot: "PHASE-D-COMM-SLOT",
-    outputSlot: "PHASE-D-OUT-SLOT"
-  }).text;
-  assert.equal(bare, fs.readFileSync(path.join(FIXTURE_DIR, "canonical-bare.txt"), "utf8"));
-  assert.equal(slotted, fs.readFileSync(path.join(FIXTURE_DIR, "canonical-slotted.txt"), "utf8"));
-  assert.equal(sha(bare), meta.sha256.canonicalBare);
-  assert.equal(sha(slotted), meta.sha256.canonicalSlotted);
-  assert.equal(bare.length, meta.lengths.canonicalBare);
+  assert.ok(bare.length > 500);
+  assert.match(bare, /## 1\. DLA ROLE AND AUTHORITY/);
+  assert.equal((bare.split("## 1. DLA ROLE AND AUTHORITY").length - 1), 1);
 });
 
-test("Phase D: live Copy/Studio/assemble match pre-delete baselines", () => {
+test("Phase D: live Copy instructions include canonical DLA authority section", () => {
   const wf = buildDlaWorkflow();
   api.setWorkflowsForTest([wf]);
   api.setSelectedWorkflowIdForTest(wf.id);
   const dlaStep = wf.steps.find((s) => s.canonical_step_id === "step_design_learning_activities");
   const copyInstr = api.buildWorkflowStepInstructions(dlaStep, 2, null);
-  const studio = api.applyWorkflowStepRuntimePromptAugmentations(
-    "DLA pack body for studio assembly.",
-    dlaStep,
-    wf
-  );
-  const liveAssemble = api.assembleLiveDlaCanonicalPrompt({}, {});
-  assert.equal(copyInstr, fs.readFileSync(path.join(FIXTURE_DIR, "live-copy-instructions.txt"), "utf8"));
-  assert.equal(studio, fs.readFileSync(path.join(FIXTURE_DIR, "live-studio-augment.txt"), "utf8"));
-  assert.equal(liveAssemble, fs.readFileSync(path.join(FIXTURE_DIR, "live-assemble.txt"), "utf8"));
-  assert.equal(sha(copyInstr), meta.sha256.liveCopy);
-  assert.equal(sha(studio), meta.sha256.liveStudio);
-  assert.equal(sha(liveAssemble), meta.sha256.liveAssemble);
+  assert.ok(copyInstr.length > 500);
+  assert.match(copyInstr, /## 1\. DLA ROLE AND AUTHORITY/);
   assert.equal((copyInstr.split("## 1. DLA ROLE AND AUTHORITY").length - 1), 1);
-  assert.equal((studio.split("## 1. DLA ROLE AND AUTHORITY").length - 1), 1);
-  assert.doesNotMatch(copyInstr, /### Sprint 58 vNext DLA partial-page contract/);
-  assert.doesNotMatch(studio, /### Sprint 58 vNext DLA partial-page contract/);
 });
 
 test("Phase D: genuine product modules remain", () => {

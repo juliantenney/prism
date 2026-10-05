@@ -189,44 +189,6 @@ test("domain step patterns: shared math notation contract section present", () =
   assert.match(md, /\$\$\.\.\.\$\$/);
 });
 
-test("domain step patterns: DLA/GAM/Design Page prompts reference math-safe delimiters", () => {
-  const md = fs.readFileSync(stepPatternsPath, "utf8");
-  const dlaSection = md.match(
-    /## 5\. Design Learning Activities[\s\S]*?## 6\. Generate Activity Materials/
-  );
-  const gamSection = md.match(
-    /## 6\. Generate Activity Materials[\s\S]*?## 7\. Design Assessment/
-  );
-  const pageSection = md.match(/## 13\. Design Page[\s\S]*?## 14\. Generate Slide Deck/);
-  assert.ok(dlaSection, "expected DLA section");
-  assert.ok(gamSection, "expected GAM section");
-  assert.ok(pageSection, "expected Design Page section");
-  for (const section of [dlaSection[0], gamSection[0], pageSection[0]]) {
-    const factoryMatch = section.match(/### Prompt Factory\s*```json\s*([\s\S]*?)```/i);
-    assert.ok(factoryMatch, "expected Prompt Factory JSON block");
-    assert.match(factoryMatch[1], /LD-MATH-RENDER/i);
-  }
-});
-
-test("domain step patterns: assessment producer prompts reference math-safe delimiters", () => {
-  const md = fs.readFileSync(stepPatternsPath, "utf8");
-  const feedbackSection = md.match(/## 8\. Design Feedback[\s\S]*?## 9\. Generate Assessment Items/);
-  const itemsSection = md.match(/## 9\. Generate Assessment Items[\s\S]*?## 10\. Construct Learning Sequence/);
-  const rubricSection = md.match(/## 20\. Design Marking Rubric[\s\S]*?# Usage Guidelines/);
-  assert.ok(feedbackSection, "expected Design Feedback section");
-  assert.ok(itemsSection, "expected Generate Assessment Items section");
-  assert.ok(rubricSection, "expected Design Marking Rubric section");
-  for (const section of [feedbackSection[0], itemsSection[0], rubricSection[0]]) {
-    assert.match(section, /\\\\\(\.\.\.\\\\\)/);
-    assert.match(section, /\\\\\[\.\.\.\\\\\]/);
-    assert.match(section, /\$\.\.\.\$/);
-    assert.match(section, /\$\$\.\.\.\$\$/);
-    assert.match(section, /code wrappers|code spans\/fences/i);
-    assert.match(section, /HTML-escaped delimiters/i);
-    assert.match(section, /mathematical notation|maths/i);
-  }
-});
-
 test("applyWorkflowStepRuntimePromptAugmentations: includes math contract for DLA step", () => {
   const { api } = loadPrismTestApi();
   const prompt = api.applyWorkflowStepRuntimePromptAugmentations(

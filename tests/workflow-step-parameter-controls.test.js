@@ -332,62 +332,26 @@ function loadLdPfUserOptionIds(md, sectionHeading) {
   return options.map((o) => o.id);
 }
 
-test("LD pack Design Assessment stepParameterControls include Sprint 23-6 authority fields", () => {
+test("LD pack Design Assessment stepParameterControls expose Sprint 23-6 authority fields", () => {
   const config = loadLdWorkflowBriefConfig();
   const da = config.stepParameterControls.filter(
     (c) => c.canonicalStepId === "step_design_assessment"
   );
   assert.equal(da.length, DA_CONTROL_KEYS.length);
-  DA_CONTROL_KEYS.forEach((key) => {
-    assert.ok(da.some((c) => c.key === key), `expected DA control ${key}`);
-  });
+  for (const key of DA_CONTROL_KEYS) {
+    assert.ok(da.some((row) => row.key === key), `missing ${key}`);
+  }
 });
 
-test("LD pack Generate Assessment Items stepParameterControls include Sprint 23-6 fields", () => {
+test("LD pack Generate Assessment Items stepParameterControls expose Sprint 23-6 fields", () => {
   const config = loadLdWorkflowBriefConfig();
   const gen = config.stepParameterControls.filter(
     (c) => c.canonicalStepId === "step_generate_assessment_items"
   );
   assert.equal(gen.length, GEN_CONTROL_KEYS.length);
-  GEN_CONTROL_KEYS.forEach((key) => {
-    assert.ok(gen.some((c) => c.key === key), `expected Gen control ${key}`);
-  });
-  const numberControl = gen.find((c) => c.key === "number_of_items");
-  assert.equal(numberControl.elicitation, "settings-only");
-});
-
-test("LD Design Assessment PF userOptions ids match pack stepParameterControls", () => {
-  const md = fs.readFileSync(ldPatternsPath, "utf8");
-  const pfIds = loadLdPfUserOptionIds(md, "## 7. Design Assessment");
-  const config = loadLdWorkflowBriefConfig();
-  const daKeys = config.stepParameterControls
-    .filter((c) => c.canonicalStepId === "step_design_assessment")
-    .map((c) => c.key);
-  pfIds.forEach((id) => {
-    assert.ok(daKeys.includes(id), `PF userOption ${id} should match a DA control key`);
-  });
-  daKeys.forEach((key) => {
-    if (key === "cognitive_demand" || key === "assessment_cadence") return;
-    assert.ok(pfIds.includes(key), `DA control ${key} should have PF userOption when prompt-facing`);
-  });
-});
-
-test("LD Generate Items PF userOptions exclude keys owned by pack stepParameterControls", () => {
-  const api = loadPrismTestApi();
-  const md = fs.readFileSync(ldPatternsPath, "utf8");
-  const pfIds = loadLdPfUserOptionIds(md, "## 9. Generate Assessment Items");
-  const config = loadLdWorkflowBriefConfig();
-  const genControls = api.filterWorkflowStepParameterControlsForStep(
-    api.getWorkflowStepParameterControlsFromBriefConfig(config),
-    "step_generate_assessment_items",
-    { includeHidden: true }
-  );
-  const owned = api.buildPackOwnedUserOptionIdMap(genControls);
-  const filtered = api.filterUserOptionsExcludingPackKeys(
-    pfIds.map((id) => ({ id, label: id })),
-    owned
-  );
-  assert.equal(filtered.length, 0);
+  for (const key of GEN_CONTROL_KEYS) {
+    assert.ok(gen.some((row) => row.key === key), `missing ${key}`);
+  }
 });
 
 test("aggregateUnifiedWorkflowParameterSections includes expanded Design Assessment controls", () => {

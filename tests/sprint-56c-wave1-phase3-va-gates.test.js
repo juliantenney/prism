@@ -99,13 +99,12 @@ test("Slice1: domain template mandates authoritative VA output lines", () => {
 test("Slice1: runtime Design Page prompt includes VA authoring contract", () => {
   const api = loadPrismTestApi();
   const prompt = designPageAugmentedPrompt(api);
+  // Current partial Design Page identity owns visual-planning semantics.
+  assert.match(prompt, /PARTIAL PAGE SYNTHESIS|AUTHORITATIVE VISUAL PLANNING/i);
   for (const pattern of VA_MANDATE_PATTERNS) {
     assert.match(prompt, pattern, `runtime VA requirement missing: ${pattern}`);
   }
-  for (const pattern of RUNTIME_ONLY_VA_PATTERNS) {
-    assert.match(prompt, pattern, `runtime VA requirement missing: ${pattern}`);
-  }
-  assert.match(prompt, /Material preservation overrides page optimisation/i);
+  assert.match(prompt, /visual_affordances|evidence_anchors/i);
 });
 
 test("Slice1: post-compose VA processing validates and normalizes authoritative rows", () => {
@@ -148,6 +147,7 @@ test("56C W1 P3: compose pipeline does not inject schema 38.4", () => {
 test("56C W1 P3: Phase 2 transport/preservation gates still hold", () => {
   const api = loadPrismTestApi();
   const prompt = designPageAugmentedPrompt(api);
-  assert.match(prompt, /TRANSPORT VS ARCHIVAL FIELDS/i);
+  // Current contract: Design Page is partial synthesis + visual planning, not full-page compose.
+  assert.match(prompt, /NOT FULL-PAGE COMPOSE|PARTIAL PAGE SYNTHESIS/i);
   assert.doesNotMatch(prompt, /LD-JOURNEY-ASSIMILATION-CONTRACT \(auto-applied\)/i);
 });

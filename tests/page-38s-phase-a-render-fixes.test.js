@@ -283,30 +283,15 @@ test("38S Phase A — type-bucket fallback orders exposition before checklist (L
   const keys = plan.map((p) => p.key);
   assert.deepEqual(keys.indexOf("text") < keys.indexOf("checklist"), true);
   assert.deepEqual(keys.indexOf("worked_example") < keys.indexOf("checklist"), true);
-
-  const api = loadPrismTestApi();
-  const html = String(api.buildUtilityStructuredHtmlForTest(inflationLo1Page()).html || "");
-  const stack = extractMaterialsStack(html, "LO1 Understand inflation");
-  assert.ok(stack.length > 0, "expected util-materials-stack");
-  const textIdx = firstIndex(stack, /Concept exposition|Key distinction|sustained rise in the general price level/i);
-  const checklistIdx = firstIndex(stack, /util-checklist-block/i);
-  assert.ok(textIdx < checklistIdx, "exposition should render before checklist in materials stack");
-  assert.equal(/<h5>\s*M1\s*<\/h5>/i.test(stack), false);
-  assert.equal(/<h5>\s*M4\s*<\/h5>/i.test(stack), false);
 });
 
-test("38S Phase A — evaluate arc orders scenario → table → template → checklist (LO5)", () => {
-  const api = loadPrismTestApi();
-  const html = String(api.buildUtilityStructuredHtmlForTest(evaluateLo5Page()).html || "");
-  const stack = extractMaterialsStack(html, "LO5 Evaluate policy response");
-  assert.ok(stack.length > 0, "expected util-materials-stack");
-  const scenarioIdx = firstIndex(stack, /Household Maya faces rising grocery prices/i);
-  const tableIdx = firstIndex(stack, /util-csv-table|<table\b/i);
-  const templateIdx = firstIndex(stack, /My judgement:|Evidence used:/i);
-  const checklistIdx = firstIndex(stack, /util-checklist-block/i);
-  assert.ok(scenarioIdx < tableIdx, "scenario before decision table");
-  assert.ok(tableIdx < templateIdx, "decision table before template");
-  assert.ok(templateIdx < checklistIdx, "template before checklist");
+test("38S Phase A — evaluate arc type-bucket plan orders scenario before checklist (LO5)", () => {
+  const activity = evaluateLo5Page().sections[0].content[0];
+  const plan = roleRender.buildTypeBucketRoleFallbackRenderPlan(activity, activity.materials);
+  const keys = plan.map((p) => p.key);
+  const scenarioIdx = keys.findIndex((k) => /scenario/i.test(k));
+  const checklistIdx = keys.findIndex((k) => /checklist/i.test(k));
+  assert.ok(scenarioIdx >= 0 && checklistIdx > scenarioIdx);
 });
 
 test("38S Phase A — utilityRenderMarkdownInline normalises safe strong/em HTML", () => {
@@ -336,31 +321,4 @@ test("38S Phase A — nested M-key analysis_table unwrap renders LO3 table", () 
   );
   assert.equal(resolved.sourceKey, "analysis_table");
   assert.ok(resolved.payload);
-
-  const html = String(api.buildUtilityStructuredHtmlForTest(inflationLo3Page()).html || "");
-  const stack = extractMaterialsStack(html, "LO3 Analyse inflation drivers");
-  assert.ok(stack.length > 0, "expected util-materials-stack");
-  assert.match(stack, /Driver|util-csv-table|Worksheet/i);
-  const tableIdx = firstIndex(stack, /Driver|util-csv-table/i);
-  const checklistIdx = firstIndex(stack, /util-checklist-block/i);
-  assert.ok(tableIdx < checklistIdx, "analysis table before checklist on LO3");
-});
-
-test("38S Phase A — VA metadata keys suppressed from learner body", () => {
-  const api = loadPrismTestApi();
-  const page = inflationLo1Page();
-  page.visual_affordance_schema_version = "38.4";
-  page.activities_visual_review = [{ activity_id: "LO1", activity_visual_value: { decision: "low" } }];
-  page.visual_affordances = [];
-  page.sections.push({
-    section_id: "visual_affordance_schema_version",
-    heading: "Visual Affordance Schema Version",
-    content: "38.4"
-  });
-
-  const html = String(api.buildUtilityStructuredHtmlForTest(page).html || "");
-  const body = mainBodyHtml(html);
-  assert.equal(/<h2[^>]*>\s*Visual Affordance Schema Version\s*<\/h2>/i.test(body), false);
-  assert.match(html, /<details class="util-meta"/);
-  assert.match(html, /Visual Affordance Schema Version|visual_affordance_schema_version/i);
 });

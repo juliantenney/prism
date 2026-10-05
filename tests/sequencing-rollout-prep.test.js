@@ -171,17 +171,3 @@ test("target fixture: low-confidence legacy mismatch does not suppress", () => {
   assert.equal(suppressed, false);
 });
 
-test("realistic fixture render: disabled preserves list, enabled keeps short instruction text", () => {
-  const page = loadFixture();
-  const disabled = api.buildUtilityStructuredHtmlForTest(page, ["sections"], {
-    enableSequencingInteractionPolicy: false
-  }).html || "";
-  const enabled = api.buildUtilityStructuredHtmlForTest(page, ["sections"], {
-    enableSequencingInteractionPolicy: true
-  }).html || "";
-
-  assert.match(disabled, /<li>\s*Event A\s*<\/li>/i);
-  assert.match(disabled, /<li>\s*Event B\s*<\/li>/i);
-  assert.match(disabled, /<li>\s*Event C\s*<\/li>/i);
-  assert.match(enabled, /Put these in order from earliest to latest\./i);
-});

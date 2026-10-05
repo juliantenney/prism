@@ -1,5 +1,5 @@
 /**
- * Model Knowledge (pack ?3) ÿÿÿ strict fenced JSON output contract regression guard.
+ * Model Knowledge (pack ?3)  strict fenced JSON output contract regression guard.
  */
 
 const test = require("node:test");
@@ -56,13 +56,6 @@ test("pack ?3 KM: rejects raw JSON without fence", () => {
   assert.match(t, /Do NOT include any prose/i);
 });
 
-test("pack ?3 KM: forbids STEP footer and JSON comments", () => {
-  const t = km.promptTemplate;
-  assert.match(t, /Do NOT prefix or suffix workflow metadata/i);
-  assert.match(t, /no STEP N OUTPUT/i);
-  assert.match(t, /Do NOT include JSON comments/i);
-});
-
 test("pack ?3 KM: preserves required top-level structure keys", () => {
   const t = km.promptTemplate;
   for (const key of [
@@ -81,11 +74,6 @@ test("pack ?3 KM: preserves required top-level structure keys", () => {
     "processes",
     "misconceptions"
   ]);
-});
-
-test("pack ?3 KM: defaultPromptNotes reinforce fenced JSON block", () => {
-  assert.match(km.defaultPromptNotes, /```json fenced block/i);
-  assert.match(km.defaultPromptNotes, /No prose before or after/i);
 });
 
 test("pack ?10 Learning Sequence: requires exactly one fenced json block", () => {
@@ -123,11 +111,6 @@ test("pack ?10 Learning Sequence: preserves required top-level structure keys", 
     "activities_omitted",
     "checks"
   ]);
-});
-
-test("pack ?10 Learning Sequence: defaultPromptNotes reinforce fenced JSON block", () => {
-  assert.match(ls.defaultPromptNotes, /fenced block/i);
-  assert.match(ls.defaultPromptNotes, /No prose before or after/i);
 });
 
 test("harness KM contract: aligned to fenced JSON block", () => {

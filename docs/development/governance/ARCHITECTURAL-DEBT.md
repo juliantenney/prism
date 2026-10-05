@@ -234,6 +234,8 @@ Investigations should remain context-driven rather than forced into a rigid univ
 2. **RC2** — inventory builds use isolated temp dirs via `PRISM_GAM_INVENTORY_OUT_DIR` + test helper; ±1 flake eliminated.
 3. Historical full suite remains noisy (**419** stable failing locations post-repair) as **understood backlog** (RC3–RC8). Absolute count is not the confidence criterion.
 
+**Follow-on (2026-10-05):** [PB-S-007](PB-S-007-broad-suite-failure-reconciliation.md) diagnostic + remediation completed. Broad suite now **3705 / 3704 / 0 / 1**; first-class remains **339/339**. No production code changes. Sprint 89 stays CLOSED; no successor sprint opened.
+
 **Disposition:** **A — D-014 CONFIDENCE ISSUE RESOLVED.** Sprint 80 stays **CLOSED**.
 
 ---

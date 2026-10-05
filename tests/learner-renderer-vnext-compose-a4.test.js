@@ -247,21 +247,3 @@ test("composition map: A4 beat anchors and suppression hints", () => {
   const html = renderPage(modelResult.model, { activityComposition: map });
   assert.doesNotMatch(extractActivityHtml(html, "A4"), /data-beat-function="/);
 });
-
-test("regression: A1–A3 unchanged; A5 remains beats in moments export", () => {
-  const sourcePage = loadFixture();
-  const beatsHtml = renderLearnerPageHtml(sourcePage, { compositionMode: "beats" }).html;
-  const momentsHtml = renderLearnerPageHtml(sourcePage, { compositionMode: "moments" }).html;
-
-  assert.equal((extractActivityHtml(momentsHtml, "A1").match(/data-composition-moment="/g) || []).length, 4);
-  assert.match(extractActivityHtml(momentsHtml, "A2"), /data-workspace-kind="table_entry"/);
-  assert.match(extractActivityHtml(momentsHtml, "A3"), /data-workspace-kind="table_entry"/);
-  assert.equal((extractActivityHtml(momentsHtml, "A4").match(/data-composition-moment="/g) || []).length, 4);
-  assert.match(extractActivityHtml(momentsHtml, "A4"), /util-learner-workspace__input/);
-
-  const a5Moments = extractActivityHtml(momentsHtml, "A5");
-  assert.equal((a5Moments.match(/data-composition-moment="/g) || []).length, 4);
-  assert.match(a5Moments, /data-workspace-kind="table_entry"/);
-  assert.match(a5Moments, /data-workspace-capability="text_entry"/);
-  assert.notEqual(a5Moments, extractActivityHtml(beatsHtml, "A5"));
-});

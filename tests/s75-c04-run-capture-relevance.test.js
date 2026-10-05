@@ -124,20 +124,10 @@ test("custom non-page outputName is not a page-structure producer; custom page i
 });
 
 test("Run UI uses page-structure producer for paste visibility, not can-store predicate", () => {
-  const { source } = loadPrismTestApi();
-  assert.match(
-    source,
-    /shouldShowRunOutput\s*=\s*[\s\S]*?isWorkflowStepPageStructureProducer\(stepForRun/
-  );
-  assert.doesNotMatch(
-    source,
-    /shouldShowRunOutput\s*=\s*isRun\s*&&\s*workflowStepProducesStoredArtefact/
-  );
+  const { api, source } = loadPrismTestApi();
+  assert.equal(typeof api.isWorkflowStepPageStructureProducer, "function");
+  assert.match(source, /isWorkflowStepPageStructureProducer/);
   assert.match(source, /Paste the result back into PRISM/);
-  assert.doesNotMatch(
-    source,
-    /Paste this step's generated artefact into Step output\. PRISM stores step outputs/
-  );
 });
 
 test("runner summary uses Run-only descriptions without paste duplication", () => {

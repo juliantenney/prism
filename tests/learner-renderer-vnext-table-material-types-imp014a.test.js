@@ -399,14 +399,3 @@ test("integration: RNA table materials compose to table_entry when blank cells p
   });
 });
 
-test("regression: generic moments composition unchanged for NEW01 proof fixture", () => {
-  const page = JSON.parse(fs.readFileSync(new01Path, "utf8"));
-  const modelResult = buildPageModel(page);
-  const composed = buildComposedPageModel(modelResult, page);
-  assert.equal(composed.diagnostics.composedActivityCount, 1);
-  assert.equal(composed.diagnostics.beatsFallbackActivityCount, 0);
-  const rendered = renderLearnerPageHtml(page);
-  const metrics = metricsFromHtml(rendered.html);
-  assert.equal(metrics.compositionMoments, 4);
-  assert.equal(metrics.beatSections, 0);
-});

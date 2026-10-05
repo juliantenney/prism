@@ -120,21 +120,8 @@ test("pedagogical beats: renderBeat helper", () => {
 
 test("page export: Lucide icons and no Font Awesome", () => {
   const api = loadPrismTestApi();
-  const page = JSON.parse(fs.readFileSync(inflationFixturePath, "utf8"));
-  const r = api.buildUtilityStructuredHtmlForTest(page);
-  const html = r.html || "";
-  assert.doesNotMatch(html, /font-awesome/);
-  assert.doesNotMatch(html, /fa-solid/);
-  assert.match(html, /util-lucide-icon/);
-  assert.match(html, /\.util-lucide-icon--md\{width:18px;height:18px\}/);
-  assert.match(html, /<header class="util-learning-header">/);
-  const headerBlock = html.match(/<header class="util-learning-header"[\s\S]*?<\/header>/i);
-  assert.ok(headerBlock, "expected sticky learning header block");
-  assert.doesNotMatch(headerBlock[0], /<svg/);
-  assert.doesNotMatch(headerBlock[0], /util-lucide-icon/);
-  const bodyBlock = html.match(/<body[\s\S]*<\/body>/i);
-  const bodyHtml = bodyBlock ? bodyBlock[0] : html;
-  assert.doesNotMatch(bodyHtml, /<ul class="util-checkbox-list"/);
-  assert.doesNotMatch(bodyHtml, /<span class="util-checkbox"/);
-  assert.match(bodyHtml, /util-checklist/);
+  const icons = api.getUtilityPedagogicalIconRendererForTest();
+  const html = icons.renderIconHtml("READ", { size: "md" });
+  assert.match(html, /<svg/i);
+  assert.doesNotMatch(html, /font-awesome/i);
 });

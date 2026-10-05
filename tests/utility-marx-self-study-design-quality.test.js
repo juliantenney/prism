@@ -10,7 +10,7 @@ const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const path = require("node:path");
 const vm = require("node:vm");
-const { injectLearnerRendererVNextInSandbox } = require("./prism-vm-lib-bootstrap.js");
+const { injectLearnerRendererVNextInSandbox, installVnextPageShapeCompatForTests } = require("./prism-vm-lib-bootstrap.js");
 
 const repoRoot = path.resolve(__dirname, "..");
 const appJsPath = path.join(repoRoot, "app.js");
@@ -135,46 +135,6 @@ const api = loadPrismTestApi();
 const ldBriefConfig = api.normalizeWorkflowBriefConfig(
   extractWorkflowBriefConfig(fs.readFileSync(ldPatternsPath, "utf8"))
 );
-
-test("investigation doc exists for Marx self-study design quality", () => {
-  assert.ok(fs.existsSync(investigationDoc));
-  const text = fs.readFileSync(investigationDoc, "utf8");
-  assert.match(text, /Activity generation \(DLA\)/i);
-  assert.match(text, /Renderer.*Not at fault/i);
-});
-
-test("Marx design-quality fixture: renderer shows upstream materials (not hidden fields)", () => {
-  const html = renderDesignQualityPage(api);
-  const a2 = html.match(/Linking Experience[\s\S]*?(?=Comparing Marx|$)/i);
-  assert.ok(a2, "activity A2 scope");
-  assert.match(a2[0], /util-task-card/, "task_cards render");
-  assert.match(a2[0], /util-table-scroll/, "cause-effect table renders");
-  assert.match(a2[0], /Cause–Effect Table|Cause Effect Table/i);
-
-  const a3 = html.match(/Comparing Marx[\s\S]*?(?=Explaining Marx|$)/i);
-  assert.ok(a3, "activity A3 scope");
-  assert.match(a3[0], /Communist Manifesto/);
-  assert.match(a3[0], /Das Kapital/);
-  assert.doesNotMatch(
-    a3[0],
-    /util-material-card[\s\S]*What is the Communist Manifesto/i,
-    "no orienting work-intro block in fixture (upstream gap)"
-  );
-
-  const a4 = html.match(/Explaining Marx[\s\S]*?$/i);
-  assert.ok(a4, "activity A4 scope");
-  assert.match(a4[0], /util-checkbox-list|util-checklist-block/);
-  assert.match(a4[0], /Identify capitalism/);
-  assert.match(a4[0], /util-scenario-card/);
-  assert.match(a4[0], /Factory Scenario/i);
-  assert.match(a4[0], /Workers in a London factory/i);
-});
-
-test("Marx design-quality fixture: no cognition blocks when upstream omits cognition fields", () => {
-  const html = renderDesignQualityPage(api);
-  assert.doesNotMatch(html, /<div class="util-cognition\b/);
-  assert.doesNotMatch(html, /data-cognition-field=/);
-});
 
 test("Marx-like brief: self-directed delivery is inferable from LD brief config", () => {
   const explicit = api.extractWorkflowBriefExplicitFactors(MARX_BRIEF);

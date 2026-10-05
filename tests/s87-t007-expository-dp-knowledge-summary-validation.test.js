@@ -98,6 +98,7 @@ function makeExpositoryWf() {
   return {
     id: "wf-s87-t007-bayes-expo",
     name: "Create an Expository Resource: Bayes",
+    product: "expository",
     ldCreateOutputType: api.LD_CREATE_OUTPUT_TYPE_EXPOSITORY,
     workflowOutputSpec: { pageEnrichmentV2: true, partialPageOutputs: true },
     steps: [

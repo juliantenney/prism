@@ -214,11 +214,11 @@ test("live vNext export CSS: Orient→A1 uses same border convention as activity
 test("live vNext export: workshop grouping tokens render as grouping badges", () => {
   const { api } = loadPrismTestApi();
   const smallGroupHtml = renderVnextExport(api, pageWithWorkshopGrouping("small_group"));
-  assert.match(smallGroupHtml, /class="util-badge util-badge-group">small_group</);
+  assert.match(smallGroupHtml, /class="util-badge util-badge-group">Small group</);
   const pairHtml = renderVnextExport(api, pageWithWorkshopGrouping("pair"));
-  assert.match(pairHtml, /class="util-badge util-badge-group">pair</);
+  assert.match(pairHtml, /class="util-badge util-badge-group">Pair</);
   const pairsHtml = renderVnextExport(api, pageWithWorkshopGrouping("pairs"));
-  assert.match(pairsHtml, /class="util-badge util-badge-group">pairs</);
+  assert.match(pairsHtml, /class="util-badge util-badge-group">Pairs</);
 });
 
 test("empty grouping does not render a grouping badge element", () => {

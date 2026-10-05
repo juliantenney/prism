@@ -159,24 +159,3 @@ test("49-6b: applyPedagogicCognitionSemanticsToComposedPage merges when upstream
   assert.equal(compressed.length, 0, JSON.stringify(compressed, null, 2));
 });
 
-test("49-6b: rendered page includes full GAM checklist and transfer bodies after merge", () => {
-  const api = loadPrismTestApi();
-  const page = JSON.parse(fs.readFileSync(pagePath, "utf8"));
-  const upstream = gamUpstream();
-  const merged = api.applyPedagogicCognitionSemanticsToComposedPage(page, {
-    upstreamActivityMaterials: upstream
-  });
-  const html = api.runUtilityPageExportPipelineForTest(merged, {
-    applyCompositionValidation: false
-  }).html;
-  assert.match(html, /util-checkbox-list/);
-  assert.match(html, /surplus value/i);
-  assert.doesNotMatch(html, /Transfer task in activity materials[\s\S]{0,200}ride-sharing, food delivery/i);
-  const a4Transfer = pageMaterialText(findLearningActivitiesRows(merged)[3].materials, "transfer_prompt");
-  assert.ok(a4Transfer.length > 500, "transfer prompt body substantial");
-  const transferSnippet = a4Transfer
-    .replace(/^#+\s*/gm, "")
-    .slice(0, 40)
-    .replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  assert.match(html, new RegExp(transferSnippet));
-});

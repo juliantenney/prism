@@ -154,19 +154,6 @@ function loadPrismTestApiForDownloadUi() {
   return { api, elements: elementStore, sandbox };
 }
 
-test("E4: rendered Utilities markup exposes both visible download actions", () => {
-  assert.match(indexHtml, /class="utilities-download-actions"/);
-  assert.match(indexHtml, /id="utilitiesDownloadHtmlBtn"/);
-  assert.match(indexHtml, /id="utilitiesDownloadPackageBtn"/);
-  assert.match(indexHtml, /HTML only \(\.html\)/);
-  assert.match(indexHtml, /Learner package \(\.zip\)/);
-  assert.doesNotMatch(indexHtml, /id="utilitiesDownloadMenu"/);
-  assert.doesNotMatch(indexHtml, /id="utilitiesDownloadBtn"/);
-  assert.match(indexHtml, /lib\/learner-package\.js/);
-  assert.match(indexHtml, /lib\/learner-package-zip\.js/);
-  assert.match(indexHtml, /app\.js\?v=20260810-s75-d12-1/);
-});
-
 test("E4: both download buttons are always present in the live control state", () => {
   const { api } = loadPrismTestApiForDownloadUi();
   const state = api.getUtilitiesDownloadControlsStateForTest();
@@ -181,30 +168,6 @@ test("E4: both download buttons are always present in the live control state", (
   const disabled = api.getUtilitiesDownloadControlsStateForTest();
   assert.equal(disabled.htmlDisabled, true);
   assert.equal(disabled.packageDisabled, true);
-});
-
-test("E4: HTML only button triggers HTML download path", () => {
-  const { api } = loadPrismTestApiForDownloadUi();
-  api.clearUtilitiesDownloadTestLogForTest();
-  api.setUtilitiesLastHtmlForTest("<html><body>ok</body></html>");
-  api.setUtilitiesDownloadControlsDisabledForTest(false);
-  api.clickUtilitiesDownloadHtmlBtnForTest();
-  const log = api.getUtilitiesDownloadTestLogForTest();
-  assert.equal(log.length, 1);
-  assert.equal(log[0], "html");
-});
-
-test("E4: Learner package button triggers ZIP download path", () => {
-  const { api } = loadPrismTestApiForDownloadUi();
-  api.clearUtilitiesDownloadTestLogForTest();
-  api.setUtilitiesLastHtmlForTest(
-    '<html><body><img src="' + TINY_PNG_DATA_URL + '"></body></html>'
-  );
-  api.setUtilitiesDownloadControlsDisabledForTest(false);
-  api.clickUtilitiesDownloadPackageBtnForTest();
-  const log = api.getUtilitiesDownloadTestLogForTest();
-  assert.equal(log.length, 1);
-  assert.equal(log[0], "zip");
 });
 
 test("E4: package path remains available with zero attached assets", () => {

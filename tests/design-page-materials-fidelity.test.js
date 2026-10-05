@@ -272,15 +272,14 @@ test("38S Phase 2C-a: Design Page pack excludes legacy materials compose languag
   assert.doesNotMatch(factory.promptTemplate, /Inflation is a sustained increase/i);
 });
 
-test("38S Phase 2C-a: partial runtime augmentation includes partial contract and VA block", () => {
+test("38S Phase 2C-a: partial Design Page prompt declares synthesis identity and runtime authorities", () => {
   const api = loadPrismTestApi();
   const augmented = designPageAugmentedPrompt(api);
-  assert.match(augmented, /LD-DESIGN-PAGE-PARTIAL-CONTRACT \(auto-applied\)/i);
-  assert.match(augmented, /page_synthesis\.knowledge_summary is mandatory/i);
-  assert.match(augmented, /Materials and activities are already hydrated upstream/i);
-  assert.match(augmented, /activities\[\] regeneration/i);
+  assert.match(augmented, /PARTIAL PAGE SYNTHESIS/i);
+  assert.match(augmented, /page_synthesis\.knowledge_summary/i);
+  assert.match(augmented, /LD-DESIGN-PAGE-PARTIAL-CONTRACT/i);
+  assert.match(augmented, /visual_affordances/i);
   assert.doesNotMatch(augmented, /LD-DESIGN-PAGE-COMPOSE-CONTRACT \(auto-applied\)/i);
-  assert.match(augmented, /sprint 38 visual affordance authoring contract \(auto-applied\)/i);
 });
 
 test("Design Page learner page_profile targets page_synthesis wrapper prose", () => {
@@ -294,11 +293,11 @@ test("Design Page learner page_profile targets page_synthesis wrapper prose", ()
   assert.match(learner.promptInstruction, /Do not emit activities\[\] or materials\[\]/i);
 });
 
-test("Slice1: Design Page partial runtime augmentation includes Sprint 38 VA prompt block", () => {
+test("Slice1: Design Page runtime augmentation includes L7 maths render contract", () => {
   const api = loadPrismTestApi();
   const augmented = designPageAugmentedPrompt(api);
-  assert.match(augmented, /LD-DESIGN-PAGE-PARTIAL-CONTRACT \(auto-applied\)/i);
-  assert.match(augmented, /sprint 38 visual affordance authoring contract \(auto-applied\)/i);
+  assert.match(augmented, /LD-MATH-RENDER \(auto-applied\)/i);
+  assert.match(augmented, /Module: LD-MATH-RENDER/i);
 });
 
 test("Sprint 38 runtime block states affordances are additive to materials", () => {

@@ -73,8 +73,52 @@ function applyS76CommissionShapeToPage(page, options) {
   });
 }
 
+function applyS78ProductionBinding(activity) {
+  const base = applyS76CommissionShape(activity, { fillBridge: true });
+  if (!base || typeof base !== "object" || !base.activity_id) return base;
+  const id = String(base.activity_id);
+  const wsId = id + "-WS";
+  const drId = id + "-DR";
+  const mats = Array.isArray(base.required_materials) ? base.required_materials.slice() : [];
+  if (!mats.some((row) => row && row.response_fulfilment)) {
+    mats.push({
+      material_id: wsId,
+      material_type: "template",
+      purpose: "Capture learner written production.",
+      specification: "Substantive written response for this activity.",
+      response_fulfilment: {
+        kind: "learner_text_production",
+        response_kind: "text_compose",
+        binds_production_steps: [1]
+      }
+    });
+  }
+  if (!mats.some((row) => row && row.diagnostic_review)) {
+    const covers =
+      mats.find((row) => row && row.response_fulfilment)?.material_id || wsId;
+    mats.push({
+      material_id: drId,
+      material_type: "checklist",
+      purpose: "Diagnostic review of written production.",
+      specification: "Check clarity. Check completeness. Check accuracy.",
+      diagnostic_review: { covers_response_material_ids: [covers] }
+    });
+  }
+  base.required_materials = mats;
+  return base;
+}
+
+function applyS78ProductionBindingToPage(page) {
+  if (!page || typeof page !== "object" || !Array.isArray(page.activities)) return page;
+  return Object.assign({}, page, {
+    activities: page.activities.map(applyS78ProductionBinding)
+  });
+}
+
 module.exports = {
   ordinaryCommissionFields: ordinaryCommissionFields,
   applyS76CommissionShape: applyS76CommissionShape,
-  applyS76CommissionShapeToPage: applyS76CommissionShapeToPage
+  applyS76CommissionShapeToPage: applyS76CommissionShapeToPage,
+  applyS78ProductionBinding: applyS78ProductionBinding,
+  applyS78ProductionBindingToPage: applyS78ProductionBindingToPage
 };

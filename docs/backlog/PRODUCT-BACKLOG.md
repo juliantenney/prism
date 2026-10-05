@@ -2,7 +2,7 @@
 
 **Canonical location:** `docs/backlog/PRODUCT-BACKLOG.md`  
 **Status:** Active — **alpha-use period** (Alpha development complete, 2026-09-02)  
-**Last updated:** 2026-10-05 (Sprint 90 closed — Learning Journey Foundations)  
+**Last updated:** 2026-10-05 (Sprint 90 closed; post-closure Independent Task status note)  
 **Active sprint:** none. Last closed: [Sprint 90 — Learning Journey Foundations](../development/sprints/2026-10-05-sprint-90-learning-journey-foundations/SPRINT-90-CLOSURE.md) — **COMPLETE / CLOSED** (discovery / prototyping; not implementation)
 
 This file answers: **what might we actually choose to work on next?**
@@ -184,7 +184,7 @@ Foundations conclusions (see foundation document for Established / Working hypot
 - Source structure must not automatically become learning structure.
 - Dynamic composition belongs between products; deterministic process belongs within first-class products.
 - Every required learning element must ultimately be realisable through one or more learner-facing PRISM product outputs; unsupported commissions stay visible rather than becoming invisible non-product activity.
-- Provisional product-family hypothesis from Sprint 90 discovery: Expository, Interactive, Independent Task (candidate), Assessment Pack — see [PB-FA-015](#pb-fa-015--additional-first-class-learning-resource-pipelines).
+- Provisional product-family hypothesis from Sprint 90 discovery: Expository, Interactive, Independent Task (**intended** first-class product for subsequent implementation planning), Assessment Pack — see [PB-FA-015](#pb-fa-015--additional-first-class-learning-resource-pipelines).
 
 **Optional author-supplied meta-design:** An author may specify a higher-level pedagogical pattern (for example diagnostic → exposition → application → formative check; problem-first; case-centred; worked example → scaffolded practice → independent performance; or another sequence they define). PRISM should derive a sensible design when no pattern is supplied, and respect one when it is. Do not hard-code a single pedagogical sequence as the Learning Journey architecture.
 
@@ -224,11 +224,11 @@ PRISM currently has three: Expository Resource (understanding through structured
 
 **Working criterion:** A new first-class product should exist because achieving its educational purpose needs a materially different design process, not because the finished resource has a familiar format. Video, podcast, debate, reflection, comparison, quiz, or worked example may simply be ways of realising an existing product. Do not open a backlog row for every named format.
 
-**Sprint 90 status/reference:** Learning Journey commissioning experiments identified **Independent Task** as the strongest current additional first-class product candidate (purposeful learner-controlled activity with a structured record; grammar brief → activity → record → reconnect). Independent academic study and situated professional application were treated as variants of the same product-level job. See [LEARNING-JOURNEY-FOUNDATIONS.md](../development/sprints/2026-10-05-sprint-90-learning-journey-foundations/LEARNING-JOURNEY-FOUNDATIONS.md). This is discovery evidence, not an implementation commitment and not a permanently closed taxonomy.
+**Sprint 90 status/reference:** Learning Journey commissioning (including post-closure 90-minute corroboration) establishes **Independent Task** as an **intended first-class product for subsequent implementation planning** (purposeful learner-controlled activity with a structured record; grammar brief → activity → record → reconnect). Independent academic study, situated professional application, and authentic open-web investigation are variants of the same product-level job. See [LEARNING-JOURNEY-FOUNDATIONS.md](../development/sprints/2026-10-05-sprint-90-learning-journey-foundations/LEARNING-JOURNEY-FOUNDATIONS.md). This is **not** implementation authorisation, not a designed pipeline, and not a permanently closed taxonomy.
 
 Candidates to retain, none of them agreed products:
 
-- **Independent Task — strongest current candidate (Sprint 90).** Purpose: frame purposeful learner activity undertaken substantially outside the product itself, and provide a structured place to record resulting thinking, findings, observations, or conclusions. Supersedes the earlier “Situated Task” label as the primary name for this job while retaining the same underlying concern. Not implemented.
+- **Independent Task — intended first-class product for subsequent implementation planning (Sprint 90 + post-closure corroboration).** Purpose: frame purposeful learner activity undertaken substantially outside the product itself, and provide a structured place to record resulting thinking, findings, observations, or conclusions. Supersedes the earlier “Situated Task” label as the primary name for this job while retaining the same underlying concern. **Not implemented**; pipeline and exact specification not settled.
 - **Scenario Resource — candidate for experiment.** Purpose: develop judgement, interpretation, and decision-making through a situated, possibly unfolding context. The possible distinction from Interactive is that the central design object is the situation: what the learner can know, what they must decide or interpret, how the situation develops, what is disclosed when, and how debrief works. Relevant to professional judgement (management, clinical, ethics, law, policy, and similar). Experiment only.
 - **Problem Resource — candidate to investigate.** Purpose: organise learning around understanding and resolving a substantive problem (interpretation, what must be learned, attempt, feedback, revision, resolution). The problem might be the architecture, not only an activity inside an Interactive Resource. Not a committed product.
 - **Guided practice / worked example — hypothesis only, weaker than the other two.** A responsibility-fade sequence (model, explain, worked example, scaffolded attempt, fade support, independent performance, feedback) might be a distinct process, or it might already be an Interactive Resource, or Expository plus Interactive. First test: whether the existing workflows can design it convincingly.

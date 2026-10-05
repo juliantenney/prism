@@ -61,12 +61,21 @@ Human-readable authoritative artefacts. Production later adds a deterministic de
 
 **Cross-experiment:** independent academic study and situated professional application appear as variants of the same product-level educational job.
 
-## Provisional product family (hypothesis)
+## Provisional product family (hypothesis at close)
 
-Expository · Interactive · **Independent Task** (candidate) · Assessment Pack
+Expository · Interactive · **Independent Task** · Assessment Pack
 
-Not a permanently closed taxonomy. Test through subsequent real Learning Journey use.
+At close, Independent Task was recorded as a strong candidate. A **post-closure** sanity-check later strengthened that status to **intended first-class product for subsequent implementation planning** — see post-closure note below. Not a permanently closed taxonomy; not implemented.
 
 ## Production code
 
 Sprint 90 made **no** production code, prompt, workflow JSON, or test changes as part of this closure.
+
+---
+
+## Post-closure note (navigational)
+
+**Date:** 2026-10-05  
+**Sprint status:** remains **COMPLETE / CLOSED** — not reopened.
+
+Additional corroborating evidence from a **90-minute / 1-day** Learning Journey sanity-check (online credibility judgements) is recorded in [LEARNING-JOURNEY-FOUNDATIONS.md](LEARNING-JOURNEY-FOUNDATIONS.md) §6 (Experiment C), including decomposition-without-fragmentation and Independent Task status strengthened to **intended first-class product for subsequent implementation planning**. That update does **not** change S90-D02, reopen Sprint 90, or authorise implementation.

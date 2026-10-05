@@ -4,8 +4,9 @@
 **Status:** **COMPLETE** — authoritative foundation record for closed Sprint 90  
 **Opened:** 2026-10-05  
 **Closed:** 2026-10-05  
+**Last post-closure update:** 2026-10-05 (90-minute / 1-day sanity-check corroboration)  
 **Closure:** [SPRINT-90-CLOSURE.md](SPRINT-90-CLOSURE.md)  
-**Not:** a production product specification; not an implementation plan
+**Not:** a production product specification; not an implementation plan; Sprint 90 remains **CLOSED**
 
 This document records architectural conclusions for Learning Journey using three statuses:
 
@@ -181,6 +182,58 @@ Earlier monolithic clean-chat scale variants (1h/1d; 3h/1w; 30h/10w) showed qual
 
 > Independent academic study and situated professional application appear to be variants of the same product-level educational job rather than evidence for separate products.
 
+### Post-closure corroboration — Experiment C (90 minutes / 1 day)
+
+**Status:** Corroborating evidence only. **Not** required for Sprint 90 closure. Sprint 90 remains **COMPLETE / CLOSED**.
+
+**Context:** university students learning to make defensible credibility judgements about online claims; **90 minutes** over **1 day**.
+
+The **unchanged** experimental pipeline produced:
+
+- **one** continuous Learning Journey;
+- **four** developmental phases;
+- **seven** Learning Elements;
+- **five** learner-facing commissioned experiences:
+
+| # | Duration | Product / status | Title / role |
+| - | -------- | ---------------- | ------------ |
+| 1 | 15m | Interactive | Challenge the First Impression — combines Elements 1–2 |
+| 2 | 25m | Interactive | Learn How to Investigate a Claim — combines Elements 3–4 |
+| 3 | 25m | Interactive | Compare and Weigh the Evidence — combines Elements 5–6 |
+| 4 | 15m | **Unsupported commission** (Independent Task job) | Conduct an Independent Credibility Investigation — authentic learner-controlled investigation using external online sources |
+| 5 | 10m | Assessment Pack | Make and Evaluate a Defensible Judgement — uses findings from the independent investigation |
+
+Commissioning found that for the independent investigation:
+
+- **Expository** would distort the purpose (structured explanation is not the primary mechanism);
+- **Interactive** could simulate or contain the investigation, but would change the requirement for learner-controlled activity in an authentic external environment;
+- **Assessment Pack** could require/evaluate the resulting performance, but the principal purpose of the independent activity is not itself assessment.
+
+Together with Experiments A and B, this is a third materially different recurrence of the same product-level design problem.
+
+### Established — decomposition without fragmentation
+
+> Learning Journey decomposition is not resource fragmentation.
+
+A single coherent Learning Journey may contain multiple learning elements, which commissioning may **recombine or divide** into product-sized experiences according to educational purpose.
+
+Experiment C makes the distinction particularly clear:
+
+- the Journey remained **one** coherent Learning Journey;
+- seven elements did **not** become seven resources;
+- Elements 1–2, 3–4, and 5–6 were each **recombined** into coherent product-sized Interactive experiences;
+- Element 7 remained one coherent learning element, but commissioning **split** its realisation across two materially different product-level jobs: independent investigation followed by assessed judgement.
+
+This demonstrates the distinction among:
+
+- **journey architecture**;
+- **learning-element architecture**;
+- **product architecture**.
+
+It also shows Learning Journey can address the previous tendency to force a complete learning requirement into one oversized resource **without** replacing that problem with arbitrary micro-resource fragmentation.
+
+Do **not** establish preferred product durations or numerical decomposition rules from this evidence.
+
 ### Historical note
 
 Earlier partial staged political-philosophy snapshots (e.g. 12 elements / six product commissions before the completed Experiment A run) are superseded by Experiment A above for final Sprint 90 evidence. Lessons retained from earlier commissioning work: learning-element time ≠ product duration; learning element ≠ PRISM product; explanation may live inside Interactive when consequential action remains structurally important; evidence/feedback do not automatically imply Assessment Pack.
@@ -228,13 +281,13 @@ Learning Journey designs what learning requires **without** being artificially c
 
 ## 9. Provisional product-family hypothesis
 
-### Working hypothesis (strongest current — not permanently closed taxonomy)
+### Working hypothesis (intended family for subsequent planning — not permanently closed taxonomy)
 
 Provisional Learning Journey product family:
 
 1. **Expository**
 2. **Interactive**
-3. **Independent Task** — new candidate first-class product
+3. **Independent Task** — **intended first-class product for subsequent implementation planning**
 4. **Assessment Pack**
 
 Retain [PB-FA-015](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-015--additional-first-class-learning-resource-pipelines):
@@ -255,11 +308,21 @@ Possible future capability: lightweight interaction where explanation remains pr
 
 Do **not** recommend changes to Interactive arising from Sprint 90. Assume the existing product can serve the Interactive role for now.
 
-Experiment B’s stretch of Interactive into extended contextual independent work is evidence for **Independent Task**, not a requirement to modify Interactive.
+Experiment B’s stretch of Interactive into extended contextual independent work is evidence for **Independent Task**, not a requirement to modify Interactive. Experiment C likewise refused to force authentic open-web investigation into Interactive.
 
-### Independent Task — strong new first-class product candidate
+### Independent Task — intended first-class product for subsequent implementation planning
 
-**Provisional educational purpose:** frames purposeful learner activity undertaken substantially **outside** the product itself, and provides a structured place for the learner to **record** the resulting thinking, findings, observations, or conclusions.
+Across three materially different cases, the same product-level design problem has recurred:
+
+- undergraduate political philosophy — directed independent study, reconstruction, preparation, revision, reflection;
+- university staff CPD — contextual application and design work using the learner’s own professional context;
+- 90-minute online-information journey — authentic independent open-web investigation.
+
+The three cases are sufficient evidence that the **product category is real**. Further discovery should focus on designing / implementing the product **when authorised**, rather than repeatedly testing whether the category exists.
+
+**This does not mean:** Independent Task is implemented; its production pipeline is designed; its exact specification is settled; or implementation is authorised by Sprint 90 (which remains closed).
+
+**Provisional educational purpose:** Independent Task frames purposeful learner activity undertaken substantially **outside** the product itself, and provides a structured place for the learner to **record** the resulting thinking, findings, observations, or conclusions.
 
 **Basic design grammar:** brief → purposeful activity → record → reconnect
 
@@ -302,6 +365,8 @@ PRISM products and eventual delivery / VLE integration need to preserve learner 
 Enables initial positions, analyses, observations, notes, designs, and other learner-generated work to be revisited, compared, revised, or used later.
 
 Do **not** invent a Portfolio, Journal, Notebook, or Learning Record product merely to provide persistence.
+
+**Post-closure compact example (Experiment C):** Interactive development → Independent Task investigation / findings → Assessment Pack judgement. The learner’s sources / findings need to survive the transition into the Assessment Pack. This reinforces, but does not change, the established conclusion that persistence is a cross-product capability rather than a separate product.
 
 ---
 
@@ -389,18 +454,20 @@ Not every reasoning decision should become an Adjustment.
 | E12 | Learning element ≠ product; learning-element time ≠ product duration |
 | E13 | Every required element must ultimately be realisable via PRISM product output(s); unsupported commissions stay visible |
 | E14 | Independent study and situated application are variants of one product-level job |
-| E15 | Expository and Interactive conceptually healthy; Sprint 90 recommends no Interactive changes |
-| E16 | Persistence is a cross-product capability, not a product |
-| E17 | Delivery platforms are not Learning Journey ontology |
-| E18 | Transition / journey-context text belongs with specifications |
-| E19 | Use Adjustments; no separate iteration architecture |
+| E15 | Decomposition ≠ fragmentation: journey / element / product architectures are distinct; commissioning may recombine or divide |
+| E16 | Expository and Interactive conceptually healthy; Sprint 90 recommends no Interactive changes |
+| E17 | Persistence is a cross-product capability, not a product |
+| E18 | Delivery platforms are not Learning Journey ontology |
+| E19 | Transition / journey-context text belongs with specifications |
+| E20 | Use Adjustments; no separate iteration architecture |
+| E21 | Post-closure 90m/1d sanity-check corroborates pipeline, Independent Task job, and decomposition-without-fragmentation |
 
 ### Working hypothesis (summary)
 
 | # | Hypothesis |
 | - | ---------- |
 | H1 | Production needs a final deterministic design-page / assembly stage |
-| H2 | Provisional product family: Expository · Interactive · Independent Task · Assessment Pack |
+| H2 | Product family for subsequent planning: Expository · Interactive · Independent Task (intended) · Assessment Pack |
 | H3 | Independent Task grammar: brief → purposeful activity → record → reconnect |
 | H4 | Assessment Pack future capability includes extended constructed performances |
 | H5 | Possible future lightweight interaction within Expository (explanation primary) |
@@ -415,7 +482,7 @@ Not every reasoning decision should become an Adjustment.
 | Q1 | Exact production wiring of the four reasoning stages + assembly stage |
 | Q2 | Where constituent-journey reasoning lives in production |
 | Q3 | Exact specification / JSON schema (deferred to implementation) |
-| Q4 | How Independent Task should be designed as a first-class product |
+| Q4 | How Independent Task should be designed / implemented as a first-class product (category existence no longer the open question) |
 | Q5 | Assessment Pack extended-performance capability work |
 | Q6 | Persistence implementation across products and delivery |
 | Q7 | How much final HTML / product output is deterministic vs model synthesis |

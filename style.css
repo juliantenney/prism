@@ -1390,6 +1390,61 @@ textarea:focus {
   min-width: 0;
 }
 
+#workflowsPanel .workflow-item.workflow-item--lj-child {
+  margin-left: 1.1rem;
+  width: calc(100% - 1.1rem);
+  border-left: 2px solid rgba(59, 130, 246, 0.35);
+  background: rgba(248, 250, 252, 0.9);
+}
+
+#workflowsPanel .workflow-item.workflow-item--lj-parent .workflow-item-title-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+#workflowsPanel .workflow-lj-disclosure {
+  flex: 0 0 auto;
+  width: 1.35rem;
+  height: 1.35rem;
+  padding: 0;
+  margin: 0;
+  border: 1px solid rgba(148, 163, 184, 0.45);
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.85);
+  color: var(--text-muted);
+  font-size: 0.7rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+#workflowsPanel .workflow-lj-disclosure:hover {
+  border-color: rgba(59, 130, 246, 0.65);
+  color: #1d4ed8;
+}
+
+#workflowsPanel .workflow-item-product {
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  margin: 0 0 2px;
+}
+
+.workflow-source-journey-nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 8px;
+}
+
+.workflow-source-journey-nav.hidden {
+  display: none;
+}
+
+.workflow-back-to-source-journey-btn {
+  max-width: 100%;
+}
+
 #workflowsPanel .workflow-list .workflow-item .library-item-tags {
   min-width: 0;
 }

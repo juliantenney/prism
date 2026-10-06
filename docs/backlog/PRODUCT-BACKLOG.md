@@ -2,8 +2,8 @@
 
 **Canonical location:** `docs/backlog/PRODUCT-BACKLOG.md`  
 **Status:** Active — **alpha-use period** (Alpha development complete, 2026-09-02)  
-**Last updated:** 2026-10-05 (Sprint 90 closed; post-closure Independent Task status note)  
-**Active sprint:** none. Last closed: [Sprint 90 — Learning Journey Foundations](../development/sprints/2026-10-05-sprint-90-learning-journey-foundations/SPRINT-90-CLOSURE.md) — **COMPLETE / CLOSED** (discovery / prototyping; not implementation)
+**Last updated:** 2026-10-06 (Sprint 91 closed — Learning Journey First-Class Implementation)  
+**Active sprint:** *(none)*. Last closed: [Sprint 91 — Learning Journey First-Class Implementation](../development/sprints/2026-10-06-sprint-91-learning-journey-first-class-implementation/SPRINT-91-CLOSURE.md) — **COMPLETE / CLOSED**
 
 This file answers: **what might we actually choose to work on next?**
 
@@ -175,6 +175,10 @@ Explore a first-class planning capability whose backbone is intended learning. D
 
 **Foundations status:** [Sprint 90 — COMPLETE / CLOSED](../development/sprints/2026-10-05-sprint-90-learning-journey-foundations/SPRINT-90-CLOSURE.md) · authoritative record [LEARNING-JOURNEY-FOUNDATIONS.md](../development/sprints/2026-10-05-sprint-90-learning-journey-foundations/LEARNING-JOURNEY-FOUNDATIONS.md)
 
+**Implementation:** [Sprint 91 — COMPLETE / CLOSED](../development/sprints/2026-10-06-sprint-91-learning-journey-first-class-implementation/SPRINT-91-CLOSURE.md) · [IMPLEMENTATION-MAP.md](../development/sprints/2026-10-06-sprint-91-learning-journey-first-class-implementation/IMPLEMENTATION-MAP.md)
+
+**Live E2E (S91):** Learning Journey → supported commissions → ordinary constituent workflows → derived Complete status → deterministic learner ZIP (Journey Home + nested `cN/` packages) — **PASSED**. Architecture recorded in the Sprint 91 closure.
+
 **Working principle:** Learning Journey designs the progression of learning experiences required to move a particular group of learners towards intended learning, within learning time and duration constraints. Outcomes describe where learners need to get to; the journey describes how learning should develop to get them there.
 
 Foundations conclusions (see foundation document for Established / Working hypothesis / Open question):
@@ -188,7 +192,7 @@ Foundations conclusions (see foundation document for Established / Working hypot
 
 **Optional author-supplied meta-design:** An author may specify a higher-level pedagogical pattern (for example diagnostic → exposition → application → formative check; problem-first; case-centred; worked example → scaffolded practice → independent performance; or another sequence they define). PRISM should derive a sensible design when no pattern is supplied, and respect one when it is. Do not hard-code a single pedagogical sequence as the Learning Journey architecture.
 
-Do not implement Learning Journey or Outcomes Map from this note alone. Sprint 90 closed foundations only; production implementation requires a new explicit sprint. How the designed journey would be assembled for the learner remains related to [PB-FA-016](#pb-fa-016--course-home--course-assembly).
+Do not redesign Learning Journey architecture from this note. Foundations are closed under Sprint 90; first-class implementation and final learner package are closed under Sprint 91. Richer Course Home / programme assembly remains related to [PB-FA-016](#pb-fa-016--course-home--course-assembly).
 
 ### PB-FA-016 — Course Home / course assembly
 

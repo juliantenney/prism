@@ -9,9 +9,9 @@ const family = require("../lib/first-class-workflow-family.js");
 
 const indexHtml = fs.readFileSync(path.join(__dirname, "..", "index.html"), "utf8");
 
-test("exactly three first-class products are declared", () => {
+test("four first-class products are declared including Learning Journey", () => {
   const ids = family.listFirstClassProducts().map((row) => row.id);
-  assert.deepEqual(ids, ["interactive", "expository", "assessment_pack"]);
+  assert.deepEqual(ids, ["interactive", "expository", "assessment_pack", "learning_journey"]);
 });
 
 test("each product builds its predetermined family", () => {
@@ -45,10 +45,12 @@ test("prompt and publish routes are positive and Custom is generic", () => {
   assert.equal(family.promptRouteForWorkflow({ product: "interactive" }), "interactive");
   assert.equal(family.promptRouteForWorkflow({ product: "expository" }), "expository");
   assert.equal(family.promptRouteForWorkflow({ product: "assessment_pack" }), "assessment");
+  assert.equal(family.promptRouteForWorkflow({ product: "learning_journey" }), "learning_journey");
   assert.equal(family.promptRouteForWorkflow({ name: "create an expository resource" }), "generic");
   assert.equal(family.publishRouteForWorkflow({ product: "interactive" }), "learner_page");
   assert.equal(family.publishRouteForWorkflow({ product: "expository" }), "expository_page");
   assert.equal(family.publishRouteForWorkflow({ product: "assessment_pack" }), "assessment_pack");
+  assert.equal(family.publishRouteForWorkflow({ product: "learning_journey" }), "learning_journey_page");
   assert.equal(family.publishRouteForWorkflow({}), "");
 });
 

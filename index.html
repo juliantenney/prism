@@ -826,7 +826,38 @@
                 <option value="workshop">Workshop</option>
                 <option value="expository_resource">Expository Resource</option>
                 <option value="assessment_pack">Assessment Pack</option>
+                <option value="learning_journey">Learning Journey</option>
               </select>
+            </div>
+            <div class="form-group wf-span-2 hidden" id="wfLearningJourneyBriefGroup">
+              <fieldset class="wf-learning-journey-brief">
+                <legend>Learning Journey envelope</legend>
+                <p class="helper-text">
+                  Supply factual constraints only. PRISM performs the learning-design reasoning in the journey workflow.
+                </p>
+                <div class="form-group">
+                  <label for="wfLearningJourneyLearningTime">Learning time</label>
+                  <p id="wfLearningJourneyLearningTimeHint" class="helper-text">Total learner effort available (distinct from calendar duration).</p>
+                  <input
+                    type="text"
+                    id="wfLearningJourneyLearningTime"
+                    placeholder="e.g. 90 minutes, 3 hours, 30 hours"
+                    autocomplete="off"
+                    aria-describedby="wfLearningJourneyLearningTimeHint"
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="wfLearningJourneyDuration">Duration</label>
+                  <p id="wfLearningJourneyDurationHint" class="helper-text">Calendar span over which that learning time is distributed.</p>
+                  <input
+                    type="text"
+                    id="wfLearningJourneyDuration"
+                    placeholder="e.g. 1 day, 1 week, 10 weeks"
+                    autocomplete="off"
+                    aria-describedby="wfLearningJourneyDurationHint"
+                  />
+                </div>
+              </fieldset>
             </div>
             <div class="form-group wf-span-2 hidden" id="wfAssessmentPackSourceGroup">
               <label for="wfAssessmentPackStart">How this pack begins</label>
@@ -1133,6 +1164,19 @@
             </div>
 
             <div class="workflow-detail" id="workflowDetail" aria-label="Workflow details">
+              <div
+                id="workflowSourceJourneyNav"
+                class="workflow-source-journey-nav hidden"
+                aria-live="polite"
+              >
+                <button
+                  type="button"
+                  id="workflowBackToSourceJourneyBtn"
+                  class="btn small workflow-back-to-source-journey-btn"
+                >
+                  ← Back to Journey
+                </button>
+              </div>
               <div class="workflow-mode-row">
                 <div class="workflow-mode-tabs" role="tablist" aria-label="Workflow mode">
                   <button
@@ -1379,8 +1423,8 @@
   <script src="lib/prism-image-precision-fidelity.js?v=20260826-precision-fidelity"></script>
   <script src="lib/prism-image-brief-compiler.js?v=20260826-precision-fidelity"></script>
   <script src="lib/prism-visual-assets.js?v=20260730-1"></script>
-  <script src="lib/prism-workflow-resources.js?v=20260806-2"></script>
-  <script src="lib/utilities-visual-jobs-workspace.js?v=20260826-precision-fidelity"></script>
+  <script src="lib/prism-workflow-resources.js?v=20261006-s91-owner-store-hydrate"></script>
+  <script src="lib/utilities-visual-jobs-workspace.js?v=20261006-s91-graphics-assessor"></script>
   <script src="node_modules/fflate/umd/index.js"></script>
   <script src="lib/learner-renderer-vnext/math-entry-package-assets.js?v=20260902-1"></script>
   <script src="lib/learner-renderer-vnext/mathjax-package-assets.js?v=20260902-1"></script>
@@ -1426,6 +1470,11 @@
   <script src="lib/page-shell-create.js?v=20260714-1"></script>
   <script src="lib/expository-contracts.js?v=20260923-s87-t007-ejp"></script>
   <script src="lib/expository-sibling-prompts.js?v=20260923-s87-t007-ejp"></script>
+  <script src="lib/learning-journey-design-page.js?v=20261006-s91-commissioning-preview"></script>
+  <script src="lib/learning-journey-commission-production-status.js?v=20261006-s91-assembled-graphics"></script>
+  <script src="lib/learning-journey-learner-package.js?v=20261006-s91-lj-package"></script>
+  <script src="lib/learning-journey-workflow-hierarchy.js?v=20261006-s91-lj-hierarchy"></script>
+  <script src="lib/learning-journey-sibling-prompts.js?v=20261006-s91-wp3-gpt"></script>
   <script src="lib/expository-domain-guidance.js?v=20260921-s85-wp3"></script>
   <script src="lib/page-vnext-assemble.js?v=20260923-s87-t003"></script>
   <script src="lib/assessment-pack-publish.js?v=20260928-s88-assessment-publish"></script>
@@ -1548,7 +1597,8 @@
     </form>
   </dialog>
   <script src="lib/assessment-component-forms.js?v=20260928-s88-forms"></script>
-  <script src="lib/first-class-workflow-family.js?v=20261002-s89-slice4"></script>
-  <script src="app.js?v=20261002-s89-slice4"></script>
+  <script src="lib/first-class-workflow-family.js?v=20261006-s91-accepts-commission"></script>
+  <script src="lib/first-class-commission-intake.js?v=20261006-s91-direct-init"></script>
+  <script src="app.js?v=20261006-s91-lj-package"></script>
 </body>
 </html>

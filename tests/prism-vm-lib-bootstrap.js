@@ -49,7 +49,12 @@ const DEFAULT_LIBS = [
   "lib/gam-operational-suitability-prompt.js",
   "lib/gam-operational-suitability-review.js",
   "lib/gam-canonical-assembler.js",
-  "lib/first-class-workflow-family.js"
+  "lib/first-class-workflow-family.js",
+  "lib/learning-journey-design-page.js",
+  "lib/learning-journey-commission-production-status.js",
+  "lib/learning-journey-learner-package.js",
+  "lib/learning-journey-workflow-hierarchy.js",
+  "lib/learning-journey-sibling-prompts.js"
 ];
 
 /**
@@ -111,6 +116,11 @@ function runPrismLibScriptsInSandbox(sandbox, repoRoot, libs, options) {
       "PRISM_GAM_OPERATIONAL_SUITABILITY_REVIEW",
       "PRISM_GAM_CANONICAL_ASSEMBLER",
       "PRISM_FIRST_CLASS_WORKFLOW_FAMILY",
+      "PRISM_LEARNING_JOURNEY_DESIGN_PAGE",
+      "PRISM_LEARNING_JOURNEY_COMMISSION_PRODUCTION_STATUS",
+      "PRISM_LEARNING_JOURNEY_LEARNER_PACKAGE",
+      "PRISM_LEARNING_JOURNEY_WORKFLOW_HIERARCHY",
+      "PrismLearningJourneySiblingPrompts",
       "PRISM_SPRINT38_VISUAL_AFFORDANCES",
       "PRISM_VISUAL_PLANNING_CONTRACT",
       "PRISM_VISUAL_MATERIAL_ROLE_GROUNDING",
@@ -230,7 +240,8 @@ function createPrismVmElementStub() {
     addEventListener: function () {},
     removeEventListener: function () {},
     focus: function () {},
-    click: function () {}
+    click: function () {},
+    remove: function () {}
   };
   return el;
 }

@@ -39,6 +39,7 @@ Canonical place for focused automated results, live Create/Run checks, and commi
 | 2026-10-06 | Workflow hierarchy | **Met (live)** | Constituents nested under source Learning Journey |
 | 2026-10-06 | Production status ladder | **Met (live)** | not_commissioned → production → authoring → Complete ×3 |
 | 2026-10-06 | Final learner package | **Met (live) — PASSED** | Preflight → ZIP with Journey Home + c1/c2/c3 nested packages; media resolved; in-browser launch OK |
+| 2026-10-06 | Post-close Quality Benchmark v2.3 (composite package) | **92/100 Excellent** — release ready with minor revisions | Subsequent to close; authoritative record [SPRINT-91-CLOSURE.md § Post-close QA validation](SPRINT-91-CLOSURE.md#post-close-qa-validation). Sprint remains CLOSED. |
 | — | Unsupported commission remains visible | **Met** | WP3 Elements markdown + WP4 intake preserves specification on unsupported |
 | — | Direct Interactive / Expository / Assessment Create unchanged | **Met** | Focused + first-class gate |
 

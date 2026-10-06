@@ -123,6 +123,50 @@ Reuses the **same** production-status semantics as LJ Preview. Fail closed for u
 | Learner-facing root Journey Home + nested c1/c2/c3 | Met |
 | Constituent media preserved; packages open in-browser | Met |
 
+This live E2E acceptance is the evidence used to close Sprint 91. It remains unchanged by subsequent QA.
+
+## Post-close QA validation
+
+**Date:** 2026-10-06  
+**Sprint status:** remains **COMPLETE / CLOSED** — not reopened.  
+**Evidence class:** subsequent Quality Benchmark evaluation of the already-accepted live package (distinct from the live E2E acceptance above).
+
+The completed Sprint 91 Learning Journey learner package was evaluated with **PRISM Quality Benchmark v2.3** as a **complete composite package** (Journey Home / orientation, all three constituent learner resources, packaged assets, hidden/revealed review material, and learner workspaces) — not as an average of isolated resources.
+
+| Result | Value |
+| ------ | ----- |
+| Weighted score | **92/100 — Excellent** |
+| Confidence | High |
+| Inspection coverage | Complete package |
+| Release recommendation | **Release ready with minor revisions** |
+| Production defects | Critical: none · Major: none · Moderate: none · no production defect cap applied |
+
+### Findings (summary)
+
+1. **Package-level progression** — The three-resource journey was judged a coherent progression (distinguish problems/needs/solutions/outcomes → evidence-informed reasoning under uncertainty → independent application in a changed workplace case). Resource 2 builds on Resource 1; Resource 3 recombines earlier reasoning into cumulative application rather than another isolated exercise.
+2. **Constructive alignment** — All audited outcomes judged Fully aligned across taught, practised, and checked evidence.
+3. **Activity quality** — No Weak, Missing, or Defective activity elements in the activity consistency audit.
+4. **Technical integrity** — Package composition, local assets, navigation, and learner-facing activity structures judged complete and internally consistent.
+5. **Scaffolding / self-regulation** — Deliberate fading of scaffolding; criterion-led self-review; targeted repair guidance rather than answer revelation; increasingly independent learner judgement.
+6. **Overall judgement** — Excellent; release ready with minor revisions.
+
+### Architectural interpretation (validation evidence)
+
+This result supports — as post-close validation evidence, not an irreversible proof — the Sprint 91 composition claim:
+
+Learning Journey owns composition; constituent products own production; PRISM owns deterministic commissioning, association, readiness, and assembly.
+
+The package behaved as an **instructional journey**, not merely a folder of unrelated products. Package-level progression and coherence were recognised by the benchmark.
+
+### Improvement observations (not S91 defects)
+
+Recorded as future design considerations only. Do **not** treat as Sprint 91 defects; do **not** modify constituent packages or add an AI assembly stage from this note.
+
+1. **Highest value:** Add a concise package-level closing synthesis that explicitly reconnects the complete reasoning model developed across all three experiences. Main educational risk identified: learners may complete each structured activity successfully without recognising the full reasoning framework as a reusable whole.
+2. **Secondary:** Make the hand-off from Resource 2 to Resource 3 slightly more explicit about which reasoning practices learners should now perform with reduced scaffolding.
+
+A later design question (not decided here) is whether Learning Journey’s composition grammar should support explicit closing/consolidation exposition at the structured Step-5 synthesis boundary.
+
 ## Exit-criteria assessment
 
 | Criterion | Assessment |

@@ -13,7 +13,7 @@
 | Charter | [SPRINT-91-CHARTER.md](SPRINT-91-CHARTER.md) |
 | Implementation map | [IMPLEMENTATION-MAP.md](IMPLEMENTATION-MAP.md) |
 | Work log | [PLAN.md](PLAN.md) |
-| Validation evidence | [VALIDATION.md](VALIDATION.md) — focused **106/106** + first-class **339/339** + live E2E **PASSED** |
+| Validation evidence | [VALIDATION.md](VALIDATION.md) — focused **106/106** + first-class **339/339** + live E2E **PASSED**; post-close QA **92/100** → [SPRINT-91-CLOSURE.md](SPRINT-91-CLOSURE.md#post-close-qa-validation) |
 | Architectural debt | [ARCHITECTURAL-DEBT.md](ARCHITECTURAL-DEBT.md) — future work recorded; not blockers |
 | Closure | [SPRINT-91-CLOSURE.md](SPRINT-91-CLOSURE.md) — **COMPLETE / CLOSED** |
 | Production code | Learning Journey E2E checkpoint committed |

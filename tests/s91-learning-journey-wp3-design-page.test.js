@@ -35,7 +35,18 @@ test("Learning Journey Design Page prompt is constrained same-chat synthesis of 
   assert.match(prompt, /artifact_type learning_journey_page/);
   assert.doesNotMatch(prompt, /local assembly; no model/i);
   assert.doesNotMatch(prompt, /upstream captures/i);
+  assert.match(prompt, /JSON PURITY \(mandatory/i);
+  assert.match(prompt, /Do not include citations, source references, content references/i);
+  assert.match(prompt, /:chatgpt-content-reference/i);
+  assert.match(prompt, /reasoning context only/i);
+  assert.match(prompt, /Every string value must be valid JSON/i);
   assert.equal(sibling.resolveTemplate("design_page"), prompt);
+});
+
+test("Learning Journey Design Page copy instructions prohibit citation contamination in JSON strings", () => {
+  const copy = design.buildLearningJourneyDesignPageCopyInstructions();
+  assert.match(copy, /valid JSON only/i);
+  assert.match(copy, /no citations, content-reference tokens/i);
 });
 
 test("valid GPT-shaped shared page is accepted; Interactive and obsolete shapes are rejected", () => {

@@ -205,7 +205,7 @@ Evidence ledger: [VALIDATION.md](VALIDATION.md).
 
 ## Future work (not S91 blockers)
 
-- Situated / Self-directed Task first-class product (motivated by unsupported LJ experiences)
+- Situated Task first-class product — **delivered in Sprint 92** (`situated_task`); remaining: durable Record transport and related deferred items in S92 closure
 - Richer learner package navigation (Back to Journey / Previous / Next)
 - More compact child presentation in My Workflows
 - Aggregate Journey production progress (“3 of 3 complete”)
@@ -216,4 +216,4 @@ Evidence ledger: [VALIDATION.md](VALIDATION.md).
 
 ## Successor
 
-**None opened.** Further work requires an explicit new opening decision from the product backlog.
+**Sprint 92 opened (2026-10-07) and CLOSED (2026-10-07):** [Situated Task First-Class Product](../2026-10-07-sprint-92-situated-learning-activity-first-class-product/SPRINT-92-CLOSURE.md) — `situated_task` implemented; Sprint 91 remains **CLOSED** and must not be reopened.

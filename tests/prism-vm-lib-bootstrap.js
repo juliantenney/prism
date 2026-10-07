@@ -54,7 +54,9 @@ const DEFAULT_LIBS = [
   "lib/learning-journey-commission-production-status.js",
   "lib/learning-journey-learner-package.js",
   "lib/learning-journey-workflow-hierarchy.js",
-  "lib/learning-journey-sibling-prompts.js"
+  "lib/learning-journey-sibling-prompts.js",
+  "lib/situated-task-design-page.js",
+  "lib/situated-task-sibling-prompts.js"
 ];
 
 /**
@@ -121,6 +123,8 @@ function runPrismLibScriptsInSandbox(sandbox, repoRoot, libs, options) {
       "PRISM_LEARNING_JOURNEY_LEARNER_PACKAGE",
       "PRISM_LEARNING_JOURNEY_WORKFLOW_HIERARCHY",
       "PrismLearningJourneySiblingPrompts",
+      "PRISM_SITUATED_TASK_DESIGN_PAGE",
+      "PrismSituatedTaskSiblingPrompts",
       "PRISM_SPRINT38_VISUAL_AFFORDANCES",
       "PRISM_VISUAL_PLANNING_CONTRACT",
       "PRISM_VISUAL_MATERIAL_ROLE_GROUNDING",

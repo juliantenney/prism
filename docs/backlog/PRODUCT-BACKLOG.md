@@ -2,8 +2,8 @@
 
 **Canonical location:** `docs/backlog/PRODUCT-BACKLOG.md`  
 **Status:** Active — **alpha-use period** (Alpha development complete, 2026-09-02)  
-**Last updated:** 2026-10-06 (Sprint 91 closed — Learning Journey First-Class Implementation)  
-**Active sprint:** *(none)*. Last closed: [Sprint 91 — Learning Journey First-Class Implementation](../development/sprints/2026-10-06-sprint-91-learning-journey-first-class-implementation/SPRINT-91-CLOSURE.md) — **COMPLETE / CLOSED**
+**Last updated:** 2026-10-07 (Sprint 92 CLOSED — Situated Task first-class)  
+**Active sprint:** None. Last closed: [Sprint 92 — Situated Task](../development/sprints/2026-10-07-sprint-92-situated-learning-activity-first-class-product/SPRINT-92-CLOSURE.md) — **COMPLETE / CLOSED**. Prior: [Sprint 91](../development/sprints/2026-10-06-sprint-91-learning-journey-first-class-implementation/SPRINT-91-CLOSURE.md) — **COMPLETE / CLOSED**
 
 This file answers: **what might we actually choose to work on next?**
 
@@ -114,6 +114,8 @@ Sprint 88 closed with the Assessment Pack architecture in place. Further real us
 
 Record: [Sprint 88 closure](../development/sprints/2026-09-28-sprint-88-default-product-workflows-and-assessment-architecture/SPRINT-88-CLOSURE.md). Sprint 89 did not reopen Assessment architecture.
 
+This calibration remains about exercising the **current** Assessment Pack. A later evidence-led product revisit is separately recorded as [PB-FA-017](#pb-fa-017--assessment-pack-first-class-product-revisit).
+
 ### PB-S-007 — Broad-suite renderer/page-render failure reconciliation
 
 **Status:** **Complete** (2026-10-05). Diagnostic + remediation done. Not sprint-allocated (no sprint opened; Sprint 89 remains CLOSED).
@@ -188,7 +190,7 @@ Foundations conclusions (see foundation document for Established / Working hypot
 - Source structure must not automatically become learning structure.
 - Dynamic composition belongs between products; deterministic process belongs within first-class products.
 - Every required learning element must ultimately be realisable through one or more learner-facing PRISM product outputs; unsupported commissions stay visible rather than becoming invisible non-product activity.
-- Provisional product-family hypothesis from Sprint 90 discovery: Expository, Interactive, Independent Task (**intended** first-class product for subsequent implementation planning), Assessment Pack — see [PB-FA-015](#pb-fa-015--additional-first-class-learning-resource-pipelines).
+- Product-family note: Expository, Interactive, Situated Task (**implemented**, Sprint 92 / `situated_task`), Assessment Pack — see [PB-FA-015](#pb-fa-015--additional-first-class-learning-resource-pipelines). (Sprint 90 “Independent Task” was the discovery label for the Situated Task educational job.)
 
 **Optional author-supplied meta-design:** An author may specify a higher-level pedagogical pattern (for example diagnostic → exposition → application → formative check; problem-first; case-centred; worked example → scaffolded practice → independent performance; or another sequence they define). PRISM should derive a sensible design when no pattern is supplied, and respect one when it is. Do not hard-code a single pedagogical sequence as the Learning Journey architecture.
 
@@ -210,6 +212,73 @@ Emerging chain: Outcomes Map designs the journey → identifies the educational 
 
 Do not prescribe UI, storage, publishing, URLs, navigation, linking, tracking, LMS integration, authentication, persistence, or the exact representation of an Outcomes Map or of generating from a course position.
 
+### PB-FA-017 — Assessment Pack first-class product revisit
+
+**Status:** Future work only. **Not sprint-allocated.** Do not open a sprint from this note alone.
+
+Revisit Assessment Pack in a future dedicated sprint using the evidence-led first-class product design method now established through Learning Journey and Sprint 92 ([PB-FA-015 discovery pattern](#learning-journey-as-a-product-discovery-mechanism)).
+
+#### Motivation
+
+The current Assessment Pack provides useful but limited functionality.
+
+Rather than extending it feature-by-feature from its existing implementation, the future sprint should **re-elicit the educational requirements for assessment** using that product-discovery / design method.
+
+Treat the existing Assessment Pack implementation as:
+
+- evidence of current capability;
+- a source of compatibility / migration constraints;
+- implementation that may contain useful reusable components;
+
+but **not** as the specification of what the mature first-class Assessment product must be.
+
+Near-term calibration of the current pack remains [Assessment Pack real-use calibration](#assessment-pack-real-use-calibration-sprint-88-remainder) — a different, narrower concern.
+
+#### Proposed discovery method
+
+Use Learning Journey as an evidence-generating environment.
+
+Design several materially different, authentic Learning Journeys in which assessment is genuinely required. Potential contexts (illustrative — **not** a predetermined Assessment taxonomy):
+
+- undergraduate / module learning;
+- workplace or professional learning;
+- practical / performance-oriented learning;
+- formative learning / checkpoint contexts.
+
+Inspect what assessment experiences those journeys actually require. Use the evidence to determine discovery questions such as:
+
+- What educational job is the assessment performing?
+- What learner performance or evidence needs to be elicited?
+- What makes that evidence interpretable?
+- Who or what needs to interpret / judge it?
+- What feedback relationship is required?
+- What distinctions between formative and summative purposes matter to product design?
+- Does assessment concern an artefact, judgement, performance, process, reflection, or combinations?
+- What does the assessment need from preceding learning?
+- What happens educationally after the assessment?
+
+Do **not** answer these questions in this backlog item. They are discovery questions for the future sprint.
+
+#### Product-design method
+
+If the evidence justifies redesign, apply the same disciplined sequence:
+
+Purpose → sibling-product boundary → learner / assessment contract → authoring / design responsibilities → product invariants → predetermined pipeline → structured artefact contract → implementation and integration.
+
+#### Situated / Assessment boundary (existing principle to investigate further)
+
+> Situated activity principally asks the learner to act because carrying out the activity develops learning.
+
+> Assessment principally elicits performance / evidence so learner capability can be interpreted or judged.
+
+A Learning Journey may legitimately require both, including sequences such as situated learning activity → consequential learning / record → subsequent Assessment performance.
+
+The future Assessment Pack work should use such cases to sharpen requirements rather than collapsing authentic learning activity and assessment into one product. See also Sprint 92 Gate 2 ([S92-D03](../development/sprints/2026-10-07-sprint-92-situated-learning-activity-first-class-product/decisions.md#s92-d03--product-design-gate-2--boundary-against-sibling-products)).
+
+#### Scope posture
+
+Future work only. No sprint number assigned. Do **not** change Sprint 92. Do **not** begin Assessment Pack redesign, pipeline, schema, UI or implementation from this note.
+
 ### PB-S-006 — Institutional authentication (University of Nottingham)
 
 Investigate the University's supported route for making PRISM available to authenticated University of Nottingham users.
@@ -224,23 +293,65 @@ Keep this item to authentication. Publishing, server-side user-owned persistence
 
 One exploratory question: whether any further first-class Learning Design product is justified.
 
-PRISM currently has three: Expository Resource (understanding through structured explanation), Interactive Resource (purposeful learner action), and Assessment Pack (interpretable evidence of what a learner knows or can do, with formative feedback).
+PRISM currently has four first-class learning-resource / composition products relevant to this item: Expository Resource (understanding through structured explanation), Interactive Resource (engagement with a designed/facilitated experience), Assessment Pack (interpretable evidence for judgement), and **Situated Task** (purposeful learner action in authentic/situated context — **implemented**, Sprint 92). Learning Journey composes progression across experiences.
 
 **Working criterion:** A new first-class product should exist because achieving its educational purpose needs a materially different design process, not because the finished resource has a familiar format. Video, podcast, debate, reflection, comparison, quiz, or worked example may simply be ways of realising an existing product. Do not open a backlog row for every named format.
 
-**Sprint 90 status/reference:** Learning Journey commissioning (including post-closure 90-minute corroboration) establishes **Independent Task** as an **intended first-class product for subsequent implementation planning** (purposeful learner-controlled activity with a structured record; grammar brief → activity → record → reconnect). Independent academic study, situated professional application, and authentic open-web investigation are variants of the same product-level job. See [LEARNING-JOURNEY-FOUNDATIONS.md](../development/sprints/2026-10-05-sprint-90-learning-journey-foundations/LEARNING-JOURNEY-FOUNDATIONS.md). This is **not** implementation authorisation, not a designed pipeline, and not a permanently closed taxonomy.
+**Sprint 92 (COMPLETE / CLOSED):** [Situated Task First-Class Product](../development/sprints/2026-10-07-sprint-92-situated-learning-activity-first-class-product/SPRINT-92-CLOSURE.md) — product definition and implementation for the recurring situated-activity gap evidenced by post–S91 Learning Journey experiments. Final name **Situated Task** / `product_id` **`situated_task`** (`acceptsCommission: true`). Pipeline: Situation → Activity → Support → Learning Return → Design Page. Gate 8 live E2E **PASS**. Learning Journey can commission Situated Task via shared intake. See [S92-D09](../development/sprints/2026-10-07-sprint-92-situated-learning-activity-first-class-product/decisions.md#s92-d09--product-name-and-identity--situated-task) · [S92-D10](../development/sprints/2026-10-07-sprint-92-situated-learning-activity-first-class-product/decisions.md#s92-d10--close-sprint-92--situated-task-first-class-product-complete).
 
-Candidates to retain, none of them agreed products:
+**Sprint 90 status/reference (historical):** Learning Journey commissioning established the same educational job under the working label **Independent Task**. Sprint 92 delivered that job under the final product name **Situated Task** — not a separate second product.
 
-- **Independent Task — intended first-class product for subsequent implementation planning (Sprint 90 + post-closure corroboration).** Purpose: frame purposeful learner activity undertaken substantially outside the product itself, and provide a structured place to record resulting thinking, findings, observations, or conclusions. Supersedes the earlier “Situated Task” label as the primary name for this job while retaining the same underlying concern. **Not implemented**; pipeline and exact specification not settled.
+Candidates remaining (none of them agreed products; Situated Task is no longer a candidate):
+
+- **Situated Task — IMPLEMENTED (Sprint 92).** Label **Situated Task** / `situated_task`. Delivers the Sprint 90 Independent Task educational job: purposeful learner-controlled activity in authentic/situated context with structured record and reconnection. Five-stage predetermined pipeline; LJ commissionable. Durable Record transport and Assessment Pack revisit remain separate backlog concerns.
 - **Scenario Resource — candidate for experiment.** Purpose: develop judgement, interpretation, and decision-making through a situated, possibly unfolding context. The possible distinction from Interactive is that the central design object is the situation: what the learner can know, what they must decide or interpret, how the situation develops, what is disclosed when, and how debrief works. Relevant to professional judgement (management, clinical, ethics, law, policy, and similar). Experiment only.
 - **Problem Resource — candidate to investigate.** Purpose: organise learning around understanding and resolving a substantive problem (interpretation, what must be learned, attempt, feedback, revision, resolution). The problem might be the architecture, not only an activity inside an Interactive Resource. Not a committed product.
 - **Guided practice / worked example — hypothesis only, weaker than the other two.** A responsibility-fade sequence (model, explain, worked example, scaffolded attempt, fade support, independent performance, feedback) might be a distinct process, or it might already be an Interactive Resource, or Expository plus Interactive. First test: whether the existing workflows can design it convincingly.
-- **Situated Task — earlier label; see Independent Task above.** Historical Outcomes Map language for authentic external action with deliberate design and capture. Sprint 90 reframes this under Independent Task rather than as a separate product from independent study commissions.
+- **Independent Task — historical Sprint 90 working label.** Superseded as the delivery name by **Situated Task** (Sprint 92). Retain only as historical discovery vocabulary; do not treat as a separate unimplemented product.
 
-**Discovery principle:** Do not invent a catalogue of resource types in advance. If Learning Journey / Outcomes Map work repeatedly finds educational jobs that Expository, Interactive, and Assessment represent awkwardly, that is evidence to investigate another pipeline. The question is which PRISM product has the design process appropriate to the job. Unsupported commissions should remain visible rather than becoming invisible non-product activity; every required learning element must ultimately be realisable through one or more learner-facing PRISM product outputs (not necessarily 1:1).
+#### Learning Journey as a product-discovery mechanism
 
-No workflow stages, UI options, product-selector entries, or generic product registry follow from this note. Existing Expository, Interactive, and Assessment architecture stays as it is unless a later sprint explicitly changes them.
+PRISM should preferentially discover new first-class educational products from **demonstrated learning-design demand** rather than from feature brainstorming or attempts to complete a predefined taxonomy.
+
+Do not invent a catalogue of resource types in advance. The question remains which PRISM product has the design process appropriate to the educational job.
+
+**Working discovery pattern:**
+
+1. Design real Learning Journeys for materially different educational contexts.
+2. Allow educationally justified experiences that existing first-class products cannot coherently produce to remain explicitly **unsupported**.
+3. Treat unsupported commissions as **evidence** rather than automatically forcing them into the nearest existing product.
+4. Look for recurring educational structure across unsupported commissions.
+5. Determine whether those cases share a coherent educational purpose / centre of gravity that is genuinely distinct from existing products.
+6. Derive learner requirements and authoring responsibilities from that evidence.
+7. Only where the evidence supports a recurring production capability, design a new first-class product: purpose → sibling boundary → learner contract → authoring responsibilities → invariants → predetermined pipeline → structured artefact contract → implementation.
+8. Once implemented, the new product expands the capabilities that future Learning Journeys can commission.
+
+**Feedback loop:**
+
+> Learning Journey discovers educational demand; recurring educational demand can justify new first-class products; new first-class products increase what future Learning Journeys can commission.
+
+**Unsupported commissions as discovery evidence:**
+
+> Unsupported is not necessarily a defect. It can be product-discovery evidence.
+
+A single unsupported commission is weak evidence for a new product. Repeated structurally similar requirements across materially different Learning Journeys provide stronger evidence that PRISM may lack a coherent educational production capability.
+
+**Guard against product proliferation:**
+
+> “Can we imagine a use for this product?” is not sufficient justification for making it first-class. Stronger evidence comes from real Learning Journey designs repeatedly requiring an educational capability that existing products cannot coherently satisfy.
+
+**Illustrative example (not a closed taxonomy):** Post–Sprint 91 Learning Journey experiments independently required situated investigation, evidence gathering and conducting a bounded test (undergraduate Product Ways of Working), and conducting a workplace enquiry (workplace CPD Product Judgement). The recurring pattern was analysed before defining a candidate first-class product (Sprint 92 design work). Those examples must not harden into a permanent subtype catalogue.
+
+**Architectural distinction:**
+
+- Learning Journey does **not** dynamically invent product architecture at runtime.
+- It exposes educational requirements through its design work.
+- Product discovery is a **human / product-development** activity informed by that evidence.
+- Once a capability becomes first-class, its production pipeline remains **predetermined** as part of the product definition (S89-D02).
+
+Unsupported commissions should remain visible rather than becoming invisible non-product activity; every required learning element must ultimately be realisable through one or more learner-facing PRISM product outputs (not necessarily 1:1).
+
+No workflow stages, UI options, product-selector entries, or generic product registry follow from this note alone. Existing Expository, Interactive, Assessment Pack, and Learning Journey architecture stays as it is unless a later sprint explicitly changes them.
 
 ---
 

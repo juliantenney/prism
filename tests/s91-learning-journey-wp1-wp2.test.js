@@ -43,7 +43,8 @@ test("learning_journey is registered as a first-class product", () => {
   assert.ok(ids.indexOf("interactive") !== -1);
   assert.ok(ids.indexOf("expository") !== -1);
   assert.ok(ids.indexOf("assessment_pack") !== -1);
-  assert.equal(ids.length, 4);
+  assert.ok(ids.indexOf("situated_task") !== -1);
+  assert.equal(ids.length, 5);
 });
 
 test("Learning Journey Create declaration exists and maps to learning_journey", () => {

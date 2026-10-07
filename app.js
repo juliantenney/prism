@@ -5476,6 +5476,144 @@
     return null;
   }
 
+  function resolveSituatedTaskSiblingPromptsLib() {
+    var roots = [];
+    if (typeof globalThis !== "undefined") roots.push(globalThis);
+    if (typeof window !== "undefined") roots.push(window);
+    var i;
+    for (i = 0; i < roots.length; i += 1) {
+      if (roots[i] && roots[i].PrismSituatedTaskSiblingPrompts) {
+        return roots[i].PrismSituatedTaskSiblingPrompts;
+      }
+    }
+    if (typeof require === "function") {
+      try {
+        return require("./lib/situated-task-sibling-prompts.js");
+      } catch (_err) {}
+      try {
+        return require("../lib/situated-task-sibling-prompts.js");
+      } catch (_err2) {}
+    }
+    return null;
+  }
+
+  function resolveSituatedTaskDesignPageLib() {
+    var roots = [];
+    if (typeof globalThis !== "undefined") roots.push(globalThis);
+    if (typeof window !== "undefined") roots.push(window);
+    if (typeof self !== "undefined") roots.push(self);
+    var i;
+    for (i = 0; i < roots.length; i += 1) {
+      if (roots[i] && roots[i].PRISM_SITUATED_TASK_DESIGN_PAGE) {
+        return roots[i].PRISM_SITUATED_TASK_DESIGN_PAGE;
+      }
+    }
+    if (typeof require === "function") {
+      try {
+        return require("./lib/situated-task-design-page.js");
+      } catch (_err) {}
+      try {
+        return require("../lib/situated-task-design-page.js");
+      } catch (_err2) {}
+    }
+    return null;
+  }
+
+  function isSituatedTaskWorkflow(wf) {
+    return firstClassPromptRoute(wf) === "situated_task";
+  }
+
+  function workflowRecordIsSituatedTask(wf) {
+    return firstClassPublishRoute(wf) === "situated_task_page";
+  }
+
+  function resolveSituatedTaskSiblingPromptBodyForStep(step, wf) {
+    if (!isSituatedTaskWorkflow(wf) && !workflowRecordIsSituatedTask(wf)) return "";
+    var siblingLib = resolveSituatedTaskSiblingPromptsLib();
+    if (!siblingLib || typeof siblingLib.resolveTemplate !== "function") return "";
+    return String(
+      siblingLib.resolveTemplate(step || {}) ||
+        siblingLib.resolveTemplate(
+          siblingLib.resolveStageFromStepIdentity
+            ? siblingLib.resolveStageFromStepIdentity(step || {})
+            : ""
+        ) ||
+        ""
+    ).trim();
+  }
+
+  function composeSituatedTaskOriginalBrief(wf) {
+    var seed =
+      (wf &&
+        wf.workflowBriefResolution &&
+        wf.workflowBriefResolution.resolvedFactors &&
+        typeof wf.workflowBriefResolution.resolvedFactors === "object" &&
+        wf.workflowBriefResolution.resolvedFactors) ||
+      {};
+    var initial =
+      (wf &&
+        wf.workflowBriefResolution &&
+        wf.workflowBriefResolution.initialBrief &&
+        typeof wf.workflowBriefResolution.initialBrief === "object" &&
+        wf.workflowBriefResolution.initialBrief) ||
+      {};
+    var commissionSpec = String(
+      seed.commission_specification || initial.commissionSpecification || ""
+    ).trim();
+    var journeyContext = String(
+      seed.journey_context || initial.journeyContextText || ""
+    ).trim();
+    var commissionDependencies = String(
+      seed.commission_dependencies ||
+        seed.dependencies ||
+        initial.dependencies ||
+        initial.commissionDependencies ||
+        ""
+    ).trim();
+    var hasCommissionContext = !!(
+      commissionSpec ||
+      journeyContext ||
+      commissionDependencies
+    );
+    // Standalone family seed may already hold original_brief. When commission
+    // educational context is present, always surface it — do not let the bare
+    // family original_brief hide specification / journey context / dependencies.
+    if (String(seed.original_brief || "").trim() && !hasCommissionContext) {
+      return String(seed.original_brief).trim();
+    }
+    var parts = [];
+    var focus = String(seed.topic || initial.topic || initial.designIntent || wf.goal || "").trim();
+    if (focus) parts.push("PURPOSE / FOCUS\n" + focus);
+    var audience = String(
+      seed.audience ||
+        (wf.workflowOutputSpec && wf.workflowOutputSpec.audience) ||
+        initial.audience ||
+        ""
+    ).trim();
+    if (audience) parts.push("LEARNERS / AUDIENCE\n" + audience);
+    var source = String(seed.source_context || initial.inputs || "").trim();
+    if (source) parts.push("SOURCE / CONTEXT MATERIAL\n" + source);
+    var constraints = String(
+      seed.constraints || initial.scopeConstraints || wf.scopeAndConstraints || ""
+    ).trim();
+    if (constraints) parts.push("CONSTRAINTS / ADDITIONAL CONTEXT\n" + constraints);
+    if (commissionSpec) {
+      parts.push("COMMISSION SPECIFICATION\n" + commissionSpec);
+    }
+    if (journeyContext) {
+      parts.push("LEARNING JOURNEY CONTEXT\n" + journeyContext);
+    }
+    if (commissionDependencies) {
+      parts.push(
+        "EDUCATIONAL DEPENDENCIES (prior experience handoff)\n" +
+          commissionDependencies +
+          "\n\nThese declare intentional educational dependencies on learner work from earlier Learning Journey experiences when this Situated Task was commissioned. Honour them: identify what prior learner artefact must be brought forward and how it is used. Do not recreate or independently determine work the journey assigns to the earlier experience. PRISM does not transfer the learner's prior responses automatically — the learner-facing design must make the handoff intelligible."
+      );
+    }
+    if (parts.length) return parts.join("\n\n");
+    return String(seed.original_brief || "").trim();
+  }
+
   function resolveLearningJourneySiblingPromptsLib() {
     var roots = [];
     if (typeof globalThis !== "undefined") roots.push(globalThis);
@@ -6327,6 +6465,30 @@
     return wf;
   }
 
+  function clearSituatedTaskDesignPageModelPromptSeed(wf) {
+    // Hygiene only: prevent Interactive Design Page override seeds on Situated Stage 5.
+    // Situated Design Page prompt is resolved from sibling/design-page modules at Copy time.
+    if (!wf || !Array.isArray(wf.steps)) return wf;
+    if (!isSituatedTaskWorkflow(wf) && !workflowRecordIsSituatedTask(wf)) return wf;
+    var i;
+    for (i = 0; i < wf.steps.length; i += 1) {
+      var row = wf.steps[i];
+      if (!row || !isWorkflowStepDesignPageRow(row)) continue;
+      var body = String(row.override_prompt_body || row.overridePromptBody || "");
+      if (
+        /page_synthesis|visual_affordance_schema_version|activities_visual_review/i.test(body) ||
+        !String(body || "").trim()
+      ) {
+        row.override_prompt_body = "";
+        row.overridePromptBody = "";
+        row.prompt_source_type = "none";
+        row.prompt_source = "none";
+        row.promptId = "";
+      }
+    }
+    return wf;
+  }
+
   function composeLearningJourneyOriginalBrief(wf) {
     var seed =
       (wf &&
@@ -6448,7 +6610,11 @@
       preferredOutputFormat: String(cfg.preferredOutputFormat || "json").trim() || "json",
       stepNotes: stripWorkflowStepParamBlock(notes),
       inputArtefactTypes: "",
-      ORIGINAL_BRIEF: isLearningJourneyWorkflow(wf) ? composeLearningJourneyOriginalBrief(wf) : ""
+      ORIGINAL_BRIEF: isLearningJourneyWorkflow(wf)
+        ? composeLearningJourneyOriginalBrief(wf)
+        : isSituatedTaskWorkflow(wf) || workflowRecordIsSituatedTask(wf)
+          ? composeSituatedTaskOriginalBrief(wf)
+          : ""
     };
     if (cfg.defaultPromptVariables && typeof cfg.defaultPromptVariables === "object") {
       Object.keys(cfg.defaultPromptVariables).forEach(function (k) {
@@ -11152,6 +11318,27 @@
           (fromCapture && fromCapture.code ? ": " + fromCapture.code : "")
       );
     }
+    if (workflowRecordIsSituatedTask(workflowEarly) || isSituatedTaskWorkflow(workflowEarly)) {
+      var stDesignModEarly = resolveSituatedTaskDesignPageLib();
+      if (
+        page &&
+        stDesignModEarly &&
+        typeof stDesignModEarly.validateSituatedTaskDesignPage === "function"
+      ) {
+        var stEarlyGate = stDesignModEarly.validateSituatedTaskDesignPage(page);
+        if (stEarlyGate.ok) {
+          // Stamp stable draft page identity for standalone / LJ cN/ packages.
+          return attachLearnerPageIdentityFromWorkflow(page, workflowEarly);
+        }
+        throw new Error(
+          "Situated Task Design Page invalid" +
+            (stEarlyGate.errors && stEarlyGate.errors.length
+              ? ": " + stEarlyGate.errors.join("; ")
+              : "")
+        );
+      }
+      throw new Error("Situated Task Design Page required");
+    }
     if (workflowRecordIsAssessmentPack(workflowEarly)) {
       var publishMod = resolveAssessmentPackPublishLib();
       if (!publishMod || typeof publishMod.assembleAssessmentPackPage !== "function") {
@@ -12539,6 +12726,13 @@
         }
         return { ok: false, errors: ["learning_journey_design_page_module_unavailable"] };
       }
+      if (workflowRecordIsSituatedTask(workflow) || isSituatedTaskWorkflow(workflow)) {
+        var stDesignMod = resolveSituatedTaskDesignPageLib();
+        if (stDesignMod && typeof stDesignMod.validateSituatedTaskDesignPage === "function") {
+          return stDesignMod.validateSituatedTaskDesignPage(parsed);
+        }
+        return { ok: false, errors: ["situated_task_design_page_module_unavailable"] };
+      }
       if (workflowRecordIsAssessmentPack(workflow)) {
         return validateAssessmentDesignPageCapture(parsed);
       }
@@ -13538,6 +13732,13 @@
         return ljMod.validateLearningJourneyDesignPage(parsed);
       }
       return { ok: false, errors: ["learning_journey_design_page_module_unavailable"] };
+    }
+    if (workflowRecordIsSituatedTask(workflow) || isSituatedTaskWorkflow(workflow)) {
+      var stMod = resolveSituatedTaskDesignPageLib();
+      if (stMod && typeof stMod.validateSituatedTaskDesignPage === "function") {
+        return stMod.validateSituatedTaskDesignPage(parsed);
+      }
+      return { ok: false, errors: ["situated_task_design_page_module_unavailable"] };
     }
     var partialMode = isPartialPageOutputWorkflowEnabled(workflow);
     var artifactType = String(parsed.artifact_type || "").trim().toLowerCase();
@@ -18431,6 +18632,11 @@
     if (promptRoute === "learning_journey") {
       return String(draft || "").trim();
     }
+    if (promptRoute === "situated_task") {
+      draft = applyMathSafeOutputContractToDraft(draft, ctx);
+      draft = applyStrictJsonArtefactContractToDraft(draft, ctx);
+      return String(draft || "").trim();
+    }
     if (promptRoute !== "interactive") {
       draft = applyMathSafeOutputContractToDraft(draft, ctx);
       draft = applyStrictJsonArtefactContractToDraft(draft, ctx);
@@ -21038,6 +21244,9 @@
     if (normalized === "learning_journey") {
       return focus ? "Create a Learning Journey: " + focus : "Create a Learning Journey";
     }
+    if (normalized === "situated_task") {
+      return focus ? "Create a Situated Task: " + focus : "Create a Situated Task";
+    }
     return focus;
   }
 
@@ -21079,6 +21288,17 @@
         activities_required: false,
         materials_required: false,
         design_scope: "journey"
+      };
+    }
+    if (normalized === "situated_task") {
+      return {
+        delivery_context: "self_directed",
+        delivery_mode: "async",
+        delivery_pattern: "mostly_online",
+        page_profile: "learner",
+        activities_required: false,
+        materials_required: false,
+        design_scope: "session"
       };
     }
     return null;
@@ -24061,6 +24281,8 @@
         topic: focus,
         commissionSpecification: String(envelope.specificationText || "").trim(),
         journeyContextText: String(envelope.journeyContextText || "").trim(),
+        dependencies: String(envelope.dependencies || "").trim(),
+        commissionDependencies: String(envelope.dependencies || "").trim(),
         sourceJourneyWorkflowId: String(envelope.sourceJourneyWorkflowId || "").trim(),
         sourceCommissionId: String(envelope.sourceCommissionId || "").trim()
       },
@@ -32604,6 +32826,34 @@
         error: ""
       };
     }
+    var situatedTaskSiblingBody = resolveSituatedTaskSiblingPromptBodyForStep(step, wfRec);
+    if (
+      !situatedTaskSiblingBody &&
+      (isSituatedTaskWorkflow(wfRec) || workflowRecordIsSituatedTask(wfRec)) &&
+      isWorkflowStepDesignPageRow(step)
+    ) {
+      var stDesignPromptMod = resolveSituatedTaskDesignPageLib();
+      if (
+        stDesignPromptMod &&
+        typeof stDesignPromptMod.buildSituatedTaskDesignPagePrompt === "function"
+      ) {
+        situatedTaskSiblingBody = String(
+          stDesignPromptMod.buildSituatedTaskDesignPagePrompt() || ""
+        ).trim();
+      }
+    }
+    if (situatedTaskSiblingBody) {
+      var materializedStSibling = materializeWorkflowPromptTemplateTokens(
+        situatedTaskSiblingBody,
+        step,
+        wfRec
+      );
+      return {
+        sourceType: sourceType === "none" ? "situated_task_sibling" : sourceType,
+        text: finalizePromptBody(materializedStSibling),
+        error: ""
+      };
+    }
     if (sourceType === "local_override") {
       var body = String(
         (step && (step.override_prompt_body || step.overridePromptBody)) || ""
@@ -35261,6 +35511,34 @@
             exactFooterLine +
             ". No other text after the footer line."
         );
+      } else if (
+        workflowRecordIsSituatedTask(wfForChain) ||
+        isSituatedTaskWorkflow(wfForChain)
+      ) {
+        // Situated Task Design Page is GPT same-chat synthesis — not Interactive pageEnrichmentV2.
+        var stDesignLib = resolveSituatedTaskDesignPageLib();
+        var stCopyNotes =
+          stDesignLib && typeof stDesignLib.buildSituatedTaskDesignPageCopyInstructions === "function"
+            ? stDesignLib.buildSituatedTaskDesignPageCopyInstructions()
+            : "";
+        if (stCopyNotes) {
+          lines.push(stCopyNotes);
+        } else {
+          lines.push(
+            "Situated Task Design Page (same-chat constrained synthesis)."
+          );
+          lines.push(
+            "Use the Situation, Activity, Support and Learning Return reasoning already established earlier in this conversation."
+          );
+          lines.push(
+            "Return an ordinary shared PRISM page (artifact_type page, schema_version 2.0.0) with situated_learning + sections[].exposition and activities: [] — not an Interactive Design Page."
+          );
+        }
+        lines.push(
+          "Copilot output contract: return one pretty-printed fenced JSON page artefact (triple-backtick json fence, 2-space indentation). No prose before the fence. After the closing fence emit exactly one runner footer line: " +
+            exactFooterLine +
+            ". No other text after the footer line."
+        );
       } else if (workflowRecordIsAssessmentPack(wfForChain)) {
         lines.push(
           "Assessment Design Page output: return only the learner-facing presentation. Include title, optional attempt_instructions, optional framing, artifact_type \"page\", schema_version \"2.0.0\", and assembly_state."
@@ -35341,7 +35619,9 @@
       lines.push("Role / purpose of this step: " + step.roleLabel + ".");
     }
     var runnerInstructions =
-      workflowRecordIsAssessmentPack(wfForChain) &&
+      (workflowRecordIsAssessmentPack(wfForChain) ||
+        workflowRecordIsSituatedTask(wfForChain) ||
+        isSituatedTaskWorkflow(wfForChain)) &&
       isWorkflowStepDesignPage({
         stepCanonicalStepId: step.canonical_step_id || step.canonicalStepId || "",
         stepCanonicalTitle: step.title || "",
@@ -35845,6 +36125,8 @@
     if (!wf || !Array.isArray(wf.steps)) return false;
     // Learning Journey Design Page is GPT same-chat synthesis — not Interactive pageEnrichmentV2.
     if (isLearningJourneyWorkflow(wf) || workflowRecordIsLearningJourney(wf)) return false;
+    // Situated Task Design Page is GPT same-chat synthesis — not Interactive pageEnrichmentV2.
+    if (isSituatedTaskWorkflow(wf) || workflowRecordIsSituatedTask(wf)) return false;
     return wf.steps.some(function (row) {
       if (!row || typeof row !== "object") return false;
       var ctx = buildWorkflowStepIdentityContextFromRow(row);
@@ -35882,6 +36164,32 @@
       );
       if (beforeSeed !== afterSeed) changed = true;
       next.workflowOutputSpec = normalizeWorkflowOutputSpec(next.workflowOutputSpec);
+      return { workflow: next, changed: changed };
+    }
+    if (isSituatedTaskWorkflow(next) || workflowRecordIsSituatedTask(next)) {
+      var beforeSituatedSeed = JSON.stringify(
+        (Array.isArray(next.steps) ? next.steps : []).map(function (row) {
+          return row && isWorkflowStepDesignPageRow(row)
+            ? String(row.override_prompt_body || row.overridePromptBody || "")
+            : "";
+        })
+      );
+      clearSituatedTaskDesignPageModelPromptSeed(next);
+      var afterSituatedSeed = JSON.stringify(
+        (Array.isArray(next.steps) ? next.steps : []).map(function (row) {
+          return row && isWorkflowStepDesignPageRow(row)
+            ? String(row.override_prompt_body || row.overridePromptBody || "")
+            : "";
+        })
+      );
+      if (beforeSituatedSeed !== afterSituatedSeed) changed = true;
+      next.workflowOutputSpec = normalizeWorkflowOutputSpec(next.workflowOutputSpec);
+      // Clear any previously stamped Interactive Sprint 58 flags (live E2E defect).
+      if (next.workflowOutputSpec.pageEnrichmentV2 || next.workflowOutputSpec.partialPageOutputs) {
+        next.workflowOutputSpec.pageEnrichmentV2 = false;
+        next.workflowOutputSpec.partialPageOutputs = false;
+        changed = true;
+      }
       return { workflow: next, changed: changed };
     }
     var outSpec = normalizeWorkflowOutputSpec(next.workflowOutputSpec);
@@ -38218,13 +38526,16 @@
       wf.sourceWorkflowId = String(design.commissionIntake.sourceJourneyWorkflowId || "").trim();
     }
     clearLearningJourneyDesignPageModelPromptSeed(wf);
+    clearSituatedTaskDesignPageModelPromptSeed(wf);
     if (
       wf.workflowOutputSpec &&
       typeof wf.workflowOutputSpec === "object" &&
-      String(wf.product || "").trim() !== "learning_journey"
+      String(wf.product || "").trim() !== "learning_journey" &&
+      String(wf.product || "").trim() !== "situated_task"
     ) {
       // Sprint 58 default for newly generated learner-facing Interactive/Expository pipelines.
-      // Learning Journey Design Page is GPT same-chat synthesis — do not stamp Interactive pageEnrichmentV2.
+      // Learning Journey / Situated Task Design Page are GPT same-chat synthesis —
+      // do not stamp Interactive pageEnrichmentV2.
       wf.workflowOutputSpec.pageEnrichmentV2 = true;
       wf.workflowOutputSpec.partialPageOutputs = true;
     }
@@ -56350,7 +56661,8 @@
       });
     }
     var product = String(wf.product || "").toLowerCase();
-    if (product === "assessment_pack") {
+    var publishRoute = firstClassPublishRoute(wf);
+    if (product === "assessment_pack" || publishRoute === "assessment_pack") {
       return Promise.resolve({
         ok: false,
         code: "assessment_pack_unsupported_for_journey_zip",
@@ -56358,6 +56670,27 @@
           code: "assessment_pack_unsupported_for_journey_zip",
           message:
             "Assessment Pack commissions are not yet included in Learning Journey learner packages."
+        }
+      });
+    }
+    // Interactive / Expository / Situated Task share the page-based LearnerPackage path.
+    // Learning Journey publishes via its own assembly module, never as a nested constituent.
+    var familyModForRoute = getFirstClassWorkflowFamilyMod();
+    if (
+      publishRoute &&
+      familyModForRoute &&
+      typeof familyModForRoute.isPageBasedLearnerPublishRoute === "function" &&
+      !familyModForRoute.isPageBasedLearnerPublishRoute(publishRoute)
+    ) {
+      return Promise.resolve({
+        ok: false,
+        code: "publish_route_unsupported_for_journey_zip",
+        error: {
+          code: "publish_route_unsupported_for_journey_zip",
+          message:
+            "Publish route " +
+            publishRoute +
+            " is not a page-based constituent LearnerPackage route."
         }
       });
     }
@@ -58676,6 +59009,9 @@
       orchestrateLearningJourneyDesignPageRunStage;
     prismTestApi.clearLearningJourneyDesignPageModelPromptSeed =
       clearLearningJourneyDesignPageModelPromptSeed;
+    prismTestApi.clearSituatedTaskDesignPageModelPromptSeed =
+      clearSituatedTaskDesignPageModelPromptSeed;
+    prismTestApi.composeSituatedTaskOriginalBrief = composeSituatedTaskOriginalBrief;
     prismTestApi.workflowRecordIsLearningJourney = workflowRecordIsLearningJourney;
     prismTestApi.workflowHasSprint58PagePipelineSteps = workflowHasSprint58PagePipelineSteps;
     prismTestApi.recomposeWorkflowPageCapturesFromUpstream =

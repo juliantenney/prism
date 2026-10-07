@@ -58,7 +58,7 @@ test("Learning Journey is not commissionable", () => {
 
 test("unknown product is unsupported", () => {
   const result = intake.intakeCommission({
-    productId: "situated_task",
+    productId: "not_a_registered_product",
     specificationText: SPEC
   });
   assert.equal(result.ok, false);

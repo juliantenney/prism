@@ -20,4 +20,4 @@
 
 ### Immediate next
 
-**None from this sprint.** Sprint 92 is closed. Do not start Sprint 93 from this closure alone. Select further work deliberately from [PRODUCT-BACKLOG.md](../../../backlog/PRODUCT-BACKLOG.md).
+Sprint 92 is **CLOSED**. Successor: [Sprint 93 — Assessment Pack Educational Contract](../2026-10-07-sprint-93-assessment-pack-educational-contract/SPRINT-93-START-HERE.md) (**OPEN**). Do not reopen Sprint 92.

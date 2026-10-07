@@ -242,4 +242,4 @@ Live evidence and automated evidence both matter; test counts do not replace liv
 
 ## Successor
 
-**None opened.** Further work requires an explicit new opening decision from the product backlog. Do **not** start Sprint 93 from this closure alone.
+**Sprint 93 opened (2026-10-07):** [Assessment Pack Educational Contract](../2026-10-07-sprint-93-assessment-pack-educational-contract/SPRINT-93-START-HERE.md) — discovery / educational architecture; Sprint 92 remains **CLOSED** and must not be reopened.

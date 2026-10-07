@@ -1032,4 +1032,4 @@ Create UI label: **Situated Task**.
 - Situated-specific renderer or package format;
 - automatic opening of Sprint 93 or any successor.
 
-**Successor:** None opened. Further work requires an explicit new opening decision from the product backlog.
+**Successor:** [Sprint 93 — Assessment Pack Educational Contract](../2026-10-07-sprint-93-assessment-pack-educational-contract/SPRINT-93-START-HERE.md) opened 2026-10-07 by explicit decision [S93-D01](../2026-10-07-sprint-93-assessment-pack-educational-contract/decisions.md#s93-d01--open-sprint-93--assessment-pack-educational-contract). Sprint 92 remains **CLOSED**.

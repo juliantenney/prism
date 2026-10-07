@@ -2,8 +2,8 @@
 
 **Canonical location:** `docs/backlog/PRODUCT-BACKLOG.md`  
 **Status:** Active — **alpha-use period** (Alpha development complete, 2026-09-02)  
-**Last updated:** 2026-10-07 (Sprint 92 CLOSED — Situated Task first-class)  
-**Active sprint:** None. Last closed: [Sprint 92 — Situated Task](../development/sprints/2026-10-07-sprint-92-situated-learning-activity-first-class-product/SPRINT-92-CLOSURE.md) — **COMPLETE / CLOSED**. Prior: [Sprint 91](../development/sprints/2026-10-06-sprint-91-learning-journey-first-class-implementation/SPRINT-91-CLOSURE.md) — **COMPLETE / CLOSED**
+**Last updated:** 2026-10-07 (Sprint 93 OPEN — Assessment Pack Educational Contract)  
+**Active sprint:** [Sprint 93 — Assessment Pack Educational Contract](../development/sprints/2026-10-07-sprint-93-assessment-pack-educational-contract/SPRINT-93-START-HERE.md) — **OPEN** (Gates 1–9 PASSED; Gate 10 next). Last closed: [Sprint 92 — Situated Task](../development/sprints/2026-10-07-sprint-92-situated-learning-activity-first-class-product/SPRINT-92-CLOSURE.md) — **COMPLETE / CLOSED**
 
 This file answers: **what might we actually choose to work on next?**
 
@@ -214,9 +214,9 @@ Do not prescribe UI, storage, publishing, URLs, navigation, linking, tracking, L
 
 ### PB-FA-017 — Assessment Pack first-class product revisit
 
-**Status:** Future work only. **Not sprint-allocated.** Do not open a sprint from this note alone.
+**Status:** **Allocated — Sprint 93 OPEN** ([SPRINT-93-START-HERE.md](../development/sprints/2026-10-07-sprint-93-assessment-pack-educational-contract/SPRINT-93-START-HERE.md)). Discovery / educational contract only so far (Gate 1 COMPLETE). Do **not** treat this item as closed.
 
-Revisit Assessment Pack in a future dedicated sprint using the evidence-led first-class product design method now established through Learning Journey and Sprint 92 ([PB-FA-015 discovery pattern](#learning-journey-as-a-product-discovery-mechanism)).
+Revisit Assessment Pack using the evidence-led first-class product design method now established through Learning Journey and Sprint 92 ([PB-FA-015 discovery pattern](#learning-journey-as-a-product-discovery-mechanism)).
 
 #### Motivation
 
@@ -277,7 +277,12 @@ The future Assessment Pack work should use such cases to sharpen requirements ra
 
 #### Scope posture
 
-Future work only. No sprint number assigned. Do **not** change Sprint 92. Do **not** begin Assessment Pack redesign, pipeline, schema, UI or implementation from this note.
+**Sprint 93** owns this revisit as discovery-first work. Hard invariant: Assessment Pack remains **NON-SUMMATIVE**. Do **not** begin Assessment Pack redesign, pipeline, schema, UI or implementation until Sprint 93 gates authorise it. Do **not** reopen Sprint 92. Near-term calibration of the *current* pack remains a separate narrower item above.
+
+#### Sprint 93 progress
+
+- Gate 1 baseline: [GATE-1-ASSESSMENT-PACK-BASELINE.md](../development/sprints/2026-10-07-sprint-93-assessment-pack-educational-contract/GATE-1-ASSESSMENT-PACK-BASELINE.md)  
+- Opening: [S93-D01](../development/sprints/2026-10-07-sprint-93-assessment-pack-educational-contract/decisions.md#s93-d01--open-sprint-93--assessment-pack-educational-contract)
 
 ### PB-S-006 — Institutional authentication (University of Nottingham)
 

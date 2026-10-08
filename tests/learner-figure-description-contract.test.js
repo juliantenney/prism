@@ -100,16 +100,61 @@ test("4. generated Figure n. is not duplicated inside description body", () => {
   assert.match(html, /Should strip leading generated label/);
 });
 
-test("5. alt-text length contract clips at word boundary", () => {
+test("5. authored alt text longer than 140 characters is preserved", () => {
   const long =
     "HCV entry pathway overview covering receptor attachment internalization membrane fusion uncoating and cytosolic RNA release with instructional purpose noted for learners who need the accessible summary";
   assert.ok(long.length > figureContract.ALT_TEXT_MAX_CHARS);
-  const clipped = figureContract.buildConciseAltText({ alt_text: long });
-  assert.ok(clipped.length <= figureContract.ALT_TEXT_MAX_CHARS + 1);
-  assert.ok(clipped.endsWith("…"));
-  const beforeEllipsis = clipped.slice(0, -1);
-  assert.ok(/\s/.test(long.slice(0, figureContract.ALT_TEXT_MAX_CHARS)));
-  assert.doesNotMatch(beforeEllipsis, /[A-Za-z]{18,}$/);
+  const kept = figureContract.buildConciseAltText({ alt_text: long });
+  assert.equal(kept, long);
+  assert.equal(kept.includes("…"), false);
+  const diagnosed = figureContract.diagnoseFigureDescriptionQuality(
+    {
+      alt_text: long,
+      detailed_description:
+        "A learner-facing account of receptor attachment, internalisation, membrane fusion, uncoating, and cytosolic RNA release, written so the figure can be understood without the image."
+    },
+    { substantive: true }
+  );
+  assert.equal(
+    diagnosed.diagnostics.some((d) => d.code === "FIGURE_ALT_TEXT_TOO_LONG"),
+    true
+  );
+});
+
+test("5b. long authored alt survives association and figure publication", () => {
+  const long =
+    "Concept map linking four clinical research purposes to the evidence each purpose requires, including intervention effects, prognosis, diagnosis, and experience; detailed description follows.";
+  assert.ok(long.length > figureContract.ALT_TEXT_MAX_CHARS);
+  const created = visualAssets.createVisualAssetAssociation(
+    {
+      brief_id: "brief-s1-map",
+      job_id: "job-s1-map",
+      affordance_id: "va-S1-question-evidence-01",
+      visual_slot: "section-after-content",
+      subject: "Question to evidence",
+      preferred_representation: "concept_map",
+      alt_text: long,
+      detailed_description: DETAILED
+    },
+    {
+      filename: "map.png",
+      mime_type: "image/png",
+      byte_size: 68,
+      width: 1,
+      height: 1,
+      render_source: { kind: "data_url", value: TINY_PNG_DATA_URL }
+    },
+    { intakeMethod: "file_picker" }
+  );
+  assert.equal(created.ok, true);
+  assert.equal(created.asset.alt_text, long);
+  const html = renderAffordance.renderVisualAffordanceFigure(
+    created.asset,
+    { slot: "section-after-content", affordanceId: "va-S1-question-evidence-01" },
+    { figureCounter: { value: 0 } }
+  );
+  assert.match(html, new RegExp('alt="' + long.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + '"'));
+  assert.doesNotMatch(html, /…/);
 });
 
 test("6. description length/quality guidance soft-warns for rich specs", () => {

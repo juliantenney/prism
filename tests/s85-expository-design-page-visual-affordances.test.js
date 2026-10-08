@@ -251,6 +251,64 @@ test("section scope rejects inventing activity_id", () => {
   assert.ok(errors.some((e) => /activity_id must not be set when scope is section/i.test(e)));
 });
 
+test("Expository DP prompt states canonical skip_reason vocabulary", () => {
+  const body = sibling.resolveTemplate("design_page");
+  [
+    "low_pedagogical_value",
+    "debrief_without_new_reasoning",
+    "duplicate_existing_structure",
+    "decorative_only",
+    "spoiler_risk",
+    "assessment_text_sufficient",
+    "insufficient_source_basis"
+  ].forEach((token) => {
+    assert.match(body, new RegExp(token));
+  });
+  assert.match(body, /visual_decision must be exactly generate, defer, or skip/i);
+  assert.match(body, /Do not invent free-text skip reasons/i);
+  assert.match(body, /"visual_decision":"skip"/);
+  assert.match(body, /generate rows are selected figures/i);
+});
+
+test("selected generate and canonical skip both validate; unknown skip_reason does not", () => {
+  const generate = makeS5FeedbackLoopAffordance();
+  assert.equal(generate.skip_reason, undefined);
+  assert.deepEqual(sprint38.validateAffordanceEnvelope(generate, 0), []);
+
+  const skip = {
+    affordance_id: "va-S3-skip-01",
+    scope: "section",
+    section_id: "S3",
+    visual_decision: "skip",
+    skip_reason: "duplicate_existing_structure",
+    rationale: "The comparison is already explicit in the section prose.",
+    subject: "S3 comparison",
+    context: "No additional figure.",
+    evidence_anchors: ["S3.purpose"]
+  };
+  assert.deepEqual(sprint38.validateAffordanceEnvelope(skip, 1), []);
+
+  const legacy = Object.assign({}, skip, {
+    affordance_id: "va-S4-legacy-reject",
+    visual_decision: "reject",
+    skip_reason: undefined,
+    rejection_reason: "decorative_only"
+  });
+  assert.deepEqual(sprint38.validateAffordanceEnvelope(legacy, 2), []);
+
+  const malformed = Object.assign({}, skip, {
+    affordance_id: "va-S2-bad-skip",
+    skip_reason: "prose already explains this clearly"
+  });
+  const errors = sprint38.validateAffordanceEnvelope(malformed, 3);
+  assert.ok(
+    errors.some((e) =>
+      /visual_affordances\[3\]: skip_reason \(or legacy rejection_reason\) must be one of:/i.test(e)
+    )
+  );
+  assert.ok(!errors.some((e) => /low_pedagogical_value/.test(e) && /coerced/i.test(e)));
+});
+
 test("lightweight Expository visual row still fails closed (prompt/validator agreement)", () => {
   const lightweight = {
     affordance_id: "va-lite",

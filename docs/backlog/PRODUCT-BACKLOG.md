@@ -2,7 +2,7 @@
 
 **Canonical location:** `docs/backlog/PRODUCT-BACKLOG.md`  
 **Status:** Active — **alpha-use period** (Alpha development complete, 2026-09-02)  
-**Last updated:** 2026-10-07 (Sprint 93 OPEN — Assessment Pack Educational Contract)  
+**Last updated:** 2026-10-08 (PB-FA-021 proposed — Expository editorial integration and publication quality, unassigned; Sprint 93 remains OPEN)  
 **Active sprint:** [Sprint 93 — Assessment Pack Educational Contract](../development/sprints/2026-10-07-sprint-93-assessment-pack-educational-contract/SPRINT-93-START-HERE.md) — **OPEN** (Gates 1–9 PASSED; Gate 10 next). Last closed: [Sprint 92 — Situated Task](../development/sprints/2026-10-07-sprint-92-situated-learning-activity-first-class-product/SPRINT-92-CLOSURE.md) — **COMPLETE / CLOSED**
 
 This file answers: **what might we actually choose to work on next?**
@@ -75,6 +75,137 @@ Establish a repeatable path from active development to a **known-good stable rel
 
 **Readiness:** Problem documented; approach and acceptance criteria not yet written — **not sprint-allocated**.
 
+### PB-FA-018 — Shared data and mathematical visualisation
+
+**Status:** Proposed — deferred to a dedicated future sprint. **Not sprint-allocated.**  
+**Scope:** Cross-product platform capability. Does **not** change Sprint 93’s Assessment Pack educational contract.
+
+Establish a shared, accessible, deterministic visualisation capability available to all PRISM products, supporting both authored data and learner-responsive interactions.
+
+**Educational opportunity:** Learners inspect, manipulate, and reason with visual representations of data and mathematical relationships, rather than relying only on static graphics.
+
+Charting and deterministic diagramming are potential capabilities inside this same shared graphics pipeline, available across products. They sit alongside mathematical visualisation. They do not retire generative image briefs.
+
+Potential applications include:
+
+- Interactive normal distributions, skewness, sampling distributions, and confidence intervals.
+- Statistical plots, regression, and other research-methods visualisations.
+- Learner-responsive spidergrams and formative feedback profiles.
+- Charts based on learner-generated observations and data.
+- Accessible visual explanations in Expository and evidence inspection in Assessment Pack.
+- Deterministic concept maps and relationship diagrams whose nodes, labels, and connector conventions are authored as data.
+- Learner-responsive visualisations that update from learner action in Expository, Interactive, Assessment Pack, and Situated Task.
+
+**Architectural principles:**
+
+- One shared capability, available to all products.
+- Product identity remains determined by educational responsibility.
+- Authoritative data and mathematically correct computations.
+- Declarative specifications wherever possible; no routine generation of bespoke JavaScript.
+- Browser-side interactivity without runtime AI or backend dependencies.
+- Accessibility by design: keyboard interaction, meaningful descriptions, numerical and tabular alternatives.
+- Consistent behaviour in Preview, standalone HTML, and Learning Journey packages.
+- Explicit versioning and validation of supported visualisation specifications.
+
+**Existing foundation:** Assessment Pack already compiles a deterministic horizontal-bar SVG from `data_figure` and authoritative numeric data (`lib/assessment-pack-publish.js` · `realiseDataFigure`). That path should inform the shared architecture. It is not a general charting library, and it is not discarded by this item. Generated image briefs (`ordered_bar_strip`, `evidence_t_chart`, and related visual-affordance tokens) remain pictures, not data-bound charts. Where those pictures should stay generative but need a more faithful brief, explicit authored structure is [PB-FA-020](#pb-fa-020--structured-visual-specifications-for-generated-graphics). Optional maths follow-ons stay [PB-M-001](#pb-m-001--future-maths-capabilities).
+
+**Sprint discovery questions:**
+
+1. Which charting and mathematical libraries best fit PRISM’s offline, self-contained publishing model?
+2. What common specification can support fixed and learner-responsive visualisations?
+3. How should learner workspace data bind to charts safely?
+4. What accessible alternatives and interactions must every visualisation provide?
+5. How should all Design Page pipelines discover and use the shared capability?
+
+**Initial acceptance demonstrations:**
+
+- An accessible, parameter-adjustable normal distribution in an Interactive experience.
+- A learner-responsive diagnostic spidergram in Assessment Pack.
+- A fixed statistical chart in Expository.
+- Equivalent functionality in Preview and exported learner packages.
+
+**Out of scope:** A comprehensive statistical analysis package; arbitrary generated JavaScript; changes to Sprint 93’s educational contract.
+
+**Readiness:** Proposed from the 2026-10-08 charting audit. Approach not yet chosen — **not sprint-allocated**.
+
+### PB-FA-019 — Interactive V2: educational and architectural discovery
+
+**Status:** Proposed — unassigned. **Not sprint-allocated.**  
+**Type:** Major product discovery.  
+**Dependency:** Learning Journey commissioning evidence, and completion of Assessment Pack [Sprint 93](../development/sprints/2026-10-07-sprint-93-assessment-pack-educational-contract/SPRINT-93-START-HERE.md) ([PB-FA-017](#pb-fa-017--assessment-pack-first-class-product-revisit)). Do not open this while Sprint 93 is open.
+
+**Central question:** How should Interactive be redesigned when Learning Journey establishes the educational context, progression, and commissioning brief, allowing Interactive to concentrate on designing and realising precisely the consequential engagement required?
+
+**Discovery responsibilities:**
+
+1. **Examine the current Interactive product.** Identify which educational responsibilities it currently carries, which belong upstream in Learning Journey, and which must remain within Interactive.
+2. **Investigate authentic commissions.** Use demanding Learning Journey briefs, including potential research-methods experiences arising from Richard's teaching, to discover what Interactive actually needs to deliver.
+3. **Reconsider the educational contract.** Establish what constitutes consequential engagement, how learners exercise judgement and agency, and how their work carries forward.
+4. **Investigate implementation freedom.** Determine where existing interaction types are sufficient, where shared platform capabilities can help (including [PB-FA-018](#pb-fa-018--shared-data-and-mathematical-visualisation) if that capability exists), and where bounded bespoke behaviour might exceptionally be necessary.
+5. **Evaluate architectural options.** Compare evolution of the existing pipeline with more fundamental redesign. Do not assume replacement is necessary.
+
+**Expected discovery outputs:**
+
+- Evidence of current Interactive strengths and limitations.
+- A clarified division of responsibility between Learning Journey and Interactive.
+- A proposed Interactive V2 educational contract.
+- Candidate authoring and implementation architectures.
+- Live acceptance scenarios derived from authentic educational commissions.
+- A recommendation for whether and how to proceed to implementation.
+
+**Guardrails:**
+
+- No implementation during discovery.
+- No assumption that more widgets equal better learning.
+- No routine stochastic JavaScript generation.
+- Preserve standalone Interactive capability.
+- No weakening of deterministic execution or learner-facing reliability.
+
+**Success criterion:** We understand what Interactive must become educationally before deciding how to build it.
+
+This is a revisit of the existing Interactive product, not a new first-class product under [PB-FA-015](#pb-fa-015--additional-first-class-learning-resource-pipelines).
+
+**Readiness:** Proposed 2026-10-08. Blocked on Sprint 93 completion and Learning Journey commissioning evidence — **not sprint-allocated**.
+
+### PB-FA-020 — Structured visual specifications for generated graphics
+
+**Status:** Proposed — unassigned. **Not sprint-allocated.**
+
+Author explicit visual structure — nodes, relationships, labels, visual conventions, and constraints — so image-generation briefs can be compiled from that structure rather than from unstructured prose alone.
+
+**Intent:** Generative graphics remain a valid rendering route. The specification makes the brief more faithful. It does not replace image generation with a diagram renderer.
+
+**Related:** Charting and deterministic diagramming, including concept maps, relationship diagrams, and learner-responsive visualisations across products, belong to [PB-FA-018](#pb-fa-018--shared-data-and-mathematical-visualisation). This item supplies structured authorship for briefs that still generate images.
+
+**Readiness:** Proposed 2026-10-08. Approach not yet chosen — **not sprint-allocated**.
+
+### PB-FA-021 — Expository editorial integration and publication quality
+
+**Status:** Proposed — unassigned. **Not sprint-allocated.**
+
+Author and publish Expository resources with a coherent editorial hierarchy, so the learner experience reads as a deliberately edited educational publication rather than an assembly of authored components.
+
+**Context:** *Choosing a Clinical Study Design: Questions, Evidence and Trade-offs* scored 84/100 on PRISM Expository Resource Quality Benchmark v1.2, with no identified Critical or Major production defects. Its educational purpose, intellectual progression, and disciplinary reasoning are strong. The principal remaining weakness is editorial integration: diagrams, captions, explanatory tables, descriptive equivalents, and prose sometimes compete for attention.
+
+**Desired capability:**
+
+- Each representation has a clear, distinct educational purpose.
+- Figures, tables, captions, and prose complement rather than unnecessarily repeat one another.
+- Supporting materials are proportionate to the intellectual argument.
+- Section transitions and explanatory emphasis support a continuous reading experience.
+- Legitimate accessible descriptions and alternative representations are preserved, with appropriate presentation rather than indiscriminate removal.
+- Learner-facing output feels like a deliberately edited educational publication.
+
+**Evidence:** Benchmark v1.2: 84/100. Representation 76, Information Architecture 78, Typography/Hierarchy 78. No production cap. Strong educational foundations should be preserved.
+
+**Acceptance direction:** Compare actual published learner experiences with their intended educational purpose. Identify where editorial structure adds to or detracts from understanding. Evaluate improvements through live publication inspection and independent QA. Aim for consistent 90+ quality without treating the score itself as the optimisation target.
+
+**Boundaries:** Do not modify benchmark workflows or scoring rules. Do not weaken accessibility to make pages visually simpler. Do not reopen the recently fixed metadata leakage or alt-text defects unless new evidence warrants it. This is not shared graphics, deterministic diagramming, or structured visual specification — those remain [PB-FA-018](#pb-fa-018--shared-data-and-mathematical-visualisation) and [PB-FA-020](#pb-fa-020--structured-visual-specifications-for-generated-graphics).
+
+**Related:** First-class Expository capability is [PB-FA-011](#pb-fa-011--expository-resource). The earlier editorial-quality investigation and first slice are closed under [PB-FA-012](#pb-fa-012--expository-editorial-quality--qa). This item does not reopen that delivery.
+
+**Readiness:** Proposed 2026-10-08. Approach not yet chosen — **not sprint-allocated**.
+
 ---
 
 ## 2. Optional engineering / capability follow-ons
@@ -97,7 +228,7 @@ Light future capabilities — **no commitment or scheduling**:
 | Per-cell maths in table-style response surfaces | Table cells with `input_modality: math` |
 | CAS / symbolic correctness support | Symbolic checking beyond TeX entry/display |
 
-Sprint 82 delivered first-class MathLive entry + MathJax display for dedicated maths fields. These remain optional post-alpha follow-ons.
+Sprint 82 delivered first-class MathLive entry + MathJax display for dedicated maths fields. These remain optional post-alpha follow-ons. Shared data and mathematical **visualisation** (charts, distributions, learner-responsive plots) is a separate platform item: [PB-FA-018](#pb-fa-018--shared-data-and-mathematical-visualisation).
 
 ### Assessment Pack real-use calibration (Sprint 88 remainder)
 
@@ -298,7 +429,7 @@ Keep this item to authentication. Publishing, server-side user-owned persistence
 
 One exploratory question: whether any further first-class Learning Design product is justified.
 
-PRISM currently has four first-class learning-resource / composition products relevant to this item: Expository Resource (understanding through structured explanation), Interactive Resource (engagement with a designed/facilitated experience), Assessment Pack (interpretable evidence for judgement), and **Situated Task** (purposeful learner action in authentic/situated context — **implemented**, Sprint 92). Learning Journey composes progression across experiences.
+PRISM currently has four first-class learning-resource / composition products relevant to this item: Expository Resource (understanding through structured explanation), Interactive Resource (engagement with a designed/facilitated experience), Assessment Pack (interpretable evidence for judgement), and **Situated Task** (purposeful learner action in authentic/situated context — **implemented**, Sprint 92). Learning Journey composes progression across experiences. A later redesign of Interactive itself is [PB-FA-019](#pb-fa-019--interactive-v2-educational-and-architectural-discovery), not a new product row here.
 
 **Working criterion:** A new first-class product should exist because achieving its educational purpose needs a materially different design process, not because the finished resource has a familiar format. Video, podcast, debate, reflection, comparison, quiz, or worked example may simply be ways of realising an existing product. Do not open a backlog row for every named format.
 

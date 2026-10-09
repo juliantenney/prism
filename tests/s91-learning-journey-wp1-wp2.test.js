@@ -171,5 +171,5 @@ test("existing Interactive / Expository / Assessment pipelines remain intact", (
   assert.equal(expository.identity.product, "expository");
   assert.ok(expository.titles.indexOf("Expository Journey Plan") !== -1);
   assert.equal(assessment.identity.product, "assessment_pack");
-  assert.ok(assessment.titles.indexOf("Plan Assessment Evidence") !== -1);
+  assert.ok(assessment.titles.indexOf("Interpret Evidence Purpose") !== -1);
 });

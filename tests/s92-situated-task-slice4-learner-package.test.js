@@ -230,7 +230,7 @@ test("1. situated_task has a functioning page-based learner publish route", () =
   assert.equal(family.isPageBasedLearnerPublishRoute("situated_task_page"), true);
   assert.equal(family.isPageBasedLearnerPublishRoute("learner_page"), true);
   assert.equal(family.isPageBasedLearnerPublishRoute("expository_page"), true);
-  assert.equal(family.isPageBasedLearnerPublishRoute("assessment_pack"), false);
+  assert.equal(family.isPageBasedLearnerPublishRoute("assessment_pack"), true);
   assert.equal(family.isPageBasedLearnerPublishRoute("learning_journey_page"), false);
 });
 

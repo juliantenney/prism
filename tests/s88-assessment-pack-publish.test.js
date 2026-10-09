@@ -75,10 +75,13 @@ test("Assessment workflow ends at Design Page and that prompt consumes the pack"
   });
   assert.equal(built.titles[built.titles.length - 1], "Design Page");
   const designStep = built.steps[built.steps.length - 1];
-  assert.match(designStep.promptBody, /assessment_pack artefact is your only semantic input/);
+  assert.match(designStep.promptBody, /Stages 1–3 are your only semantic input/);
   assert.match(designStep.promptBody, /Do not rewrite prompts/);
   assert.match(designStep.promptBody, /Do not invent a stimulus/);
-  const author = built.steps[built.steps.length - 2].promptBody;
+  assert.match(designStep.promptBody, /product_id "assessment_pack"/);
+  const author = built.steps.filter(function (step) {
+    return step.outputName === "assessment_evidence_elicitation";
+  })[0].promptBody;
   assert.match(author, /representation is null/);
   assert.match(author, /data_figure/);
   assert.match(author, /must_not_show/);

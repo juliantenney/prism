@@ -1,7 +1,7 @@
 # Sprint 93 — Index
 
 **Sprint:** 93 — Assessment Pack Educational Contract  
-**Status:** **OPEN** — Gates 1–9 COMPLETE / PASSED; Gate 10 next  
+**Status:** **OPEN** — Gates 1–9 COMPLETE / PASSED; output-to-spec contract defined, not implemented  
 **Entry:** [SPRINT-93-START-HERE.md](SPRINT-93-START-HERE.md)  
 **Charter:** [SPRINT-93-CHARTER.md](SPRINT-93-CHARTER.md)  
 **Design map:** [PRODUCT-DESIGN-MAP.md](PRODUCT-DESIGN-MAP.md)  
@@ -24,6 +24,7 @@
 | [GATE-7-ASSESSMENT-PACK-PRODUCT-INVARIANTS.md](GATE-7-ASSESSMENT-PACK-PRODUCT-INVARIANTS.md) | Product invariants AP-I1…I6 (PASSED) |
 | [GATE-8-ASSESSMENT-PACK-PREDETERMINED-PIPELINE.md](GATE-8-ASSESSMENT-PACK-PREDETERMINED-PIPELINE.md) | Predetermined pipeline (PASSED) |
 | [GATE-9-ASSESSMENT-PACK-CANONICAL-STRUCTURED-ARTEFACT.md](GATE-9-ASSESSMENT-PACK-CANONICAL-STRUCTURED-ARTEFACT.md) | Canonical artefact `assessment_evidence` (PASSED) |
+| [ASSESSMENT-PACK-OUTPUT-TO-SPEC-CONTRACT.md](ASSESSMENT-PACK-OUTPUT-TO-SPEC-CONTRACT.md) | Optional `output_specification` (defined; not implemented) |
 | [PLAN.md](PLAN.md) | Work log |
 | [VALIDATION.md](VALIDATION.md) | Evidence ledger |
 | [ARCHITECTURAL-DEBT.md](ARCHITECTURAL-DEBT.md) | Debt / deferred findings |

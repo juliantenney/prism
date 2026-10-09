@@ -9596,7 +9596,15 @@
       .trim()
       .toLowerCase()
       .replace(/\s+/g, "_");
-    if (outputName === "assessment_pack" || outputName === "evidence_plan") return true;
+    if (
+      outputName === "assessment_pack" ||
+      outputName === "evidence_plan" ||
+      outputName === "assessment_evidence_purpose" ||
+      outputName === "assessment_evidence_elicitation" ||
+      outputName === "assessment_formative_return"
+    ) {
+      return true;
+    }
     return (
       isWorkflowStepPageStructureProducer(step, wf) ||
       isWorkflowStepExpositoryArtefactProducer(step)
@@ -11370,12 +11378,21 @@
         typeof workflowEarly.workflowBriefResolution.resolvedFactors === "object"
           ? workflowEarly.workflowBriefResolution.resolvedFactors
           : {};
-      var published = publishMod.assembleAssessmentPackPage({
-        designPage: designJson,
-        assessmentPack: packJson,
-        learningOutcomes: learningOutcomes,
-        feedbackTiming: factors.feedback_timing
-      });
+      var published =
+        typeof publishMod.resolveAssessmentPackPublishPage === "function"
+          ? publishMod.resolveAssessmentPackPublishPage({
+              page: page,
+              designPage: designJson,
+              assessmentPack: packJson,
+              learningOutcomes: learningOutcomes,
+              feedbackTiming: factors.feedback_timing
+            })
+          : publishMod.assembleAssessmentPackPage({
+              designPage: designJson,
+              assessmentPack: packJson,
+              learningOutcomes: learningOutcomes,
+              feedbackTiming: factors.feedback_timing
+            });
       if (!published || !published.ok || !published.page) {
         var assemblyTrace = describeCurrentRunStepOutputsForAssembly(workflowEarly);
         state.lastAssessmentAssemblyTrace = assemblyTrace;
@@ -11394,13 +11411,18 @@
             );
           })
           .join(" | ");
-        throw new Error(
+        var assessmentFailure =
           "Assessment publishing failed" +
-            (published && published.code ? ": " + published.code : "") +
-            (assemblySummary
-              ? " [" + assemblySummary + "]"
-              : " [no run-step output elements on this page]")
-        );
+          (published && published.code ? ": " + published.code : "");
+        if (published && published.message) {
+          assessmentFailure += " — " + published.message;
+        }
+        if (!published || published.code !== "assessment_evidence_invalid") {
+          assessmentFailure += assemblySummary
+            ? " [" + assemblySummary + "]"
+            : " [no run-step output elements on this page]";
+        }
+        throw new Error(assessmentFailure);
       }
       return attachLearnerPageIdentityFromWorkflow(published.page, workflowEarly);
     }
@@ -50185,6 +50207,7 @@
       ".util-learner-renderer-vnext .util-guided-review__panel:last-child{border-bottom:0;margin-bottom:0;padding-bottom:0}" +
       ".util-learner-renderer-vnext .util-guided-review__nav{display:flex;flex-wrap:wrap;gap:.75rem;justify-content:space-between;margin-top:var(--learner-space-3)}" +
       ".util-learner-renderer-vnext .util-guided-review__nav-btn{font:inherit;font-size:var(--learner-text-sm);line-height:1.3;font-weight:600;padding:.55rem .85rem;min-height:44px;border:1px solid #cbd5e1;border-radius:8px;background:#fff;color:#0f172a;cursor:pointer}" +
+      ".util-learner-renderer-vnext .util-guided-review__nav-btn:hover:not(:disabled){background:#f8fafc;border-color:#94a3b8}" +
       ".util-learner-renderer-vnext .util-guided-review__nav-btn:focus-visible{outline:2px solid #2563eb;outline-offset:2px}" +
       ".util-learner-renderer-vnext .util-guided-review__nav-btn:disabled{opacity:.45;cursor:not-allowed}" +
       "@media (max-width:720px){.util-learner-renderer-vnext .util-guided-review__nav{flex-direction:column}.util-learner-renderer-vnext .util-guided-review__nav-btn{width:100%}}" +
@@ -56660,20 +56683,8 @@
         error: { code: "workflow_not_found", message: "Constituent workflow not found: " + wid }
       });
     }
-    var product = String(wf.product || "").toLowerCase();
     var publishRoute = firstClassPublishRoute(wf);
-    if (product === "assessment_pack" || publishRoute === "assessment_pack") {
-      return Promise.resolve({
-        ok: false,
-        code: "assessment_pack_unsupported_for_journey_zip",
-        error: {
-          code: "assessment_pack_unsupported_for_journey_zip",
-          message:
-            "Assessment Pack commissions are not yet included in Learning Journey learner packages."
-        }
-      });
-    }
-    // Interactive / Expository / Situated Task share the page-based LearnerPackage path.
+    // Interactive, Expository, Situated Task, and Assessment Pack share the page-based LearnerPackage path.
     // Learning Journey publishes via its own assembly module, never as a nested constituent.
     var familyModForRoute = getFirstClassWorkflowFamilyMod();
     if (

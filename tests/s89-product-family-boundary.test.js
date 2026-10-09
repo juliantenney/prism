@@ -35,7 +35,7 @@ test("each product builds its predetermined family", () => {
   assert.equal(assessment.identity.product, "assessment_pack");
   assert.ok(interactive.titles.indexOf("Design Learning Activities") !== -1);
   assert.ok(expository.titles.indexOf("Expository Journey Plan") !== -1);
-  assert.ok(assessment.titles.indexOf("Plan Assessment Evidence") !== -1);
+  assert.ok(assessment.titles.indexOf("Interpret Evidence Purpose") !== -1);
   assert.equal(interactive.callsModel, false);
   assert.equal(expository.callsModel, false);
   assert.equal(assessment.callsModel, false);

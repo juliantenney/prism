@@ -261,3 +261,19 @@
 **Authorised next:** Gate 10 — Implementation and live acceptance (bounded by §17 of Gate 9).
 
 **Still not authorised until Gate 10 execution is explicitly started:** production code changes. Gate 9 itself changes no code.
+
+---
+
+## S93-D11 — Assessment Pack output-to-spec contract
+
+**Date:** 2026-10-09  
+**Status:** Slices 1–4 implemented (validator, legacy-control omission, browser-local response persistence, learner artefact assembly, and Design Page authoring). Gate 10 is not complete.  
+**Depends on:** [S93-D10](decisions.md#s93-d10--gate-9-assessment-pack-canonical-structured-artefact-complete--passed)
+
+**Decision:** Record an optional `assessment_evidence.output_specification` for a learner-owned artefact assembled from existing elicitation responses.
+
+**Shape:** Artefact title, audience, purpose, action label, ordered sections, and contributions that cite `elicitation_id` plus a closed `response_part` (`selected_options`, `check_result`, `response_text`, `identified_weakness`). Missing responses use an authored sentence. `check_result` is allowed only on determinate auto-checkable items. Absence of the object means no generated artefact, and Assessment Pack then omits “Summarise this assessment”. Self-study `renderAssessment` is unchanged.
+
+**Not authorised by this decision:** runtime, validator, schema, or UI changes; retrofit of the clinical causal-evidence pack; Learning Journey transport.
+
+**Authoritative write-up:** [ASSESSMENT-PACK-OUTPUT-TO-SPEC-CONTRACT.md](ASSESSMENT-PACK-OUTPUT-TO-SPEC-CONTRACT.md).

@@ -4,12 +4,13 @@
 **Status:** **OPEN**  
 **Opened:** 2026-10-07  
 **Type:** Product discovery → educational architecture → implementation  
-**Active gate:** Gate 10 — Implementation and live acceptance (Gates 1–9 **COMPLETE / PASSED**)  
+**Active gate:** Output-to-spec slices 1–4 implemented (2026-10-09). Gate 10 is not complete. Gates 1–9 **COMPLETE / PASSED**.  
 **Opening decision:** [S93-D01](decisions.md#s93-d01--open-sprint-93--assessment-pack-educational-contract)  
 **Charter:** [SPRINT-93-CHARTER.md](SPRINT-93-CHARTER.md)  
 **Design map:** [PRODUCT-DESIGN-MAP.md](PRODUCT-DESIGN-MAP.md)  
 **Gate 8 pipeline:** [GATE-8-ASSESSMENT-PACK-PREDETERMINED-PIPELINE.md](GATE-8-ASSESSMENT-PACK-PREDETERMINED-PIPELINE.md)  
 **Gate 9 artefact:** [GATE-9-ASSESSMENT-PACK-CANONICAL-STRUCTURED-ARTEFACT.md](GATE-9-ASSESSMENT-PACK-CANONICAL-STRUCTURED-ARTEFACT.md)  
+**Output-to-spec contract:** [ASSESSMENT-PACK-OUTPUT-TO-SPEC-CONTRACT.md](ASSESSMENT-PACK-OUTPUT-TO-SPEC-CONTRACT.md)  
 **Work log:** [PLAN.md](PLAN.md)  
 **Validation:** [VALIDATION.md](VALIDATION.md)  
 **Debt:** [ARCHITECTURAL-DEBT.md](ARCHITECTURAL-DEBT.md)  
@@ -34,15 +35,15 @@ Do **not** investigate how PRISM might support these later. They are outside the
 
 ## If you are starting a new session
 
-> **Sprint 93 is OPEN.** Gates 1–9 **COMPLETE / PASSED**. Next: Gate 10 (implementation + live acceptance) per Gate 9 §17. Canonical object: **`assessment_evidence`**. Pipeline: Interpret → Design Elicitation → Author Formative Return → Design Page. Do **not** reopen design gates. Production code frozen **until Gate 10 work starts**. Client-side delivery only (no runtime LLM). Sprint 92 remains **CLOSED**.
+> **Sprint 93 is OPEN.** Gates 1–9 **COMPLETE / PASSED**. Output-to-spec slices 1–4 are implemented (validator, omission of the legacy summary control, browser-local response persistence, learner artefact assembly, and Design Page authoring). Canonical object: **`assessment_evidence`**. Do **not** reopen Gates 1–9. Client-side delivery only (no runtime LLM). Gate 10 is not complete. Sprint 92 remains **CLOSED**.
 
 | Fact | State |
 | ---- | ----- |
 | Sprint 92 | **COMPLETE / CLOSED** — Situated Task |
 | Sprint 93 | **OPEN** — Assessment Pack educational contract |
 | Gates 1–9 | **COMPLETE / PASSED** |
-| Gate 10 | **Next** — implementation + live acceptance |
-| Production code | **Frozen until Gate 10 starts** |
+| Output-to-spec | **Slices 1–4 implemented** — [ASSESSMENT-PACK-OUTPUT-TO-SPEC-CONTRACT.md](ASSESSMENT-PACK-OUTPUT-TO-SPEC-CONTRACT.md) |
+| Production code | **Slices 1–4 implemented.** Gate 10 is not complete. |
 
 ---
 

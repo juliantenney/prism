@@ -9,8 +9,9 @@ const TOPIC = [
   "Generate Learning Content",
   "Model Knowledge",
   "Define Learning Outcomes",
-  "Plan Assessment Evidence",
-  "Author Assessment Components",
+  "Interpret Evidence Purpose",
+  "Design Evidence Elicitation",
+  "Author Formative Return",
   "Design Page"
 ];
 
@@ -132,7 +133,7 @@ test("target component count reaches planning and authoring without changing top
   assert.match(plan, /Component count: exactly 4/);
   assert.match(plan, /Honour this number/);
   assert.match(plan, /Component mix: PRISM decides/);
-  assert.match(author, /Author exactly 4 components/);
+  assert.match(author, /Author exactly 4 determinate items/);
   assert.match(author, /Do not rebalance the mix/);
   assert.match(large.steps[3].promptBody, /Component count: exactly 12/);
   assert.match(large.steps[3].promptBody, /Assessment intent: pretest_diagnostic/);
@@ -141,7 +142,7 @@ test("target component count reaches planning and authoring without changing top
   assert.deepEqual(build({ startingPoint: "product_output", sourceWorkflowId: "x", componentCount: 9 }).titles, SOURCE);
 });
 
-test("supported forms are checkable and open responses are not commissioned", () => {
+test("supported forms stay determinate and constructed performance is not auto-scored", () => {
   const built = build();
   const author = built.steps[4].promptBody;
   const plan = built.steps[3].promptBody;
@@ -150,7 +151,8 @@ test("supported forms are checkable and open responses are not commissioned", ()
   assert.match(author, /ordering/);
   assert.match(author, /classification/);
   assert.match(author, /matching/);
-  assert.match(author, /Do not author short constructed responses/);
+  assert.match(author, /constructed_performance/);
+  assert.match(author, /Do not add judgement, scores, or runtime marking/);
   assert.match(author, /Do not merely restate the order/);
   assert.match(author, /Do not merely name which item belongs where/);
   assert.match(author, /Do not merely restate the pairs/);
@@ -158,8 +160,10 @@ test("supported forms are checkable and open responses are not commissioned", ()
   assert.match(author, /Do not write author or stage directions such as 'After the attempt'/);
   assert.match(plan, /ordering/);
   assert.equal(author.indexOf("short_constructed_response set auto_checkable false"), -1);
-  assert.equal(built.steps[3].outputName, "evidence_plan");
-  assert.equal(built.steps[4].outputName, "assessment_pack");
+  assert.equal(built.steps[3].outputName, "assessment_evidence_purpose");
+  assert.equal(built.steps[4].outputName, "assessment_evidence_elicitation");
+  assert.equal(built.steps[5].outputName, "assessment_formative_return");
+  assert.equal(built.steps[6].outputName, "page");
 });
 
 test("Interactive and Expository families stay unchanged", () => {
@@ -178,8 +182,8 @@ test("Interactive and Expository families stay unchanged", () => {
     focus: "Topic",
     startingArtefact: "provided_source_content"
   });
-  assert.equal(interactive.titles.includes("Plan Assessment Evidence"), false);
-  assert.equal(expository.titles.includes("Author Assessment Components"), false);
+  assert.equal(interactive.titles.includes("Interpret Evidence Purpose"), false);
+  assert.equal(expository.titles.includes("Author Formative Return"), false);
   assert.equal(interactive.titles.length, 8);
   assert.equal(expository.titles.length, 7);
   assert.equal(interactiveSource.titles[0], "Normalize Content");

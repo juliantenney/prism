@@ -247,6 +247,23 @@ test("a commissioning-brief commission designs the questions and tells Design Pa
   assert.match(step.design.promptBody, /must not be "Summarise this assessment"/);
 });
 
+test("Design Page guidance requires attempt_instructions as one string", () => {
+  [FORMATIVE_FOCUS, BRIEF_FOCUS].forEach(function (focus) {
+    const design = stages(build(focus)).design.promptBody;
+    assert.match(design, /top-level attempt_instructions/);
+    assert.match(design, /That field must be one string/);
+    assert.match(design, /Do not use an array/);
+    assert.equal(design.indexOf('"attempt_instructions": ['), -1);
+    assert.equal(design.indexOf("attempt_instructions\": ["), -1);
+  });
+  const built = build(FORMATIVE_FOCUS);
+  built.steps.forEach(function (step) {
+    const body = String(step.promptBody || "");
+    assert.equal(body.indexOf("attempt_instructions\": ["), -1);
+    assert.equal(body.indexOf('"attempt_instructions": ['), -1);
+  });
+});
+
 test("a conventional formative commission omits the specification and does not use the brief", () => {
   const built = build(FORMATIVE_FOCUS);
   const step = stages(built);

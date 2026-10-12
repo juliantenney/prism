@@ -641,127 +641,118 @@
       >
         <div class="card">
           <h2>Authoring</h2>
-          <p class="helper-text">
-            Paste structured JSON from PRISM outputs to preview browser-native HTML, then download
-            as HTML only or a learner package ZIP.
-          </p>
-          <div class="form-row compact">
-            <div class="form-group small">
-              <label for="utilitiesOutputFormat">Output format</label>
-              <select id="utilitiesOutputFormat" autocomplete="off">
-                <option value="html" selected>HTML</option>
-              </select>
-            </div>
-            <div class="form-group small">
-              <label for="utilitiesFileName">File name (optional)</label>
-              <input
-                type="text"
-                id="utilitiesFileName"
-                placeholder="e.g. session-handout"
-                autocomplete="off"
-              />
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="utilitiesJsonInput">Structured text (JSON)</label>
-            <textarea
-              id="utilitiesJsonInput"
-              rows="12"
-              placeholder='Paste JSON here with a top-level "artifact_type" field.'
-              autocomplete="off"
-            ></textarea>
-          </div>
           <div
             id="utilitiesWorkflowContext"
-            class="utilities-workflow-context"
+            class="utilities-workflow-context utilities-resource-identity"
             aria-live="polite"
           >
-            <p id="utilitiesSelectedWorkflowLabel" class="helper-text"></p>
+            <p id="utilitiesResourceIdentityMeta" class="helper-text hidden"></p>
+            <p id="utilitiesSelectedWorkflowLabel" class="helper-text hidden"></p>
             <p id="utilitiesAssembledFromLabel" class="helper-text hidden"></p>
             <div
               id="utilitiesWorkflowMismatchWarning"
               class="utilities-workflow-mismatch hidden"
               role="status"
             ></div>
-          </div>
-          <div class="button-row">
-            <button id="utilitiesAssembleCurrentRunBtn" type="button" class="btn">
-              Assemble From Current Workflow Run
-            </button>
-            <button id="utilitiesGenerateBtn" type="button" class="btn primary">Preview HTML</button>
             <div
-              class="utilities-download-actions"
-              role="group"
-              aria-label="Download options"
-            >
-              <button
-                id="utilitiesDownloadHtmlBtn"
-                type="button"
-                class="btn utilities-download-action"
-                disabled
-              >
-                HTML only (.html)
-              </button>
-              <button
-                id="utilitiesDownloadPackageBtn"
-                type="button"
-                class="btn utilities-download-action"
-                disabled
-              >
-                Learner package (.zip)
-              </button>
+              id="utilitiesAuthoringNotice"
+              class="utilities-authoring-notice hidden"
+              role="status"
+            ></div>
+            <div id="utilitiesEditProtection" class="utilities-edit-protection hidden">
+              <p id="utilitiesEditProtectionMessage"></p>
+              <div class="button-row">
+                <button id="utilitiesKeepEditedArtefactBtn" type="button" class="btn">
+                  Keep current edited artefact
+                </button>
+                <button id="utilitiesReplaceEditedArtefactBtn" type="button" class="btn">
+                  Discard edits and load selected workflow
+                </button>
+              </div>
             </div>
-            <button id="utilitiesOpenTabBtn" type="button" class="btn" disabled>Open in New Tab</button>
-            <button id="utilitiesClearBtn" type="button" class="btn ghost">Clear</button>
           </div>
           <div id="utilitiesPreviewPanel" class="utilities-preview hidden" aria-live="polite">
             <div id="utilitiesPreviewError" class="utilities-preview-error hidden" role="alert"></div>
-            <div
-              id="utilitiesOutputViewBar"
-              class="utilities-output-view-bar hidden"
-              role="tablist"
-              aria-label="Utilities output view"
-            >
-              <button
-                id="utilitiesOutputViewLearnerBtn"
-                type="button"
-                class="utilities-output-view-btn is-active"
-                role="tab"
-                aria-selected="true"
-                aria-controls="utilitiesOutputWorkspace"
+            <div class="utilities-preview-toolbar">
+              <div
+                id="utilitiesOutputViewBar"
+                class="utilities-output-view-bar hidden"
+                role="tablist"
+                aria-label="Utilities output view"
               >
-                Learner Page
-              </button>
-              <button
-                id="utilitiesOutputViewVisualJobsBtn"
-                type="button"
-                class="utilities-output-view-btn"
-                role="tab"
-                aria-selected="false"
-                aria-controls="utilitiesVisualJobsPanel"
-              >
-                Graphics (0)
-              </button>
-              <button
-                id="utilitiesOutputViewVideoBtn"
-                type="button"
-                class="utilities-output-view-btn"
-                role="tab"
-                aria-selected="false"
-                aria-controls="utilitiesVisualJobsPanel"
-              >
-                Video (0)
-              </button>
-              <button
-                id="utilitiesOutputViewResourcesBtn"
-                type="button"
-                class="utilities-output-view-btn"
-                role="tab"
-                aria-selected="false"
-                aria-controls="utilitiesVisualJobsPanel"
-              >
-                Resources (0)
-              </button>
+                <button
+                  id="utilitiesOutputViewLearnerBtn"
+                  type="button"
+                  class="utilities-output-view-btn is-active"
+                  role="tab"
+                  aria-selected="true"
+                  aria-controls="utilitiesOutputWorkspace"
+                >
+                  Learner Page
+                </button>
+                <button
+                  id="utilitiesOutputViewVisualJobsBtn"
+                  type="button"
+                  class="utilities-output-view-btn"
+                  role="tab"
+                  aria-selected="false"
+                  aria-controls="utilitiesVisualJobsPanel"
+                >
+                  Graphics (0)
+                </button>
+                <button
+                  id="utilitiesOutputViewVideoBtn"
+                  type="button"
+                  class="utilities-output-view-btn"
+                  role="tab"
+                  aria-selected="false"
+                  aria-controls="utilitiesVisualJobsPanel"
+                >
+                  Video (0)
+                </button>
+                <button
+                  id="utilitiesOutputViewResourcesBtn"
+                  type="button"
+                  class="utilities-output-view-btn"
+                  role="tab"
+                  aria-selected="false"
+                  aria-controls="utilitiesVisualJobsPanel"
+                >
+                  Resources (0)
+                </button>
+              </div>
+              <div class="utilities-preview-actions" role="group" aria-label="Preview actions">
+                <button
+                  id="utilitiesOpenTabBtn"
+                  type="button"
+                  class="utilities-output-view-btn"
+                  title="Open in New Tab"
+                  aria-label="Open in New Tab"
+                  disabled
+                >
+                  Open
+                </button>
+                <button
+                  id="utilitiesDownloadHtmlBtn"
+                  type="button"
+                  class="utilities-output-view-btn"
+                  title="Download HTML only"
+                  aria-label="HTML only (.html)"
+                  disabled
+                >
+                  HTML
+                </button>
+                <button
+                  id="utilitiesDownloadPackageBtn"
+                  type="button"
+                  class="utilities-output-view-btn"
+                  title="Download learner package (.zip)"
+                  aria-label="Learner package (.zip)"
+                  disabled
+                >
+                  ZIP
+                </button>
+              </div>
             </div>
             <div id="utilitiesOutputWorkspace" class="utilities-output-workspace">
               <iframe
@@ -778,6 +769,42 @@
             </div>
             <div id="utilitiesCopyAnnounce" class="sr-only" aria-live="polite" aria-atomic="true"></div>
           </div>
+          <details id="utilitiesAdvancedJson" class="utilities-advanced-json">
+            <summary>Advanced: Resource JSON</summary>
+            <div class="form-row compact">
+              <div class="form-group small">
+                <label for="utilitiesOutputFormat">Output format</label>
+                <select id="utilitiesOutputFormat" autocomplete="off">
+                  <option value="html" selected>HTML</option>
+                </select>
+              </div>
+              <div class="form-group small">
+                <label for="utilitiesFileName">File name (optional)</label>
+                <input
+                  type="text"
+                  id="utilitiesFileName"
+                  placeholder="e.g. session-handout"
+                  autocomplete="off"
+                />
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="utilitiesJsonInput">Structured text (JSON)</label>
+              <textarea
+                id="utilitiesJsonInput"
+                rows="12"
+                placeholder='Paste JSON here with a top-level "artifact_type" field.'
+                autocomplete="off"
+              ></textarea>
+            </div>
+            <div class="button-row utilities-secondary-actions">
+              <button id="utilitiesAssembleCurrentRunBtn" type="button" class="btn">
+                Assemble From Current Workflow Run
+              </button>
+              <button id="utilitiesGenerateBtn" type="button" class="btn">Preview HTML</button>
+              <button id="utilitiesClearBtn" type="button" class="btn ghost">Clear</button>
+            </div>
+          </details>
         </div>
       </section>
 
@@ -1480,7 +1507,7 @@
   <script src="lib/situated-task-sibling-prompts.js?v=20261007-s92-slice1"></script>
   <script src="lib/expository-domain-guidance.js?v=20260921-s85-wp3"></script>
   <script src="lib/page-vnext-assemble.js?v=20260923-s87-t003"></script>
-  <script src="lib/assessment-pack-canonical.js?v=20261009-s93-e6-prompt"></script>
+  <script src="lib/assessment-pack-canonical.js?v=20261012-s93-pack-forward"></script>
   <script src="lib/assessment-pack-publish.js?v=20261009-s93-slice3a"></script>
   <script src="lib/ld-activity-title-contract.js?v=20260803-2"></script>
   <script src="lib/ld-dla-page-enrich-contract.js?v=20260814-dla-material-type-vocab"></script>
@@ -1499,7 +1526,7 @@
   <script src="lib/episode-plan-v1-templates.js?v=20260608-1"></script>
   <script src="lib/episode-plan-v1-validation.js?v=20260608-1"></script>
   <script src="lib/episode-plan-dla-integration.js?v=20260803-1"></script>
-  <script src="lib/learner-renderer-vnext-browser.js?v=20261009-s93-output-spec-slice3"></script>
+  <script src="lib/learner-renderer-vnext-browser.js?v=20261012-expository-structured-publication"></script>
   <script src="lib/learner-renderer-vnext-export-runtime-source.js?v=20260803-draft-export-1"></script>
   <script src="lib/learner-renderer-vnext-standalone-embed.js?v=20260803-draft-export-1"></script>
   <dialog
@@ -1601,8 +1628,8 @@
     </form>
   </dialog>
   <script src="lib/assessment-component-forms.js?v=20260928-s88-forms"></script>
-  <script src="lib/first-class-workflow-family.js?v=20261009-s93-output-spec-slice4"></script>
+  <script src="lib/first-class-workflow-family.js?v=20261012-s93-attempt-instructions"></script>
   <script src="lib/first-class-commission-intake.js?v=20261006-s91-direct-init"></script>
-  <script src="app.js?v=20261006-s91-lj-package"></script>
+  <script src="app.js?v=20261012-authoring-layout"></script>
 </body>
 </html>

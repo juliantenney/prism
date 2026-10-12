@@ -432,7 +432,8 @@ test("Assemble From Current Workflow Run reads the AAC artefact from the run-ste
     5,
     null
   );
-  assert.match(assessmentInstructions, /attempt_instructions/);
+  assert.match(assessmentInstructions, /attempt_instructions as one string/);
+  assert.match(assessmentInstructions, /not an array/);
   assert.match(assessmentInstructions, /optional framing/);
   assert.equal(assessmentInstructions.indexOf("Sprint 58 Design Page partial output mode"), -1);
   assert.equal(assessmentInstructions.indexOf("visual_affordances"), -1);
@@ -495,7 +496,8 @@ test("Assemble From Current Workflow Run reads the AAC artefact from the run-ste
     5,
     null
   );
-  assert.match(liveCopiedPrompt, /attempt_instructions/);
+  assert.match(liveCopiedPrompt, /attempt_instructions as one string/);
+  assert.match(liveCopiedPrompt, /not an array/);
   assert.match(liveCopiedPrompt, /optional framing/);
   assert.equal(liveCopiedPrompt.indexOf("Sprint 58 Design Page partial output mode"), -1);
   assert.equal(liveCopiedPrompt.indexOf("visual_affordances"), -1);
@@ -512,6 +514,14 @@ test("Assemble From Current Workflow Run reads the AAC artefact from the run-ste
     assembly_state: { current_stage: "design_page", enriched_by: ["design_page"] }
   });
   assert.equal(acceptedDesign.ok, true);
+  const arrayInstructions = api.validateAssessmentDesignPageCapture({
+    artifact_type: "page",
+    schema_version: "2.0.0",
+    title: "A formative check",
+    attempt_instructions: ["Allow approximately 45 minutes for the complete assessment."]
+  });
+  assert.equal(arrayInstructions.ok, false);
+  assert.match(arrayInstructions.errors.join(" "), /attempt_instructions must be a string/);
   const leakedDesign = api.validateAssessmentDesignPageCapture({
     artifact_type: "page",
     schema_version: "2.0.0",

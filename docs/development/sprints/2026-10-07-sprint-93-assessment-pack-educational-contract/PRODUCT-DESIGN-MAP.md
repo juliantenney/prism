@@ -1,9 +1,10 @@
 # Sprint 93 — Product design map
 
-**Status:** **OPEN** — Gates 1–9 **COMPLETE / PASSED**; Gate 10 next  
+**Status:** **CLOSED — ACCEPTED** — Gates 1–10 accepted  
 **Sprint:** 93 — Assessment Pack Educational Contract  
 **Charter:** [SPRINT-93-CHARTER.md](SPRINT-93-CHARTER.md)  
-**Opening:** [S93-D01](decisions.md#s93-d01--open-sprint-93--assessment-pack-educational-contract)
+**Opening:** [S93-D01](decisions.md#s93-d01--open-sprint-93--assessment-pack-educational-contract)  
+**Close:** [S93-D12](decisions.md#s93-d12--close-sprint-93--assessment-pack-accepted)
 
 Evidence-first dependency: later gates must not invent educational decisions that earlier gates have not earned. Implementation is **last**.
 
@@ -28,9 +29,9 @@ Evidence-first dependency: later gates must not invent educational decisions tha
 | 7 | Product invariants | **COMPLETE / PASSED** | [GATE-7-ASSESSMENT-PACK-PRODUCT-INVARIANTS.md](GATE-7-ASSESSMENT-PACK-PRODUCT-INVARIANTS.md) · [S93-D08](decisions.md#s93-d08--gate-7-assessment-pack-product-invariants-complete--passed) — AP-I1…I6 |
 | 8 | Predetermined pipeline | **COMPLETE / PASSED** | [GATE-8-ASSESSMENT-PACK-PREDETERMINED-PIPELINE.md](GATE-8-ASSESSMENT-PACK-PREDETERMINED-PIPELINE.md) · [S93-D09](decisions.md#s93-d09--gate-8-assessment-pack-predetermined-pipeline-complete--passed) — Interpret → Design Elicitation → Author Formative Return → Design Page |
 | 9 | Canonical structured artefact | **COMPLETE / PASSED** | [GATE-9-ASSESSMENT-PACK-CANONICAL-STRUCTURED-ARTEFACT.md](GATE-9-ASSESSMENT-PACK-CANONICAL-STRUCTURED-ARTEFACT.md) · [S93-D10](decisions.md#s93-d10--gate-9-assessment-pack-canonical-structured-artefact-complete--passed) — `assessment_evidence` |
-| 10 | Implementation and live acceptance | **Next** | Bounded plan Gate 9 §17; live validate |
+| 10 | Implementation and live acceptance | **COMPLETE / ACCEPTED** | [SPRINT-93-CLOSURE.md](SPRINT-93-CLOSURE.md) — APTest1 and C13 |
 
-**Rule:** Gate 9 PASSED (`assessment_evidence` on ordinary page). Gate 10 implements bounded plan — production code may change only under Gate 10. Do not reopen Gates 1–9.
+**Rule:** Gates 1–10 are accepted. Do not reopen them. Sprint 93 is **CLOSED — ACCEPTED**.
 
 **Pipeline:** Interpret Evidence Purpose → Design Evidence Elicitation → Author Formative Return → Design Page  
 **Canonical object:** `assessment_evidence`
@@ -59,6 +60,6 @@ Evidence-first dependency: later gates must not invent educational decisions tha
 
 ---
 
-## Explicit non-outputs until earned
+## Discovery constraint (historical)
 
-Final definition; final pipeline; assessment-type taxonomy; response-type catalogue; feedback-mode catalogue; essay/AI-feedback policy; persistence policy; new schemas/widgets/render/publish behaviour.
+Until the gates earned them, the sprint withheld a final definition, a final pipeline, an assessment-type taxonomy, response-type and feedback-mode catalogues, an essay/AI-feedback policy, a persistence policy, and new schemas, widgets, or publish behaviour. The accepted result is [SPRINT-93-CLOSURE.md](SPRINT-93-CLOSURE.md).

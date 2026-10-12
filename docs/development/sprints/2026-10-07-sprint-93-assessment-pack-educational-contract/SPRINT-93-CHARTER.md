@@ -1,9 +1,10 @@
 # Sprint 93 — Charter
 
 **Sprint:** 93 — Assessment Pack Educational Contract  
-**Status:** **OPEN**  
+**Status:** **CLOSED — ACCEPTED** (2026-10-12)  
 **Opened:** 2026-10-07  
-**Type:** Product discovery → educational architecture (no implementation until later gates)  
+**Type:** Product discovery → educational architecture (implementation followed the accepted gates)  
+**Close:** [S93-D12](decisions.md#s93-d12--close-sprint-93--assessment-pack-accepted)  
 **Predecessor:** [Sprint 92 — COMPLETE / CLOSED](../2026-10-07-sprint-92-situated-learning-activity-first-class-product/SPRINT-92-CLOSURE.md) — **do not reopen**  
 **Backlog:** [PB-FA-017](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-017--assessment-pack-first-class-product-revisit)  
 **Opening:** [S93-D01](decisions.md#s93-d01--open-sprint-93--assessment-pack-educational-contract)  

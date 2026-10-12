@@ -1,7 +1,7 @@
 # Sprint 93 — Work log
 
 **Sprint:** 93 — Assessment Pack Educational Contract  
-**Status:** **OPEN**
+**Status:** **CLOSED — ACCEPTED**
 
 Append-only chronology. Do not rewrite history.
 
@@ -19,3 +19,4 @@ Append-only chronology. Do not rewrite history.
 | 2026-10-07 | Gate 7 **COMPLETE / PASSED** ([S93-D08](decisions.md#s93-d08--gate-7-assessment-pack-product-invariants-complete--passed)): hard invariants AP-I1…I6 (evidence-of-learner · honesty · evidence-fit · formative completeness · dependency/entry honour · non-summative). Gate 8 next. |
 | 2026-10-07 | Gate 8 **COMPLETE / PASSED** ([S93-D09](decisions.md#s93-d09--gate-8-assessment-pack-predetermined-pipeline-complete--passed)): pipeline Interpret Evidence Purpose → Design Evidence Elicitation (epistemic freeze) → Author Formative Return → Design Page; continuous conversation; R1/R2 and determinate/non-determinate as parameters. Gate 9 next. |
 | 2026-10-07 | Gate 9 **COMPLETE / PASSED** ([S93-D10](decisions.md#s93-d10--gate-9-assessment-pack-canonical-structured-artefact-complete--passed)): ordinary page + `assessment_evidence`; binary epistemic class; elicitation=`evidence_ask`+`delivery`; five forms under determinate delivery; constructed_performance for non-determinate. Gate 10 next. |
+| 2026-10-12 | Sprint **CLOSED — ACCEPTED** ([S93-D12](decisions.md#s93-d12--close-sprint-93--assessment-pack-accepted)). APTest1 and C13 accepted. `attempt_instructions` prompt defect resolved. No successor opened. Record: [SPRINT-93-CLOSURE.md](SPRINT-93-CLOSURE.md). |

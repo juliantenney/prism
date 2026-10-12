@@ -1,7 +1,7 @@
 # Assessment Pack — output-to-spec contract
 
 **Sprint:** 93 — Assessment Pack Educational Contract  
-**Status:** Slices 1–4 implemented (2026-10-09): validation, omission of the legacy summary control, browser-local persistence, learner artefact assembly, and Design Page authoring of `output_specification`. Gate 10 is not complete.  
+**Status:** Implemented and accepted at Sprint 93 close (2026-10-12). See [SPRINT-93-CLOSURE.md](SPRINT-93-CLOSURE.md).  
 **Depends on:** Gate 9 `assessment_evidence` (PASSED). Does not replace Gate 9 and does not reopen Gates 1–8.  
 **Decision:** [S93-D11](decisions.md#s93-d11--assessment-pack-output-to-spec-contract)  
 **Invariant:** NON-SUMMATIVE · client-side HTML/CSS/JS only · no runtime model call · no new product

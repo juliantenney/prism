@@ -1,8 +1,9 @@
 # Sprint 93 — Handover
 
-**Kind:** Open-sprint continuity  
-**Sprint status:** **OPEN** — Gates 1–9 COMPLETE / PASSED; Gate 10 next  
+**Kind:** Closed-sprint continuity  
+**Sprint status:** **CLOSED — ACCEPTED**  
 **Dashboard:** [STATUS.md](STATUS.md)  
+**Closure:** [SPRINT-93-CLOSURE.md](SPRINT-93-CLOSURE.md)  
 **Compact load:** [next-chat-briefing.md](next-chat-briefing.md)
 
 ---
@@ -12,25 +13,18 @@
 | Item | State |
 | ---- | ----- |
 | Sprint 92 | **COMPLETE / CLOSED** |
-| Sprint 93 | **OPEN** — discovery |
+| Sprint 93 | **CLOSED — ACCEPTED** |
 | Hard invariant | **NON-SUMMATIVE** |
-| Gate 1 | **ACCEPTED** |
-| Gate 2 | **COMPLETE / PASSED** |
-| Gate 3 | **COMPLETE / PASSED** — R1/R2 |
-| Gate 4 | **COMPLETE / PASSED** |
-| Gate 5 | **COMPLETE / PASSED** |
-| Gate 6 | **COMPLETE / PASSED** — AR1–AR5 |
-| Gate 7 | **COMPLETE / PASSED** — AP-I1…I6 |
-| Gate 8 | **COMPLETE / PASSED** — four-stage pipeline |
-| Gate 9 | **COMPLETE / PASSED** — `assessment_evidence` · [GATE-9-ASSESSMENT-PACK-CANONICAL-STRUCTURED-ARTEFACT.md](GATE-9-ASSESSMENT-PACK-CANONICAL-STRUCTURED-ARTEFACT.md) |
-| Gate 10 | **Next** — implementation + live acceptance (Gate 9 §17) |
-| Production code | **Frozen until Gate 10 starts** |
+| Gates 1–9 | **COMPLETE / PASSED** |
+| Gate 10 | **ACCEPTED** — APTest1 learner acceptance; C13 design, validation, and publication |
+| Close | [S93-D12](decisions.md#s93-d12--close-sprint-93--assessment-pack-accepted) |
+| `attempt_instructions` array defect | **Resolved** — validator still rejects arrays |
+| Successor | **None opened** |
+
+C13 did not receive a full learner interaction test. Assembly of the thirteen jazz Learning Journey products was not part of this acceptance.
 
 ---
 
 ## B. If continuing in a new chat
 
-1. Load [SPRINT-93-START-HERE.md](SPRINT-93-START-HERE.md)  
-2. Read Gate 9 artefact + §17 bounded plan  
-3. Proceed to Gate 10 implementation — do not reopen Gates 1–9  
-4. Do **not** reopen Sprint 92
+Do **not** reopen Sprint 93. Do **not** open a successor without an explicit backlog decision. Authoritative records: [SPRINT-93-CLOSURE.md](SPRINT-93-CLOSURE.md) · [PRODUCT-BACKLOG.md](../../../backlog/PRODUCT-BACKLOG.md) · [NEXT-SPRINT.md](../../../sprints/NEXT-SPRINT.md).

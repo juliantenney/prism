@@ -20,4 +20,4 @@
 
 ### Immediate next
 
-Sprint 92 is **CLOSED**. Successor: [Sprint 93 — Assessment Pack Educational Contract](../2026-10-07-sprint-93-assessment-pack-educational-contract/SPRINT-93-START-HERE.md) (**OPEN**). Do not reopen Sprint 92.
+Sprint 92 is **CLOSED**. Successor: [Sprint 93 — Assessment Pack](../2026-10-07-sprint-93-assessment-pack-educational-contract/SPRINT-93-CLOSURE.md) (**CLOSED — ACCEPTED**). Do not reopen Sprint 92 or Sprint 93.

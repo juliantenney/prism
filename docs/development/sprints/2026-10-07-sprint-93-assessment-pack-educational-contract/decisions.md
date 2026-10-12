@@ -277,3 +277,30 @@
 **Not authorised by this decision:** runtime, validator, schema, or UI changes; retrofit of the clinical causal-evidence pack; Learning Journey transport.
 
 **Authoritative write-up:** [ASSESSMENT-PACK-OUTPUT-TO-SPEC-CONTRACT.md](ASSESSMENT-PACK-OUTPUT-TO-SPEC-CONTRACT.md).
+
+---
+
+## S93-D12 — Close Sprint 93 — Assessment Pack accepted
+
+**Date:** 2026-10-12  
+**Status:** Accepted  
+**Depends on:** [S93-D01](decisions.md#s93-d01--open-sprint-93--assessment-pack-educational-contract) … [S93-D11](decisions.md#s93-d11--assessment-pack-output-to-spec-contract)
+
+**Decision:** Mark **Sprint 93 — Assessment Pack Educational Contract** **CLOSED — ACCEPTED**.
+
+**Basis:** Exit criteria and live acceptance in [SPRINT-93-CLOSURE.md](SPRINT-93-CLOSURE.md) are met. Assessment Pack is an accepted first-class product: educational contract, canonical `assessment_evidence`, external AI-assisted authoring, standalone publication, determinate formative checks, constructed evidence without automatic grading, output-to-spec assembly, and browser-local response persistence.
+
+**Acceptance cases:** APTest1 — Planning My Learning Journey (learner entry, reload persistence, assembly, copy, and successful use of the brief to initiate a Learning Journey). C13 — Demonstrating and Evaluating Jazz-Informed Musicianship (educational design, canonical validation, and publication). A full learner interaction test of C13 was not performed.
+
+**Resolved:** The Design Page prompt and copied output contract now require `attempt_instructions` to be one string. The validator still rejects arrays. Focused suites at that correction: **26 passed, 0 failed**.
+
+**Explicitly not authorised by this close:**
+
+- automatic judgement of constructed performance;
+- PRISM listening to or assessing externally retained performance evidence, including guitar playing;
+- treating C13 as a completed learner-interaction test;
+- assembly of the thirteen commissioned jazz Learning Journey products;
+- performance-evidence handling or Learning Journey assembly enhancements;
+- automatic opening of a successor sprint.
+
+Sprint 92 remains **CLOSED**. Do not reopen Sprint 93.

@@ -2,8 +2,8 @@
 
 **Canonical location:** `docs/backlog/PRODUCT-BACKLOG.md`  
 **Status:** Active — **alpha-use period** (Alpha development complete, 2026-09-02)  
-**Last updated:** 2026-10-08 (PB-FA-021 proposed — Expository editorial integration and publication quality, unassigned; Sprint 93 remains OPEN)  
-**Active sprint:** [Sprint 93 — Assessment Pack Educational Contract](../development/sprints/2026-10-07-sprint-93-assessment-pack-educational-contract/SPRINT-93-START-HERE.md) — **OPEN** (Gates 1–9 PASSED; Gate 10 next). Last closed: [Sprint 92 — Situated Task](../development/sprints/2026-10-07-sprint-92-situated-learning-activity-first-class-product/SPRINT-92-CLOSURE.md) — **COMPLETE / CLOSED**
+**Last updated:** 2026-10-12 (Sprint 93 **CLOSED — ACCEPTED**; no successor opened)  
+**Active sprint:** None. Last closed: [Sprint 93 — Assessment Pack](../development/sprints/2026-10-07-sprint-93-assessment-pack-educational-contract/SPRINT-93-CLOSURE.md) — **CLOSED — ACCEPTED**. Predecessor: [Sprint 92 — Situated Task](../development/sprints/2026-10-07-sprint-92-situated-learning-activity-first-class-product/SPRINT-92-CLOSURE.md) — **COMPLETE / CLOSED**
 
 This file answers: **what might we actually choose to work on next?**
 
@@ -132,7 +132,7 @@ Potential applications include:
 
 **Status:** Proposed — unassigned. **Not sprint-allocated.**  
 **Type:** Major product discovery.  
-**Dependency:** Learning Journey commissioning evidence, and completion of Assessment Pack [Sprint 93](../development/sprints/2026-10-07-sprint-93-assessment-pack-educational-contract/SPRINT-93-START-HERE.md) ([PB-FA-017](#pb-fa-017--assessment-pack-first-class-product-revisit)). Do not open this while Sprint 93 is open.
+**Dependency:** Learning Journey commissioning evidence, and the accepted Assessment Pack revisit [Sprint 93](../development/sprints/2026-10-07-sprint-93-assessment-pack-educational-contract/SPRINT-93-CLOSURE.md) ([PB-FA-017](#pb-fa-017--assessment-pack-first-class-product-revisit)), which is **CLOSED — ACCEPTED**. This item remains proposed and is not opened by that closure.
 
 **Central question:** How should Interactive be redesigned when Learning Journey establishes the educational context, progression, and commissioning brief, allowing Interactive to concentrate on designing and realising precisely the consequential engagement required?
 
@@ -165,7 +165,7 @@ Potential applications include:
 
 This is a revisit of the existing Interactive product, not a new first-class product under [PB-FA-015](#pb-fa-015--additional-first-class-learning-resource-pipelines).
 
-**Readiness:** Proposed 2026-10-08. Blocked on Sprint 93 completion and Learning Journey commissioning evidence — **not sprint-allocated**.
+**Readiness:** Proposed. The Sprint 93 dependency is met. This item remains **not sprint-allocated**. Do not open it from the Sprint 93 closure.
 
 ### PB-FA-020 — Structured visual specifications for generated graphics
 
@@ -245,7 +245,7 @@ Sprint 88 closed with the Assessment Pack architecture in place. Further real us
 
 Record: [Sprint 88 closure](../development/sprints/2026-09-28-sprint-88-default-product-workflows-and-assessment-architecture/SPRINT-88-CLOSURE.md). Sprint 89 did not reopen Assessment architecture.
 
-This calibration remains about exercising the **current** Assessment Pack. A later evidence-led product revisit is separately recorded as [PB-FA-017](#pb-fa-017--assessment-pack-first-class-product-revisit).
+This calibration remains about exercising depth, count, and form-selection defaults. Sprint 93 closed the evidence-led product revisit as [PB-FA-017](#pb-fa-017--assessment-pack-first-class-product-revisit). That acceptance does not complete this calibration.
 
 ### PB-S-007 — Broad-suite renderer/page-render failure reconciliation
 
@@ -345,7 +345,7 @@ Do not prescribe UI, storage, publishing, URLs, navigation, linking, tracking, L
 
 ### PB-FA-017 — Assessment Pack first-class product revisit
 
-**Status:** **Allocated — Sprint 93 OPEN** ([SPRINT-93-START-HERE.md](../development/sprints/2026-10-07-sprint-93-assessment-pack-educational-contract/SPRINT-93-START-HERE.md)). Discovery / educational contract only so far (Gate 1 COMPLETE). Do **not** treat this item as closed.
+**Status:** **Complete — Sprint 93 CLOSED — ACCEPTED** ([SPRINT-93-CLOSURE.md](../development/sprints/2026-10-07-sprint-93-assessment-pack-educational-contract/SPRINT-93-CLOSURE.md)). Do **not** reopen.
 
 Revisit Assessment Pack using the evidence-led first-class product design method now established through Learning Journey and Sprint 92 ([PB-FA-015 discovery pattern](#learning-journey-as-a-product-discovery-mechanism)).
 
@@ -408,12 +408,11 @@ The future Assessment Pack work should use such cases to sharpen requirements ra
 
 #### Scope posture
 
-**Sprint 93** owns this revisit as discovery-first work. Hard invariant: Assessment Pack remains **NON-SUMMATIVE**. Do **not** begin Assessment Pack redesign, pipeline, schema, UI or implementation until Sprint 93 gates authorise it. Do **not** reopen Sprint 92. Near-term calibration of the *current* pack remains a separate narrower item above.
+**Sprint 93** completed this revisit. Hard invariant: Assessment Pack remains **NON-SUMMATIVE**. Do **not** reopen Sprint 93 or Sprint 92. Near-term calibration of depth, count, and form-selection defaults remains the separate narrower item above.
 
-#### Sprint 93 progress
+#### Sprint 93 outcome
 
-- Gate 1 baseline: [GATE-1-ASSESSMENT-PACK-BASELINE.md](../development/sprints/2026-10-07-sprint-93-assessment-pack-educational-contract/GATE-1-ASSESSMENT-PACK-BASELINE.md)  
-- Opening: [S93-D01](../development/sprints/2026-10-07-sprint-93-assessment-pack-educational-contract/decisions.md#s93-d01--open-sprint-93--assessment-pack-educational-contract)
+Accepted first-class Assessment Pack. Close: [S93-D12](../development/sprints/2026-10-07-sprint-93-assessment-pack-educational-contract/decisions.md#s93-d12--close-sprint-93--assessment-pack-accepted). Record: [SPRINT-93-CLOSURE.md](../development/sprints/2026-10-07-sprint-93-assessment-pack-educational-contract/SPRINT-93-CLOSURE.md).
 
 ### PB-S-006 — Institutional authentication (University of Nottingham)
 
@@ -439,7 +438,7 @@ PRISM currently has four first-class learning-resource / composition products re
 
 Candidates remaining (none of them agreed products; Situated Task is no longer a candidate):
 
-- **Situated Task — IMPLEMENTED (Sprint 92).** Label **Situated Task** / `situated_task`. Delivers the Sprint 90 Independent Task educational job: purposeful learner-controlled activity in authentic/situated context with structured record and reconnection. Five-stage predetermined pipeline; LJ commissionable. Durable Record transport and Assessment Pack revisit remain separate backlog concerns.
+- **Situated Task — IMPLEMENTED (Sprint 92).** Label **Situated Task** / `situated_task`. Delivers the Sprint 90 Independent Task educational job: purposeful learner-controlled activity in authentic/situated context with structured record and reconnection. Five-stage predetermined pipeline; LJ commissionable. Durable Record transport remains a separate backlog concern. The Assessment Pack revisit was completed in Sprint 93 (**CLOSED — ACCEPTED**).
 - **Scenario Resource — candidate for experiment.** Purpose: develop judgement, interpretation, and decision-making through a situated, possibly unfolding context. The possible distinction from Interactive is that the central design object is the situation: what the learner can know, what they must decide or interpret, how the situation develops, what is disclosed when, and how debrief works. Relevant to professional judgement (management, clinical, ethics, law, policy, and similar). Experiment only.
 - **Problem Resource — candidate to investigate.** Purpose: organise learning around understanding and resolving a substantive problem (interpretation, what must be learned, attempt, feedback, revision, resolution). The problem might be the architecture, not only an activity inside an Interactive Resource. Not a committed product.
 - **Guided practice / worked example — hypothesis only, weaker than the other two.** A responsibility-fade sequence (model, explain, worked example, scaffolded attempt, fade support, independent performance, feedback) might be a distinct process, or it might already be an Interactive Resource, or Expository plus Interactive. First test: whether the existing workflows can design it convincingly.

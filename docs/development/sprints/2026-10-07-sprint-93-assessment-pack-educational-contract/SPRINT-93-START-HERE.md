@@ -1,11 +1,12 @@
 # Sprint 93 — START HERE
 
 **Sprint:** 93 — Assessment Pack Educational Contract  
-**Status:** **OPEN**  
+**Status:** **CLOSED — ACCEPTED**  
 **Opened:** 2026-10-07  
+**Closed:** 2026-10-12  
 **Type:** Product discovery → educational architecture → implementation  
-**Active gate:** Output-to-spec slices 1–4 implemented (2026-10-09). Gate 10 is not complete. Gates 1–9 **COMPLETE / PASSED**.  
 **Opening decision:** [S93-D01](decisions.md#s93-d01--open-sprint-93--assessment-pack-educational-contract)  
+**Close decision:** [S93-D12](decisions.md#s93-d12--close-sprint-93--assessment-pack-accepted)  
 **Charter:** [SPRINT-93-CHARTER.md](SPRINT-93-CHARTER.md)  
 **Design map:** [PRODUCT-DESIGN-MAP.md](PRODUCT-DESIGN-MAP.md)  
 **Gate 8 pipeline:** [GATE-8-ASSESSMENT-PACK-PREDETERMINED-PIPELINE.md](GATE-8-ASSESSMENT-PACK-PREDETERMINED-PIPELINE.md)  
@@ -16,7 +17,7 @@
 **Debt:** [ARCHITECTURAL-DEBT.md](ARCHITECTURAL-DEBT.md)  
 **Predecessor:** [Sprint 92 — COMPLETE / CLOSED](../2026-10-07-sprint-92-situated-learning-activity-first-class-product/SPRINT-92-CLOSURE.md) — **do not reopen**  
 **Backlog:** [PB-FA-017](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-017--assessment-pack-first-class-product-revisit)  
-**Closure (placeholder):** [SPRINT-93-CLOSURE.md](SPRINT-93-CLOSURE.md) — **NOT CLOSED**
+**Closure:** [SPRINT-93-CLOSURE.md](SPRINT-93-CLOSURE.md) — **CLOSED — ACCEPTED**
 
 ---
 
@@ -35,19 +36,20 @@ Do **not** investigate how PRISM might support these later. They are outside the
 
 ## If you are starting a new session
 
-> **Sprint 93 is OPEN.** Gates 1–9 **COMPLETE / PASSED**. Output-to-spec slices 1–4 are implemented (validator, omission of the legacy summary control, browser-local response persistence, learner artefact assembly, and Design Page authoring). Canonical object: **`assessment_evidence`**. Do **not** reopen Gates 1–9. Client-side delivery only (no runtime LLM). Gate 10 is not complete. Sprint 92 remains **CLOSED**.
+> **Sprint 93 is CLOSED — ACCEPTED.** Assessment Pack is an accepted first-class product. Do **not** reopen this sprint. Do **not** open a successor from this pack alone. Further work requires an explicit opening decision from [PRODUCT-BACKLOG.md](../../../backlog/PRODUCT-BACKLOG.md).
 
 | Fact | State |
 | ---- | ----- |
 | Sprint 92 | **COMPLETE / CLOSED** — Situated Task |
-| Sprint 93 | **OPEN** — Assessment Pack educational contract |
+| Sprint 93 | **CLOSED — ACCEPTED** — Assessment Pack |
 | Gates 1–9 | **COMPLETE / PASSED** |
-| Output-to-spec | **Slices 1–4 implemented** — [ASSESSMENT-PACK-OUTPUT-TO-SPEC-CONTRACT.md](ASSESSMENT-PACK-OUTPUT-TO-SPEC-CONTRACT.md) |
-| Production code | **Slices 1–4 implemented.** Gate 10 is not complete. |
+| Gate 10 | **ACCEPTED** — APTest1 and C13; see [SPRINT-93-CLOSURE.md](SPRINT-93-CLOSURE.md) |
+| Canonical object | `assessment_evidence` |
+| Pipeline | Interpret Evidence Purpose → Design Evidence Elicitation → Author Formative Return → Design Page |
 
 ---
 
-## Working objective
+## Working objective (historical)
 
 Discover what Assessment Pack must be responsible for at meaningful stopping points within substantial Learning Journeys — and where that responsibility must stop — using the same evidence-led method as Sprint 92.
 

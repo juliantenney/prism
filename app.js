@@ -231,6 +231,10 @@
     utilitiesDownloadTestLog: [],
     utilitiesOutputWorkspace: null,
     utilitiesSourceMode: "",
+    /** Authoring preview guard: current assembly vs manual JSON vs a retained artefact. */
+    utilitiesAuthoringSession: null,
+    activeMainTab: "",
+    utilitiesAuthoringQuietPreview: false,
     utilitiesVisualAssetObjectUrlsByBriefId: {},
     /** Sprint 73: ephemeral cache of workflow resource refs mirrored in runstate (canonical bytes in owner store). */
     workflowResourceRefs: [],
@@ -614,9 +618,21 @@
     els.utilitiesSelectedWorkflowLabel = document.getElementById(
       "utilitiesSelectedWorkflowLabel"
     );
+    els.utilitiesResourceIdentityMeta = document.getElementById("utilitiesResourceIdentityMeta");
     els.utilitiesAssembledFromLabel = document.getElementById("utilitiesAssembledFromLabel");
     els.utilitiesWorkflowMismatchWarning = document.getElementById(
       "utilitiesWorkflowMismatchWarning"
+    );
+    els.utilitiesAuthoringNotice = document.getElementById("utilitiesAuthoringNotice");
+    els.utilitiesEditProtection = document.getElementById("utilitiesEditProtection");
+    els.utilitiesEditProtectionMessage = document.getElementById(
+      "utilitiesEditProtectionMessage"
+    );
+    els.utilitiesKeepEditedArtefactBtn = document.getElementById(
+      "utilitiesKeepEditedArtefactBtn"
+    );
+    els.utilitiesReplaceEditedArtefactBtn = document.getElementById(
+      "utilitiesReplaceEditedArtefactBtn"
     );
     els.utilitiesAssembleCurrentRunBtn = document.getElementById("utilitiesAssembleCurrentRunBtn");
     els.utilitiesGenerateBtn = document.getElementById("utilitiesGenerateBtn");
@@ -28127,13 +28143,9 @@
       els.utilitiesSelectedWorkflowLabel.textContent = model.selectedLabel;
     }
     if (els.utilitiesAssembledFromLabel) {
-      if (model.hasAssembledProvenance) {
-        els.utilitiesAssembledFromLabel.textContent = model.assembledFromLabel;
-        els.utilitiesAssembledFromLabel.classList.remove("hidden");
-      } else {
-        els.utilitiesAssembledFromLabel.textContent = "";
-        els.utilitiesAssembledFromLabel.classList.add("hidden");
-      }
+      els.utilitiesAssembledFromLabel.textContent = model.hasAssembledProvenance
+        ? model.assembledFromLabel
+        : "";
     }
     if (els.utilitiesWorkflowMismatchWarning) {
       if (model.mismatch) {
@@ -28144,7 +28156,400 @@
         els.utilitiesWorkflowMismatchWarning.classList.add("hidden");
       }
     }
+    renderUtilitiesAuthoringIdentity(model);
     return model;
+  }
+
+  function emptyUtilitiesAuthoringSession() {
+    return {
+      status: "empty",
+      sourceWorkflowId: "",
+      sourceWorkflowName: "",
+      baselineNormalized: "",
+      assemblyKey: "",
+      retainedAgainstWorkflowId: "",
+      pendingDecision: null,
+      notice: "",
+      assemblyAttempts: 0
+    };
+  }
+
+  function utilitiesAuthoringSession() {
+    if (!state.utilitiesAuthoringSession || typeof state.utilitiesAuthoringSession !== "object") {
+      state.utilitiesAuthoringSession = emptyUtilitiesAuthoringSession();
+    }
+    return state.utilitiesAuthoringSession;
+  }
+
+  function utilitiesCanonicalJson(raw) {
+    var text = utilityNormalizeUtilitiesJsonInput(String(raw == null ? "" : raw));
+    if (!String(text || "").trim()) return "";
+    try {
+      return JSON.stringify(JSON.parse(text));
+    } catch (_err) {
+      return String(text || "").trim();
+    }
+  }
+
+  function utilitiesJsonDiffersFromBaseline() {
+    var session = utilitiesAuthoringSession();
+    var raw = els.utilitiesJsonInput ? String(els.utilitiesJsonInput.value || "") : "";
+    if (!session.baselineNormalized) return !!String(raw || "").trim();
+    return utilitiesCanonicalJson(raw) !== session.baselineNormalized;
+  }
+
+  function utilitiesAuthoringIsProtected() {
+    var session = utilitiesAuthoringSession();
+    var status = String(session.status || "");
+    if (status === "manual" || status === "pasted" || status === "retained") return true;
+    return !!session.baselineNormalized && utilitiesJsonDiffersFromBaseline();
+  }
+
+  function utilitiesCaptureFingerprint(wf) {
+    var workflow = wf && typeof wf === "object" ? wf : null;
+    if (!workflow) return "";
+    var chunks = [String(workflow.id || ""), String(workflow.updatedAt || "")];
+    var steps = Array.isArray(workflow.steps) ? workflow.steps : [];
+    steps.forEach(function (step) {
+      var sid = String((step && step.id) || "");
+      var finalText =
+        state.workflowRunCapturedOutputs && state.workflowRunCapturedOutputs[sid] != null
+          ? String(state.workflowRunCapturedOutputs[sid])
+          : "";
+      var rawText =
+        state.workflowRunCapturedOutputsRaw && state.workflowRunCapturedOutputsRaw[sid] != null
+          ? String(state.workflowRunCapturedOutputsRaw[sid])
+          : "";
+      chunks.push(sid + ":" + cheapUtilitiesTextSignature(finalText) + ":" + cheapUtilitiesTextSignature(rawText));
+    });
+    return chunks.join("|");
+  }
+
+  function cheapUtilitiesTextSignature(value) {
+    var text = String(value || "");
+    var hash = 0;
+    var i;
+    for (i = 0; i < text.length; i += 1) {
+      hash = (hash * 31 + text.charCodeAt(i)) >>> 0;
+    }
+    return hash.toString(16) + ":" + text.length;
+  }
+
+  function utilitiesProductLabelForWorkflow(wf, page) {
+    var route = firstClassPromptRoute(wf);
+    var labels = {
+      interactive: "Interactive",
+      expository: "Expository",
+      assessment: "Assessment Pack",
+      learning_journey: "Learning Journey",
+      situated_task: "Situated Task"
+    };
+    if (labels[route]) return labels[route];
+    var productId = "";
+    if (page && typeof page === "object") {
+      productId = String(page.product_id || page.page_kind || "").trim().toLowerCase();
+    }
+    if (productId === "expository_resource" || productId === "expository") return "Expository";
+    if (productId === "assessment_pack" || productId === "assessment") return "Assessment Pack";
+    if (productId === "learning_journey") return "Learning Journey";
+    if (productId === "situated_task") return "Situated Task";
+    if (productId === "interactive" || productId === "self_study_resource") return "Interactive";
+    return route && route !== "generic" ? route : "";
+  }
+
+  function utilitiesPreviewStatusSentence(selectedName) {
+    var session = utilitiesAuthoringSession();
+    var status = String(session.status || "");
+    var selectedId = String(state.selectedWorkflowId || "").trim();
+    var sourceId = String(session.sourceWorkflowId || "").trim();
+    var sourceName = String(session.sourceWorkflowName || "another workflow").trim();
+    var selected = String(selectedName || "the selected workflow").trim();
+    if (sourceId && selectedId && sourceId === selectedId && (status === "retained" || status === "manual")) {
+      return "This artefact has been manually edited.";
+    }
+    var retained =
+      status === "retained" ||
+      (!!sourceId &&
+        !!selectedId &&
+        sourceId !== selectedId &&
+        status !== "empty" &&
+        status !== "current");
+    if (retained && (status === "manual" || status === "pasted" || status === "retained")) {
+      return (
+        "Retained " +
+        (status === "pasted" ? "loaded artefact" : "manual work") +
+        " from \"" +
+        sourceName +
+        "\". The selected workflow is \"" +
+        selected +
+        "\"."
+      );
+    }
+    if (status === "current") return "Preview is current for this workflow.";
+    if (status === "manual") return "This artefact has been manually edited.";
+    if (status === "pasted") return "This is a deliberately loaded artefact.";
+    return "";
+  }
+
+  function renderUtilitiesAuthoringIdentity(model) {
+    var session = utilitiesAuthoringSession();
+    var raw = els.utilitiesJsonInput ? String(els.utilitiesJsonInput.value || "") : "";
+    var parsed = parseUtilitiesJsonInputForProvenance(raw);
+    var page = parsed && parsed.page ? parsed.page : null;
+    var selectedWf = state.selectedWorkflowId ? findWorkflowById(state.selectedWorkflowId) : null;
+    var product = utilitiesProductLabelForWorkflow(selectedWf, page);
+    var title = page && page.title ? String(page.title).trim() : "";
+    var statusSentence = utilitiesPreviewStatusSentence(
+      model && model.selectedDisplayName ? model.selectedDisplayName : ""
+    );
+    var workflowName = model && model.selectedDisplayName ? String(model.selectedDisplayName).trim() : "";
+    var statusAlreadyNamesWorkflow =
+      !!workflowName && statusSentence.indexOf(workflowName) !== -1;
+    var bits = [];
+    if (workflowName && !statusAlreadyNamesWorkflow) bits.push(workflowName);
+    if (product) bits.push("Product: " + product);
+    if (title) bits.push("Resource: " + title);
+    if (statusSentence) bits.push(statusSentence);
+    if (els.utilitiesResourceIdentityMeta) {
+      els.utilitiesResourceIdentityMeta.textContent = bits.join(" · ");
+      els.utilitiesResourceIdentityMeta.classList.toggle("hidden", !bits.length);
+    }
+    if (els.utilitiesAuthoringNotice) {
+      var notice = String(session.notice || "").trim();
+      els.utilitiesAuthoringNotice.textContent = notice;
+      els.utilitiesAuthoringNotice.classList.toggle("hidden", !notice);
+    }
+    if (els.utilitiesSelectedWorkflowLabel) {
+      var showSelectedLabel = !bits.length && !notice && !!String(model && model.selectedLabel || "").trim();
+      els.utilitiesSelectedWorkflowLabel.classList.toggle("hidden", !showSelectedLabel);
+    }
+    if (els.utilitiesAssembledFromLabel) {
+      var sameAssembledWorkflow = !!(
+        model &&
+        model.selectedWorkflowId &&
+        model.assembledWorkflowId &&
+        String(model.selectedWorkflowId) === String(model.assembledWorkflowId)
+      );
+      var showAssembledFrom = !!(
+        model &&
+        model.hasAssembledProvenance &&
+        !sameAssembledWorkflow &&
+        !model.mismatch
+      );
+      els.utilitiesAssembledFromLabel.classList.toggle("hidden", !showAssembledFrom);
+    }
+    if (els.utilitiesEditProtection) {
+      var pending = session.pendingDecision;
+      els.utilitiesEditProtection.classList.toggle("hidden", !pending);
+    }
+    if (els.utilitiesReplaceEditedArtefactBtn) {
+      var canReplace = !!(state.selectedWorkflowId && String(state.selectedWorkflowId).trim());
+      els.utilitiesReplaceEditedArtefactBtn.disabled = !canReplace;
+      els.utilitiesReplaceEditedArtefactBtn.classList.toggle("hidden", !canReplace);
+    }
+  }
+
+  function utilitiesShouldPromptBeforeReplace(targetWorkflowId) {
+    if (!utilitiesAuthoringIsProtected()) return false;
+    var session = utilitiesAuthoringSession();
+    var target = String(targetWorkflowId || "").trim();
+    if (
+      session.retainedAgainstWorkflowId &&
+      String(session.retainedAgainstWorkflowId) === target
+    ) {
+      return false;
+    }
+    if (target && target === String(session.sourceWorkflowId || "").trim()) {
+      var wf = findWorkflowById(target);
+      var key = wf ? utilitiesCaptureFingerprint(wf) : "";
+      if (key && session.assemblyKey && key !== session.assemblyKey) return true;
+      return false;
+    }
+    return true;
+  }
+
+  function presentUtilitiesEditDecision(reason) {
+    var session = utilitiesAuthoringSession();
+    var selectedWf = state.selectedWorkflowId ? findWorkflowById(state.selectedWorkflowId) : null;
+    var selectedName = selectedWf && selectedWf.name ? String(selectedWf.name) : "the selected workflow";
+    var sourceName = String(session.sourceWorkflowName || "the current artefact").trim();
+    session.pendingDecision = {
+      reason: String(reason || "replace"),
+      workflowId: String(state.selectedWorkflowId || "")
+    };
+    if (session.sourceWorkflowId && String(session.sourceWorkflowId) !== String(state.selectedWorkflowId || "")) {
+      session.status = "retained";
+    }
+    var message = state.selectedWorkflowId
+      ? "The editor has manual changes" +
+        (sourceName ? " (" + sourceName + ")" : "") +
+        ". Keep that artefact, or discard the edits and load \"" +
+        selectedName +
+        "\"."
+      : "The editor has manual changes. They stay in place until you clear them or choose another workflow.";
+    if (els.utilitiesEditProtectionMessage) {
+      els.utilitiesEditProtectionMessage.textContent = message;
+    }
+    if (els.utilitiesEditProtection) els.utilitiesEditProtection.classList.remove("hidden");
+    refreshUtilitiesWorkflowContextUI();
+  }
+
+  function rememberAssembledAuthoringBaseline(page, workflow, assemblyKey) {
+    var session = utilitiesAuthoringSession();
+    var serialized = "";
+    try {
+      serialized = JSON.stringify(page, null, 2);
+    } catch (_err) {
+      serialized = els.utilitiesJsonInput ? String(els.utilitiesJsonInput.value || "") : "";
+    }
+    session.baselineNormalized = utilitiesCanonicalJson(serialized);
+    session.status = "current";
+    session.sourceWorkflowId = workflow && workflow.id ? String(workflow.id) : "";
+    session.sourceWorkflowName = workflow && workflow.name ? String(workflow.name) : "";
+    session.assemblyKey = String(assemblyKey || "");
+    session.retainedAgainstWorkflowId = "";
+    session.pendingDecision = null;
+    session.notice = "";
+    if (els.utilitiesEditProtection) els.utilitiesEditProtection.classList.add("hidden");
+  }
+
+  function resetAuthoringDisplayedResource(notice) {
+    revokeAllVisualAssetObjectUrls();
+    if (els.utilitiesJsonInput) els.utilitiesJsonInput.value = "";
+    if (els.utilitiesPreviewFrame) els.utilitiesPreviewFrame.srcdoc = "";
+    if (els.utilitiesPreviewError) {
+      els.utilitiesPreviewError.classList.add("hidden");
+      els.utilitiesPreviewError.textContent = "";
+    }
+    if (els.utilitiesPreviewPanel) els.utilitiesPreviewPanel.classList.add("hidden");
+    if (els.utilitiesVisualJobsPanel) {
+      els.utilitiesVisualJobsPanel.innerHTML = "";
+      els.utilitiesVisualJobsPanel.classList.add("hidden");
+    }
+    if (els.utilitiesOutputViewBar) els.utilitiesOutputViewBar.classList.add("hidden");
+    if (els.utilitiesPreviewFrame) els.utilitiesPreviewFrame.classList.remove("hidden");
+    setUtilitiesDownloadControlsDisabled(true);
+    if (els.utilitiesOpenTabBtn) els.utilitiesOpenTabBtn.disabled = true;
+    state.utilitiesLastHtml = "";
+    state.utilitiesLastRenderInputNormalized = "";
+    state.utilitiesLastFileName = "";
+    state.utilitiesOutputWorkspace = emptyUtilitiesOutputWorkspaceState();
+    state.learningJourneyCommissioningPreviewContext = null;
+    state.utilitiesSourceMode = "";
+    state.utilitiesVisualAssetObjectUrlsByBriefId = {};
+    state.utilitiesAuthoringSession = emptyUtilitiesAuthoringSession();
+    utilitiesAuthoringSession().notice = String(notice || "").trim();
+    refreshUtilitiesWorkflowContextUI();
+  }
+
+  function handleUtilitiesJsonInput(event) {
+    var canonical = utilitiesCanonicalJson(
+      els.utilitiesJsonInput ? els.utilitiesJsonInput.value : ""
+    );
+    var session = utilitiesAuthoringSession();
+    if (session.baselineNormalized && canonical === session.baselineNormalized) {
+      if (
+        session.sourceWorkflowId &&
+        String(session.sourceWorkflowId) === String(state.selectedWorkflowId || "") &&
+        session.status !== "pasted"
+      ) {
+        session.status = "current";
+      }
+      refreshUtilitiesWorkflowContextUI();
+      return;
+    }
+    var inputType = event && event.inputType ? String(event.inputType) : "";
+    if (inputType === "insertFromPaste" || !session.baselineNormalized) {
+      session.status = "pasted";
+      session.sourceWorkflowId = "";
+      session.sourceWorkflowName = "pasted artefact";
+      session.assemblyKey = "";
+    } else {
+      session.status = "manual";
+    }
+    session.retainedAgainstWorkflowId = "";
+    session.pendingDecision = null;
+    refreshUtilitiesWorkflowContextUI();
+  }
+
+  function handleUtilitiesKeepEditedArtefact() {
+    var session = utilitiesAuthoringSession();
+    session.pendingDecision = null;
+    session.retainedAgainstWorkflowId = String(state.selectedWorkflowId || "");
+    var selectedId = String(state.selectedWorkflowId || "");
+    var sourceId = String(session.sourceWorkflowId || "");
+    if (session.status !== "pasted") {
+      session.status = sourceId && sourceId !== selectedId ? "retained" : "manual";
+    } else if (sourceId && sourceId !== selectedId) {
+      session.status = "retained";
+    }
+    if (els.utilitiesEditProtection) els.utilitiesEditProtection.classList.add("hidden");
+    session.notice = "";
+    refreshUtilitiesWorkflowContextUI();
+    var raw = els.utilitiesJsonInput ? String(els.utilitiesJsonInput.value || "").trim() : "";
+    if (raw && !String(state.utilitiesLastHtml || "").trim()) {
+      return handleUtilitiesGenerate();
+    }
+    return Promise.resolve({ ok: true, kept: true });
+  }
+
+  function handleUtilitiesDiscardEditsAndLoadSelected() {
+    var session = utilitiesAuthoringSession();
+    session.pendingDecision = null;
+    session.status = "empty";
+    session.baselineNormalized = "";
+    session.retainedAgainstWorkflowId = "";
+    session.sourceWorkflowId = "";
+    session.sourceWorkflowName = "";
+    if (els.utilitiesEditProtection) els.utilitiesEditProtection.classList.add("hidden");
+    if (!state.selectedWorkflowId) {
+      resetAuthoringDisplayedResource(
+        "No workflow selected. Select a workflow in My Workflows."
+      );
+      return Promise.resolve({ ok: false, empty: true });
+    }
+    return syncAuthoringPreviewToSelectedWorkflow("discard", { force: true });
+  }
+
+  function syncAuthoringPreviewToSelectedWorkflow(reason, options) {
+    var opts = options && typeof options === "object" ? options : {};
+    var wf = state.selectedWorkflowId ? findWorkflowById(state.selectedWorkflowId) : null;
+    if (!wf) {
+      if (!opts.force && utilitiesAuthoringIsProtected()) {
+        var session = utilitiesAuthoringSession();
+        session.notice =
+          "No workflow is selected. The artefact in the editor is retained manual work, not a current workflow resource.";
+        if (session.status !== "pasted") session.status = "retained";
+        presentUtilitiesEditDecision("no-workflow");
+        return Promise.resolve({ ok: false, retained: true });
+      }
+      resetAuthoringDisplayedResource(
+        "No workflow selected. Select a workflow in My Workflows."
+      );
+      return Promise.resolve({ ok: false, empty: true });
+    }
+    if (!opts.force && utilitiesAuthoringIsProtected()) {
+      if (utilitiesShouldPromptBeforeReplace(wf.id)) {
+        presentUtilitiesEditDecision(reason || "selection");
+        return Promise.resolve({ ok: false, blocked: true });
+      }
+      refreshUtilitiesWorkflowContextUI();
+      if (
+        String(utilitiesAuthoringSession().sourceWorkflowId || "") === String(wf.id || "") &&
+        utilitiesAuthoringSession().status === "retained"
+      ) {
+        utilitiesAuthoringSession().status = "manual";
+        refreshUtilitiesWorkflowContextUI();
+      }
+      return Promise.resolve({ ok: true, kept: true });
+    }
+    return handleUtilitiesAssembleFromCurrentWorkflowRun({
+      automatic: true,
+      quiet: true,
+      preview: true,
+      force: true,
+      reason: reason || "automatic"
+    });
   }
 
   function updateWorkflowRunView() {
@@ -32232,6 +32637,9 @@
       els.exportWorkflowBtn.disabled = false;
     }
     refreshUtilitiesWorkflowContextUI();
+    if (state.activeMainTab === "utilities") {
+      return syncAuthoringPreviewToSelectedWorkflow("selection");
+    }
   }
 
   function populateWorkflowDetail(wf, options) {
@@ -35563,7 +35971,7 @@
         );
       } else if (workflowRecordIsAssessmentPack(wfForChain)) {
         lines.push(
-          "Assessment Design Page output: return only the learner-facing presentation. Include title, optional attempt_instructions, optional framing, artifact_type \"page\", schema_version \"2.0.0\", and assembly_state."
+          "Assessment Design Page output: return only the learner-facing presentation. Include title, optional attempt_instructions as one string (several instructions are paragraphs or numbered lines inside that string; not an array), optional framing, artifact_type \"page\", schema_version \"2.0.0\", and assembly_state."
         );
         lines.push(
           "Do not add Interactive learning-page sections, knowledge summaries, study tips, or page graphics planning."
@@ -38756,6 +39164,7 @@
     if (!els.tabRefiner || !els.tabLibrary || !els.refinementPanel || !els.libraryPanel) {
       return;
     }
+    state.activeMainTab = name;
     // Create Workflow is always navigable; API key is gated on Design workflow
     // (and other OpenAI-dependent Create actions), not on tab entry (S75-D09).
     var showPromptFactory = name === "promptFactory";
@@ -38847,6 +39256,7 @@
       els.wfDesignSaveBtn.disabled = false;
       els.wfDesignSaveBtn.removeAttribute("disabled");
     }
+    return showUtilities ? syncAuthoringPreviewToSelectedWorkflow("enter") : undefined;
   }
 
   function normalizeUtilityFormatToken(value) {
@@ -56088,6 +56498,13 @@
       };
     }
 
+    // A standalone page replaces any earlier Learning Journey export target.
+    // Constituent packaging renders through this same pipeline and must leave the
+    // journey context in place for the package that is already being built.
+    if (!opts.retainLearningJourneyCommissioningContext) {
+      state.learningJourneyCommissioningPreviewContext = null;
+    }
+
     if (opts.skipWorkflowAssembly) {
       // Authoring Preview/export must not silently render Episode Plan shells as finished pages.
       var readyAssembleMod = resolvePageVnextAssembleLib();
@@ -56244,10 +56661,12 @@
   }
 
   function handleUtilitiesGenerate() {
+    var dirtyBefore = utilitiesJsonDiffersFromBaseline();
+    var statusBefore = String(utilitiesAuthoringSession().status || "");
     var raw = String(els.utilitiesJsonInput ? els.utilitiesJsonInput.value : "").trim();
     if (!raw) {
       showToast("Paste JSON first.", "error");
-      return;
+      return Promise.resolve({ ok: false, message: "Paste JSON first." });
     }
     // Be tolerant of markdown-escaped JSON snippets (e.g. \_, \[, \]).
     var normalizedRaw = utilityNormalizeUtilitiesJsonInput(raw);
@@ -56256,15 +56675,15 @@
       parsed = JSON.parse(normalizedRaw);
     } catch (_) {
       showToast("Invalid JSON. Please check the structure.", "error");
-      return;
+      return Promise.resolve({ ok: false, message: "Invalid JSON. Please check the structure." });
     }
     if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
       showToast("JSON root must be an object.", "error");
-      return;
+      return Promise.resolve({ ok: false, message: "JSON root must be an object." });
     }
     if (!parsed.artifact_type) {
       showToast('Include top-level "artifact_type" in your JSON.', "error");
-      return;
+      return Promise.resolve({ ok: false, message: 'Include top-level "artifact_type" in your JSON.' });
     }
     var pageClosureValidation = null;
     if (String(parsed.artifact_type || "").toLowerCase() === "page") {
@@ -56292,7 +56711,7 @@
           ),
           "error"
         );
-        return;
+        return Promise.resolve({ ok: false, message: "Materials closure blocked preview." });
         }
       }
     }
@@ -56325,7 +56744,8 @@
       // Learning Journey Preview is excluded: it must await constituent owner-store hydration.
       handleUtilitiesVisualJobViewLearnerPage();
       showToast("Showing current learner page with attached images.", "success");
-      return;
+      adoptUtilitiesPreviewBaseline(dirtyBefore, statusBefore);
+      return Promise.resolve({ ok: true, reused: true });
     }
     if (
       !isLearningJourneyPreviewPage &&
@@ -56339,7 +56759,8 @@
         manifestAssetCount: state.utilitiesOutputWorkspace.visualAssetManifest.assets.length
       });
       showToast("Showing current preview with attached images.", "success");
-      return;
+      adoptUtilitiesPreviewBaseline(dirtyBefore, statusBefore);
+      return Promise.resolve({ ok: true, reused: true });
     }
     state.visualAssetPreviewRevision += 1;
     var generateRevision = state.visualAssetPreviewRevision;
@@ -56362,7 +56783,7 @@
         return rehydrateWorkflowPageResourcesIntoWorkspace();
       });
     }
-    preRenderPromise
+    return preRenderPromise
       .then(function () {
         return renderUtilitiesArtefactHtmlAsync(parsed, {
       selectedFormat: els.utilitiesOutputFormat ? els.utilitiesOutputFormat.value : "html",
@@ -56407,142 +56828,245 @@
           manifestAssetCount:
             manifest && Array.isArray(manifest.assets) ? manifest.assets.length : 0
         });
+        adoptUtilitiesPreviewBaseline(dirtyBefore, statusBefore);
         return true;
       })
       .then(function (ok) {
-        if (!ok) return;
+        if (!ok) return { ok: false };
         if (pageClosureValidation && pageClosureValidation.outcome === "fail") {
-          showToast(
-            "HTML preview generated with page composition warnings (see generation_notes).",
-            "warning"
-          );
-          return;
+          if (!state.utilitiesAuthoringQuietPreview) {
+            showToast(
+              "HTML preview generated with page composition warnings (see generation_notes).",
+              "warning"
+            );
+          }
+          return { ok: true, warnings: true };
         }
-        showToast("HTML preview generated.", "success");
+        if (!state.utilitiesAuthoringQuietPreview) {
+          showToast("HTML preview generated.", "success");
+        }
+        return { ok: true };
       })
       .catch(function (err) {
         applyUtilityPreviewError((err && err.message) || "Could not render HTML output.");
-        showToast(
-          (err && err.message) || "Could not render HTML output.",
-          "error"
-        );
+        if (!state.utilitiesAuthoringQuietPreview) {
+          showToast(
+            (err && err.message) || "Could not render HTML output.",
+            "error"
+          );
+        }
+        return { ok: false, message: (err && err.message) || "Could not render HTML output." };
       });
   }
 
-  function handleUtilitiesAssembleFromCurrentWorkflowRun() {
+  function adoptUtilitiesPreviewBaseline(dirtyBefore, statusBefore) {
+    var session = utilitiesAuthoringSession();
+    var canonical = utilitiesCanonicalJson(
+      els.utilitiesJsonInput ? els.utilitiesJsonInput.value : ""
+    );
+    if (!canonical) return;
+    session.baselineNormalized = canonical;
+    var selectedId = String(state.selectedWorkflowId || "");
+    var sourceId = String(session.sourceWorkflowId || "");
+    if (
+      String(state.utilitiesSourceMode || "") === "assembled_current_run" &&
+      !dirtyBefore &&
+      statusBefore !== "pasted" &&
+      statusBefore !== "manual" &&
+      statusBefore !== "retained"
+    ) {
+      session.status = "current";
+      session.notice = "";
+    } else if (statusBefore === "pasted") {
+      session.status = sourceId && selectedId && sourceId !== selectedId ? "retained" : "pasted";
+      if (!session.sourceWorkflowName) session.sourceWorkflowName = "pasted artefact";
+    } else if (dirtyBefore || statusBefore === "manual" || statusBefore === "retained") {
+      session.status =
+        statusBefore === "retained" || (sourceId && selectedId && sourceId !== selectedId)
+          ? "retained"
+          : "manual";
+    }
+    refreshUtilitiesWorkflowContextUI();
+  }
+
+  function handleUtilitiesAssembleFromCurrentWorkflowRun(options) {
+    var opts =
+      options && typeof options === "object" && typeof options.preventDefault !== "function"
+        ? options
+        : {};
+    if (!opts.force && utilitiesAuthoringIsProtected()) {
+      presentUtilitiesEditDecision(opts.reason || "reassemble");
+      return Promise.resolve({ ok: false, blocked: true });
+    }
     var wf = state.selectedWorkflowId ? findWorkflowById(state.selectedWorkflowId) : null;
     if (!wf || !Array.isArray(wf.steps) || !wf.steps.length) {
-      showToast("Select a workflow with run captures first.", "error");
-      return;
+      return failAuthoringAssemble(opts, "Select a workflow with run captures first.");
     }
     var workflowId = String(state.selectedWorkflowId || "").trim();
-    hydrateWorkflowRunCapturePayloadsForWorkflow(workflowId).then(function () {
-    reconcileWorkflowRunCapturesWithDurableState(workflowId);
-    syncAllWorkflowRunCapturesFromDomToState();
-    var capturesForAssemble = Object.assign({}, state.workflowRunCapturedOutputs || {});
-    var capturesRawForAssemble = Object.assign({}, state.workflowRunCapturedOutputsRaw || {});
-    if (workflowRecordIsLearningJourney(wf) || isLearningJourneyWorkflow(wf)) {
-      var ljResult;
-      try {
-        ljResult = readAcceptedLearningJourneyPageFromWorkflow(wf, {
-          captures: capturesForAssemble,
-          capturesRaw: capturesRawForAssemble
-        });
-      } catch (ljErr) {
-        showToast(
-          "Could not load Learning Journey Design Page: " +
-            String((ljErr && ljErr.message) || ljErr || "unknown error"),
-          "error"
-        );
-        return;
-      }
-      if (!ljResult || !ljResult.ok || !ljResult.page) {
-        showToast(
-          "Learning Journey Design Page capture required" +
-            (ljResult && ljResult.code ? ": " + ljResult.code : "") +
-            ". Complete Step 5 (Design Page) in Run and paste the shared page JSON (artifact_type page, product_id learning_journey).",
-          "error"
-        );
-        return;
-      }
-      if (els.utilitiesJsonInput) {
-        try {
-          els.utilitiesJsonInput.value = JSON.stringify(ljResult.page, null, 2);
-        } catch (_) {
-          showToast("Could not serialize Learning Journey Design Page JSON.", "error");
-          return;
+    return hydrateWorkflowRunCapturePayloadsForWorkflow(workflowId)
+      .then(function () {
+        reconcileWorkflowRunCapturesWithDurableState(workflowId);
+        syncAllWorkflowRunCapturesFromDomToState();
+        var assemblyKey = utilitiesCaptureFingerprint(wf);
+        var session = utilitiesAuthoringSession();
+        if (
+          opts.automatic &&
+          String(opts.reason || "") !== "discard" &&
+          session.status === "current" &&
+          session.assemblyKey &&
+          session.assemblyKey === assemblyKey &&
+          String(session.sourceWorkflowId || "") === workflowId &&
+          String(state.utilitiesLastHtml || "").trim() &&
+          !utilitiesJsonDiffersFromBaseline()
+        ) {
+          session.notice = "";
+          refreshUtilitiesWorkflowContextUI();
+          return { ok: true, skipped: true, page: null };
         }
-      }
-      state.utilitiesSourceMode = "assembled_current_run";
-      // Shared page contract: render through ordinary learner page workspace (not LJ <pre> dump).
-      refreshUtilitiesOutputWorkspaceFromPage(ljResult.page, { activeView: "learner_page" });
-      showUtilitiesOutputPanel();
-      refreshUtilitiesWorkflowContextUI();
-      showToast("Assembled Learning Journey page loaded into Utilities.", "success");
-      return;
-    }
-    var stageCanonicalIds = [
-      "step_design_page",
-      "step_generate_assessment_items",
-      "step_design_assessment",
-      "step_construct_learning_sequence",
-      "step_generate_activity_materials",
-      "step_design_learning_activities",
-      "step_design_episode_plan"
-    ];
-    var seedRaw = "";
-    var i;
-    for (i = 0; i < stageCanonicalIds.length; i += 1) {
-      seedRaw = readWorkflowStepCaptureByCanonicalId(wf, stageCanonicalIds[i], {
-        captures: capturesForAssemble,
-        capturesRaw: capturesRawForAssemble,
-        preferRaw: true
+        var capturesForAssemble = Object.assign({}, state.workflowRunCapturedOutputs || {});
+        var capturesRawForAssemble = Object.assign({}, state.workflowRunCapturedOutputsRaw || {});
+        session.assemblyAttempts = Number(session.assemblyAttempts || 0) + 1;
+        if (workflowRecordIsLearningJourney(wf) || isLearningJourneyWorkflow(wf)) {
+          var ljResult;
+          try {
+            ljResult = readAcceptedLearningJourneyPageFromWorkflow(wf, {
+              captures: capturesForAssemble,
+              capturesRaw: capturesRawForAssemble
+            });
+          } catch (ljErr) {
+            return failAuthoringAssemble(
+              opts,
+              "Could not load Learning Journey Design Page: " +
+                String((ljErr && ljErr.message) || ljErr || "unknown error")
+            );
+          }
+          if (!ljResult || !ljResult.ok || !ljResult.page) {
+            return failAuthoringAssemble(
+              opts,
+              "Learning Journey Design Page capture required" +
+                (ljResult && ljResult.code ? ": " + ljResult.code : "") +
+                ". Complete Step 5 (Design Page) in Run and paste the shared page JSON (artifact_type page, product_id learning_journey)."
+            );
+          }
+          return commitAssembledAuthoringPage(ljResult.page, wf, assemblyKey, opts, {
+            learningJourney: true
+          });
+        }
+        var stageCanonicalIds = [
+          "step_design_page",
+          "step_generate_assessment_items",
+          "step_design_assessment",
+          "step_construct_learning_sequence",
+          "step_generate_activity_materials",
+          "step_design_learning_activities",
+          "step_design_episode_plan"
+        ];
+        var seedRaw = "";
+        var i;
+        for (i = 0; i < stageCanonicalIds.length; i += 1) {
+          seedRaw = readWorkflowStepCaptureByCanonicalId(wf, stageCanonicalIds[i], {
+            captures: capturesForAssemble,
+            capturesRaw: capturesRawForAssemble,
+            preferRaw: true
+          });
+          if (String(seedRaw || "").trim()) break;
+        }
+        if (!String(seedRaw || "").trim()) {
+          return failAuthoringAssemble(
+            opts,
+            "No captured page artefacts found in current workflow run."
+          );
+        }
+        var parsedSeed = tryParseWorkflowArtefactJson(seedRaw);
+        if (!parsedSeed || String(parsedSeed.artifact_type || "").toLowerCase() !== "page") {
+          return failAuthoringAssemble(opts, "Latest captured artefact is not valid page JSON.");
+        }
+        var assembled;
+        try {
+          assembled = resolvePageForRenderOrAssembly(parsedSeed, wf, {
+            captures: capturesForAssemble,
+            capturesRaw: capturesRawForAssemble
+          });
+        } catch (err) {
+          return failAuthoringAssemble(
+            opts,
+            "Could not assemble final page from workflow run: " +
+              String((err && err.message) || err || "unknown error")
+          );
+        }
+        if (!assembled || typeof assembled !== "object" || Array.isArray(assembled)) {
+          return failAuthoringAssemble(opts, "Assembled page result is invalid.");
+        }
+        return commitAssembledAuthoringPage(assembled, wf, assemblyKey, opts, {
+          learningJourney: false
+        });
+      })
+      .catch(function () {
+        return failAuthoringAssemble(opts, "Could not hydrate run captures before assembly.");
       });
-      if (String(seedRaw || "").trim()) break;
+  }
+
+  function failAuthoringAssemble(opts, message) {
+    var text = String(message || "Could not assemble the selected workflow.");
+    if (opts && opts.automatic) {
+      resetAuthoringDisplayedResource(text);
+    } else {
+      showToast(text, "error");
     }
-    if (!String(seedRaw || "").trim()) {
-      showToast("No captured page artefacts found in current workflow run.", "error");
-      return;
-    }
-    var parsedSeed = tryParseWorkflowArtefactJson(seedRaw);
-    if (!parsedSeed || String(parsedSeed.artifact_type || "").toLowerCase() !== "page") {
-      showToast("Latest captured artefact is not valid page JSON.", "error");
-      return;
-    }
-    var assembled;
+    return { ok: false, message: text };
+  }
+
+  function commitAssembledAuthoringPage(page, wf, assemblyKey, opts, flags) {
+    var serialized = "";
     try {
-      assembled = resolvePageForRenderOrAssembly(parsedSeed, wf, {
-        captures: capturesForAssemble,
-        capturesRaw: capturesRawForAssemble
-      });
-    } catch (err) {
-      showToast(
-        "Could not assemble final page from workflow run: " +
-          String((err && err.message) || err || "unknown error"),
-        "error"
-      );
-      return;
+      serialized = JSON.stringify(page, null, 2);
+    } catch (_err) {
+      return failAuthoringAssemble(opts, "Could not serialize assembled page JSON.");
     }
-    if (!assembled || typeof assembled !== "object" || Array.isArray(assembled)) {
-      showToast("Assembled page result is invalid.", "error");
-      return;
-    }
-    if (els.utilitiesJsonInput) {
-      try {
-        els.utilitiesJsonInput.value = JSON.stringify(assembled, null, 2);
-      } catch (_) {
-        showToast("Could not serialize assembled page JSON.", "error");
-        return;
-      }
-    }
+    if (els.utilitiesJsonInput) els.utilitiesJsonInput.value = serialized;
     state.utilitiesSourceMode = "assembled_current_run";
-    refreshUtilitiesOutputWorkspaceFromPage(assembled, { activeView: "learner_page" });
+    if (flags && flags.learningJourney) {
+      state.learningJourneyCommissioningPreviewContext = {
+        page: page,
+        sourceWorkflowId: wf && wf.id ? String(wf.id) : "",
+        updatedAt: Date.now()
+      };
+    } else {
+      state.learningJourneyCommissioningPreviewContext = null;
+    }
+    refreshUtilitiesOutputWorkspaceFromPage(page, { activeView: "learner_page" });
     showUtilitiesOutputPanel();
+    rememberAssembledAuthoringBaseline(page, wf, assemblyKey);
     refreshUtilitiesWorkflowContextUI();
-    showToast("Assembled page loaded into Utilities JSON input.", "success");
-    }).catch(function () {
-      showToast("Could not hydrate run captures before assembly.", "error");
-    });
+    if (!opts || !opts.quiet) {
+      showToast(
+        flags && flags.learningJourney
+          ? "Assembled Learning Journey page loaded into Utilities."
+          : "Assembled page loaded into Utilities JSON input.",
+        "success"
+      );
+    }
+    if (opts && opts.preview) {
+      state.utilitiesAuthoringQuietPreview = !!opts.quiet;
+      return handleUtilitiesGenerate()
+        .then(function (preview) {
+          state.utilitiesAuthoringQuietPreview = false;
+          return {
+            ok: !!(preview && preview.ok),
+            page: page,
+            preview: preview || null
+          };
+        })
+        .catch(function (err) {
+          state.utilitiesAuthoringQuietPreview = false;
+          return {
+            ok: false,
+            page: page,
+            message: (err && err.message) || "Could not preview the assembled page."
+          };
+        });
+    }
+    return { ok: true, page: page };
   }
 
   function handleUtilitiesDownloadHtml() {
@@ -56655,11 +57179,20 @@
     var ctx = state.learningJourneyCommissioningPreviewContext;
     if (!ctx || !ctx.page) return false;
     var ljDesignMod = resolveLearningJourneyDesignPageLib();
-    return !!(
-      ljDesignMod &&
-      typeof ljDesignMod.isLearningJourneyDesignPage === "function" &&
-      ljDesignMod.isLearningJourneyDesignPage(ctx.page)
-    );
+    if (
+      !ljDesignMod ||
+      typeof ljDesignMod.isLearningJourneyDesignPage !== "function" ||
+      !ljDesignMod.isLearningJourneyDesignPage(ctx.page)
+    ) {
+      return false;
+    }
+    var workspace = state.utilitiesOutputWorkspace;
+    var activePage = workspace && workspace.assembledPageSnapshot;
+    if (!activePage || !ljDesignMod.isLearningJourneyDesignPage(activePage)) return false;
+    var selectedId = String(state.selectedWorkflowId || "").trim();
+    var sourceId = String(ctx.sourceWorkflowId || "").trim();
+    if (selectedId && sourceId && selectedId !== sourceId) return false;
+    return true;
   }
 
   /**
@@ -56794,6 +57327,7 @@
           additionalResourcesProjection: localWs.additionalResourceProjection || null,
           applyCompositionValidation: false,
           skipWorkflowAssembly: true,
+          retainLearningJourneyCommissioningContext: true,
           workflow: wf
         });
         if (!rendered || rendered.error || !rendered.html) {
@@ -57112,7 +57646,7 @@
     if (isLearningJourneyCommissioningPreviewActive()) {
       return handleLearningJourneyLearnerPackageDownload();
     }
-    resolveUtilitiesExportHtmlForDownload().then(function (resolved) {
+    return resolveUtilitiesExportHtmlForDownload().then(function (resolved) {
       if (!resolved || !resolved.ok || !resolved.html) {
         showToast(
           (resolved && resolved.message) || "Could not generate HTML for learner package.",
@@ -57173,9 +57707,9 @@
         return;
       }
 
-      Promise.all([mathLivePromise, mathJaxPromise])
+      return Promise.all([mathLivePromise, mathJaxPromise])
         .then(function (assetRows) {
-          finalizeUtilitiesLearnerPackageDownload(
+          return finalizeUtilitiesLearnerPackageDownload(
             exportHtml,
             manifest,
             additionalResourceAssets,
@@ -57189,8 +57723,12 @@
               String((err && err.message) || err || "fetch failed"),
             "error"
           );
+          return {
+            ok: false,
+            code: "math_assets_unavailable",
+            error: err
+          };
         });
-      return;
     });
   }
 
@@ -57267,8 +57805,10 @@
     state.utilitiesLastRenderInputNormalized = "";
     state.utilitiesLastFileName = "";
     state.utilitiesOutputWorkspace = emptyUtilitiesOutputWorkspaceState();
+    state.learningJourneyCommissioningPreviewContext = null;
     state.utilitiesSourceMode = "";
     state.utilitiesVisualAssetObjectUrlsByBriefId = {};
+    state.utilitiesAuthoringSession = emptyUtilitiesAuthoringSession();
     refreshUtilitiesWorkflowContextUI();
   }
 
@@ -57496,6 +58036,21 @@
       els.utilitiesAssembleCurrentRunBtn.addEventListener(
         "click",
         handleUtilitiesAssembleFromCurrentWorkflowRun
+      );
+    }
+    if (els.utilitiesJsonInput) {
+      els.utilitiesJsonInput.addEventListener("input", handleUtilitiesJsonInput);
+    }
+    if (els.utilitiesKeepEditedArtefactBtn) {
+      els.utilitiesKeepEditedArtefactBtn.addEventListener(
+        "click",
+        handleUtilitiesKeepEditedArtefact
+      );
+    }
+    if (els.utilitiesReplaceEditedArtefactBtn) {
+      els.utilitiesReplaceEditedArtefactBtn.addEventListener(
+        "click",
+        handleUtilitiesDiscardEditsAndLoadSelected
       );
     }
     if (els.utilitiesDownloadHtmlBtn) {
@@ -58652,6 +59207,45 @@
     prismTestApi.parseUtilitiesJsonInputForProvenance = parseUtilitiesJsonInputForProvenance;
     prismTestApi.buildAuthoringWorkflowContextModel = buildAuthoringWorkflowContextModel;
     prismTestApi.refreshUtilitiesWorkflowContextUIForTest = refreshUtilitiesWorkflowContextUI;
+    prismTestApi.switchTabForTest = switchTab;
+    prismTestApi.syncAuthoringPreviewToSelectedWorkflowForTest =
+      syncAuthoringPreviewToSelectedWorkflow;
+    prismTestApi.getUtilitiesAuthoringSessionForTest = function () {
+      var session = utilitiesAuthoringSession();
+      return {
+        status: session.status,
+        sourceWorkflowId: session.sourceWorkflowId,
+        sourceWorkflowName: session.sourceWorkflowName,
+        baselineNormalized: session.baselineNormalized,
+        assemblyKey: session.assemblyKey,
+        retainedAgainstWorkflowId: session.retainedAgainstWorkflowId,
+        pendingDecision: session.pendingDecision,
+        notice: session.notice,
+        assemblyAttempts: session.assemblyAttempts
+      };
+    };
+    prismTestApi.handleUtilitiesJsonInputForTest = handleUtilitiesJsonInput;
+    prismTestApi.handleUtilitiesKeepEditedArtefactForTest = handleUtilitiesKeepEditedArtefact;
+    prismTestApi.handleUtilitiesDiscardEditsAndLoadSelectedForTest =
+      handleUtilitiesDiscardEditsAndLoadSelected;
+    prismTestApi.getUtilitiesJsonInputValueForTest = function () {
+      return els.utilitiesJsonInput ? String(els.utilitiesJsonInput.value || "") : "";
+    };
+    prismTestApi.getUtilitiesAuthoringNoticeForTest = function () {
+      return els.utilitiesAuthoringNotice
+        ? String(els.utilitiesAuthoringNotice.textContent || "")
+        : "";
+    };
+    prismTestApi.getUtilitiesResourceIdentityForTest = function () {
+      return els.utilitiesResourceIdentityMeta
+        ? String(els.utilitiesResourceIdentityMeta.textContent || "")
+        : "";
+    };
+    prismTestApi.getUtilitiesEditProtectionMessageForTest = function () {
+      return els.utilitiesEditProtectionMessage
+        ? String(els.utilitiesEditProtectionMessage.textContent || "")
+        : "";
+    };
     prismTestApi.handleContinueToAuthoringForTest = handleContinueToAuthoring;
     prismTestApi.hasConfiguredOpenAiApiKeyForTest = hasConfiguredOpenAiApiKey;
     prismTestApi.setOpenAiApiKeyForTest = function (key) {

@@ -484,3 +484,308 @@ test("an ordinary expository section without structured materials still renders"
   assert.doesNotMatch(html, /Accessible text equivalent/);
   assert.doesNotMatch(html, /Position:\s*\d+/);
 });
+
+const CONSTRUCTION_LABELS = [
+  "Panel id",
+  "Layout",
+  "Visual conventions",
+  "Energy flows",
+  "Conceptual trajectory",
+  "Required visual features",
+  "Arrow placement instructions"
+];
+
+function assertConstructionAbsent(fragment) {
+  const text = visible(fragment);
+  CONSTRUCTION_LABELS.forEach((label) => {
+    assert.equal(text.includes(label), false, "visible construction label: " + label);
+    assert.doesNotMatch(
+      fragment,
+      new RegExp("<h[1-6][^>]*>\\s*" + label + "\\s*</h[1-6]>", "i")
+    );
+  });
+  assert.doesNotMatch(text, /KEEP-LAYOUT/);
+  assert.doesNotMatch(text, /KEEP-VISUAL-CONVENTIONS/);
+  assert.doesNotMatch(text, /KEEP-ENERGY-FLOWS/);
+  assert.doesNotMatch(text, /KEEP-TRAJECTORY/);
+  assert.doesNotMatch(text, /KEEP-REQUIRED-FEATURES/);
+  assert.doesNotMatch(text, /KEEP-ARROW-INSTRUCTION/);
+  assert.doesNotMatch(fragment, /<th[^>]*>\s*Panel id\s*<\/th>/i);
+  assert.doesNotMatch(fragment, /<dt>\s*Layout\s*<\/dt>/i);
+}
+
+test("diagram and graph specifications stay out of the chapter while figures, captions and comparison tables remain", () => {
+  const page = {
+    artifact_type: "page",
+    schema_version: "2.0.0",
+    title: "Urban Heat Island",
+    activities: [],
+    sections: [
+      {
+        section_id: "S1",
+        title: "Surface energy",
+        exposition: "City surfaces store more of the sun's energy than vegetation.",
+        materials: [
+          {
+            material_id: "uhi-diagram",
+            kind: "conceptual_diagram",
+            title: "Surface energy diagram",
+            body: {
+              title: "Surface energy diagram",
+              caption: "KEEP-CAPTION-DIAGRAM",
+              accessible_text_equivalent:
+                "KEEP-ACCESS-DIAGRAM Roofs and roads absorb sunlight and warm the air above them.",
+              panel_id: "P1",
+              layout: "KEEP-LAYOUT-DIAGRAM two columns",
+              visual_conventions: "KEEP-VISUAL-CONVENTIONS-DIAGRAM blue arrows",
+              energy_flows: [
+                {
+                  from: "roof",
+                  to: "air",
+                  arrow_placement_instructions:
+                    "KEEP-ARROW-INSTRUCTION-DIAGRAM place the arrow above the roof"
+                }
+              ],
+              conceptual_trajectory: "KEEP-TRAJECTORY-DIAGRAM left to right",
+              required_visual_features: "KEEP-REQUIRED-FEATURES-DIAGRAM labelled arrows",
+              nodes: [
+                { id: "N1", label: "Roof", role: "Stores heat", description: "Dark roof surface" }
+              ],
+              relationships: [{ from: "N1", to: "N2", label: "Warms the air" }]
+            }
+          }
+        ]
+      },
+      {
+        section_id: "S2",
+        title: "Heat pathways",
+        exposition: "Shade and paving move heat in different directions.",
+        materials: [
+          {
+            material_id: "uhi-graph",
+            kind: "concept_graph",
+            title: "Heat pathways",
+            body: {
+              title: "Heat pathways",
+              caption: "KEEP-CAPTION-GRAPH",
+              accessible_text_equivalent:
+                "KEEP-ACCESS-GRAPH Canopy shade reduces heat stored at the surface.",
+              conceptual_trajectory: "KEEP-TRAJECTORY-GRAPH",
+              required_visual_features: "KEEP-REQUIRED-FEATURES-GRAPH",
+              visual_conventions: "KEEP-VISUAL-CONVENTIONS-GRAPH",
+              nodes: [
+                {
+                  id: "canopy",
+                  label: "KEEP-CANOPY",
+                  description: "Leaves shade the ground."
+                },
+                { id: "air", label: "Air above the street", description: "Receives stored heat." }
+              ],
+              edges: [{ from: "canopy", to: "air", label: "KEEP-SHADE-RELATION" }]
+            }
+          }
+        ]
+      },
+      {
+        section_id: "S3",
+        title: "Panel specification",
+        exposition: "A finished illustration carries the panel layout.",
+        materials: [
+          {
+            material_id: "uhi-panels",
+            kind: "diagram_panels",
+            title: "Daytime energy panels",
+            body: {
+              title: "Daytime energy panels",
+              caption: "KEEP-CAPTION-PANELS",
+              panels: [
+                {
+                  panel_id: "P3",
+                  layout: "KEEP-LAYOUT-PANELS",
+                  visual_conventions: "KEEP-VISUAL-CONVENTIONS-PANELS",
+                  energy_flows: ["KEEP-ENERGY-FLOWS-PANELS"],
+                  conceptual_trajectory: "KEEP-TRAJECTORY-PANELS",
+                  required_visual_features: ["KEEP-REQUIRED-FEATURES-PANELS"],
+                  arrow_placement_instructions: "KEEP-ARROW-INSTRUCTION-PANELS",
+                  accessible_text_equivalent:
+                    "KEEP-ACCESS-PANELS Rural vegetation reflects more sunlight than urban paving."
+                }
+              ]
+            }
+          }
+        ]
+      },
+      {
+        section_id: "S4",
+        title: "Surface comparison",
+        exposition: "The comparison is a table, not a diagram specification.",
+        materials: [
+          {
+            material_id: "uhi-table-surfaces",
+            kind: "comparison_table",
+            title: "Rural and urban surfaces",
+            body: {
+              title: "Rural and urban surfaces",
+              caption: "How surface type changes the fate of sunlight.",
+              columns: ["Surface", "Albedo", "What happens to sunlight"],
+              rows: [
+                ["Rural vegetation", "Higher", "KEEP-URBAN-TABLE-1"],
+                ["Urban paving", "Lower", "More energy is stored in the ground"]
+              ]
+            }
+          },
+          {
+            material_id: "uhi-table-timing",
+            kind: "comparison_table",
+            title: "Day and night",
+            body: {
+              title: "Day and night",
+              rows: [
+                {
+                  period: "Day",
+                  rural: "Warmer air rises",
+                  urban: "KEEP-URBAN-TABLE-2"
+                },
+                {
+                  period: "Night",
+                  rural: "Cools faster",
+                  urban: "Stored heat is released"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      {
+        section_id: "S5",
+        title: "Unfigured graph",
+        exposition: "Without a finished figure the concept names remain readable.",
+        materials: [
+          {
+            material_id: "uhi-graph-text",
+            kind: "concept_graph",
+            title: "Stored heat",
+            body: {
+              caption: "KEEP-CAPTION-GRAPH-TEXT",
+              accessible_text_equivalent: "KEEP-ACCESS-GRAPH-TEXT",
+              layout: "KEEP-LAYOUT-GRAPH-TEXT",
+              required_visual_features: "KEEP-REQUIRED-FEATURES-GRAPH-TEXT",
+              nodes: [
+                { id: "paving", label: "KEEP-PAVING", description: "Stores heat through the day." }
+              ],
+              edges: [{ from: "paving", to: "air", label: "Releases heat after sunset" }]
+            }
+          }
+        ]
+      }
+    ],
+    visual_affordances: [
+      {
+        affordance_id: "va-S1",
+        scope: "section",
+        section_id: "S1",
+        visual_decision: "generate",
+        visual_slot: "section-after-content",
+        subject: "Surface energy"
+      },
+      {
+        affordance_id: "va-S2",
+        scope: "section",
+        section_id: "S2",
+        visual_decision: "generate",
+        visual_slot: "section-after-content",
+        subject: "Heat pathways"
+      },
+      {
+        affordance_id: "va-S3",
+        scope: "section",
+        section_id: "S3",
+        visual_decision: "generate",
+        visual_slot: "section-after-content",
+        subject: "Daytime panels"
+      }
+    ],
+    page_synthesis: {},
+    assembly_state: {
+      current_stage: "expository_materials",
+      enriched_by: [
+        "expository_journey_plan",
+        "expository_development",
+        "expository_materials"
+      ]
+    }
+  };
+  const rendered = renderLearnerPageHtml(page, {
+    visualAssets: {
+      assets: [
+        {
+          brief_id: "brief-s1",
+          affordance_id: "va-S1",
+          scope: "section",
+          section_id: "S1",
+          visual_slot: "section-after-content",
+          alt_text: "KEEP-ALT-DIAGRAM",
+          detailed_description: "KEEP-FIGURE-DESCRIPTION-DIAGRAM",
+          render_source: { kind: "file", value: "assets/uhi-surface-energy.png" }
+        },
+        {
+          brief_id: "brief-s2",
+          affordance_id: "va-S2",
+          scope: "section",
+          section_id: "S2",
+          visual_slot: "section-after-content",
+          alt_text: "KEEP-ALT-GRAPH",
+          detailed_description: "KEEP-FIGURE-DESCRIPTION-GRAPH",
+          render_source: { kind: "file", value: "assets/uhi-heat-pathways.png" }
+        },
+        {
+          brief_id: "brief-s3",
+          affordance_id: "va-S3",
+          scope: "section",
+          section_id: "S3",
+          visual_slot: "section-after-content",
+          alt_text: "KEEP-ALT-PANELS",
+          detailed_description: "KEEP-FIGURE-DESCRIPTION-PANELS",
+          render_source: { kind: "file", value: "assets/uhi-daytime-panels.png" }
+        }
+      ]
+    }
+  });
+  assert.equal(rendered.error, null, JSON.stringify(rendered.error));
+  const html = String(rendered.html || "");
+  assertConstructionAbsent(html);
+  assert.match(html, /assets\/uhi-surface-energy\.png/);
+  assert.match(html, /assets\/uhi-heat-pathways\.png/);
+  assert.match(html, /assets\/uhi-daytime-panels\.png/);
+  assert.match(html, /KEEP-ALT-DIAGRAM/);
+  assert.match(html, /KEEP-FIGURE-DESCRIPTION-DIAGRAM/);
+  assert.match(html, /KEEP-ALT-GRAPH/);
+  assert.match(html, /KEEP-FIGURE-DESCRIPTION-GRAPH/);
+  assert.match(html, /KEEP-ALT-PANELS/);
+  assert.match(html, /KEEP-FIGURE-DESCRIPTION-PANELS/);
+  assert.match(html, /KEEP-CAPTION-DIAGRAM/);
+  assert.match(html, /KEEP-ACCESS-DIAGRAM/);
+  assert.match(html, /KEEP-CAPTION-GRAPH/);
+  assert.match(html, /KEEP-ACCESS-GRAPH/);
+  assert.match(html, /KEEP-CAPTION-PANELS/);
+  assert.match(html, /KEEP-ACCESS-PANELS/);
+  assert.doesNotMatch(visible(article(html, "uhi-graph")), /KEEP-CANOPY/);
+  assert.doesNotMatch(visible(article(html, "uhi-graph")), /KEEP-SHADE-RELATION/);
+  const textGraph = article(html, "uhi-graph-text");
+  assert.match(visible(textGraph), /KEEP-PAVING/);
+  assert.match(visible(textGraph), /Releases heat after sunset/);
+  assert.match(visible(textGraph), /KEEP-ACCESS-GRAPH-TEXT/);
+  assert.match(visible(textGraph), /KEEP-CAPTION-GRAPH-TEXT/);
+  const surfaces = article(html, "uhi-table-surfaces");
+  const timing = article(html, "uhi-table-timing");
+  assert.match(surfaces, /<table/);
+  assert.match(timing, /<table/);
+  assert.match(surfaces, /<th[^>]*>\s*Surface\s*<\/th>/);
+  assert.match(surfaces, /<th[^>]*>\s*Albedo\s*<\/th>/);
+  assert.match(surfaces, /KEEP-URBAN-TABLE-1/);
+  assert.match(timing, /<th[^>]*>\s*Period\s*<\/th>/);
+  assert.match(timing, /KEEP-URBAN-TABLE-2/);
+  assert.match(html, /util-semantic-icon__label">Surface energy</);
+  assert.doesNotMatch(article(html, "uhi-panels"), /<h4[^>]*>\s*Panels\s*<\/h4>/i);
+  assert.doesNotMatch(article(html, "uhi-panels"), /util-exposition-comparison-section/);
+});

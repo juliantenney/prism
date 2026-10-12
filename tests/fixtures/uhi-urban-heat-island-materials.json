@@ -1,0 +1,313 @@
+{
+  "title": "Why Cities Stay Warm: Understanding the Urban Heat Island",
+  "materials": {
+    "XM-M01": {
+      "section_id": "S2",
+      "section_title": "Where Does the Heat Go? The Urban Energy Balance",
+      "kind": "Comparative conceptual energy-flow diagram",
+      "figure": "assets/section-after-content.png",
+      "alt_text": "Two-panel conceptual energy-balance diagram comparing vegetated rural and built urban surfaces, with labelled radiation, sensible heat, latent heat, storage and anthropogenic heat.",
+      "body": {
+        "title": "Where Does the Energy Go? Comparing Vegetated and Built Surfaces",
+        "format": "Paired conceptual energy-flow diagram",
+        "diagram": {
+          "panels": [
+            {
+              "heading": "Vegetated rural surface",
+              "surface_description": "Grass, vegetation and moisture-bearing soil beneath an open sky.",
+              "interpretive_label": "When moisture is available, evapotranspiration can account for a substantial share of available energy.",
+              "layout": "Left panel"
+            },
+            {
+              "heading": "Built urban surface",
+              "surface_description": "Paving, roads, roofs and buildings with limited vegetation.",
+              "interpretive_label": "Reduced evaporation, substantial heat storage and additional human heat can alter the distribution and timing of energy transfers.",
+              "layout": "Right panel"
+            }
+          ],
+          "shared_equation": {
+            "expression": "Rn + QF = H + LE + ΔQS",
+            "definitions": {
+              "Rn": "Net radiation: the balance of incoming and outgoing shortwave and longwave radiation.",
+              "QF": "Anthropogenic heat flux: heat released by human activities.",
+              "H": "Sensible heat flux: energy exchanged as heat that can change air temperature.",
+              "LE": "Latent heat flux: energy associated with evaporation and transpiration.",
+              "ΔQS": "Change in stored heat within the surface system."
+            },
+            "interpretation": "The expression is a simplified energy account. Energy available from net radiation and anthropogenic sources is distributed among sensible heating, latent heating and changes in storage. Anthropogenic heat may occur in rural environments too, although its magnitude and sources differ."
+          }
+        },
+        "caption": "Conceptual comparison of energy pathways over vegetated rural and built urban surfaces. Both environments receive radiation and exchange sensible heat, latent heat and stored energy. Their relative energy transfers can differ because of surface properties, moisture, vegetation, geometry and human activity. Arrow widths are illustrative, not measured.",
+        "text_equivalent": "The diagram compares two environments using the same energy-balance pathways. In the vegetated rural example, available soil moisture and plants support evapotranspiration, allowing a relatively large share of available energy to leave as latent heat. Some energy also warms the air and enters soil storage. In the built urban example, limited moisture can reduce latent heat transfer, while roads, roofs and walls may transfer more energy as sensible heat or retain it within materials. Buildings also modify radiation exchange, and human activities contribute additional heat. The relative importance of each pathway changes with weather, time of day, surface characteristics and local conditions."
+      }
+    },
+    "XM-M02": {
+      "section_id": "S3",
+      "section_title": "How the Built Environment Changes the Flow of Energy",
+      "kind": "Annotated urban-form comparison",
+      "figure": "assets/section-after-content-vb-38-4-va-s3-urban-form.png",
+      "alt_text": "Cross-sections of a narrow street canyon and a greener open street, annotated with shade, sky exposure, heat storage, evapotranspiration and airflow.",
+      "body": {
+        "title": "Two Urban Forms, Different Thermal Pathways",
+        "format": "Paired annotated cross-sectional comparison",
+        "diagram": {
+          "panels": [
+            {
+              "heading": "Densely built street canyon",
+              "visible_elements": [
+                "Tall buildings on either side of a relatively narrow street.",
+                "Paved road and pedestrian surfaces.",
+                "A restricted opening to the sky.",
+                "A shaded section of the street during daylight.",
+                "Arrows indicating heat entering walls and paving.",
+                "A directional airflow arrow showing how buildings can redirect or restrict wind.",
+                "Longwave radiation arrows exchanged between facing building surfaces."
+              ],
+              "annotations": [
+                {
+                  "label": "Daytime shade",
+                  "placement": "Shaded street surface",
+                  "explanation": "Buildings can intercept direct sunlight, reducing solar exposure at street level."
+                },
+                {
+                  "label": "Heat storage",
+                  "placement": "Wall and road surfaces",
+                  "explanation": "Energy absorbed by built materials can move into structures and be released later."
+                },
+                {
+                  "label": "Restricted sky view",
+                  "placement": "Opening between buildings",
+                  "explanation": "A smaller visible portion of the sky can reduce opportunities for net radiative cooling."
+                },
+                {
+                  "label": "Radiation exchange",
+                  "placement": "Between facing walls",
+                  "explanation": "Walls emit and receive longwave radiation from neighbouring surfaces."
+                },
+                {
+                  "label": "Modified airflow",
+                  "placement": "Street canyon",
+                  "explanation": "Building arrangement can redirect, accelerate or restrict air movement depending on wind direction and geometry."
+                }
+              ],
+              "daytime_message": "A narrow street can receive substantial building shade, even when exposed roofs and walls absorb solar energy.",
+              "nighttime_message": "Stored heat and restricted sky exposure can contribute to slower cooling, although ventilation and weather modify the outcome."
+            },
+            {
+              "heading": "Greener, more open urban setting",
+              "visible_elements": [
+                "More widely spaced or lower buildings.",
+                "Trees providing shade over part of the street.",
+                "Vegetated and permeable ground.",
+                "A larger visible area of sky.",
+                "Upward arrows indicating evapotranspiration.",
+                "Airflow arrows illustrating the possibility of exchange with the surrounding atmosphere.",
+                "Longwave radiation arrows extending towards the open sky."
+              ],
+              "annotations": [
+                {
+                  "label": "Tree shade",
+                  "placement": "Beneath the tree canopy",
+                  "explanation": "Leaves intercept sunlight, reducing direct solar exposure for surfaces and pedestrians."
+                },
+                {
+                  "label": "Evapotranspiration",
+                  "placement": "Vegetation and soil",
+                  "explanation": "When water is available, evaporation and transpiration use energy that might otherwise contribute to sensible heating."
+                },
+                {
+                  "label": "Greater sky exposure",
+                  "placement": "Open sky above the street",
+                  "explanation": "Surfaces can exchange longwave radiation with a larger portion of the sky."
+                },
+                {
+                  "label": "Air exchange",
+                  "placement": "Open space between buildings",
+                  "explanation": "Urban openness can facilitate ventilation under suitable wind conditions."
+                },
+                {
+                  "label": "Water availability",
+                  "placement": "Vegetated ground",
+                  "explanation": "Moisture availability determines how much evaporative cooling can occur."
+                }
+              ],
+              "daytime_message": "Vegetation can combine shade and evapotranspiration, while exposed unshaded surfaces may still receive substantial sunlight.",
+              "nighttime_message": "Greater sky exposure can support radiative cooling, but actual temperatures also depend on stored heat, wind, moisture and surrounding conditions."
+            }
+          ],
+          "comparison_focus": [
+            {
+              "dimension": "Direct solar exposure",
+              "street_canyon": "Buildings can shade streets while exposed roofs and walls receive sunlight.",
+              "greener_open_street": "Trees shade selected surfaces, while open areas may receive direct sunlight."
+            },
+            {
+              "dimension": "Evaporative cooling",
+              "street_canyon": "Often limited where vegetation and moisture are scarce.",
+              "greener_open_street": "Potentially greater where vegetation has sufficient water."
+            },
+            {
+              "dimension": "Heat storage",
+              "street_canyon": "Substantial built surfaces can absorb and retain energy.",
+              "greener_open_street": "Built materials still store heat, but the distribution of surfaces differs."
+            },
+            {
+              "dimension": "Nighttime radiation exchange",
+              "street_canyon": "Restricted sky view and radiation exchange between buildings can reduce net cooling.",
+              "greener_open_street": "Greater sky exposure can permit more effective radiative cooling."
+            },
+            {
+              "dimension": "Ventilation",
+              "street_canyon": "Wind flow depends strongly on building arrangement and orientation.",
+              "greener_open_street": "More open space may facilitate air exchange, depending on local wind conditions."
+            }
+          ]
+        },
+        "caption": "Urban geometry and vegetation influence several heat-transfer pathways simultaneously. Buildings may provide daytime shade while limiting nighttime radiation loss. Trees can provide shade and evapotranspirative cooling, but their effects depend on water availability and local conditions.",
+        "text_equivalent": "The left cross-section shows a narrow street bordered by tall buildings. The buildings shade part of the road during the day, while walls and paving can absorb and store heat. Because less sky is visible, surfaces exchange more longwave radiation with neighbouring buildings, potentially reducing nighttime cooling. Airflow is also influenced by building geometry. The right cross-section shows a more open street with trees and vegetated ground. Trees intercept sunlight, and vegetation can use energy for evapotranspiration when moisture is available. Greater sky exposure can support nighttime radiative cooling. Neither arrangement guarantees a particular temperature: weather, orientation, material properties, moisture and wind determine the combined effect."
+      }
+    },
+    "XM-M03": {
+      "section_id": "S4",
+      "section_title": "Why the Difference Changes Between Day and Night",
+      "kind": "Illustrative diurnal temperature comparison",
+      "figure": "assets/section-after-content-vb-38-4-va-s4-diurnal-te.png",
+      "alt_text": "Conceptual 24-hour line graph showing urban and rural near-surface air temperatures warming during the day and separating more strongly as rural air cools faster after sunset.",
+      "body": {
+        "title": "How Urban and Rural Air Temperatures Can Change Over 24 Hours",
+        "format": "Two-line conceptual time-series graph",
+        "graph": {
+          "chart_type": "line",
+          "data_status": "Illustrative conceptual trajectories, not measured observations",
+          "horizontal_axis": {
+            "label": "Time of day",
+            "extent": "00:00–24:00"
+          },
+          "reference_points": ["00:00", "06:00", "12:00", "18:00", "24:00"],
+          "annotations": ["Night", "Daylight", "Night"],
+          "vertical_axis": {
+            "label": "Near-surface air temperature",
+            "units": "Qualitative relative temperature; no numerical scale",
+            "interpretation": "Higher vertical positions represent warmer air, but the curves do not encode measured degrees Celsius."
+          },
+          "series": {
+            "urban_near_surface_air": {
+              "series_id": "urban",
+              "line_style": "Solid"
+            },
+            "rural_near_surface_air": {
+              "series_id": "rural",
+              "line_style": "Dashed"
+            }
+          },
+          "rows": [
+            {
+              "label": "Daytime energy absorption and storage",
+              "position": "Daylight period",
+              "explanation": "Solar radiation warms surfaces and contributes to sensible heat, evaporation and stored energy."
+            },
+            {
+              "label": "Sunset: direct solar input ends",
+              "position": "Transition from daylight to evening",
+              "explanation": "Surface cooling begins while previously stored energy can continue to be released."
+            },
+            {
+              "label": "Potentially stronger nighttime air-temperature contrast",
+              "position": "Nighttime separation between curves",
+              "explanation": "The rural environment may cool more rapidly than the built urban environment."
+            }
+          ]
+        },
+        "caption": "Illustrative daily trajectories of urban and rural near-surface air temperature. Under suitable conditions, rural air can cool more rapidly after sunset, allowing the atmospheric urban heat island to become stronger at night. The curves are conceptual and do not represent measurements from a particular city.",
+        "text_equivalent": "The graph contains two conceptual air-temperature curves across 24 hours. Both urban and rural temperatures rise during daylight and fall after the afternoon. Their daytime values are relatively close in this example. After sunset, the rural curve falls more steeply, while the urban curve declines more gradually. The gap between the curves therefore becomes larger during the evening and night. The pattern illustrates how daytime heat storage, delayed heat release and contrasting radiative cooling can produce a stronger nighttime atmospheric urban heat island. Actual daily patterns vary with weather, season, local geography and urban form."
+      }
+    },
+    "XM-M04": {
+      "section_id": "S5",
+      "section_title": "How Do We Know a City Is Warmer?",
+      "kind": "Surface versus atmospheric temperature comparison",
+      "body": {
+        "title": "Two Ways of Measuring an Urban Heat Island",
+        "format": "Concise two-column comparison",
+        "table": {
+          "column_headers": ["Surface urban heat island", "Atmospheric urban heat island"],
+          "rows": [
+            {
+              "dimension": "What is compared?",
+              "surface_urban_heat_island": "Temperatures of urban and rural land surfaces.",
+              "atmospheric_urban_heat_island": "Temperatures of urban and rural air."
+            },
+            {
+              "dimension": "Typical observation method",
+              "surface_urban_heat_island": "Thermal infrared observations from satellites or aircraft.",
+              "atmospheric_urban_heat_island": "Appropriately exposed air-temperature sensors at fixed stations or along mobile measurement routes."
+            },
+            {
+              "dimension": "What can it reveal?",
+              "surface_urban_heat_island": "Spatial contrasts associated with roofs, roads, vegetation and other surface characteristics.",
+              "atmospheric_urban_heat_island": "Differences in the warmth of the air, including contrasts that may develop strongly after sunset."
+            },
+            {
+              "dimension": "Main interpretive limitation",
+              "surface_urban_heat_island": "Land surface temperature is not equivalent to the temperature of the air above it.",
+              "atmospheric_urban_heat_island": "Results depend on sensor exposure, measurement height, timing and the chosen urban and rural reference locations."
+            }
+          ]
+        },
+        "caption": "Surface and atmospheric urban heat islands describe related but different temperature contrasts. The measurement method determines which physical quantity is being compared.",
+        "text_equivalent": "A surface urban heat island compares the temperatures of urban and rural land surfaces, often using thermal infrared observations from satellites or aircraft. Such measurements can reveal spatial patterns across roads, roofs and vegetation, but they do not directly measure the air temperature experienced by people. An atmospheric urban heat island compares urban and rural air temperatures using appropriately exposed sensors. These observations can reveal nighttime urban–rural air-temperature differences, but their interpretation depends on sensor placement, timing and the reference locations selected. Neither measurement should automatically be treated as a complete description of human thermal comfort."
+      }
+    },
+    "XM-M05": {
+      "section_id": "S7",
+      "section_title": "Can We Design Cooler Cities Without Creating New Problems?",
+      "kind": "Comparative urban heat mitigation table",
+      "body": {
+        "title": "Reducing Urban Heat: Mechanisms, Benefits and Trade-offs",
+        "format": "Compact comparative table",
+        "table": {
+          "column_headers": [
+            "Intervention",
+            "Principal physical mechanism",
+            "Intended thermal outcome",
+            "Important trade-off or limitation"
+          ],
+          "rows": [
+            {
+              "intervention": "Street trees and vegetation",
+              "principal_physical_mechanism": "Shade reduces direct solar exposure; evapotranspiration transfers energy through water evaporation and plant transpiration.",
+              "intended_thermal_outcome": "Cooler shaded surfaces and improved pedestrian thermal comfort; potential local air-temperature reduction.",
+              "important_trade_off_or_limitation": "Cooling depends on water availability, placement, plant condition and maintenance. Vegetation can also modify airflow."
+            },
+            {
+              "intervention": "Reflective roofs and pavements",
+              "principal_physical_mechanism": "Higher albedo increases the proportion of incoming sunlight reflected rather than absorbed.",
+              "intended_thermal_outcome": "Lower exposed surface temperatures; potentially reduced heat entering buildings and reduced cooling demand.",
+              "important_trade_off_or_limitation": "Reflected radiation can increase pedestrian radiant exposure in some settings. Cooler surfaces do not guarantee equivalent air-temperature or comfort benefits."
+            },
+            {
+              "intervention": "Urban geometry and ventilation",
+              "principal_physical_mechanism": "Building spacing, height and orientation modify shade, sky exposure, longwave radiation exchange and airflow.",
+              "intended_thermal_outcome": "Reduced daytime solar exposure, improved ventilation or more effective nighttime cooling, depending on design.",
+              "important_trade_off_or_limitation": "Compact forms can provide shade while restricting nighttime radiative cooling. Design choices must also accommodate density, transport and other land uses."
+            },
+            {
+              "intervention": "Reduced anthropogenic heat",
+              "principal_physical_mechanism": "More efficient energy use and reduced waste heat lower additional heat released by buildings, vehicles and equipment.",
+              "intended_thermal_outcome": "Reduced local heat input and potentially lower outdoor air temperatures, alongside energy-demand benefits.",
+              "important_trade_off_or_limitation": "Cooling systems can protect indoor health while rejecting heat outdoors. Energy efficiency must be balanced with access to safe indoor temperatures."
+            },
+            {
+              "intervention": "Green roofs",
+              "principal_physical_mechanism": "Vegetation and moisture alter the roof energy balance through shading, evapotranspiration and changes in heat transfer.",
+              "intended_thermal_outcome": "Reduced roof surface heating and potentially reduced heat transfer into buildings.",
+              "important_trade_off_or_limitation": "Performance depends on water availability, vegetation condition and roof characteristics; benefits differ from those of street-level tree shade."
+            }
+          ]
+        },
+        "caption": "Urban heat mitigation strategies work through different energy-transfer pathways. Their benefits depend on which temperature or exposure outcome is being targeted, local conditions and competing planning requirements.",
+        "text_equivalent": "Street trees and vegetation provide shade and can support evapotranspirative cooling, but their effectiveness depends on water, placement and maintenance. Reflective roofs and pavements absorb less sunlight and may reduce surface temperatures, although reflected radiation can affect pedestrians and air-temperature benefits are not guaranteed. Urban geometry can be designed to provide shade, ventilation or improved nighttime radiation exchange, but compactness can create competing daytime and nighttime effects. Reducing anthropogenic heat through energy efficiency can lower additional outdoor heat inputs, while access to indoor cooling remains necessary for health protection. Green roofs modify roof energy transfers through vegetation and moisture but do not provide the same direct pedestrian shading as street trees. Each strategy should be judged against its intended thermal outcome and its wider resource, spatial and equity implications."
+      }
+    }
+  }
+}

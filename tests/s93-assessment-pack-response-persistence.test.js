@@ -460,7 +460,7 @@ test("each determinate form restores the visible selection without a score", () 
   assert.equal(matched.target.getAttribute("data-assessment-last-result"), null);
 });
 
-test("a checked result is recomputed from the authored key and an unanswered item is not marked correct", () => {
+test("a saved check restores the response without disclosing the answer", () => {
   const live = mount(html);
   const single = workspace(live, "assessment-single");
   single.querySelector('input[value="a"]').checked = true;
@@ -469,9 +469,10 @@ test("a checked result is recomputed from the authored key and an unanswered ite
   const correctPage = mount(html);
   adapters.restoreWorkspaceState(workspace(correctPage, "assessment-single"), correctState);
   const correctItem = workspace(correctPage, "assessment-single");
-  assert.equal(correctItem.getAttribute("data-assessment-last-result"), "correct");
-  assert.match(correctItem.querySelector("[data-assessment-result]").innerHTML, /Correct\./);
-  assert.match(correctItem.querySelector("[data-assessment-result]").innerHTML, /Alpha is the named choice/);
+  assert.equal(correctItem.querySelector('input[value="a"]').checked, true);
+  assert.equal(correctItem.getAttribute("data-assessment-last-result"), null);
+  assert.equal(correctItem.getAttribute("data-assessment-checked"), "false");
+  assert.equal(correctItem.querySelector("[data-assessment-result]").innerHTML, "");
 
   const wrong = mount(html);
   adapters.restoreWorkspaceState(workspace(wrong, "assessment-single"), {
@@ -480,9 +481,10 @@ test("a checked result is recomputed from the authored key and an unanswered ite
     value: { selectedOption: "b", checked: true }
   });
   const wrongItem = workspace(wrong, "assessment-single");
-  assert.equal(wrongItem.getAttribute("data-assessment-last-result"), "incorrect");
-  assert.match(wrongItem.querySelector("[data-assessment-result]").innerHTML, /Not quite/);
-  assert.doesNotMatch(wrongItem.querySelector("[data-assessment-result]").innerHTML, /<strong>Correct\./);
+  assert.equal(wrongItem.querySelector('input[value="b"]').checked, true);
+  assert.equal(wrongItem.getAttribute("data-assessment-last-result"), null);
+  assert.equal(wrongItem.querySelector("[data-assessment-result]").innerHTML, "");
+  assert.doesNotMatch(String(wrongItem.querySelector("[data-assessment-result]").innerHTML), /correct answer/i);
 
   const unanswered = mount(html);
   adapters.restoreWorkspaceState(workspace(unanswered, "assessment-single"), {
@@ -514,9 +516,9 @@ test("a checked result is recomputed from the authored key and an unanswered ite
     value: { selectedOption: "", checked: true, selectedOptions: ["a"] }
   });
   const multiItem = workspace(multi, "assessment-multi");
-  assert.equal(multiItem.getAttribute("data-assessment-last-result"), "incorrect");
-  assert.match(multiItem.querySelector("[data-assessment-result]").innerHTML, /incomplete/);
-  assert.doesNotMatch(multiItem.querySelector("[data-assessment-result]").innerHTML, /<strong>Correct\./);
+  assert.equal(multiItem.querySelector('input[value="a"]').checked, true);
+  assert.equal(multiItem.getAttribute("data-assessment-last-result"), null);
+  assert.equal(multiItem.querySelector("[data-assessment-result]").innerHTML, "");
 
   const ordered = mount(html);
   const orderItem = workspace(ordered, "assessment-order");
@@ -525,7 +527,8 @@ test("a checked result is recomputed from the authored key and an unanswered ite
   const orderPage = mount(html);
   adapters.restoreWorkspaceState(workspace(orderPage, "assessment-order"), orderState);
   assert.deepEqual(orderIds(orderPage), ["s2", "s1"]);
-  assert.equal(workspace(orderPage, "assessment-order").getAttribute("data-assessment-last-result"), "incorrect");
+  assert.equal(workspace(orderPage, "assessment-order").getAttribute("data-assessment-last-result"), null);
+  assert.equal(workspace(orderPage, "assessment-order").querySelector("[data-assessment-result]").innerHTML, "");
 
   const corrected = mount(html);
   const correctList = workspace(corrected, "assessment-order").querySelector("[data-assessment-order]");
@@ -536,7 +539,8 @@ test("a checked result is recomputed from the authored key and an unanswered ite
   const correctOrderPage = mount(html);
   adapters.restoreWorkspaceState(workspace(correctOrderPage, "assessment-order"), correctOrderState);
   assert.deepEqual(orderIds(correctOrderPage), ["s1", "s2"]);
-  assert.equal(workspace(correctOrderPage, "assessment-order").getAttribute("data-assessment-last-result"), "correct");
+  assert.equal(workspace(correctOrderPage, "assessment-order").getAttribute("data-assessment-last-result"), null);
+  assert.equal(workspace(correctOrderPage, "assessment-order").querySelector("[data-assessment-result]").innerHTML, "");
 });
 
 test("constructed response text and the weakness stay separate", () => {
@@ -567,7 +571,9 @@ test("a previously saved single-answer draft still restores", () => {
   });
   assert.equal(result.ok, true);
   assert.deepEqual(checkedValues(restored, "assessment-single"), ["a"]);
-  assert.equal(workspace(restored, "assessment-single").getAttribute("data-assessment-last-result"), "correct");
+  assert.equal(workspace(restored, "assessment-single").getAttribute("data-assessment-last-result"), null);
+  assert.equal(workspace(restored, "assessment-single").getAttribute("data-assessment-checked"), "false");
+  assert.equal(workspace(restored, "assessment-single").querySelector("[data-assessment-result]").innerHTML, "");
 });
 
 test("changing a checkbox schedules a draft that keeps the selection", async () => {

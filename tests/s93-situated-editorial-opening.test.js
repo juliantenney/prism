@@ -129,7 +129,13 @@ test("a fulfilled Situated opening image renders after the title and an unfulfil
   const firstSection = fulfilled.indexOf('data-region="exposition"');
   assert.ok(heading !== -1 && opening > heading && firstSection > opening);
   assert.match(fulfilled, /assets\/editorial-opening\.png/);
-  assert.match(fulfilled, /An illustration of a ward office ready for a handover/);
+  assert.match(fulfilled, /alt="Ward office before a shift handover\."/);
+  const openingRegion = fulfilled.slice(opening, firstSection);
+  assert.match(openingRegion, /<figcaption/i);
+  assert.match(openingRegion, /Figure 1\./);
+  assert.match(openingRegion, /Ward office before a shift handover\./);
+  assert.doesNotMatch(openingRegion, /aria-describedby/);
+  assert.doesNotMatch(openingRegion, /An illustration of a ward office ready for a handover/);
 
   const skipped = page();
   skipped.editorial_opening_image = {

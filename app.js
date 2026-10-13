@@ -13580,6 +13580,9 @@
     if (parsed.page_synthesis != null) {
       errors.push("page_synthesis is not part of Assessment Design Page");
     }
+    assessmentDeterminateKeyCaptureErrors(parsed).forEach(function (message) {
+      errors.push(message);
+    });
     return errors.length ? { ok: false, errors: errors } : { ok: true, errors: [] };
   }
 
@@ -15905,6 +15908,26 @@
         : state.selectedWorkflowId
         ? findWorkflowById(state.selectedWorkflowId)
         : null;
+    if (workflowRecordIsAssessmentPack(workflow)) {
+      var assessmentOutput = normalizeWorkflowStepOutputNameKey(step);
+      if (
+        assessmentOutput === "assessment_evidence_elicitation" ||
+        assessmentOutput === "assessment_formative_return" ||
+        assessmentOutput === "page"
+      ) {
+        var parsedAssessment = tryParseWorkflowArtefactJson(raw);
+        if (parsedAssessment) {
+          var keyErrors = assessmentDeterminateKeyCaptureErrors(parsedAssessment);
+          if (keyErrors.length) {
+            return {
+              ok: false,
+              errors: keyErrors,
+              message: keyErrors.join("; ")
+            };
+          }
+        }
+      }
+    }
     if (isPostEpisodePlanPartialOutputStep(step, workflow)) {
       var parsedPartialEarly = tryParseWorkflowArtefactJson(raw);
       if (parsedPartialEarly) {
@@ -33213,7 +33236,19 @@
     function finalizePromptBody(body) {
       var raw = String(body || "").trim();
       if (!raw) return "";
-      return applyWorkflowStepRuntimePromptAugmentations(raw, step, wfRec, {});
+      var augmented = applyWorkflowStepRuntimePromptAugmentations(raw, step, wfRec, {});
+      if (
+        workflowRecordIsAssessmentPack(wfRec) &&
+        isWorkflowStepDesignPage({
+          stepCanonicalStepId: (step && (step.canonical_step_id || step.canonicalStepId)) || "",
+          stepCanonicalTitle: (step && step.title) || "",
+          stepTitle: (step && step.title) || ""
+        })
+      ) {
+        augmented = ensureAssessmentPackEditorialOpeningInDesignPrompt(augmented);
+      }
+      augmented = ensureAssessmentPackKeyDefencePrompt(augmented, step, wfRec);
+      return augmented;
     }
     var expositorySiblingBody = resolveExpositorySiblingPromptBodyForStep(step, wfRec);
     if (expositorySiblingBody) {
@@ -35673,6 +35708,109 @@
     return text;
   }
 
+  var ASSESSMENT_KEY_DEFENCE_ELICITATION =
+    "Before returning a determinate item, check the keyed answer against only the scenario, stimulus, stem, options, and statements the learner can see. Consider whether a reasonable informed learner could justify another option, category, order, or pair. For a multiple-answer item, check an omitted option the visible evidence also supports and a selected option the visible evidence does not support. Where that ambiguity is material, revise the stem, the statement, the options, or the category boundaries so one key is defensible, or recast the performance as non-determinate. Do not return a confident key while another answer remains equally defensible. A stem that asks for the most justified or best supported conclusion may keep one key when the other options are less defensible on the visible evidence. Record the check as key_defence on the item with learner_evidence, resolution unambiguous or most_justified, and alternatives whose status is less_defensible. Do not use equally_defensible, omitted_but_defensible, included_without_support, or resolution unresolved. A hedged statement assigned to either side of a nested category boundary, such as claim and overclaim, stays ambiguous until the statement or the categories are revised.";
+  var ASSESSMENT_KEY_DEFENCE_FORMATIVE =
+    "Keep explanatory feedback on the same key as the elicitation. Do not name a different option or category as the answer. Do not introduce quantities, events, or assumptions the learner cannot see. If an item was revised, revise the feedback to match.";
+
+  function assessmentCanonicalApi() {
+    if (typeof PRISM_ASSESSMENT_PACK_CANONICAL !== "undefined" && PRISM_ASSESSMENT_PACK_CANONICAL) {
+      return PRISM_ASSESSMENT_PACK_CANONICAL;
+    }
+    var host = typeof window !== "undefined" ? window : typeof globalThis !== "undefined" ? globalThis : null;
+    return host && host.PRISM_ASSESSMENT_PACK_CANONICAL ? host.PRISM_ASSESSMENT_PACK_CANONICAL : null;
+  }
+
+  function assessmentDeterminateKeyCaptureErrors(parsed) {
+    var api = assessmentCanonicalApi();
+    if (!api || typeof api.reviewDeterminateKeys !== "function" || !parsed || typeof parsed !== "object") {
+      return [];
+    }
+    var reviewed = api.reviewDeterminateKeys(parsed);
+    if (!reviewed || reviewed.ok !== false || !Array.isArray(reviewed.errors)) return [];
+    return reviewed.errors.map(function (error) {
+      var path = error && error.path ? String(error.path) + ": " : "";
+      return path + String((error && (error.message || error.code)) || "answer key is not defensible");
+    });
+  }
+
+  function ensureAssessmentPackKeyDefencePrompt(text, step, wf) {
+    var body = String(text || "");
+    if (!workflowRecordIsAssessmentPack(wf)) return body;
+    var outputName = String((step && (step.outputName || step.output_name)) || "")
+      .trim()
+      .toLowerCase();
+    var canonicalId = String((step && (step.canonical_step_id || step.canonicalStepId)) || "")
+      .trim()
+      .toLowerCase();
+    if (
+      outputName === "assessment_evidence_elicitation" ||
+      canonicalId === "step_design_evidence_elicitation"
+    ) {
+      if (body.indexOf("key_defence") !== -1) return body;
+      return (body + "\n" + ASSESSMENT_KEY_DEFENCE_ELICITATION).trim();
+    }
+    if (
+      outputName === "assessment_formative_return" ||
+      canonicalId === "step_author_formative_return"
+    ) {
+      if (body.indexOf("Keep explanatory feedback on the same key") !== -1) return body;
+      return (body + "\n" + ASSESSMENT_KEY_DEFENCE_FORMATIVE).trim();
+    }
+    return body;
+  }
+
+  function ensureAssessmentPackEditorialOpeningInDesignPrompt(text) {
+    var body = String(text || "");
+    var oldReturn =
+      'Return JSON only with artifact_type "page", schema_version "2.0.0", product_id "assessment_pack", page_kind "assessment", title, activities [], and assessment_evidence.';
+    var requiredReturn =
+      'Return JSON only with artifact_type "page", schema_version "2.0.0", product_id "assessment_pack", page_kind "assessment", title, activities [], assessment_evidence, and editorial_opening_image.';
+    if (body.indexOf(oldReturn) !== -1) body = body.split(oldReturn).join(requiredReturn);
+    body = body
+      .split(
+        "You may include editorial_opening_image at page root. Omit the field when no meaningful editorial image is warranted. Do not force a commission."
+      )
+      .join(
+        'Always emit editorial_opening_image at page root as a decision. decision is "generate" when a contextual image is warranted, or "skip" with a short skip_reason when it is not. Image generation is not mandatory. Making the decision is mandatory.'
+      );
+    body = body.replace(
+      /when an opening image would be misleading, inappropriate, unhelpful, or unnecessary decoration\.?/g,
+      "when no meaningful contextual image can be commissioned, not merely because the assessment questions are text-based."
+    );
+    var hasDecision =
+      body.indexOf("editorial_opening_image") !== -1 &&
+      /skip_reason/.test(body) &&
+      /"generate"/.test(body) &&
+      /"skip"/.test(body);
+    var hasCalibration = body.indexOf("does not need to convey instructional content") !== -1;
+    if (hasDecision && hasCalibration) return body.trim();
+    if (hasDecision) {
+      return (
+        body.trim() +
+        "\n\nAn editorial opening image serves contextual, atmospheric or orienting purposes. It does not need to convey instructional content. A short, text-based formative assessment is not automatically a reason to skip an editorial image. Consider whether a restrained, relevant visual could establish the professional setting or subject without revealing answers or directing learner judgements. Choose skip when no meaningful contextual image can be commissioned, not merely because the assessment questions are text-based. generate and skip both remain legitimate decisions. An image is not required for every assessment."
+      ).trim();
+    }
+    var block = [
+      "Editorial opening image.",
+      "Always emit editorial_opening_image at page root as a decision on every Assessment Pack page.",
+      'decision "generate" includes subject, context, caption_intent, alt_text, and detailed_description.',
+      'decision "skip" includes a short skip_reason when no meaningful contextual image can be commissioned, not merely because the assessment questions are text-based.',
+      "Image generation is not mandatory. Making the decision is mandatory. An image is not required for every assessment.",
+      "An editorial opening image serves contextual, atmospheric or orienting purposes. It does not need to convey instructional content.",
+      "A short, text-based formative assessment is not automatically a reason to skip an editorial image.",
+      "Consider whether a restrained, relevant visual could establish the professional setting or subject without revealing answers or directing learner judgements.",
+      "This image is editorial presentation. It is not an assessment stimulus, a component representation, or page graphics planning.",
+      "The prohibition on page graphics planning applies to assessment stimuli and learning-page graphics. It does not apply to editorial_opening_image.",
+      "Do not reveal correct answers, answer sequences, classifications, matches, or other judgement information.",
+      "Do not imply that a learner has achieved a level of competence.",
+      "Do not present inferred learner needs, diagnoses, or personal characteristics as facts.",
+      "For an R1 reflective assessment, a contextual image must not pre-empt or dictate the learner's responses.",
+      "For an R2 assessment, the image must not provide clues to assessed items."
+    ].join(" ");
+    return (body ? body.replace(/\s+$/, "") + "\n\n" + block : block).trim();
+  }
+
   function buildWorkflowStepInstructions(step, index, domElement) {
     if (!step) return "";
     syncAllWorkflowRunCapturesFromDomToState();
@@ -35971,13 +36109,19 @@
         );
       } else if (workflowRecordIsAssessmentPack(wfForChain)) {
         lines.push(
-          "Assessment Design Page output: return only the learner-facing presentation. Include title, optional attempt_instructions as one string (several instructions are paragraphs or numbered lines inside that string; not an array), optional framing, artifact_type \"page\", schema_version \"2.0.0\", and assembly_state."
+          "Assessment Design Page output: return the Assessment Pack page, including artifact_type \"page\", schema_version \"2.0.0\", product_id \"assessment_pack\", page_kind \"assessment\", title, activities [], assessment_evidence, and a root-level editorial_opening_image decision. activities must be exactly an empty array. Do not copy Interactive learning activities into it, and do not place elicitations, questions, keys, or feedback there. Include optional attempt_instructions as one string (several instructions are paragraphs or numbered lines inside that string; not an array) and optional framing when they belong on the page."
         );
         lines.push(
-          "Do not add Interactive learning-page sections, knowledge summaries, study tips, or page graphics planning."
+          "Do not add Interactive learning-page sections, knowledge summaries, study tips, or page graphics planning. Page graphics planning means assessment stimuli and learning-page graphics. It does not apply to editorial_opening_image."
         );
         lines.push(
-          "Do not reproduce assessment components, keys, or representation commissions. Assessment stimuli stay on the assessment_pack components."
+          "Always emit editorial_opening_image. decision \"generate\" includes subject, context, caption_intent, alt_text, and detailed_description. decision \"skip\" includes a short skip_reason. generate and skip are both legitimate. Image generation is not mandatory. Making the decision is mandatory. An image is not required for every assessment."
+        );
+        lines.push(
+          "An editorial opening image serves contextual, atmospheric or orienting purposes. It does not need to convey instructional content. A short, text-based formative assessment is not automatically a reason to skip an editorial image. Consider whether a restrained, relevant visual could establish the professional setting or subject without revealing answers or directing learner judgements. Choose skip when no meaningful contextual image can be commissioned, not merely because the assessment questions are text-based."
+        );
+        lines.push(
+          "Do not reproduce assessment components, keys, or representation commissions. Assessment stimuli stay on the assessment components. The editorial opening image is not an assessment stimulus."
         );
         lines.push(
           "Copilot output contract: return one pretty-printed fenced JSON page artefact (triple-backtick json fence, 2-space indentation). No prose before the fence. After the closing fence emit exactly one runner footer line: " +
@@ -50586,6 +50730,8 @@
       ".util-learner-renderer-vnext .util-assessment-statement{font-size:var(--learner-text-base);line-height:var(--learner-leading-body);font-weight:500;color:#111827}" +
       ".util-learner-renderer-vnext .util-assessment-options li,.util-learner-renderer-vnext .util-assessment-rationale,.util-learner-renderer-vnext .util-assessment-feedback p{font-size:var(--learner-text-base);line-height:var(--learner-leading-body);color:#1f2937}" +
       ".util-learner-renderer-vnext .util-assessment-feedback{margin-top:var(--learner-space-2)}" +
+      ".util-learner-renderer-vnext details.util-assessment-feedback:not([open]) > :not(summary){display:none!important}" +
+      ".util-learner-renderer-vnext [data-assessment-explanation][hidden],.util-learner-renderer-vnext [data-assessment-review-region][hidden],.util-learner-renderer-vnext [data-assessment-result][hidden]{display:none!important}" +
       ".util-learner-renderer-vnext .util-assessment-feedback summary{cursor:pointer;font-size:var(--learner-text-sm);line-height:1.4;font-weight:600;color:#374151}" +
       ".util-learner-renderer-vnext .util-assessment-fieldset{border:0;margin:0;padding:0;min-width:0}" +
       ".util-learner-renderer-vnext .util-assessment-legend{padding:0;margin:0 0 var(--learner-space-2);font-size:var(--learner-text-base);line-height:var(--learner-leading-body);font-weight:500;color:#111827}" +

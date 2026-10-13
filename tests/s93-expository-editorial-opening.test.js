@@ -167,8 +167,13 @@ test("a fulfilled editorial image opens the chapter and an unfulfilled one leave
   const firstSection = fulfilled.indexOf('data-region="exposition"');
   assert.ok(heading !== -1 && opening > heading && firstSection > opening);
   assert.match(fulfilled, /assets\/editorial-opening\.png/);
-  assert.match(fulfilled, /An illustrated catchment under rain/);
-  assert.match(fulfilled, /Illustration of rain over a catchment/);
+  assert.match(fulfilled, /alt="Illustration of rain over a catchment\."/);
+  const openingRegion = fulfilled.slice(opening, firstSection);
+  assert.match(openingRegion, /<figcaption/i);
+  assert.match(openingRegion, /Figure 1\./);
+  assert.match(openingRegion, /Illustration of rain over a catchment\./);
+  assert.doesNotMatch(openingRegion, /aria-describedby/);
+  assert.doesNotMatch(openingRegion, /An illustrated catchment under rain/);
   const skipped = ordinaryPage({
     editorial_opening_image: {
       decision: "skip",

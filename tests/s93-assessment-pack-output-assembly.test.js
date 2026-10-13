@@ -742,3 +742,37 @@ test("standalone publication carries the assembly script and the offline draft r
   assert.match(standalone, /function installAssessmentOutput/);
   assert.match(standalone, /initializeLearnerDraftPersistence/);
 });
+
+test("explanatory feedback stays hidden until a valid check and a response change clears it", () => {
+  const doc = mount(html);
+  const explanation = doc.querySelector("[data-assessment-explanation]");
+  assert.ok(explanation);
+  assert.equal(explanation.hidden, true);
+  assert.match(explanation.textContent, /Use the check result to see what still needs attention/);
+
+  const single = itemById(doc, "single");
+  click(single.querySelector("[data-assessment-check]"));
+  assert.match(single.querySelector("[data-assessment-result]").innerHTML, /Select an answer before checking/);
+  assert.doesNotMatch(single.querySelector("[data-assessment-result]").innerHTML, /Alpha is the named choice/);
+  assert.equal(explanation.hidden, true);
+
+  single.querySelector('input[value="a"]').checked = true;
+  click(single.querySelector("[data-assessment-check]"));
+  assert.match(single.querySelector("[data-assessment-result]").innerHTML, /Alpha is the named choice/);
+  assert.equal(explanation.hidden, true);
+
+  const beta = single.querySelector('input[value="b"]');
+  single.querySelector('input[value="a"]').checked = false;
+  beta.checked = true;
+  change(beta);
+  assert.equal(single.querySelector("[data-assessment-result]").hidden, true);
+  assert.equal(single.querySelector("[data-assessment-result]").innerHTML, "");
+
+  const review = doc.querySelector("[data-assessment-review-region]");
+  assert.equal(review.hidden, true);
+  assert.match(review.textContent, /Look at the claim again/);
+  click(doc.querySelector("[data-assessment-open-review]"));
+  assert.equal(review.hidden, false);
+  assert.match(review.querySelector("[data-assessment-review-status]").textContent, /not marked/);
+  assert.equal(doc.querySelector('[data-assessment-mode="constructed"]').getAttribute("data-assessment-last-result"), null);
+});

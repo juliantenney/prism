@@ -281,7 +281,7 @@ test("constructed performance is a written response without automated judgement"
   assert.doesNotMatch(html, /Explain whether the study design can support a causal claim/);
   assert.doesNotMatch(html, /Whether the learner can defend a causal judgement/);
   assert.doesNotMatch(html, /This stop/);
-  assert.doesNotMatch(html, /data-assessment-check/);
+  assert.doesNotMatch(html.split("<script>")[0], /data-assessment-check[>= ]/);
   assert.doesNotMatch(html, /data-assessment-correct=/);
   assert.doesNotMatch(html, /\bgrade\b/i);
   assert.doesNotMatch(html, /pass\/fail/i);

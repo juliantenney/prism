@@ -255,15 +255,17 @@ test("2–5. Authoritative Situated page → learner HTML; sections ordered; no 
   assert.doesNotMatch(html, /data-learner-record|prism-record-persist/i);
 });
 
-test("6. No-graphics Situated package succeeds when otherwise ready", () => {
+test("6. Situated package succeeds when the editorial opening image is unfulfilled", () => {
   const page = baseSituatedPage();
   const html = renderSituatedHtml(page);
   const graphics = visualJobs.assessRequiredGraphicsJobsFromPage(page, {
     workflowResourceRefs: []
   });
   assert.equal(graphics.determinable, true);
-  assert.equal(graphics.complete, true);
-  assert.equal(graphics.zeroRequired || graphics.requiredCount === 0, true);
+  assert.equal(graphics.requiredCount, 1);
+  assert.equal(graphics.briefs[0].editorial_opening, true);
+  assert.doesNotMatch(html, /data-region="editorial-opening"/);
+  assert.doesNotMatch(html, /<figure\b/i);
 
   const built = learnerPackage.buildLearnerPackage({
     html: html,

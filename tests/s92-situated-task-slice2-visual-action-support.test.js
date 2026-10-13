@@ -145,13 +145,14 @@ test("Situated page binds section-scoped generate visual with activities: []", (
   assert.equal(design.validateSituatedTaskDesignPage(activityScoped.page).ok, false);
 });
 
-test("no generated visuals → zero required graphics; unsatisfied vs satisfied", () => {
+test("editorial opening is the only required graphic when no section visual is commissioned", () => {
   const bare = design.buildSituatedTaskDesignPageFixture().page;
   const zero = workspace.assessRequiredGraphicsJobsFromPage(bare, {});
   assert.equal(zero.determinable, true);
-  assert.equal(zero.complete, true);
-  assert.equal(zero.zeroRequired, true);
-  assert.equal(zero.requiredCount, 0);
+  assert.equal(zero.complete, false);
+  assert.equal(zero.zeroRequired, false);
+  assert.equal(zero.requiredCount, 1);
+  assert.equal(zero.briefs[0].editorial_opening, true);
 
   const withVisual = design.buildSituatedTaskDesignPageFixture({ withActionSupportVisual: true }).page;
   const incomplete = workspace.assessRequiredGraphicsJobsFromPage(withVisual, {
@@ -166,12 +167,25 @@ test("no generated visuals → zero required graphics; unsatisfied vs satisfied"
   const compiled = compiler.compilePrismImageBriefs(planned);
   const briefId = compiled.briefs[0].brief_id;
   const affordanceId = compiled.briefs[0].affordance_id;
+  const editorial = workspace
+    .buildVisualJobsPipelineFromPage(withVisual)
+    .compilerResult.briefs.find(function (brief) {
+      return brief && brief.editorial_opening === true;
+    });
   const complete = workspace.assessRequiredGraphicsJobsFromPage(withVisual, {
     workflowResourceRefs: [
       {
         resource_id: "res-1",
         affordance_id: affordanceId,
         brief_id: briefId,
+        mime_type: "image/png",
+        lifecycle_state: "active",
+        workflow_id: "wf-st"
+      },
+      {
+        resource_id: "res-editorial",
+        affordance_id: editorial.affordance_id,
+        brief_id: editorial.brief_id,
         mime_type: "image/png",
         lifecycle_state: "active",
         workflow_id: "wf-st"

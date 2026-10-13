@@ -384,7 +384,8 @@ test("12–14. Interactive / Expository / Assessment / LJ / graphics regressions
     workflowResourceRefs: []
   });
   assert.equal(g0.determinable, true);
-  assert.equal(g0.zeroRequired || g0.requiredCount === 0, true);
+  assert.equal(g0.requiredCount, 1);
+  assert.equal(g0.briefs[0].editorial_opening, true);
 
   const withVisual = pageWithEntries({ withActionSupportVisual: true });
   assert.equal(situated.validateSituatedTaskDesignPage(withVisual).ok, true);

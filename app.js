@@ -5558,7 +5558,7 @@
     ).trim();
   }
 
-  function composeSituatedTaskOriginalBrief(wf) {
+  function readWorkflowCommissionContext(wf) {
     var seed =
       (wf &&
         wf.workflowBriefResolution &&
@@ -5586,23 +5586,52 @@
         initial.commissionDependencies ||
         ""
     ).trim();
-    var hasCommissionContext = !!(
-      commissionSpec ||
-      journeyContext ||
-      commissionDependencies
-    );
+    return {
+      seed: seed,
+      initial: initial,
+      commissionSpec: commissionSpec,
+      journeyContext: journeyContext,
+      commissionDependencies: commissionDependencies,
+      hasCommissionContext: !!(commissionSpec || journeyContext || commissionDependencies)
+    };
+  }
+
+  function resolveCommissionedProductLabel(wf) {
+    if (isSituatedTaskWorkflow(wf) || workflowRecordIsSituatedTask(wf)) return "Situated Task";
+    if (isExpositoryResourceWorkflow(wf)) return "Expository Resource";
+    if (typeof workflowRecordIsAssessmentPack === "function" && workflowRecordIsAssessmentPack(wf)) {
+      return "Assessment Pack";
+    }
+    if (firstClassPromptRoute(wf) === "interactive") return "Interactive Resource";
+    var product = String((wf && wf.product) || "").trim().toLowerCase();
+    if (product === "interactive") return "Interactive Resource";
+    if (product === "expository") return "Expository Resource";
+    if (product === "assessment_pack") return "Assessment Pack";
+    if (product === "situated_task") return "Situated Task";
+    return "product";
+  }
+
+  function composeCommissionedOriginalBrief(wf, options) {
+    var ctx = readWorkflowCommissionContext(wf);
+    var seed = ctx.seed;
+    var initial = ctx.initial;
+    var opts = options && typeof options === "object" ? options : {};
+    var productLabel = String(opts.productLabel || resolveCommissionedProductLabel(wf) || "product").trim();
+    if (!productLabel) productLabel = "product";
     // Standalone family seed may already hold original_brief. When commission
     // educational context is present, always surface it — do not let the bare
     // family original_brief hide specification / journey context / dependencies.
-    if (String(seed.original_brief || "").trim() && !hasCommissionContext) {
+    if (String(seed.original_brief || "").trim() && !ctx.hasCommissionContext) {
       return String(seed.original_brief).trim();
     }
     var parts = [];
-    var focus = String(seed.topic || initial.topic || initial.designIntent || wf.goal || "").trim();
+    var focus = String(
+      seed.topic || initial.topic || initial.designIntent || (wf && wf.goal) || ""
+    ).trim();
     if (focus) parts.push("PURPOSE / FOCUS\n" + focus);
     var audience = String(
       seed.audience ||
-        (wf.workflowOutputSpec && wf.workflowOutputSpec.audience) ||
+        (wf && wf.workflowOutputSpec && wf.workflowOutputSpec.audience) ||
         initial.audience ||
         ""
     ).trim();
@@ -5610,24 +5639,243 @@
     var source = String(seed.source_context || initial.inputs || "").trim();
     if (source) parts.push("SOURCE / CONTEXT MATERIAL\n" + source);
     var constraints = String(
-      seed.constraints || initial.scopeConstraints || wf.scopeAndConstraints || ""
+      seed.constraints || initial.scopeConstraints || (wf && wf.scopeAndConstraints) || ""
     ).trim();
     if (constraints) parts.push("CONSTRAINTS / ADDITIONAL CONTEXT\n" + constraints);
-    if (commissionSpec) {
-      parts.push("COMMISSION SPECIFICATION\n" + commissionSpec);
+    if (ctx.commissionSpec) {
+      parts.push("COMMISSION SPECIFICATION\n" + ctx.commissionSpec);
     }
-    if (journeyContext) {
-      parts.push("LEARNING JOURNEY CONTEXT\n" + journeyContext);
+    if (ctx.journeyContext) {
+      parts.push("LEARNING JOURNEY CONTEXT\n" + ctx.journeyContext);
     }
-    if (commissionDependencies) {
+    if (ctx.commissionDependencies) {
+      var handoff =
+        productLabel === "Situated Task"
+          ? "These declare intentional educational dependencies on learner work from earlier Learning Journey experiences when this Situated Task was commissioned. Honour them: identify what prior learner artefact must be brought forward and how it is used. Do not recreate or independently determine work the journey assigns to the earlier experience. PRISM does not transfer the learner's prior responses automatically — the learner-facing design must make the handoff intelligible."
+          : "These declare intentional educational dependencies on learner work from earlier Learning Journey experiences when this " +
+            productLabel +
+            " was commissioned. Honour them: identify what prior learner artefact must be brought forward and how it is used. Do not recreate or independently determine work the journey assigns to the earlier experience. PRISM does not transfer the learner's prior responses automatically — the learner-facing design must make the handoff intelligible. Do not claim that earlier published resources have been inspected.";
       parts.push(
         "EDUCATIONAL DEPENDENCIES (prior experience handoff)\n" +
-          commissionDependencies +
-          "\n\nThese declare intentional educational dependencies on learner work from earlier Learning Journey experiences when this Situated Task was commissioned. Honour them: identify what prior learner artefact must be brought forward and how it is used. Do not recreate or independently determine work the journey assigns to the earlier experience. PRISM does not transfer the learner's prior responses automatically — the learner-facing design must make the handoff intelligible."
+          ctx.commissionDependencies +
+          "\n\n" +
+          handoff
       );
     }
     if (parts.length) return parts.join("\n\n");
     return String(seed.original_brief || "").trim();
+  }
+
+  function composeSituatedTaskOriginalBrief(wf) {
+    return composeCommissionedOriginalBrief(wf, { productLabel: "Situated Task" });
+  }
+
+  function composeCommissionedContextHonourInstruction(wf) {
+    var lines = [
+      "AUTHORITATIVE COMMISSION CONTEXT",
+      "",
+      "Treat COMMISSION SPECIFICATION, LEARNING JOURNEY CONTEXT, and EDUCATIONAL DEPENDENCIES as authoritative educational context for this commissioned component. Preserve this stage's own responsibilities and required output format.",
+      "",
+      "Educational purpose. Treat COMMISSION SPECIFICATION as the authoritative description of this component's educational job and constraints.",
+      "",
+      "Established scenario facts. Treat established facts in LEARNING JOURNEY CONTEXT as authoritative continuity constraints. Preserve relevant setting and participants, the problem or decision, named alternatives or options, constraints, and terminology. New evidence, developments, and perspectives are permitted. New evidence may challenge earlier judgements or change the relative merits of established options. Do not silently replace established scenario facts or substitute different options. Where the context explicitly states that there is no recurring scenario, do not invent one.",
+      "",
+      "Relationship to source material. Use supplied source material and upstream artefacts for their intended evidential and educational purposes. Where generic topic, source-material, or grounding instructions conflict with established journey facts, preserve the authoritative continuity constraints. Do not discard relevant evidence merely because it challenges an earlier judgement. Do not silently rewrite evidence to make it agree with an established scenario. Where an apparent contradiction cannot be reconciled without inventing facts, avoid inventing a resolution.",
+      "",
+      "Earlier learner activities. Descriptions of preceding activities establish intended educational progression. They do not prove that learners completed those activities, what individual learners answered, what earlier published resources contain, or that this model has inspected those resources. Do not claim that earlier published resources have been inspected.",
+      "",
+      "Bring-forward. Where the commission requires earlier learner work, ask learners to consult their own earlier work and explain how that work informs the current activity. Do not imply that PRISM automatically transfers learner responses.",
+      "",
+      "Educational dependencies. Treat EDUCATIONAL DEPENDENCIES as references to relevant predecessor commissions or experiences. They do not establish that previous outputs have been inspected."
+    ];
+    var isAssessmentPack =
+      (typeof workflowRecordIsAssessmentPack === "function" && workflowRecordIsAssessmentPack(wf)) ||
+      String((wf && wf.product) || "")
+        .trim()
+        .toLowerCase() === "assessment_pack";
+    if (isAssessmentPack) {
+      lines.push(
+        "",
+        "Assessment Pack clarification. LEARNING JOURNEY CONTEXT is authoritative for established journey facts and relevant preceding activities. Existing Grounding context remains this pack's topic or focus; it does not replace LEARNING JOURNEY CONTEXT. Where this stage produces learner_context.depends_on_prior_work or learner_context.bring_forward, derive those values from the authoritative commission context where relevant. Do not invent prior learner responses or assume automatic access to them."
+      );
+    }
+    return lines.join("\n");
+  }
+
+  function commissionedContextHonourAlreadyPresent(body) {
+    return /^AUTHORITATIVE COMMISSION CONTEXT$/m.test(String(body || ""));
+  }
+
+  function composeCommissionedLearnerFacingBringForwardInstruction(wf) {
+    var lines = [
+      "LEARNER-FACING BRING-FORWARD",
+      "",
+      "This stage writes learner-facing copy. Preserve this stage's own responsibilities and required output format.",
+      "",
+      "When to write a bring-forward instruction. Generate one concise learner-facing bring-forward instruction only when the commission explicitly requires learners to reuse their own earlier work. Use the educational requirement expressed in COMMISSION SPECIFICATION, LEARNING JOURNEY CONTEXT, and EDUCATIONAL DEPENDENCIES. Do not infer a bring-forward requirement from shared scenario facts, journey position, or dependency identifiers alone. A shared scenario is not automatically a bring-forward requirement: a commission may preserve established facts without asking learners to reuse their own earlier work. A journey that explicitly has no recurring scenario may still require bring-forward when the commission asks learners to reuse earlier work. Where the commission does not require learner-owned reuse, do not invent a bring-forward instruction.",
+      "",
+      "If a bring-forward is required, the learner-facing instruction must:",
+      "1. Identify the relevant earlier learner activity.",
+      "2. Tell learners what to consult or retrieve from their own work.",
+      "3. Explain how that work informs the current activity.",
+      "4. Avoid assuming that learners completed the earlier activity or that particular answers are known. Prefer conditional language such as \"If you completed the earlier activity, revisit...\".",
+      "5. Avoid implying that PRISM automatically transfers learner responses.",
+      "6. Refer only to educationally relevant predecessors.",
+      "7. Appear once in this product's existing learner-facing structure. Do not repeat it in every activity, section, or later stage.",
+      "",
+      "Write to the learner. Do not dump COMMISSION SPECIFICATION, LEARNING JOURNEY CONTEXT, or EDUCATIONAL DEPENDENCIES into learner-facing output."
+    ];
+    var product = String((wf && wf.product) || "")
+      .trim()
+      .toLowerCase();
+    var isInteractive =
+      firstClassPromptRoute(wf) === "interactive" || product === "interactive";
+    var isExpository =
+      (typeof isExpositoryResourceWorkflow === "function" && isExpositoryResourceWorkflow(wf)) ||
+      product === "expository";
+    var isAssessmentPack =
+      (typeof workflowRecordIsAssessmentPack === "function" && workflowRecordIsAssessmentPack(wf)) ||
+      product === "assessment_pack";
+    if (isInteractive) {
+      lines.push(
+        "",
+        "Interactive Resource. Place any required bring-forward in the first relevant activity's existing activity_preamble. Explain what learners should bring from their own earlier work and how they will use it in that activity. Do not repeat it on every activity. Do not add an overview banner. Do not require an overview field."
+      );
+    } else if (isExpository) {
+      lines.push(
+        "",
+        "Expository Resource. Place any required bring-forward naturally in the opening section's existing exposition. Orient learners to the relevant earlier activity and explain how their own work informs the current reading or analysis. Do not create a new section. Do not treat within-chapter continuity_hooks as cross-component dependencies."
+      );
+    } else if (isAssessmentPack) {
+      lines.push(
+        "",
+        "Assessment Pack. Where this stage produces learner_context.bring_forward, emit [{what, how_used}] only when the commission requires reuse of earlier learner work. what identifies the learner-owned earlier work to consult. how_used explains its role in the current assessment. Do not assume completion or known answers. Do not imply automatic response transfer. Do not duplicate this copy in Design Page exposition. Do not populate bring_forward from dependency identifiers alone. Existing Grounding context remains the pack's topic or focus. Existing Bind commissioning instructions remain in force."
+      );
+    }
+    return lines.join("\n");
+  }
+
+  function commissionedHeadingAlreadyPresent(body, heading) {
+    var label = String(heading || "").trim();
+    if (!label) return false;
+    return new RegExp("^" + label.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "$", "m").test(
+      String(body || "")
+    );
+  }
+
+  function attachCommissionedRuntimeInstructionBlocks(body, blocks, brief) {
+    var raw = String(body || "").trim();
+    if (!raw) return raw;
+    var pending = [];
+    (Array.isArray(blocks) ? blocks : []).forEach(function (block) {
+      var text = String(block || "").trim();
+      if (!text) return;
+      var heading = text.split("\n")[0].trim();
+      if (heading && commissionedHeadingAlreadyPresent(raw, heading)) return;
+      pending.push(text);
+    });
+    if (!pending.length) return raw;
+    var instruction = pending.join("\n\n");
+    var composedBrief = String(brief || "").trim();
+    if (composedBrief) {
+      var briefAt = raw.indexOf(composedBrief);
+      if (briefAt >= 0) {
+        var before = raw.slice(0, briefAt + composedBrief.length);
+        var after = raw.slice(briefAt + composedBrief.length).replace(/^\s+/, "");
+        return after ? before + "\n\n" + instruction + "\n\n" + after : before + "\n\n" + instruction;
+      }
+    }
+    return instruction + "\n\n" + raw;
+  }
+
+  function attachCommissionedContextHonourInstruction(body, honour, brief) {
+    return attachCommissionedRuntimeInstructionBlocks(body, [honour], brief);
+  }
+
+  function templateDeclaresOriginalBriefToken(template) {
+    return /\{\{\s*ORIGINAL_BRIEF\s*\}\}/.test(String(template || ""));
+  }
+
+  function isCommissionContextDeliveryStep(step, wf) {
+    if (!step || !wf) return false;
+    if (!readWorkflowCommissionContext(wf).hasCommissionContext) return false;
+    if (isLearningJourneyWorkflow(wf) || workflowRecordIsLearningJourney(wf)) return false;
+    if (isSituatedTaskWorkflow(wf) || workflowRecordIsSituatedTask(wf)) return false;
+    var cid = String(step.canonical_step_id || step.canonicalStepId || "")
+      .trim()
+      .toLowerCase();
+    var title = String(step.title || "").trim().toLowerCase();
+    var isGlc = cid === "step_generate_learning_content" || title === "generate learning content";
+    var isMk = cid === "step_model_knowledge" || title === "model knowledge";
+    var isDlo = cid === "step_define_learning_outcomes" || title === "define learning outcomes";
+    var isNormalize = cid === "step_normalize_content" || title === "normalize content";
+    var isPurpose =
+      cid === "step_interpret_evidence_purpose" || title === "interpret evidence purpose";
+    if (isGlc || isMk || isDlo) return true;
+    if (isPurpose && typeof workflowRecordIsAssessmentPack === "function" && workflowRecordIsAssessmentPack(wf)) {
+      return true;
+    }
+    if (isNormalize && firstClassPromptRoute(wf) === "interactive") return true;
+    return false;
+  }
+
+  function isCommissionLearnerFacingCopyStep(step, wf) {
+    if (!step || !wf) return false;
+    if (!readWorkflowCommissionContext(wf).hasCommissionContext) return false;
+    if (isLearningJourneyWorkflow(wf) || workflowRecordIsLearningJourney(wf)) return false;
+    if (isSituatedTaskWorkflow(wf) || workflowRecordIsSituatedTask(wf)) return false;
+    var cid = String(step.canonical_step_id || step.canonicalStepId || "")
+      .trim()
+      .toLowerCase();
+    var title = String(step.title || "").trim().toLowerCase();
+    var product = String((wf && wf.product) || "")
+      .trim()
+      .toLowerCase();
+    var isDla =
+      cid === "step_design_learning_activities" || title === "design learning activities";
+    var isXd =
+      cid === "step_expository_development" || title === "expository development";
+    var isPurpose =
+      cid === "step_interpret_evidence_purpose" || title === "interpret evidence purpose";
+    if (isDla && (firstClassPromptRoute(wf) === "interactive" || product === "interactive")) {
+      return true;
+    }
+    if (
+      isXd &&
+      ((typeof isExpositoryResourceWorkflow === "function" && isExpositoryResourceWorkflow(wf)) ||
+        product === "expository")
+    ) {
+      return true;
+    }
+    if (
+      isPurpose &&
+      ((typeof workflowRecordIsAssessmentPack === "function" && workflowRecordIsAssessmentPack(wf)) ||
+        product === "assessment_pack")
+    ) {
+      return true;
+    }
+    return false;
+  }
+
+  function applyCommissionedOriginalBriefDelivery(body, step, wf, options) {
+    var raw = String(body || "").trim();
+    if (!raw) return raw;
+    var wp4 = isCommissionContextDeliveryStep(step, wf);
+    var wp5 = isCommissionLearnerFacingCopyStep(step, wf);
+    if (!wp4 && !wp5) return raw;
+    var opts = options && typeof options === "object" ? options : {};
+    var brief = composeCommissionedOriginalBrief(wf);
+    var blocks = [];
+    if (wp4 || wp5) blocks.push(composeCommissionedContextHonourInstruction(wf));
+    if (wp5) blocks.push(composeCommissionedLearnerFacingBringForwardInstruction(wf));
+    if (opts.originalBriefTokenPresent) {
+      return attachCommissionedRuntimeInstructionBlocks(raw, blocks, brief);
+    }
+    if (!brief) {
+      return attachCommissionedRuntimeInstructionBlocks(raw, blocks, "");
+    }
+    var withBrief = raw.indexOf(brief) === 0 ? raw : brief + "\n\n" + raw;
+    return attachCommissionedRuntimeInstructionBlocks(withBrief, blocks, brief);
   }
 
   function resolveLearningJourneySiblingPromptsLib() {
@@ -6630,7 +6878,9 @@
         ? composeLearningJourneyOriginalBrief(wf)
         : isSituatedTaskWorkflow(wf) || workflowRecordIsSituatedTask(wf)
           ? composeSituatedTaskOriginalBrief(wf)
-          : ""
+          : readWorkflowCommissionContext(wf).hasCommissionContext
+            ? composeCommissionedOriginalBrief(wf)
+            : ""
     };
     if (cfg.defaultPromptVariables && typeof cfg.defaultPromptVariables === "object") {
       Object.keys(cfg.defaultPromptVariables).forEach(function (k) {
@@ -12471,6 +12721,26 @@
     }
   }
 
+  function stampAssessmentDesignPageLearnerStringRepairRaw(raw, step, wf) {
+    if (!workflowRecordIsAssessmentPack(wf)) return String(raw || "");
+    if (resolvePartialPageCaptureStageFromStep(step) !== "design_page") {
+      return String(raw || "");
+    }
+    var parsed = tryParseWorkflowArtefactJson(raw);
+    if (!parsed) return String(raw || "");
+    var canonical = assessmentCanonicalApi();
+    if (!canonical || typeof canonical.repairAssessmentDesignPageLearnerFacingStrings !== "function") {
+      return String(raw || "");
+    }
+    var repaired = canonical.repairAssessmentDesignPageLearnerFacingStrings(parsed);
+    if (!repaired || !repaired.repairApplied) return String(raw || "");
+    try {
+      return JSON.stringify(repaired.page, null, 2);
+    } catch (_) {
+      return String(raw || "");
+    }
+  }
+
   function dlaCanonicalHeadingPresent(text) {
     return /## 1\. DLA ROLE AND AUTHORITY/.test(String(text || ""));
   }
@@ -12481,6 +12751,58 @@
       throw new Error("Canonical DLA assembler unavailable");
     }
     return contractMod;
+  }
+
+  function resolveDlaCanonicalSlotCopyStep(context) {
+    var cid = String(
+      (context &&
+        (context.stepCanonicalStepId || context.canonical_step_id || context.canonicalStepId)) ||
+        ""
+    ).trim();
+    var title = String(
+      (context && (context.stepCanonicalTitle || context.stepTitle || context.title)) ||
+        ""
+    ).trim();
+    if (!cid && !title) {
+      cid = "step_design_learning_activities";
+      title = "Design Learning Activities";
+    }
+    return {
+      canonical_step_id: cid,
+      canonicalStepId: cid,
+      title: title
+    };
+  }
+
+  function attachCommissionedInteractiveDlaProductionSlot(productionParts, context, wf) {
+    if (!isCommissionLearnerFacingCopyStep(resolveDlaCanonicalSlotCopyStep(context), wf)) {
+      return productionParts;
+    }
+    var brief = composeCommissionedOriginalBrief(wf);
+    var honour = composeCommissionedContextHonourInstruction(wf);
+    var bringForward = composeCommissionedLearnerFacingBringForwardInstruction(wf);
+    var existingText = (Array.isArray(productionParts) ? productionParts : [])
+      .filter(Boolean)
+      .join("\n")
+      .trim();
+    var withBrief = existingText;
+    if (brief) {
+      withBrief =
+        existingText.indexOf(brief) === 0
+          ? existingText
+          : existingText
+            ? brief + "\n\n" + existingText
+            : brief;
+    }
+    var attached = attachCommissionedRuntimeInstructionBlocks(
+      withBrief,
+      [honour, bringForward],
+      brief
+    );
+    if (!attached) {
+      attached = [brief, honour, bringForward].filter(Boolean).join("\n\n");
+    }
+    return attached ? [attached] : productionParts;
   }
 
   function buildDlaCanonicalSlotContext(context, wf) {
@@ -12519,6 +12841,11 @@
     try {
       outputParts.push(buildLdMathRenderPromptBlock());
     } catch (_) {}
+    productionParts = attachCommissionedInteractiveDlaProductionSlot(
+      productionParts,
+      context,
+      wf
+    );
     var overlayOn = shouldApplyLearnerPagePedagogicFramingScaffold(context, resolved, base);
     var contractMod = resolveLdDlaPageEnrichContractLib();
     // S80-S6 §4/§7: the workbook overlay used to assert a hardcoded ~60-minute
@@ -27251,6 +27578,13 @@
         raw = stampedDpEnvelopeRaw;
       }
     }
+    if (storesArtefact && pageStructureStep && stepRow && String(raw || "").trim()) {
+      var stampedApFramingRaw = stampAssessmentDesignPageLearnerStringRepairRaw(raw, stepRow, wf);
+      if (stampedApFramingRaw && stampedApFramingRaw !== raw) {
+        ta.value = stampedApFramingRaw;
+        raw = stampedApFramingRaw;
+      }
+    }
     if (storesArtefact && pageStructureStep && String(raw || "").trim()) {
       var pageCapture = parseWorkflowRunPageStructureCaptureForStorage(raw, stepRow, wf);
       if (
@@ -33233,7 +33567,7 @@
         error: ""
       };
     }
-    function finalizePromptBody(body) {
+    function finalizePromptBody(body, deliveryOptions) {
       var raw = String(body || "").trim();
       if (!raw) return "";
       var augmented = applyWorkflowStepRuntimePromptAugmentations(raw, step, wfRec, {});
@@ -33248,7 +33582,12 @@
         augmented = ensureAssessmentPackEditorialOpeningInDesignPrompt(augmented);
       }
       augmented = ensureAssessmentPackKeyDefencePrompt(augmented, step, wfRec);
-      return augmented;
+      return applyCommissionedOriginalBriefDelivery(
+        augmented,
+        step,
+        wfRec,
+        deliveryOptions || {}
+      );
     }
     var expositorySiblingBody = resolveExpositorySiblingPromptBodyForStep(step, wfRec);
     if (expositorySiblingBody) {
@@ -33259,7 +33598,9 @@
       );
       return {
         sourceType: sourceType === "none" ? "expository_sibling" : sourceType,
-        text: finalizePromptBody(materializedSibling),
+        text: finalizePromptBody(materializedSibling, {
+          originalBriefTokenPresent: templateDeclaresOriginalBriefToken(expositorySiblingBody)
+        }),
         error: ""
       };
     }
@@ -33287,7 +33628,9 @@
       );
       return {
         sourceType: sourceType === "none" ? "learning_journey_sibling" : sourceType,
-        text: finalizePromptBody(materializedLjSibling),
+        text: finalizePromptBody(materializedLjSibling, {
+          originalBriefTokenPresent: templateDeclaresOriginalBriefToken(learningJourneySiblingBody)
+        }),
         error: ""
       };
     }
@@ -33315,7 +33658,9 @@
       );
       return {
         sourceType: sourceType === "none" ? "situated_task_sibling" : sourceType,
-        text: finalizePromptBody(materializedStSibling),
+        text: finalizePromptBody(materializedStSibling, {
+          originalBriefTokenPresent: templateDeclaresOriginalBriefToken(situatedTaskSiblingBody)
+        }),
         error: ""
       };
     }
@@ -33332,7 +33677,15 @@
           error: "Local override selected, but prompt body is empty."
         };
       }
-      return { sourceType: sourceType, text: finalizePromptBody(body), error: "" };
+      var overrideTokenPresent = templateDeclaresOriginalBriefToken(body);
+      if (overrideTokenPresent) {
+        body = materializeWorkflowPromptTemplateTokens(body, step, wfRec);
+      }
+      return {
+        sourceType: sourceType,
+        text: finalizePromptBody(body, { originalBriefTokenPresent: overrideTokenPresent }),
+        error: ""
+      };
     }
     if (sourceType === "library_prompt") {
       var libraryBody = resolveLibraryPromptBody(step && step.promptId);
@@ -33343,9 +33696,13 @@
           error: "Library prompt selected, but prompt body could not be resolved."
         };
       }
+      var libraryTokenPresent = templateDeclaresOriginalBriefToken(libraryBody);
+      if (libraryTokenPresent) {
+        libraryBody = materializeWorkflowPromptTemplateTokens(libraryBody, step, wfRec);
+      }
       return {
         sourceType: sourceType,
-        text: finalizePromptBody(libraryBody),
+        text: finalizePromptBody(libraryBody, { originalBriefTokenPresent: libraryTokenPresent }),
         error: ""
       };
     }
@@ -36109,7 +36466,7 @@
         );
       } else if (workflowRecordIsAssessmentPack(wfForChain)) {
         lines.push(
-          "Assessment Design Page output: return the Assessment Pack page, including artifact_type \"page\", schema_version \"2.0.0\", product_id \"assessment_pack\", page_kind \"assessment\", title, activities [], assessment_evidence, and a root-level editorial_opening_image decision. activities must be exactly an empty array. Do not copy Interactive learning activities into it, and do not place elicitations, questions, keys, or feedback there. Include optional attempt_instructions as one string (several instructions are paragraphs or numbered lines inside that string; not an array) and optional framing when they belong on the page."
+          "Assessment Design Page output: return the Assessment Pack page, including artifact_type \"page\", schema_version \"2.0.0\", product_id \"assessment_pack\", page_kind \"assessment\", title, activities [], assessment_evidence, and a root-level editorial_opening_image decision. activities must be exactly an empty array. Do not copy Interactive learning activities into it, and do not place elicitations, questions, keys, or feedback there. Include optional attempt_instructions as one string (several instructions are paragraphs or numbered lines inside that string; not an array) and optional framing as one string when they belong on the page. framing is learner-facing orientation prose. Do not emit framing as an object or array."
         );
         lines.push(
           "Do not add Interactive learning-page sections, knowledge summaries, study tips, or page graphics planning. Page graphics planning means assessment stimuli and learning-page graphics. It does not apply to editorial_opening_image."
@@ -52979,7 +53336,10 @@
           "Learning Journey Design Page must be the page object itself (artifact_type page, product_id learning_journey), not a wrapper"
       };
     }
-    var gate = designMod.validateLearningJourneyDesignPage(parsed);
+    var gate =
+      typeof designMod.validateLearningJourneyDesignPageForCapture === "function"
+        ? designMod.validateLearningJourneyDesignPageForCapture(parsed)
+        : designMod.validateLearningJourneyDesignPage(parsed);
     if (!gate.ok) {
       return {
         ok: false,
@@ -55272,6 +55632,7 @@
       renderUtilitiesArtefactHtmlAsync(snapshot, {
         skipWorkflowAssembly: true,
         applyCompositionValidation: false,
+        visualAssets: state.utilitiesOutputWorkspace.visualAssetManifest || null,
         __previewRevision: ljRevision,
         __previewReason: why
       }).then(function (rendered) {
@@ -56558,6 +56919,28 @@
     return html + insertHtml;
   }
 
+  function resolveLearningJourneyPreviewVisualAssets(opts) {
+    if (opts && opts.visualAssets) return opts.visualAssets;
+    var ws = state.utilitiesOutputWorkspace;
+    if (ws && ws.visualAssetManifest && typeof ws.visualAssetManifest === "object") {
+      return ws.visualAssetManifest;
+    }
+    return null;
+  }
+
+  function renderLearningJourneyPreviewEditorialHtml(page, visualAssets) {
+    var ljPackageMod = resolveLearningJourneyLearnerPackageLib();
+    if (
+      !ljPackageMod ||
+      typeof ljPackageMod.renderLearningJourneyEditorialBannerHtml !== "function"
+    ) {
+      return "";
+    }
+    return String(
+      ljPackageMod.renderLearningJourneyEditorialBannerHtml(visualAssets, page) || ""
+    );
+  }
+
   /**
    * Authoring learner-page export pipeline — always vNext (S74A-D02 / S74A-T-045).
    * Non-page artefacts (e.g. slide_deck) use renderUtilitiesArtefactHtmlWithResolvedPlan → runUtilityRendererByPlan.
@@ -56621,7 +57004,11 @@
       }
       var ljPreview = ljDesignMod.buildLearningJourneyCommissioningPreviewHtml(parsed, {
         sourceWorkflowId: ljSourceWorkflowId,
-        productionByCommissionId: productionByCommissionId
+        productionByCommissionId: productionByCommissionId,
+        editorialHtml: renderLearningJourneyPreviewEditorialHtml(
+          parsed,
+          resolveLearningJourneyPreviewVisualAssets(opts)
+        )
       });
       if (!ljPreview || !ljPreview.ok) {
         return {
@@ -56730,7 +57117,12 @@
             workflow: wfForLjAsync,
             skipWorkflowAssembly:
               typeof opts.skipWorkflowAssembly === "boolean" ? opts.skipWorkflowAssembly : true,
-            applyCompositionValidation: false
+            applyCompositionValidation: false,
+            visualAssets:
+              opts.visualAssets ||
+              (state.utilitiesOutputWorkspace &&
+                state.utilitiesOutputWorkspace.visualAssetManifest) ||
+              null
           })
         );
       });
@@ -57582,6 +57974,42 @@
     });
   }
 
+  function resolveLearningJourneyHomePublicationMedia() {
+    return rehydrateWorkflowResourcesIntoUtilitiesWorkspace({
+      refreshPreview: false,
+      reason: "lj_home_package"
+    })
+      .then(function () {
+        return rehydrateWorkflowPageResourcesIntoWorkspace();
+      })
+      .then(function () {
+        var ws = state.utilitiesOutputWorkspace;
+        return {
+          visualAssets:
+            ws && ws.visualAssetManifest && typeof ws.visualAssetManifest === "object"
+              ? ws.visualAssetManifest
+              : { assets: [] },
+          videoProjection:
+            ws && ws.videoResourceProjection && typeof ws.videoResourceProjection === "object"
+              ? ws.videoResourceProjection
+              : null
+        };
+      })
+      .catch(function () {
+        var ws = state.utilitiesOutputWorkspace;
+        return {
+          visualAssets:
+            ws && ws.visualAssetManifest && typeof ws.visualAssetManifest === "object"
+              ? ws.visualAssetManifest
+              : { assets: [] },
+          videoProjection:
+            ws && ws.videoResourceProjection && typeof ws.videoResourceProjection === "object"
+              ? ws.videoResourceProjection
+              : null
+        };
+      });
+  }
+
   function handleLearningJourneyLearnerPackageDownload() {
     var ljPackageMod = resolveLearningJourneyLearnerPackageLib();
     var ljDesignMod = resolveLearningJourneyDesignPageLib();
@@ -57683,6 +58111,7 @@
           });
         });
         return chain.then(function (constituents) {
+          return resolveLearningJourneyHomePublicationMedia().then(function (homeMedia) {
           var assembled = ljPackageMod.buildLearningJourneyLearnerPackage({
             page: page,
             learningJourneyWorkflowId: sourceWorkflowId,
@@ -57696,6 +58125,8 @@
                 : undefined,
             visualJobsWorkspaceMod: getUtilitiesVisualJobsWorkspaceMod() || null,
             constituents: constituents,
+            visualAssets: homeMedia && homeMedia.visualAssets,
+            videoProjection: homeMedia && homeMedia.videoProjection,
             includeEmptyMediaDir: false,
             preparationPath:
               (prepared && prepared.preparationPath) ||
@@ -57729,6 +58160,7 @@
             assembled: assembled,
             preparationDiagnostics: preflight.preparationDiagnostics || null
           };
+          });
         });
       })
       .catch(function (err) {
@@ -58501,9 +58933,11 @@
             var ljDesignMod = resolveLearningJourneyDesignPageLib();
             var ljParsed = tryParseWorkflowArtefactJson(body);
             var ljGate =
-              ljDesignMod && typeof ljDesignMod.validateLearningJourneyDesignPage === "function"
-                ? ljDesignMod.validateLearningJourneyDesignPage(ljParsed)
-                : { ok: false, errors: ["learning_journey_design_page_module_unavailable"] };
+              ljDesignMod && typeof ljDesignMod.validateLearningJourneyDesignPageForCapture === "function"
+                ? ljDesignMod.validateLearningJourneyDesignPageForCapture(ljParsed)
+                : ljDesignMod && typeof ljDesignMod.validateLearningJourneyDesignPage === "function"
+                  ? ljDesignMod.validateLearningJourneyDesignPage(ljParsed)
+                  : { ok: false, errors: ["learning_journey_design_page_module_unavailable"] };
             if (!ljGate.ok) {
               updateRunStepOutputStatus(currentLi);
               showToast(
@@ -59763,6 +60197,14 @@
     prismTestApi.clearSituatedTaskDesignPageModelPromptSeed =
       clearSituatedTaskDesignPageModelPromptSeed;
     prismTestApi.composeSituatedTaskOriginalBrief = composeSituatedTaskOriginalBrief;
+    prismTestApi.composeCommissionedOriginalBrief = composeCommissionedOriginalBrief;
+    prismTestApi.composeCommissionedContextHonourInstruction =
+      composeCommissionedContextHonourInstruction;
+    prismTestApi.composeCommissionedLearnerFacingBringForwardInstruction =
+      composeCommissionedLearnerFacingBringForwardInstruction;
+    prismTestApi.isCommissionLearnerFacingCopyStep = isCommissionLearnerFacingCopyStep;
+    prismTestApi.applyCommissionedOriginalBriefDelivery = applyCommissionedOriginalBriefDelivery;
+    prismTestApi.readWorkflowCommissionContext = readWorkflowCommissionContext;
     prismTestApi.workflowRecordIsLearningJourney = workflowRecordIsLearningJourney;
     prismTestApi.workflowHasSprint58PagePipelineSteps = workflowHasSprint58PagePipelineSteps;
     prismTestApi.recomposeWorkflowPageCapturesFromUpstream =
@@ -60235,6 +60677,8 @@
       applyExpositoryDesignPageCaptureEnvelopeIdentity;
     prismTestApi.stampExpositoryDesignPageCaptureEnvelopeRaw =
       stampExpositoryDesignPageCaptureEnvelopeRaw;
+    prismTestApi.stampAssessmentDesignPageLearnerStringRepairRaw =
+      stampAssessmentDesignPageLearnerStringRepairRaw;
     prismTestApi.isPostEpisodePlanPartialOutputStep = isPostEpisodePlanPartialOutputStep;
     prismTestApi.resolvePartialPageCaptureStageFromStep = resolvePartialPageCaptureStageFromStep;
     prismTestApi.validatePartialPageCaptureForStep = validatePartialPageCaptureForStep;

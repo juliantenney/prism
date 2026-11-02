@@ -100,9 +100,24 @@ test("authenticated Learning Journey prompts match export top-level bodies", () 
     byTitle[p.title] = p.body;
   });
   assert.equal(sibling.TEMPLATES.learning_requirements, byTitle.JourneyRequirements);
-  assert.equal(sibling.TEMPLATES.learning_progression, byTitle.JourneyProgression);
   assert.equal(sibling.TEMPLATES.learning_elements, byTitle.JourneyElements);
-  assert.equal(sibling.TEMPLATES.learning_commissions, byTitle.JourneyCommissioning);
+  // Sprint 92 added Situated Task to the progression boundary line; the authenticated
+  // export still names only the original three products there.
+  assert.ok(
+    sibling.TEMPLATES.learning_progression.indexOf(
+      "Do not choose Expository Resource, Interactive Resource, Assessment Pack or Situated Task products."
+    ) !== -1
+  );
+  // Sprint 94 WP1: commissioning remains the authenticated export, plus the continuity contract.
+  assert.notEqual(sibling.TEMPLATES.learning_commissions, byTitle.JourneyCommissioning);
+  assert.ok(
+    sibling.TEMPLATES.learning_commissions.indexOf(
+      "You are commissioning the designed learning experiences required to realise a Learning Journey."
+    ) !== -1
+  );
+  assert.ok(
+    sibling.TEMPLATES.learning_commissions.indexOf("EDUCATIONAL CONTINUITY CONTRACT") !== -1
+  );
   const historical = authenticated.prompts.find((p) => p.title === "JourneyRequirements").versions[0]
     .body;
   assert.notEqual(sibling.TEMPLATES.learning_requirements, historical);

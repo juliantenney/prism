@@ -212,7 +212,7 @@ test("S78-T-009: §10 output surface requires provider rows MUST carry evidence_
   const output = dlaContract.assembleDlaCanonicalContract().sections.output;
   assert.match(
     output,
-    /when evidence_decision\.required is true, every material_id in evidence_decision\.provider_material_ids MUST identify a required_materials\[\] row carrying a complete evidence_requirement/i
+    /when evidence_decision\.required is true, provider_material_ids must list at least one provider; every material_id in evidence_decision\.provider_material_ids MUST identify a required_materials\[\] row carrying a complete evidence_requirement/i
   );
   assert.match(output, /task_material_decision\.task_input_material_ids/);
   assert.doesNotMatch(

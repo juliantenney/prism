@@ -2,7 +2,8 @@
  * Sprint 91 — Learning Journey Authoring Preview as commissioning interface.
  *
  * product_id learning_journey selects LJ commissioning Preview (not generic learner export).
- * commissions[] drive Create actions; specification prose is not dumped into HTML.
+ * commissions[] drive Create actions. Author-only contract shows labelled
+ * specification_text / journey_context_text / dependencies as text, not attributes.
  */
 const test = require("node:test");
 const assert = require("node:assert/strict");
@@ -242,17 +243,39 @@ test("unsupported commissions remain visible without Create actions", () => {
   assert.equal((html.match(/Create Interactive/g) || []).length, 2);
 });
 
-test("specification_text / journey_context_text / dependencies are not dumped into Preview HTML", () => {
+test("specification_text / journey_context_text / dependencies appear as labelled author contract, not attributes", () => {
   const page = liveLikeLearningJourneyPage();
   const preview = design.buildLearningJourneyCommissioningPreviewHtml(page);
   const html = preview.html;
-  assert.doesNotMatch(html, /SECRET_SPEC_C2/);
-  assert.doesNotMatch(html, /SECRET_SPEC_C4/);
-  assert.doesNotMatch(html, /SECRET_JOURNEY_CONTEXT_C1/);
-  assert.doesNotMatch(html, /SECRET_DEPENDENCY_C6/);
-  assert.doesNotMatch(html, /LONG SPEC/);
+  assert.match(html, /lj-commissioning-preview__contract/);
+  assert.match(html, /<dt>Educational job<\/dt>/);
+  assert.match(html, /<dt>Journey context<\/dt>/);
+  assert.match(html, /<dt>Dependencies<\/dt>/);
+  assert.match(html, /SECRET_SPEC_C2/);
+  assert.match(html, /SECRET_JOURNEY_CONTEXT_C1/);
+  assert.match(html, /SECRET_DEPENDENCY_C6/);
+  assert.doesNotMatch(html, /specification_text=/);
+  assert.doesNotMatch(html, /journey_context_text=/);
+  assert.doesNotMatch(html, /dependencies=/);
   assert.doesNotMatch(html, /Author design intent only/);
   assert.doesNotMatch(html, /Continuity sidecar only/);
+});
+
+test("commissioning preview inserts an attached editorial banner after the title", () => {
+  const preview = design.buildLearningJourneyCommissioningPreviewHtml(
+    liveLikeLearningJourneyPage(),
+    {
+      sourceWorkflowId: "wf-lj-live",
+      editorialHtml:
+        '<div class="util-editorial-opening" data-region="editorial-opening"><img alt="Colleagues discussing a workplace request around a table." src="data:image/png;base64,aaa"></div>'
+    }
+  );
+  assert.equal(preview.ok, true);
+  const titleAt = preview.html.indexOf("<h1>");
+  const bannerAt = preview.html.indexOf('data-region="editorial-opening"');
+  const roleAt = preview.html.indexOf("Authoring view");
+  assert.ok(titleAt >= 0 && bannerAt > titleAt && roleAt > bannerAt);
+  assert.match(preview.html, /Create Interactive/);
 });
 
 test("Authoring Preview HTML path uses Learning Journey commissioning treatment for LJ pages", () => {
@@ -274,8 +297,53 @@ test("Authoring Preview HTML path uses Learning Journey commissioning treatment 
   assert.match(rendered.html, /Create Expository/);
   assert.match(rendered.html, /Create Assessment Pack/);
   assert.match(rendered.html, /Unsupported in PRISM/);
-  assert.doesNotMatch(rendered.html, /SECRET_SPEC_C2/);
+  assert.match(rendered.html, /SECRET_SPEC_C2/);
+  assert.match(rendered.html, /<dt>Educational job<\/dt>/);
+  assert.doesNotMatch(rendered.html, /specification_text=/);
   assert.doesNotMatch(rendered.html, /util-learner-renderer-vnext/);
+  assert.doesNotMatch(rendered.html, /data-region="editorial-opening"/);
+});
+
+test("Authoring Preview and Open HTML include an attached editorial image", () => {
+  const { api } = loadPrismAppJsTestApi({
+    extraLibs: [
+      "lib/first-class-workflow-family.js",
+      "lib/expository-editorial-opening.js",
+      "lib/learning-journey-design-page.js",
+      "lib/learning-journey-learner-package.js"
+    ]
+  });
+  const rendered = api.runUtilityPageExportPipelineForTest(liveLikeLearningJourneyPage(), {
+    skipWorkflowAssembly: true,
+    applyCompositionValidation: false,
+    visualAssets: {
+      assets: [
+        {
+          brief_id: "brief-editorial-opening",
+          affordance_id: "va-editorial-opening",
+          visual_slot: "editorial-opening",
+          alt_text: "Colleagues discussing a workplace request around a table",
+          subject: "Colleagues discussing a workplace request together",
+          learner_caption: "Colleagues discussing a workplace request together",
+          detailed_description:
+            "Create a restrained, realistic editorial photograph of colleagues. Photorealistic lighting.",
+          render_source: {
+            kind: "data_url",
+            value:
+              "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg=="
+          }
+        }
+      ]
+    }
+  });
+  assert.equal(rendered.error, null, rendered.error || "");
+  assert.equal(rendered.learningJourneyCommissioningPreview, true);
+  assert.match(rendered.html, /data-region="editorial-opening"/);
+  assert.match(rendered.html, /Figure 1\./);
+  assert.match(rendered.html, /Colleagues discussing a workplace request together/);
+  assert.match(rendered.html, /Create Interactive/);
+  assert.match(rendered.html, /Authoring view/);
+  assert.doesNotMatch(rendered.html, /Create a restrained, realistic editorial photograph/);
 });
 
 test("ordinary non-Learning-Journey page rendering remains on shared learner path", () => {

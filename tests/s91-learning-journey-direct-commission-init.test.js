@@ -257,7 +257,8 @@ test("commission body is not taken from HTML attributes; Preview export still om
   });
   assert.equal(rendered.error, null);
   assert.match(rendered.html, /data-lj-commission-id="c1"/);
-  assert.doesNotMatch(rendered.html, /AUTHORITATIVE_C1_SPEC/);
+  assert.match(rendered.html, /<dt>Educational job<\/dt>/);
+  assert.match(rendered.html, /AUTHORITATIVE_C1_SPEC/);
   assert.doesNotMatch(rendered.html, /specification_text=/);
 
   api.setLearningJourneyCommissioningPreviewContextForTest({

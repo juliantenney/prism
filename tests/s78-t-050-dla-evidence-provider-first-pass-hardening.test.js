@@ -45,7 +45,7 @@ test("T-050 DLA contract still contains canonical P02 invariant", () => {
   );
   assert.match(
     output,
-    /1\. P02 closure: for every provider_material_id, the matching required_materials\[\] row contains complete evidence_requirement/i
+    /1\. P02 closure: when evidence_decision\.required is true, provider_material_ids lists at least one provider; for every provider_material_id, the matching required_materials\[\] row contains complete evidence_requirement/i
   );
 });
 

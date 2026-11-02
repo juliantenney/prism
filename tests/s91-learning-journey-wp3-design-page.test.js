@@ -33,6 +33,11 @@ test("Learning Journey Design Page prompt is constrained same-chat synthesis of 
   assert.match(prompt, /FORBIDDEN FIELDS/);
   assert.match(prompt, /page_synthesis/);
   assert.match(prompt, /artifact_type learning_journey_page/);
+  assert.match(prompt, /editorial_opening_image/);
+  assert.match(prompt, /does not need to convey instructional content/);
+  assert.match(prompt, /Do not place it in visual_affordances/);
+  assert.match(prompt, /journey-wide introductory video is optional/);
+  assert.doesNotMatch(prompt, /visual_affordances\s*:/);
   assert.doesNotMatch(prompt, /local assembly; no model/i);
   assert.doesNotMatch(prompt, /upstream captures/i);
   assert.match(prompt, /JSON PURITY \(mandatory/i);
@@ -47,6 +52,8 @@ test("Learning Journey Design Page copy instructions prohibit citation contamina
   const copy = design.buildLearningJourneyDesignPageCopyInstructions();
   assert.match(copy, /valid JSON only/i);
   assert.match(copy, /no citations, content-reference tokens/i);
+  assert.match(copy, /editorial_opening_image/);
+  assert.match(copy, /Do not invent page_synthesis, visual_affordances/);
 });
 
 test("valid GPT-shaped shared page is accepted; Interactive and obsolete shapes are rejected", () => {
@@ -188,7 +195,7 @@ test("app.js wires Learning Journey Design Page as GPT synthesis then shared pag
   assert.match(appSource, /readAcceptedLearningJourneyPageFromWorkflow/);
   assert.match(appSource, /buildLearningJourneyDesignPageCopyInstructions/);
   assert.match(appSource, /orchestrateLearningJourneyDesignPageRunStage/);
-  assert.match(appSource, /refreshUtilitiesOutputWorkspaceFromPage\(ljResult\.page/);
+  assert.match(appSource, /commitAssembledAuthoringPage\(ljResult\.page/);
   assert.doesNotMatch(appSource, /executeLearningJourneyDesignPageRunStage/);
   assert.doesNotMatch(appSource, /isLearningJourneyDesignPageLocalStage/);
   assert.doesNotMatch(appSource, /assembled locally — no model paste/);

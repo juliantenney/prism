@@ -2,8 +2,8 @@
 
 **Canonical location:** `docs/backlog/PRODUCT-BACKLOG.md`  
 **Status:** Active — **alpha-use period** (Alpha development complete, 2026-09-02)  
-**Last updated:** 2026-10-12 (Sprint 93 **CLOSED — ACCEPTED**; no successor opened)  
-**Active sprint:** None. Last closed: [Sprint 93 — Assessment Pack](../development/sprints/2026-10-07-sprint-93-assessment-pack-educational-contract/SPRINT-93-CLOSURE.md) — **CLOSED — ACCEPTED**. Predecessor: [Sprint 92 — Situated Task](../development/sprints/2026-10-07-sprint-92-situated-learning-activity-first-class-product/SPRINT-92-CLOSURE.md) — **COMPLETE / CLOSED**
+**Last updated:** 2026-11-02 (Sprint 94 **OPEN** — Learning Journey Continuity; Sprint 93 remains **CLOSED — ACCEPTED**)  
+**Active sprint:** [Sprint 94 — Learning Journey Continuity](../development/sprints/2026-11-02-sprint-94-learning-journey-continuity/SPRINT-94-START-HERE.md). Last closed: [Sprint 93 — Assessment Pack](../development/sprints/2026-10-07-sprint-93-assessment-pack-educational-contract/SPRINT-93-CLOSURE.md) — **CLOSED — ACCEPTED**.
 
 This file answers: **what might we actually choose to work on next?**
 
@@ -165,7 +165,7 @@ Potential applications include:
 
 This is a revisit of the existing Interactive product, not a new first-class product under [PB-FA-015](#pb-fa-015--additional-first-class-learning-resource-pipelines).
 
-**Readiness:** Proposed. The Sprint 93 dependency is met. This item remains **not sprint-allocated**. Do not open it from the Sprint 93 closure.
+**Readiness:** Proposed. The Sprint 93 dependency is met. This item remains **not sprint-allocated**. Sprint 94 does **not** open it. Interactive V1 expansion (forced activity structure / transfer beats) is recorded as Sprint 94 debt, not absorbed.
 
 ### PB-FA-020 — Structured visual specifications for generated graphics
 
@@ -326,6 +326,24 @@ Foundations conclusions (see foundation document for Established / Working hypot
 **Optional author-supplied meta-design:** An author may specify a higher-level pedagogical pattern (for example diagnostic → exposition → application → formative check; problem-first; case-centred; worked example → scaffolded practice → independent performance; or another sequence they define). PRISM should derive a sensible design when no pattern is supplied, and respect one when it is. Do not hard-code a single pedagogical sequence as the Learning Journey architecture.
 
 Do not redesign Learning Journey architecture from this note. Foundations are closed under Sprint 90; first-class implementation and final learner package are closed under Sprint 91. Richer Course Home / programme assembly remains related to [PB-FA-016](#pb-fa-016--course-home--course-assembly).
+
+**Continuity (Sprint 94):** Independently generated constituents must preserve essential shared context and know what earlier components asked learners to do. That work is [PB-FA-022](#pb-fa-022--learning-journey-continuity-contract) — **OPEN**. It does not reopen Sprint 91.
+
+### PB-FA-022 — Learning Journey continuity contract
+
+**Status:** **Sprint-allocated — Sprint 94 OPEN.**  
+**Type:** Bounded implementation.  
+**Pack:** [Sprint 94](../development/sprints/2026-11-02-sprint-94-learning-journey-continuity/SPRINT-94-START-HERE.md)
+
+Make Learning Journey continuity a reliable commissioning contract so later independently generated components preserve essential shared scenario facts and understand what earlier components asked learners to do.
+
+Constituents remain standalone. No cross-component learner-response sharing, unified runtime, or retrieval of earlier answers.
+
+**In scope:** required continuity surviving Design Page and product intake; preceding-activity descriptions; binding first-stage prompts (reuse Situated Task pattern); author inspectability; *Making Decisions Under Uncertainty* regression.
+
+**Out of scope:** Interactive V2 ([PB-FA-019](#pb-fa-019--interactive-v2-educational-and-architectural-discovery)); home-page redesign; Assessment Pack calibration; Course Home.
+
+**Readiness:** Investigation complete. Continuity contract agreed (S94-D02…D06 / P-1…P-5). WP0–WP2 complete. WP3 ready; not started.
 
 ### PB-FA-016 — Course Home / course assembly
 

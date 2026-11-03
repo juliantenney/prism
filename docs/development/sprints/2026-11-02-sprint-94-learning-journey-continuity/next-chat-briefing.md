@@ -1,33 +1,17 @@
-# Sprint 94 — Next-chat briefing
+# Next-chat briefing — Sprint 94 (closed)
 
-Load this file plus [SPRINT-94-START-HERE.md](SPRINT-94-START-HERE.md) and [decisions.md](decisions.md).
+**Sprint 94 is CLOSED — ACCEPTED (2026-11-03).**
 
-**Sprint 94 is OPEN. WP0–WP5 are COMPLETE. WP6 is READY and not started.**
+Do not reopen. Active work: [Sprint 95 — Unified Learning Journey Runtime](../2026-11-03-sprint-95-unified-learning-journey-runtime/SPRINT-95-START-HERE.md).
 
-Sprint 93 is **CLOSED — ACCEPTED**. Do not reopen.
+## Closed facts
 
-## Contract (accepted)
+- Continuity contract P-1…P-5 accepted and implemented (WP0–WP5).  
+- WP6 regressions: **139/139** LJ continuity suites; **29/29** adjacent AP/DLA.  
+- Multi-document LJ publishing and standalone publishing remain valid.  
+- Manual C5 → C6 response retrieval is a known delivery limitation → Sprint 95.
 
-- **S94-D02 / P-1:** Use `specification_text`, `journey_context_text`, `dependencies`.  
-- **S94-D03 / P-2:** Recurring scenarios optional; omitted required continuity fails.  
-- **S94-D04 / P-3:** Meaningful preceding-activity context; commissions describe intended activities, not published outputs or learner responses.  
-- **S94-D05 / P-4:** Bind from the earliest relevant generation stage, following Situated Task. Assessment Pack includes prefixed Generate Learning Content, Model Knowledge, Define Learning Outcomes.  
-- **S94-D06 / P-5:** Author-only inspectability via existing conventions.
+## Do not
 
-## What WP5 landed
-
-Shared `composeCommissionedLearnerFacingBringForwardInstruction` plus `isCommissionLearnerFacingCopyStep`. Commissioned Interactive Design Learning Activities, Expository Development, and Assessment Pack Interpret Evidence Purpose receive labelled ORIGINAL_BRIEF, WP4 honour, and one learner-facing bring-forward instruction. Copy belongs in existing `activity_preamble`, opening `exposition`, or `learner_context.bring_forward`. A shared scenario is not treated as automatic bring-forward. Standalone Create, Situated Task, and Learning Journey home/ZIP remain unchanged.
-
-## Next work
-
-Start **WP6** only when authorised: S94-T-009 — regression tests and *Making Decisions Under Uncertainty* live verification. Do not regenerate the seven-component journey unless that slice is authorised.
-
-Do not absorb Interactive V2, learner-response sharing, unified runtime, media substitution, slideshow, or unrelated publishing.
-
-## Invariants
-
-- http://localhost/prism/  
-- Do not modify stored clinical Assessment Pack `e50c39b5-0c33-4869-bf5a-4fc2cef07c70`  
-- Cache-bust `index.html` after prompt/renderer/canonical/`app.js` changes  
-- No `file://`; PowerShell: no `&&`; `$` stripped in one-liners  
-- No Git unless asked
+- Regenerate educational journeys as a Sprint 94 obligation.  
+- Treat unified runtime as incomplete Sprint 94 acceptance.

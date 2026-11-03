@@ -1,14 +1,18 @@
 # Sprint 94 — Charter
 
 **Sprint:** 94 — Learning Journey Continuity  
-**Status:** **OPEN** — WP0–WP5 complete; WP6 ready; not started  
+**Status:** **CLOSED — ACCEPTED**  
 **Opened:** 2026-11-02  
+**Closed:** 2026-11-03  
 **Type:** Bounded implementation  
 **Predecessor:** [Sprint 93 — CLOSED — ACCEPTED](../2026-10-07-sprint-93-assessment-pack-educational-contract/SPRINT-93-CLOSURE.md) — **do not reopen**  
-**Backlog:** [PB-FA-022](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-022--learning-journey-continuity-contract)  
+**Backlog:** [PB-FA-022](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-022--learning-journey-continuity-contract) — **Complete**  
 **Opening:** [S94-D01](decisions.md#s94-d01--open-sprint-94--learning-journey-continuity)  
+**Close:** [S94-D07](decisions.md#s94-d07--close-sprint-94--learning-journey-continuity-accepted)  
 **Contract:** [S94-D02](decisions.md#s94-d02--retain-existing-commission-fields-p-1) … [S94-D06](decisions.md#s94-d06--author-only-inspectability-p-5) accepted  
 **Map:** [IMPLEMENTATION-MAP.md](IMPLEMENTATION-MAP.md)  
+**Closure:** [SPRINT-94-CLOSURE.md](SPRINT-94-CLOSURE.md)  
+**Successor:** [Sprint 95](../2026-11-03-sprint-95-unified-learning-journey-runtime/SPRINT-95-START-HERE.md)  
 **Start here:** [SPRINT-94-START-HERE.md](SPRINT-94-START-HERE.md)
 
 ---

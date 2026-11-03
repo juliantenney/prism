@@ -1,10 +1,12 @@
 # Sprint 94 — Implementation map
 
-**Status:** **OPEN** — WP0–WP5 complete; WP6 ready; not started  
+**Status:** **CLOSED — ACCEPTED** (2026-11-03)  
 **Sprint:** 94 — Learning Journey Continuity  
 **Opening:** [S94-D01](decisions.md#s94-d01--open-sprint-94--learning-journey-continuity)  
+**Close:** [S94-D07](decisions.md#s94-d07--close-sprint-94--learning-journey-continuity-accepted)  
 **Contract:** [S94-D02](decisions.md#s94-d02--retain-existing-commission-fields-p-1) … [S94-D06](decisions.md#s94-d06--author-only-inspectability-p-5)  
-**Charter:** [SPRINT-94-CHARTER.md](SPRINT-94-CHARTER.md)
+**Charter:** [SPRINT-94-CHARTER.md](SPRINT-94-CHARTER.md)  
+**Closure:** [SPRINT-94-CLOSURE.md](SPRINT-94-CLOSURE.md)
 
 This map records the accepted contract and work-package sequence. Do not add work packages.
 
@@ -14,17 +16,12 @@ This map records the accepted contract and work-package sequence. Do not add wor
 
 ```text
 Sprint 93                             CLOSED — ACCEPTED — do not reopen
-Sprint 94 open (S94-D01)              COMPLETE
+Sprint 94                             CLOSED — ACCEPTED (S94-D07)
 Contract P-1…P-5 (S94-D02…D06)        ACCEPTED
-WP0                                   COMPLETE
-WP1                                   COMPLETE
-WP2                                   COMPLETE
-WP3                                   COMPLETE
-WP4                                   COMPLETE
-WP5                                   COMPLETE
-WP6                                   READY — not started
-Production code                       WP1–WP5 landed; WP6 regression and live verification not started
+WP0…WP6                               COMPLETE
+Production code                       Continuity contract landed
 Interactive V2 / PB-FA-019            OUT OF SCOPE
+Unified LJ runtime                    OUT OF SCOPE → Sprint 95
 ```
 
 ---
@@ -115,9 +112,9 @@ Authors inspect the contract through existing Authoring / commissioning conventi
 | WP3 | Shared intake / ORIGINAL_BRIEF composition for all commissioned products | **COMPLETE** |
 | WP4 | Interactive, Expository, Assessment Pack first-stage honour | **COMPLETE** |
 | WP5 | Learner-facing bring-forward copy where a later component depends on earlier work | **COMPLETE** |
-| WP6 | Tests + *Making Decisions Under Uncertainty* regression | **READY — not started** |
+| WP6 | Tests + *Making Decisions Under Uncertainty* regression | **COMPLETE** |
 
-WP5 (S94-T-008) is complete. WP6 is the next implementation slice and is **not started**.
+All work packages complete. Sprint closed under [S94-D07](decisions.md#s94-d07--close-sprint-94--learning-journey-continuity-accepted).
 
 ### Task index
 
@@ -131,7 +128,7 @@ WP5 (S94-T-008) is complete. WP6 is the next implementation slice and is **not s
 | S94-T-006 | Intake: compose binding brief for Interactive / Expository / Assessment Pack | WP3 | **COMPLETE** |
 | S94-T-007 | First-stage prompts honour the brief; standalone paths unchanged | WP4 | **COMPLETE** |
 | S94-T-008 | Learner-facing bring-forward wording | WP5 | **COMPLETE** |
-| S94-T-009 | Regression tests + live verification notes | WP6 | **NOT STARTED** |
+| S94-T-009 | Regression tests + live verification notes | WP6 | **COMPLETE** |
 
 ---
 

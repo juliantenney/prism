@@ -3,7 +3,38 @@
  */
 const test = require("node:test");
 const assert = require("node:assert/strict");
+const path = require("node:path");
+const vm = require("node:vm");
 const { renderLearnerPageHtml } = require("../lib/learner-renderer-vnext");
+const {
+  wireBrowserGlobalThis,
+  loadLearnerRendererVNextBrowserInSandbox
+} = require("./prism-vm-lib-bootstrap.js");
+
+const repoRoot = path.resolve(__dirname, "..");
+
+function renderViaBrowserBundle(source) {
+  const windowStub = {
+    document: { readyState: "complete", addEventListener() {} },
+    addEventListener() {},
+    removeEventListener() {},
+    location: { hash: "", pathname: "/" }
+  };
+  const sandbox = {
+    console,
+    setTimeout,
+    clearTimeout,
+    window: windowStub,
+    document: windowStub.document,
+    self: windowStub
+  };
+  windowStub.window = windowStub;
+  wireBrowserGlobalThis(sandbox);
+  vm.createContext(sandbox);
+  const api = loadLearnerRendererVNextBrowserInSandbox(sandbox, repoRoot);
+  assert.equal(typeof api.renderLearnerPageHtml, "function");
+  return api.renderLearnerPageHtml(source, { compositionMode: "beats" });
+}
 
 function purpose(role) {
   return {
@@ -835,4 +866,396 @@ test("published causal-inference design records stay off the learner page", () =
   ].forEach(function (phrase) {
     assert.equal(html.includes(phrase), false, phrase);
   });
+});
+
+function structuredDeliveryStimulus(overrides) {
+  return Object.assign(
+    {
+      title: "Independent evidence-informed judgement",
+      scenario:
+        "A local authority must decide how to manage traffic around a primary school during arrival and departure.",
+      alternatives: [
+        {
+          id: "A",
+          label: "A: Maintain existing traffic arrangements",
+          description: "Leave current access and parking arrangements unchanged."
+        },
+        {
+          id: "B",
+          label: "B: Temporarily restrict vehicle access during school arrival/departure",
+          description: "Close selected streets to through traffic at peak school times."
+        },
+        {
+          id: "C",
+          label: "C: Additional signage and targeted traffic management",
+          description: "Add signs, marshals and timed waiting restrictions without a full closure."
+        }
+      ],
+      evidence: [
+        {
+          id: "EV1",
+          heading: "EV1 Resident petitions",
+          information: "Nearby residents report congestion and blocked driveways on school days.",
+          qualification: "Petitions capture concern but do not measure collision risk."
+        },
+        {
+          id: "EV2",
+          heading: "EV2 Collision records",
+          information: "Police records show few injury collisions on the approach roads in five years.",
+          qualification: "Low recorded injuries may understate near-misses and perceived risk."
+        },
+        {
+          id: "EV3",
+          heading: "EV3 Parent survey",
+          information: "Most surveyed parents favour calmer streets at drop-off.",
+          qualification: "Respondents may over-represent parents already dissatisfied with access."
+        },
+        {
+          id: "EV4",
+          heading: "EV4 Bus operator note",
+          information: "One route uses the same streets and warns that timed closures would lengthen journeys.",
+          qualification: "The note addresses one route rather than the full network effect."
+        },
+        {
+          id: "EV5",
+          heading: "EV5 Comparable scheme review",
+          information: "A neighbouring authority reduced peak congestion after timed restrictions.",
+          qualification: "Local street layout and enforcement capacity differ, so transfer is uncertain."
+        }
+      ],
+      evidence_boundary:
+        "The evidence does not determine a single correct option. Justify a recommendation from the particulars supplied."
+    },
+    overrides || {}
+  );
+}
+
+function constructedWithDeliveryStimulus(stimulusOverrides) {
+  return page(
+    evidence({
+      purpose: purpose("R2"),
+      elicitations: [
+        {
+          elicitation_id: "judgement",
+          order: 1,
+          evidence_ask: "Recommend and justify one traffic-management option from the supplied evidence.",
+          epistemic_class: "non_determinate",
+          instructions: "Use only the scenario, alternatives and evidence below.",
+          delivery: {
+            kind: "constructed_performance",
+            stimulus: structuredDeliveryStimulus(stimulusOverrides),
+            prompt: {
+              title: "Independent judgement",
+              context: "You are advising the local authority.",
+              task: "Recommend one alternative and justify it from the evidence.",
+              response_expectation: "A reasoned recommendation with explicit use of the evidence.",
+              suggested_length: "About 250 words.",
+              indicative_time: "25 minutes."
+            },
+            response_workspace: {
+              intention: "Sustained written judgement",
+              guidance: "Name the option and the evidence that most supports it."
+            }
+          },
+          formative_return: {
+            materials: [
+              {
+                material_id: "criteria-1",
+                title: "Self-evaluation: use of evidence",
+                body: "Did you weigh supporting and qualifying information for the option you chose?"
+              },
+              {
+                material_id: "criteria-2",
+                title: "Self-evaluation: comparison of alternatives",
+                body: "Did you explain why the rejected alternatives are less defensible on this evidence?"
+              }
+            ],
+            forward_orientation: "Take the justified recommendation into later review of your reasoning.",
+            revision: {
+              offered: true,
+              prompt: "Identify one weakness in your written judgement using the self-evaluation criteria."
+            }
+          }
+        }
+      ],
+      pack_forward_orientation: "Carry the justified recommendation forward as your current independent judgement."
+    })
+  );
+}
+
+test("structured delivery.stimulus renders scenario, alternatives and evidence before the response", () => {
+  const result = render(constructedWithDeliveryStimulus());
+  assert.equal(result.error, null, result.error);
+  const html = result.html;
+  const stimulusAt = html.indexOf('data-region="assessment-stimulus"');
+  const workspaceAt = html.indexOf('data-workspace-kind="text_entry"');
+  const formativeAt = html.indexOf('data-region="formative-return"');
+  assert.ok(stimulusAt >= 0, "structured stimulus region missing");
+  assert.ok(workspaceAt > stimulusAt, "stimulus must precede the constructed workspace");
+  assert.ok(formativeAt > workspaceAt, "formative return must follow the workspace");
+
+  assert.match(html, /data-stimulus-kind="structured"/);
+  assert.match(html, /data-stimulus-part="scenario"/);
+  assert.match(
+    html,
+    /A local authority must decide how to manage traffic around a primary school/
+  );
+  assert.match(html, /A: Maintain existing traffic arrangements/);
+  assert.match(html, /Leave current access and parking arrangements unchanged/);
+  assert.match(html, /B: Temporarily restrict vehicle access during school arrival\/departure/);
+  assert.match(html, /Close selected streets to through traffic at peak school times/);
+  assert.match(html, /C: Additional signage and targeted traffic management/);
+  assert.match(html, /Add signs, marshals and timed waiting restrictions without a full closure/);
+  assert.match(html, /EV1 Resident petitions/);
+  assert.match(html, /Nearby residents report congestion and blocked driveways/);
+  assert.match(html, /Petitions capture concern but do not measure collision risk/);
+  assert.match(html, /EV2 Collision records/);
+  assert.match(html, /Low recorded injuries may understate near-misses/);
+  assert.match(html, /EV3 Parent survey/);
+  assert.match(html, /Respondents may over-represent parents already dissatisfied/);
+  assert.match(html, /EV4 Bus operator note/);
+  assert.match(html, /addresses one route rather than the full network effect/);
+  assert.match(html, /EV5 Comparable scheme review/);
+  assert.match(html, /Local street layout and enforcement capacity differ/);
+  assert.match(html, /The evidence does not determine a single correct option/);
+  assert.match(html, /Recommend one alternative and justify it from the evidence/);
+  assert.match(html, /Self-evaluation: use of evidence/);
+  assert.match(html, /Self-evaluation: comparison of alternatives/);
+  assert.doesNotMatch(html, /data-assessment-correct=/);
+  assert.doesNotMatch(html, /\[object Object\]/);
+});
+
+test("elicitation-level prose stimulus still renders for constructed performance", () => {
+  const result = render(
+    page(
+      evidence({
+        purpose: purpose("R2"),
+        elicitations: [
+          {
+            elicitation_id: "e2",
+            order: 1,
+            evidence_ask: "Explain whether the study design can support a causal claim.",
+            instructions: "Write from the vignette, not from a memorised definition.",
+            stimulus: "A short observational vignette.",
+            epistemic_class: "non_determinate",
+            delivery: {
+              kind: "constructed_performance",
+              prompt: "Write the causal judgement in your own words.",
+              response_workspace: {
+                intention: "Sustained written judgement",
+                guidance: "Name the design and the claim it can and cannot support."
+              }
+            },
+            formative_return: {
+              materials: [
+                {
+                  material_id: "criteria",
+                  title: "Self-evaluation",
+                  body: "Compare your reasons with the criteria."
+                }
+              ],
+              forward_orientation: "Use this to see the strength and limit of your causal reasoning."
+            }
+          }
+        ],
+        pack_forward_orientation: "Hand this judgement to the next study block as your current reasoning."
+      })
+    )
+  );
+  assert.equal(result.error, null, result.error);
+  assert.match(result.html, /A short observational vignette/);
+  assert.doesNotMatch(result.html, /data-stimulus-kind="structured"/);
+});
+
+test("malformed delivery.stimulus fails visibly instead of omitting the case", () => {
+  const missingEvidence = render(
+    constructedWithDeliveryStimulus({
+      evidence: []
+    })
+  );
+  assert.equal(missingEvidence.html, null);
+  assert.match(String(missingEvidence.error || ""), /evidence/i);
+
+  const missingQualification = render(
+    constructedWithDeliveryStimulus({
+      evidence: [
+        {
+          id: "EV1",
+          heading: "EV1 Resident petitions",
+          information: "Nearby residents report congestion.",
+          qualification: ""
+        }
+      ]
+    })
+  );
+  assert.equal(missingQualification.html, null);
+  assert.match(String(missingQualification.error || ""), /qualification/i);
+
+  const conflict = render(
+    page(
+      evidence({
+        purpose: purpose("R2"),
+        elicitations: [
+          {
+            elicitation_id: "judgement",
+            order: 1,
+            evidence_ask: "Recommend one option.",
+            stimulus: "A short prose vignette that would hide the structured case if preferred silently.",
+            epistemic_class: "non_determinate",
+            delivery: {
+              kind: "constructed_performance",
+              stimulus: structuredDeliveryStimulus(),
+              prompt: "Write your recommendation.",
+              response_workspace: { intention: "Sustained written judgement" }
+            },
+            formative_return: {
+              materials: [{ material_id: "criteria", title: "Self-evaluation", body: "Compare your reasons." }],
+              forward_orientation: "Take the recommendation forward."
+            }
+          }
+        ],
+        pack_forward_orientation: "Carry the recommendation forward."
+      })
+    )
+  );
+  assert.equal(conflict.html, null);
+  assert.match(String(conflict.error || ""), /stimulus/i);
+});
+
+test("structured stimulus learner-facing text is HTML-escaped", () => {
+  const result = render(
+    constructedWithDeliveryStimulus({
+      scenario: 'Authority <script>alert(1)</script> & "quotes"',
+      alternatives: [
+        {
+          id: "A",
+          label: "A <b>Maintain</b>",
+          description: "Leave arrangements unchanged <img src=x onerror=alert(1)>."
+        },
+        {
+          id: "B",
+          label: "B Restrict",
+          description: "Close selected streets."
+        },
+        {
+          id: "C",
+          label: "C Signage",
+          description: "Add signs."
+        }
+      ],
+      evidence: [
+        {
+          id: "EV1",
+          heading: "EV1 <em>Petitions</em>",
+          information: "Residents report congestion & risk.",
+          qualification: "Petitions <do> not measure collisions."
+        },
+        {
+          id: "EV2",
+          heading: "EV2 Records",
+          information: "Few injury collisions.",
+          qualification: "May understate near-misses."
+        },
+        {
+          id: "EV3",
+          heading: "EV3 Survey",
+          information: "Parents favour calmer streets.",
+          qualification: "May over-represent dissatisfied parents."
+        },
+        {
+          id: "EV4",
+          heading: "EV4 Bus",
+          information: "One route would lengthen.",
+          qualification: "One route only."
+        },
+        {
+          id: "EV5",
+          heading: "EV5 Review",
+          information: "A neighbour saw improvement.",
+          qualification: "Transfer is uncertain."
+        }
+      ]
+    })
+  );
+  assert.equal(result.error, null, result.error);
+  assert.match(result.html, /Authority &lt;script&gt;alert\(1\)&lt;\/script&gt; &amp; &quot;quotes&quot;/);
+  assert.match(result.html, /A &lt;b&gt;Maintain&lt;\/b&gt;/);
+  assert.match(result.html, /unchanged &lt;img src=x onerror=alert\(1\)&gt;/);
+  assert.match(result.html, /EV1 &lt;em&gt;Petitions&lt;\/em&gt;/);
+  assert.match(result.html, /Petitions &lt;do&gt; not measure collisions/);
+  assert.doesNotMatch(result.html, /<script>alert\(1\)<\/script>/);
+});
+
+test("determinate Assessment Pack without structured stimulus remains unchanged", () => {
+  const result = render(
+    page(
+      evidence({
+        elicitations: [
+          {
+            elicitation_id: "e1",
+            order: 1,
+            evidence_ask: "Identify a prior probability.",
+            epistemic_class: "determinate",
+            delivery: {
+              kind: "auto_checkable_items",
+              items: [
+                {
+                  item_id: "q1",
+                  order: 1,
+                  form: "single_answer_mcq",
+                  prompt: {
+                    stem: "Which statement is a prior?",
+                    options: [
+                      { key: "a", text: "Belief before evidence" },
+                      { key: "b", text: "The new data" }
+                    ]
+                  },
+                  judgement: { correct_answer: "a", auto_checkable: true },
+                  feedback_note: "A prior is the belief held before the new evidence."
+                }
+              ]
+            },
+            formative_return: {
+              materials: [{ material_id: "m1", body: "A prior is the belief held before the new evidence." }],
+              forward_orientation: "Concentrate on how priors change when evidence arrives."
+            }
+          }
+        ]
+      })
+    )
+  );
+  assert.equal(result.error, null, result.error);
+  assert.match(result.html, /Which statement is a prior/);
+  assert.match(result.html, /data-assessment-form="single_answer_mcq"/);
+  assert.doesNotMatch(result.html, /data-stimulus-kind="structured"/);
+});
+
+test("browser bundle matches modular rendering for structured delivery.stimulus", () => {
+  const source = constructedWithDeliveryStimulus();
+  const modular = render(source);
+  const browser = renderViaBrowserBundle(source);
+  assert.equal(modular.error, null, modular.error);
+  assert.equal(browser.error, null, browser.error);
+  const markers = [
+    'data-stimulus-kind="structured"',
+    "A: Maintain existing traffic arrangements",
+    "B: Temporarily restrict vehicle access during school arrival/departure",
+    "C: Additional signage and targeted traffic management",
+    "EV1 Resident petitions",
+    "EV5 Comparable scheme review",
+    "Petitions capture concern but do not measure collision risk",
+    "The evidence does not determine a single correct option"
+  ];
+  markers.forEach(function (marker) {
+    assert.match(modular.html, new RegExp(marker.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+    assert.match(browser.html, new RegExp(marker.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+  });
+  assert.ok(
+    modular.html.indexOf('data-region="assessment-stimulus"') <
+      modular.html.indexOf('data-workspace-kind="text_entry"')
+  );
+  assert.ok(
+    browser.html.indexOf('data-region="assessment-stimulus"') <
+      browser.html.indexOf('data-workspace-kind="text_entry"')
+  );
 });

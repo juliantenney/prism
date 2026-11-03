@@ -2,21 +2,19 @@
 
 **Sprint:** 94 — Learning Journey Continuity  
 **Opened:** 2026-11-02  
-**Status:** **OPEN** — WP0–WP5 complete; WP6 ready; not started
+**Closed:** 2026-11-03  
+**Status:** **CLOSED — ACCEPTED**
 
 | Item | State |
 | ---- | ----- |
 | S94-D01 Open sprint | Accepted |
-| S94-D02…D06 (P-1…P-5) | **Accepted** |
-| WP0 Pack + contract | **COMPLETE** |
-| WP1 Design Page / Step 4–5 | **COMPLETE** |
-| WP2 Validator + inspectability | **COMPLETE** |
-| WP3 Intake / ORIGINAL_BRIEF | **COMPLETE** |
-| WP4 First-stage honour | **COMPLETE** |
-| WP5 Learner-facing bring-forward | **COMPLETE** |
-| WP6 Tests + regression | **READY — not started** |
-| Production code | WP1–WP5 landed |
+| S94-D02…D06 (P-1…P-5) | Accepted |
+| S94-D07 Close sprint | **Accepted** |
+| WP0–WP5 | **COMPLETE** |
+| WP6 Tests + regression | **COMPLETE** |
+| Production code | Continuity contract landed |
 | Interactive V2 | Out of scope |
-| Sprint 93 | CLOSED — ACCEPTED — do not reopen |
+| Unified LJ runtime | Out of scope → Sprint 95 |
+| Closure | [SPRINT-94-CLOSURE.md](SPRINT-94-CLOSURE.md) |
 
-**Next:** Start WP6 (S94-T-009) only when authorised — regression tests and *Making Decisions Under Uncertainty* verification.
+**Next:** Do not reopen. Continue in [Sprint 95](../2026-11-03-sprint-95-unified-learning-journey-runtime/SPRINT-95-START-HERE.md).

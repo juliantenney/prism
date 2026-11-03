@@ -1,8 +1,8 @@
 # Sprint Context
 
-**Role:** authoritative for **this pack only** (Sprint 94 portable continuity).
+**Role:** authoritative for **this pack only** (Sprint 94 portable continuity). Historical after **CLOSED — ACCEPTED** (2026-11-03).
 
-**Sprint:** Sprint 94 — Learning Journey Continuity
+**Sprint:** Sprint 94 — Learning Journey Continuity — **CLOSED — ACCEPTED**
 
 **Pack path:** `docs/development/sprints/2026-11-02-sprint-94-learning-journey-continuity/`
 

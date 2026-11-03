@@ -1,7 +1,7 @@
 # Sprint 94 — Plan / work log
 
 **Sprint:** 94 — Learning Journey Continuity  
-**Status:** **OPEN** — WP0–WP5 complete; WP6 ready; not started
+**Status:** **CLOSED — ACCEPTED** (2026-11-03)
 
 ## Sequence (do not reorder)
 
@@ -11,9 +11,7 @@
 4. WP3 — Shared intake / ORIGINAL_BRIEF composition. **COMPLETE.**  
 5. WP4 — Interactive, Expository, Assessment Pack first-stage honour (Assessment Pack prefix stages included). **COMPLETE.**  
 6. WP5 — Learner-facing bring-forward. **COMPLETE.**  
-7. WP6 — Tests + *Making Decisions Under Uncertainty* regression. **READY — not started.**
-
-Do not start WP6 in the WP5 conversation.
+7. WP6 — Tests + *Making Decisions Under Uncertainty* regression. **COMPLETE** (S94-T-009; 2026-11-03).
 
 ## Log
 
@@ -26,3 +24,4 @@ Do not start WP6 in the WP5 conversation.
 | 2026-11-02 | WP3 / S94-T-006: shared `composeCommissionedOriginalBrief`; runtime delivery of labelled ORIGINAL_BRIEF to commissioned Interactive / Expository / Assessment Pack earliest stages. Intake unchanged. Standalone Create unchanged. |
 | 2026-11-02 | WP4 / S94-T-007: shared `composeCommissionedContextHonourInstruction`; eligible commissioned stages receive labelled brief + honour instruction + stage task. Assessment Pack clarification is pack-only. Standalone, Situated Task, and Learning Journey paths unchanged. |
 | 2026-11-02 | WP5 / S94-T-008: shared `composeCommissionedLearnerFacingBringForwardInstruction`; commissioned Interactive DLA, Expository Development, and Assessment Pack Interpret Evidence Purpose receive labelled brief + WP4 honour + WP5 learner-facing instruction. No new fields, UI, or learner-state transport. |
+| 2026-11-03 | WP6 / S94-T-009: consolidated regression **139/139** across WP1–WP5 + Sprint 91/92 LJ commissioning/package/home/Situated suites; adjacent AP/DLA **29/29**. Live full journey regeneration intentionally not required. Closure S94-D07. |

@@ -1,7 +1,7 @@
 # Sprint 94 — Validation ledger
 
 **Sprint:** 94 — Learning Journey Continuity  
-**Status:** **OPEN** — WP0–WP5 complete; WP6 ready; not started
+**Status:** **CLOSED — ACCEPTED** (2026-11-03)
 
 ## Planned evidence
 
@@ -32,3 +32,6 @@
 | 2026-11-02 | Related suites (WP4 run) | 127 passed, 0 failed across WP4 plus WP3, WP1, WP2, Sprint 85/88/91/92 intake, family, topic-propagation, sibling prompts, commissioning preview, and Situated handoff |
 | 2026-11-02 | `tests/s94-learning-journey-wp5-bring-forward.test.js` | Pass — shared learner-facing instruction; commissioned Interactive DLA, Expository Development, and Assessment Pack Interpret Evidence Purpose receive labelled brief + WP4 honour + WP5 copy contract; scenario-only and first-component cases do not invent reuse; no-recurring-scenario still allows genuine bring-forward; standalone, Situated Task, Learning Journey, home/ZIP unchanged |
 | 2026-11-02 | Related suites (WP5 run) | 138 passed, 0 failed across WP5 plus WP1–WP4, Sprint 85/88/91/92 intake, family, topic-propagation, sibling prompts, commissioning preview, and Situated handoff |
+| 2026-11-03 | WP6 consolidated regression: `s94-learning-journey-wp1`…`wp5`, `s94-learning-journey-home`, Sprint 91 Design Page / intake / package / commissioning-preview / direct-commission, `s92-situated-task-slice3-lj-commission` | **139 passed, 0 failed** |
+| 2026-11-03 | WP6 adjacent: `s94-learning-journey-wp5-dla-v2-copy`, `s94-assessment-design-page-framing-string`, `s93-assessment-pack-learner-render`, `s93-assessment-pack-response-persistence` | **29 passed, 0 failed** |
+| 2026-11-03 | Live full regeneration of *Making Decisions Under Uncertainty* | **Not run (intentional)** — continuity acceptance encoded in WP1–WP5 automated tests; not a Sprint 94 open defect |

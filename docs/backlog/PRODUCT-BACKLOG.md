@@ -2,8 +2,8 @@
 
 **Canonical location:** `docs/backlog/PRODUCT-BACKLOG.md`  
 **Status:** Active — **alpha-use period** (Alpha development complete, 2026-09-02)  
-**Last updated:** 2026-11-02 (Sprint 94 **OPEN** — Learning Journey Continuity; Sprint 93 remains **CLOSED — ACCEPTED**)  
-**Active sprint:** [Sprint 94 — Learning Journey Continuity](../development/sprints/2026-11-02-sprint-94-learning-journey-continuity/SPRINT-94-START-HERE.md). Last closed: [Sprint 93 — Assessment Pack](../development/sprints/2026-10-07-sprint-93-assessment-pack-educational-contract/SPRINT-93-CLOSURE.md) — **CLOSED — ACCEPTED**.
+**Last updated:** 2026-11-03 (Sprint 95 **OPEN** — Unified Learning Journey Runtime; Sprint 94 **CLOSED — ACCEPTED**)  
+**Active sprint:** [Sprint 95 — Unified Learning Journey Runtime](../development/sprints/2026-11-03-sprint-95-unified-learning-journey-runtime/SPRINT-95-START-HERE.md). Last closed: [Sprint 94 — Learning Journey Continuity](../development/sprints/2026-11-02-sprint-94-learning-journey-continuity/SPRINT-94-CLOSURE.md) — **CLOSED — ACCEPTED**.
 
 This file answers: **what might we actually choose to work on next?**
 
@@ -327,23 +327,35 @@ Foundations conclusions (see foundation document for Established / Working hypot
 
 Do not redesign Learning Journey architecture from this note. Foundations are closed under Sprint 90; first-class implementation and final learner package are closed under Sprint 91. Richer Course Home / programme assembly remains related to [PB-FA-016](#pb-fa-016--course-home--course-assembly).
 
-**Continuity (Sprint 94):** Independently generated constituents must preserve essential shared context and know what earlier components asked learners to do. That work is [PB-FA-022](#pb-fa-022--learning-journey-continuity-contract) — **OPEN**. It does not reopen Sprint 91.
+**Continuity (Sprint 94):** Independently generated constituents must preserve essential shared context and know what earlier components asked learners to do. That work is [PB-FA-022](#pb-fa-022--learning-journey-continuity-contract) — **Complete**. It does not reopen Sprint 91.
+
+**Unified runtime (Sprint 95):** Single-document Learning Journey delivery with container-scoped resource lifecycle and explicit artefact handoff. That work is [PB-FA-023](#pb-fa-023--unified-learning-journey-runtime) — **OPEN**.
 
 ### PB-FA-022 — Learning Journey continuity contract
 
-**Status:** **Sprint-allocated — Sprint 94 OPEN.**  
-**Type:** Bounded implementation.  
-**Pack:** [Sprint 94](../development/sprints/2026-11-02-sprint-94-learning-journey-continuity/SPRINT-94-START-HERE.md)
+**Status:** **Complete — Sprint 94 CLOSED — ACCEPTED** ([SPRINT-94-CLOSURE.md](../development/sprints/2026-11-02-sprint-94-learning-journey-continuity/SPRINT-94-CLOSURE.md)). Do **not** reopen.
 
 Make Learning Journey continuity a reliable commissioning contract so later independently generated components preserve essential shared scenario facts and understand what earlier components asked learners to do.
 
-Constituents remain standalone. No cross-component learner-response sharing, unified runtime, or retrieval of earlier answers.
+Constituents remain standalone. Sprint 94 intentionally excluded cross-component learner-response sharing and unified runtime (see [PB-FA-023](#pb-fa-023--unified-learning-journey-runtime)).
 
-**In scope:** required continuity surviving Design Page and product intake; preceding-activity descriptions; binding first-stage prompts (reuse Situated Task pattern); author inspectability; *Making Decisions Under Uncertainty* regression.
+**Delivered:** required continuity surviving Design Page and product intake; preceding-activity descriptions; binding first-stage prompts; author inspectability; WP6 regression evidence.
 
-**Out of scope:** Interactive V2 ([PB-FA-019](#pb-fa-019--interactive-v2-educational-and-architectural-discovery)); home-page redesign; Assessment Pack calibration; Course Home.
+**Out of scope (unchanged):** Interactive V2 ([PB-FA-019](#pb-fa-019--interactive-v2-educational-and-architectural-discovery)); home-page redesign; Assessment Pack calibration; Course Home; unified runtime.
 
-**Readiness:** Investigation complete. Continuity contract agreed (S94-D02…D06 / P-1…P-5). WP0–WP2 complete. WP3 ready; not started.
+### PB-FA-023 — Unified Learning Journey runtime
+
+**Status:** **Sprint-allocated — Sprint 95 OPEN.**  
+**Type:** Architectural foundations → bounded implementation.  
+**Pack:** [Sprint 95](../development/sprints/2026-11-03-sprint-95-unified-learning-journey-runtime/SPRINT-95-START-HERE.md)
+
+Establish foundations for a unified, accessible, single-document Learning Journey runtime: persistent navigation, one active mounted resource, container-scoped init/dispose, explicit learner-artefact produce/reference handoff — while preserving standalone publishing and (until superseded) multi-document Journey packages.
+
+**In scope:** M1 Assessment Pack lifecycle demonstrator; M2 journey shell; M3 C5→C6 explicit artefact handoff; M4 wider compatibility / consolidation.
+
+**Out of scope:** iframes; server learner accounts; AI marking of shared artefacts; new application framework; wholesale visual redesign; user theme UI this sprint; regenerating existing journeys; Interactive V2; Course Home.
+
+**Readiness:** Read-only architecture investigations complete (2026-11-03). Sprint opened (S95-D01). M1 ready; not started.
 
 ### PB-FA-016 — Course Home / course assembly
 

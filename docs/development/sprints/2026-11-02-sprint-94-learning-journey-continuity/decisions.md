@@ -129,3 +129,27 @@ Preserve standalone (uncommissioned) product behaviour and existing pipeline sta
 Keep `specification_text`, `journey_context_text`, and `dependencies` out of the published learner home and constituent ZIP content, except for appropriate **learner-facing instructions derived from** that contract.
 
 Reuse existing authoring conventions. Do **not** introduce a new inspection system unless existing Authoring / commissioning surfaces cannot show the contract.
+
+---
+
+## S94-D07 — Close Sprint 94 — Learning Journey Continuity accepted
+
+**Date:** 2026-11-03  
+**Status:** Accepted  
+**Depends on:** [S94-D01](#s94-d01--open-sprint-94--learning-journey-continuity) … [S94-D06](#s94-d06--author-only-inspectability-p-5)
+
+**Decision:** Mark **Sprint 94 — Learning Journey Continuity** **CLOSED — ACCEPTED**.
+
+**Basis:** Acceptance criteria in [IMPLEMENTATION-MAP.md](IMPLEMENTATION-MAP.md) are met. WP0–WP6 are complete. Focused verification is recorded in [VALIDATION.md](VALIDATION.md) and [SPRINT-94-CLOSURE.md](SPRINT-94-CLOSURE.md). Continuity is a reliable commissioning contract for independently generated Learning Journey constituents.
+
+**WP6 evidence (2026-11-03):** Sprint 94 + related LJ commissioning/package suites **139 passed, 0 failed**; adjacent AP/DLA suites **29 passed, 0 failed**. Live full regeneration of *Making Decisions Under Uncertainty* was intentionally not required; continuity rules are encoded in automated tests.
+
+**Explicitly not authorised by this close:**
+
+- cross-component learner-response transport or automatic retrieval of earlier answers;
+- unified single-document Learning Journey runtime (see Sprint 95);
+- Interactive V2 / PB-FA-019;
+- regenerating existing Learning Journeys as a closure condition;
+- Course Home / Assessment Pack calibration.
+
+Sprint 93 remains **CLOSED — ACCEPTED**. Do not reopen Sprint 94 after this close.

@@ -638,6 +638,9 @@
     els.utilitiesGenerateBtn = document.getElementById("utilitiesGenerateBtn");
     els.utilitiesDownloadHtmlBtn = document.getElementById("utilitiesDownloadHtmlBtn");
     els.utilitiesDownloadPackageBtn = document.getElementById("utilitiesDownloadPackageBtn");
+    els.utilitiesDownloadUnifiedJourneyBtn = document.getElementById(
+      "utilitiesDownloadUnifiedJourneyBtn"
+    );
     els.utilitiesOpenTabBtn = document.getElementById("utilitiesOpenTabBtn");
     els.utilitiesClearBtn = document.getElementById("utilitiesClearBtn");
     els.utilitiesPreviewPanel = document.getElementById("utilitiesPreviewPanel");
@@ -56328,6 +56331,36 @@
     return slugify(safeBase) + "-learner-package.zip";
   }
 
+  function syncUtilitiesUnifiedJourneyDownloadControl() {
+    var btn = els.utilitiesDownloadUnifiedJourneyBtn;
+    if (!btn) return;
+    var ljActive = isLearningJourneyCommissioningPreviewActive();
+    var packageDisabled = !!(
+      els.utilitiesDownloadPackageBtn && els.utilitiesDownloadPackageBtn.disabled
+    );
+    btn.classList.toggle("hidden", !ljActive);
+    if (ljActive) {
+      btn.removeAttribute("hidden");
+    } else {
+      btn.setAttribute("hidden", "hidden");
+    }
+    btn.disabled = !ljActive || packageDisabled;
+    btn.textContent = "Download Unified Learning Journey";
+    btn.title = "Download Unified Learning Journey (.zip)";
+    btn.setAttribute("aria-label", "Download Unified Learning Journey");
+    if (els.utilitiesDownloadPackageBtn && ljActive) {
+      els.utilitiesDownloadPackageBtn.title =
+        "Download multi-document Learning Journey package (.zip)";
+      els.utilitiesDownloadPackageBtn.setAttribute(
+        "aria-label",
+        "Multi-document Learning Journey package (.zip)"
+      );
+    } else if (els.utilitiesDownloadPackageBtn) {
+      els.utilitiesDownloadPackageBtn.title = "Download learner package (.zip)";
+      els.utilitiesDownloadPackageBtn.setAttribute("aria-label", "Learner package (.zip)");
+    }
+  }
+
   function setUtilitiesDownloadControlsDisabled(disabled) {
     var isDisabled = !!disabled;
     if (els.utilitiesDownloadHtmlBtn) {
@@ -56336,6 +56369,20 @@
     if (els.utilitiesDownloadPackageBtn) {
       els.utilitiesDownloadPackageBtn.disabled = isDisabled;
     }
+    syncUtilitiesUnifiedJourneyDownloadControl();
+  }
+
+  function formatUnifiedShellArtefactProposalGaps(gaps) {
+    var rows = Array.isArray(gaps) ? gaps : [];
+    if (!rows.length) {
+      return "An explicit Learning Journey artefact relationship could not be resolved.";
+    }
+    return rows
+      .map(function (gap) {
+        var id = gap && gap.commissionId ? String(gap.commissionId) + ": " : "";
+        return id + String((gap && gap.message) || gap.code || "Unresolved artefact relationship.");
+      })
+      .join(" ");
   }
 
   function utilityNormalizeUtilitiesJsonInput(rawInput) {
@@ -57967,7 +58014,12 @@
             ok: true,
             package: built.package,
             warnings: built.warnings || [],
-            workflowId: wid
+            workflowId: wid,
+            sourcePage: page,
+            productId: String(
+              (page && (page.product_id || page.productId)) || wf.product || wf.productId || ""
+            ).trim(),
+            title: String((page && page.title) || wf.name || wid)
           };
         });
       });
@@ -58008,6 +58060,379 @@
               : null
         };
       });
+  }
+
+  /**
+   * Resolve learner-renderer-vnext-browser.js source text for unified-shell ZIP embedding.
+   * Browser assembly cannot use Node fs; fetch the same URL the page already loads.
+   */
+  function resolveUnifiedShellRuntimeScriptSource(options) {
+    var opts = options && typeof options === "object" ? options : {};
+    if (typeof opts.runtimeScript === "string" && opts.runtimeScript) {
+      return Promise.resolve({ ok: true, runtimeScript: opts.runtimeScript, source: "options" });
+    }
+    if (typeof document === "undefined" || !document.querySelector) {
+      return Promise.resolve({
+        ok: false,
+        code: "runtime_script_unavailable",
+        message: "No document available to resolve learner-renderer-vnext-browser.js."
+      });
+    }
+    var scriptEl =
+      document.querySelector('script[src*="learner-renderer-vnext-browser.js"]') || null;
+    var src = scriptEl ? String(scriptEl.getAttribute("src") || "").trim() : "";
+    if (!src) {
+      try {
+        src = new URL(
+          "lib/learner-renderer-vnext-browser.js",
+          getUtilitiesLearnerPackageAssetBaseUrl()
+        ).href;
+      } catch (_err) {
+        src = "lib/learner-renderer-vnext-browser.js";
+      }
+    }
+    if (typeof fetch !== "function") {
+      return Promise.resolve({
+        ok: false,
+        code: "fetch_unavailable",
+        message: "fetch is required to load learner-renderer-vnext-browser.js for packaging."
+      });
+    }
+    return fetch(src, { credentials: "same-origin", cache: "no-cache" })
+      .then(function (response) {
+        if (!response || !response.ok) {
+          return {
+            ok: false,
+            code: "runtime_fetch_failed",
+            message:
+              "Could not fetch learner-renderer-vnext-browser.js (" +
+              (response && response.status ? response.status : "no response") +
+              ") from " +
+              src +
+              "."
+          };
+        }
+        return response.text().then(function (text) {
+          if (!text || !String(text).trim()) {
+            return {
+              ok: false,
+              code: "runtime_empty",
+              message: "Fetched learner-renderer-vnext-browser.js was empty."
+            };
+          }
+          return { ok: true, runtimeScript: String(text), source: src };
+        });
+      })
+      .catch(function (err) {
+        return {
+          ok: false,
+          code: "runtime_fetch_failed",
+          message:
+            "Could not fetch learner-renderer-vnext-browser.js: " +
+            String((err && err.message) || err || "unknown error")
+        };
+      });
+  }
+
+  /**
+   * Sprint 95 M5 — author-facing unified Learning Journey package download.
+   * Reuses the multi-document prep/hydrate path. Does NOT replace the default multi-document ZIP.
+   * UI: utilitiesDownloadUnifiedJourneyBtn. Also available via
+   * window.__PRISM_TEST_API.handleLearningJourneyUnifiedShellPackageDownloadForTest(options).
+   *
+   * @param {{
+   *   artefactContract?: object,
+   *   producerCommissionId?: string,
+   *   consumerCommissionId?: string,
+   *   download?: boolean,
+   *   skipDownload?: boolean,
+   *   runtimeScript?: string,
+   *   allowUnresolvedArtefactContract?: boolean
+   * }=} options
+   */
+  function handleLearningJourneyUnifiedShellPackageDownload(options) {
+    var opts = options && typeof options === "object" ? options : {};
+    var ljPackageMod = resolveLearningJourneyLearnerPackageLib();
+    var ljDesignMod = resolveLearningJourneyDesignPageLib();
+    var ctx = state.learningJourneyCommissioningPreviewContext;
+    var fflateLib =
+      (typeof fflate !== "undefined" && fflate) ||
+      (typeof window !== "undefined" && window.fflate) ||
+      null;
+    var rendererApi =
+      (typeof window !== "undefined" && window.PRISM_LEARNER_RENDERER_VNEXT) ||
+      null;
+
+    if (
+      !ljPackageMod ||
+      typeof ljPackageMod.assembleLearningJourneyUnifiedShellPackage !== "function"
+    ) {
+      showToast("Unified Learning Journey packaging is unavailable.", "error");
+      return Promise.resolve({ ok: false, code: "lj_unified_shell_unavailable" });
+    }
+    if (!ctx || !ctx.page) {
+      showToast(
+        "Open Learning Journey Authoring Preview first, then choose Download Unified Learning Journey.",
+        "error"
+      );
+      return Promise.resolve({ ok: false, code: "lj_preview_context_missing" });
+    }
+    if (
+      ljDesignMod &&
+      typeof ljDesignMod.isLearningJourneyDesignPage === "function" &&
+      !ljDesignMod.isLearningJourneyDesignPage(ctx.page)
+    ) {
+      showToast("Current preview is not a Learning Journey page.", "error");
+      return Promise.resolve({ ok: false, code: "not_learning_journey_page" });
+    }
+    if (!fflateLib || typeof fflateLib.zipSync !== "function") {
+      showToast("ZIP packaging support is unavailable in this browser session.", "error");
+      return Promise.resolve({ ok: false, code: "fflate_unavailable" });
+    }
+
+    var sourceWorkflowId = String(ctx.sourceWorkflowId || state.selectedWorkflowId || "").trim();
+    var page = ctx.page;
+    var familyMod = getFirstClassWorkflowFamilyMod();
+    showToast("Building Unified Learning Journey package…", "info");
+
+    return resolveUnifiedShellRuntimeScriptSource(opts).then(function (runtimeResolved) {
+      if (!runtimeResolved || !runtimeResolved.ok || !runtimeResolved.runtimeScript) {
+        showToast(
+          (runtimeResolved && runtimeResolved.message) ||
+            "Could not load the learner runtime required for the Unified Learning Journey package.",
+          "error"
+        );
+        return {
+          ok: false,
+          code: (runtimeResolved && runtimeResolved.code) || "runtime_missing",
+          runtimeResolved: runtimeResolved || null
+        };
+      }
+
+    return prepareLearningJourneyPreviewProductionByCommissionId(page, sourceWorkflowId, {
+      diagnosticsPath: "unified_shell_prepare_async_owner_store_hydrate"
+    }).then(function (prepared) {
+      var preparedRunState =
+        prepared && prepared.runStateByWorkflowId && typeof prepared.runStateByWorkflowId === "object"
+          ? prepared.runStateByWorkflowId
+          : null;
+      if (!preparedRunState) {
+        showToast(
+          "Unified Learning Journey preparation failed (constituent production state unavailable).",
+          "error"
+        );
+        return { ok: false, code: "preparation_runstate_missing" };
+      }
+      var preflight = ljPackageMod.preflightLearningJourneyLearnerPackage({
+        page: page,
+        learningJourneyWorkflowId: sourceWorkflowId,
+        workflows: state.workflows || [],
+        runStateByWorkflowId: preparedRunState,
+        productAcceptsCommission:
+          familyMod && typeof familyMod.productAcceptsCommission === "function"
+            ? function (productId) {
+                return familyMod.productAcceptsCommission(productId);
+              }
+            : undefined,
+        visualJobsWorkspaceMod: getUtilitiesVisualJobsWorkspaceMod() || null,
+        preparationPath:
+          (prepared && prepared.preparationPath) ||
+          "unified_shell_prepare_async_owner_store_hydrate",
+        hydrateTrace: (prepared && prepared.hydrateTrace) || []
+      });
+      if (!preflight.ok) {
+        var message =
+          typeof ljPackageMod.formatPreflightBlockers === "function"
+            ? ljPackageMod.formatPreflightBlockers(preflight.blockers)
+            : "Learning Journey is not ready for Unified Learning Journey export.";
+        showToast(message, "error");
+        return {
+          ok: false,
+          code: "not_ready",
+          blockers: preflight.blockers,
+          preparationDiagnostics: preflight.preparationDiagnostics || null
+        };
+      }
+
+      var ready = Array.isArray(preflight.readyCommissions) ? preflight.readyCommissions : [];
+      var titleByCommissionId = Object.create(null);
+      var productByCommissionId = Object.create(null);
+      if (page && Array.isArray(page.commissions)) {
+        page.commissions.forEach(function (commission) {
+          if (!commission) return;
+          var cid = String(commission.commission_id || "").trim();
+          if (!cid) return;
+          var metaTitle = String(commission.title || "").trim();
+          if (metaTitle) titleByCommissionId[cid] = metaTitle;
+          var metaProduct = String(commission.product_id || commission.productId || "").trim();
+          if (metaProduct) productByCommissionId[cid] = metaProduct;
+        });
+      }
+      var chain = Promise.resolve([]);
+      ready.forEach(function (row) {
+        chain = chain.then(function (acc) {
+          var commissionId = String((row && row.commissionId) || "").trim();
+          var constituentId = String(
+            (row && (row.constituentWorkflowId || row.openWorkflowId)) || ""
+          ).trim();
+          // Prefer design-page commission.title; never invent from commissionId alone.
+          var commissionTitle = String(
+            (row && row.title) || titleByCommissionId[commissionId] || ""
+          ).trim();
+          if (commissionTitle === commissionId) commissionTitle = "";
+          var commissionProductId = String(
+            (row && row.productId) || productByCommissionId[commissionId] || ""
+          ).trim();
+          return buildConstituentLearnerPackageModel(constituentId, {
+            workflows: state.workflows || [],
+            runStateByWorkflowId: preparedRunState
+          }).then(function (built) {
+            if (!built || !built.ok || !built.package) {
+              throw {
+                code: (built && built.code) || "constituent_package_failed",
+                commissionId: commissionId,
+                message:
+                  (built && built.error && built.error.message) ||
+                  "Could not build package for commission " + commissionId + "."
+              };
+            }
+            var builtTitle = String((built && built.title) || "").trim();
+            if (builtTitle === commissionId) builtTitle = "";
+            acc.push({
+              commissionId: commissionId,
+              title:
+                commissionTitle ||
+                titleByCommissionId[commissionId] ||
+                builtTitle ||
+                "",
+              productId:
+                commissionProductId ||
+                productByCommissionId[commissionId] ||
+                built.productId ||
+                "",
+              sourcePage: built.sourcePage || null,
+              learnerPackage: built.package
+            });
+            return acc;
+          });
+        });
+      });
+
+      return chain.then(function (constituents) {
+        var artefactContract = opts.artefactContract || null;
+        var proposal = null;
+        if (
+          !artefactContract &&
+          rendererApi &&
+          typeof rendererApi.proposeArtefactContractFromLearningJourney === "function"
+        ) {
+          proposal = rendererApi.proposeArtefactContractFromLearningJourney({
+            page: page,
+            constituents: constituents,
+            producerCommissionId: opts.producerCommissionId,
+            consumerCommissionId: opts.consumerCommissionId
+          });
+          if (proposal && proposal.ok) {
+            artefactContract = proposal.contract;
+          } else if (
+            proposal &&
+            Array.isArray(proposal.pairs) &&
+            proposal.pairs.length &&
+            opts.allowUnresolvedArtefactContract !== true
+          ) {
+            // Explicit dependency pairs were found but could not be resolved into a contract.
+            showToast(formatUnifiedShellArtefactProposalGaps(proposal.gaps), "error");
+            return {
+              ok: false,
+              code: "artefact_contract_unresolved",
+              artefactProposal: proposal,
+              constituents: constituents.map(function (row) {
+                return {
+                  commissionId: row.commissionId,
+                  title: row.title,
+                  productId: row.productId,
+                  hasSourcePage: !!row.sourcePage
+                };
+              })
+            };
+          }
+        }
+
+        var assembled = ljPackageMod.assembleLearningJourneyUnifiedShellPackage({
+          page: page,
+          constituents: constituents,
+          artefactContract: artefactContract || { produces: [], references: [] },
+          fflate: fflateLib,
+          runtimeScript: runtimeResolved.runtimeScript,
+          learnerCss: getUtilityVnextProseMeasureCss()
+        });
+        if (!assembled || !assembled.ok || !assembled.bytes) {
+          showToast(
+            (assembled && assembled.error && assembled.error.message) ||
+              "Could not assemble the Unified Learning Journey package.",
+            "error"
+          );
+          return {
+            ok: false,
+            code: (assembled && assembled.error && assembled.error.code) || "assemble_failed",
+            assembled: assembled,
+            artefactProposal: proposal,
+            runtimeSource: runtimeResolved.source || null
+          };
+        }
+
+        var shouldDownload = opts.download === true || opts.skipDownload !== true;
+        if (shouldDownload) {
+          if (Array.isArray(state.utilitiesDownloadTestLog)) {
+            state.utilitiesDownloadTestLog.push("lj-unified-shell-zip");
+          }
+          triggerBinaryDownload(
+            assembled.bytes,
+            assembled.zipName || "learning-journey-unified-shell.zip",
+            "application/zip"
+          );
+          showToast("Unified Learning Journey package downloaded.", "success");
+        }
+
+        return {
+          ok: true,
+          code: "ok",
+          packageMode: "unified_shell",
+          assembled: assembled,
+          constituents: constituents.map(function (row) {
+            return {
+              commissionId: row.commissionId,
+              title: row.title,
+              productId: row.productId,
+              hasSourcePage: !!row.sourcePage,
+              hasLearnerPackage: !!row.learnerPackage
+            };
+          }),
+          artefactContract: artefactContract || null,
+          artefactProposal: proposal,
+          preparationDiagnostics: preflight.preparationDiagnostics || null,
+          runtimeSource: runtimeResolved.source || null,
+          runtimeScriptBytes: runtimeResolved.runtimeScript
+            ? runtimeResolved.runtimeScript.length
+            : 0
+        };
+      });
+    });
+    }).catch(function (err) {
+      var message =
+        (err && err.message) ||
+        (err && err.code) ||
+        "Unified Learning Journey package export failed.";
+      if (err && err.commissionId) {
+        message = String(err.commissionId) + ": " + message;
+      }
+      showToast(String(message), "error");
+      return {
+        ok: false,
+        code: (err && err.code) || "lj_unified_shell_export_failed",
+        error: err
+      };
+    });
   }
 
   function handleLearningJourneyLearnerPackageDownload() {
@@ -58643,6 +59068,13 @@
         handleUtilitiesDownloadLearnerPackage();
       });
     }
+    if (els.utilitiesDownloadUnifiedJourneyBtn) {
+      els.utilitiesDownloadUnifiedJourneyBtn.addEventListener("click", function (event) {
+        event.preventDefault();
+        handleLearningJourneyUnifiedShellPackageDownload();
+      });
+    }
+    syncUtilitiesUnifiedJourneyDownloadControl();
     if (els.utilitiesOpenTabBtn) {
       els.utilitiesOpenTabBtn.addEventListener("click", handleUtilitiesOpenInNewTab);
     }
@@ -59964,6 +60396,31 @@
     prismTestApi.setLearningJourneyCommissioningPreviewContextForTest = function (ctx) {
       state.learningJourneyCommissioningPreviewContext =
         ctx && typeof ctx === "object" ? ctx : null;
+      syncUtilitiesUnifiedJourneyDownloadControl();
+    };
+    prismTestApi.activateLearningJourneyCommissioningPreviewForTest = function (
+      page,
+      sourceWorkflowId
+    ) {
+      var wid = String(sourceWorkflowId || "wf-lj-unified").trim() || "wf-lj-unified";
+      var ljPage = page && typeof page === "object" ? page : null;
+      state.selectedWorkflowId = wid;
+      state.learningJourneyCommissioningPreviewContext = ljPage
+        ? { page: ljPage, sourceWorkflowId: wid, updatedAt: Date.now() }
+        : null;
+      if (!state.utilitiesOutputWorkspace || typeof state.utilitiesOutputWorkspace !== "object") {
+        state.utilitiesOutputWorkspace = emptyUtilitiesOutputWorkspaceState();
+      }
+      if (ljPage) {
+        state.utilitiesOutputWorkspace.assembledPageSnapshot = ljPage;
+        setUtilitiesDownloadControlsDisabled(false);
+      } else if (state.utilitiesOutputWorkspace) {
+        state.utilitiesOutputWorkspace.assembledPageSnapshot = null;
+        setUtilitiesDownloadControlsDisabled(true);
+      } else {
+        syncUtilitiesUnifiedJourneyDownloadControl();
+      }
+      return isLearningJourneyCommissioningPreviewActive();
     };
     prismTestApi.getLearningJourneyCommissioningPreviewContextForTest = function () {
       return state.learningJourneyCommissioningPreviewContext;
@@ -60102,13 +60559,37 @@
         packageDisabled: !!(
           els.utilitiesDownloadPackageBtn && els.utilitiesDownloadPackageBtn.disabled
         ),
+        unifiedDisabled: !!(
+          els.utilitiesDownloadUnifiedJourneyBtn && els.utilitiesDownloadUnifiedJourneyBtn.disabled
+        ),
+        unifiedHidden: !!(
+          els.utilitiesDownloadUnifiedJourneyBtn &&
+          (els.utilitiesDownloadUnifiedJourneyBtn.classList.contains("hidden") ||
+            els.utilitiesDownloadUnifiedJourneyBtn.hasAttribute("hidden"))
+        ),
         htmlLabel: els.utilitiesDownloadHtmlBtn
           ? String(els.utilitiesDownloadHtmlBtn.textContent || "").trim()
           : "",
         packageLabel: els.utilitiesDownloadPackageBtn
           ? String(els.utilitiesDownloadPackageBtn.textContent || "").trim()
+          : "",
+        unifiedLabel: els.utilitiesDownloadUnifiedJourneyBtn
+          ? String(els.utilitiesDownloadUnifiedJourneyBtn.textContent || "").trim()
+          : "",
+        unifiedAriaLabel: els.utilitiesDownloadUnifiedJourneyBtn
+          ? String(els.utilitiesDownloadUnifiedJourneyBtn.getAttribute("aria-label") || "").trim()
           : ""
       };
+    };
+    prismTestApi.syncUtilitiesUnifiedJourneyDownloadControlForTest =
+      syncUtilitiesUnifiedJourneyDownloadControl;
+    prismTestApi.clickUtilitiesDownloadUnifiedJourneyBtnForTest = function () {
+      if (
+        els.utilitiesDownloadUnifiedJourneyBtn &&
+        typeof els.utilitiesDownloadUnifiedJourneyBtn.click === "function"
+      ) {
+        els.utilitiesDownloadUnifiedJourneyBtn.click();
+      }
     };
     prismTestApi.clickUtilitiesDownloadHtmlBtnForTest = function () {
       if (els.utilitiesDownloadHtmlBtn && typeof els.utilitiesDownloadHtmlBtn.click === "function") {
@@ -60127,6 +60608,10 @@
     prismTestApi.handleUtilitiesDownloadLearnerPackageForTest = handleUtilitiesDownloadLearnerPackage;
     prismTestApi.handleLearningJourneyLearnerPackageDownloadForTest =
       handleLearningJourneyLearnerPackageDownload;
+    prismTestApi.handleLearningJourneyUnifiedShellPackageDownloadForTest =
+      handleLearningJourneyUnifiedShellPackageDownload;
+    prismTestApi.resolveUnifiedShellRuntimeScriptSourceForTest =
+      resolveUnifiedShellRuntimeScriptSource;
     prismTestApi.buildLearnerPackageZipBytesFromPartsForTest = buildLearnerPackageZipBytesFromParts;
     prismTestApi.buildConstituentLearnerPackageModelForTest = buildConstituentLearnerPackageModel;
     prismTestApi.isLearningJourneyCommissioningPreviewActiveForTest =

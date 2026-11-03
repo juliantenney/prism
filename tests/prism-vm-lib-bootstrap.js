@@ -54,6 +54,7 @@ const DEFAULT_LIBS = [
   "lib/first-class-workflow-family.js",
   "lib/learning-journey-design-page.js",
   "lib/learning-journey-commission-production-status.js",
+  "lib/learning-journey-unified-shell.js",
   "lib/learning-journey-learner-package.js",
   "lib/learning-journey-workflow-hierarchy.js",
   "lib/learning-journey-sibling-prompts.js",

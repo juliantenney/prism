@@ -1,7 +1,7 @@
 # Sprint 95 — Charter
 
 **Sprint:** 95 — Unified Learning Journey Runtime  
-**Status:** **OPEN** — M1 ready; not started  
+**Status:** **CLOSED — ACCEPTED**  
 **Opened:** 2026-11-03  
 **Type:** Architectural foundations → bounded implementation  
 **Predecessor:** [Sprint 94 — CLOSED — ACCEPTED](../2026-11-02-sprint-94-learning-journey-continuity/SPRINT-94-CLOSURE.md) — **do not reopen**  

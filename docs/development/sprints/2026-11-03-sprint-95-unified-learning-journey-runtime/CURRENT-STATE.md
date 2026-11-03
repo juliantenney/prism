@@ -1,24 +1,25 @@
 # Sprint 95 — Current state
 
 **Date:** 2026-11-03  
-**Status:** **OPEN** — M1 ready; not started  
-**Pack:** `docs/development/sprints/2026-11-03-sprint-95-unified-learning-journey-runtime/`
+**Status:** **CLOSED — ACCEPTED**  
+**Pack:** `docs/development/sprints/2026-11-03-sprint-95-unified-learning-journey-runtime/`  
+**Closure:** [SPRINT-95-CLOSURE.md](SPRINT-95-CLOSURE.md)
 
 ## What is true
 
-- Sprint 94 is **CLOSED — ACCEPTED**. Continuity commissioning is done.  
-- Sprint 95 is **OPEN**. Documentation and M1 plan exist. **No Sprint 95 production code yet.**  
-- Multi-document Learning Journey ZIP and standalone publishing remain valid.  
-- Manual C5 → C6 retrieval is a known delivery limitation addressed by M3, not a Sprint 94 defect.  
-- Preferred M1 vehicle: Assessment Pack runtimes.
+- Sprint 94 and Sprint 95 are **CLOSED — ACCEPTED**.  
+- M1–M5 are **ACCEPTED**; live *Deciding Under Uncertainty* verified via **Download Unified Learning Journey**.  
+- Unified shell is **additive**; multi-document ZIP remains the default LJ download.  
+- Presentation polish and MathLive remount/packaging remain in [ARCHITECTURAL-DEBT.md](ARCHITECTURAL-DEBT.md).
 
 ## What to do next
 
-Authorise **M1** implementation in a new conversation.
+Await separate authorisation for a presentation sprint. Do not reopen Sprint 95.
 
 ## Do not
 
-- Reopen Sprint 94.  
-- Change LJ publishing during M1.  
+- Begin presentation-sprint implementation without authorisation.  
+- Make unified shell the default download without an explicit decision.  
+- Begin prompt-pipeline changes.  
 - Regenerate existing Learning Journeys.  
-- Introduce iframes, AI marking, server learner accounts, or a new framework.
+- Reopen Sprint 94 or Sprint 95.

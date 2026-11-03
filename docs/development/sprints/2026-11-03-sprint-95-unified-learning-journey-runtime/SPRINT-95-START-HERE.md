@@ -1,10 +1,13 @@
 # Sprint 95 — START HERE
 
 **Sprint:** 95 — Unified Learning Journey Runtime  
-**Status:** **OPEN** — M1 ready; not started  
+**Status:** **CLOSED — ACCEPTED**  
 **Opened:** 2026-11-03  
+**Closed:** 2026-11-03  
 **Type:** Architectural foundations → bounded implementation  
 **Opening decision:** [S95-D01](decisions.md#s95-d01--open-sprint-95--unified-learning-journey-runtime)  
+**Close:** [S95-D07](decisions.md#s95-d07--close-sprint-95--unified-learning-journey-runtime-accepted)  
+**Closure record:** [SPRINT-95-CLOSURE.md](SPRINT-95-CLOSURE.md)  
 **Charter:** [SPRINT-95-CHARTER.md](SPRINT-95-CHARTER.md)  
 **Map:** [IMPLEMENTATION-MAP.md](IMPLEMENTATION-MAP.md)  
 **Predecessor:** [Sprint 94 — CLOSED — ACCEPTED](../2026-11-02-sprint-94-learning-journey-continuity/SPRINT-94-CLOSURE.md) — **do not reopen**  
@@ -14,34 +17,24 @@
 
 ## If you are starting a new session
 
-1. Read this file.  
-2. Read [decisions.md](decisions.md) — S95-D01 (and later decisions as accepted).  
-3. Read [IMPLEMENTATION-MAP.md](IMPLEMENTATION-MAP.md) — milestones M1–M4.  
-4. Implement **M1 only** unless this chat is explicitly authorised to continue.  
-5. Do **not** reopen Sprint 94. Do **not** regenerate *Deciding Under Uncertainty*.
+Sprint 95 is **closed**. Read [SPRINT-95-CLOSURE.md](SPRINT-95-CLOSURE.md) and [ARCHITECTURAL-DEBT.md](ARCHITECTURAL-DEBT.md). Do **not** reopen this sprint for presentation polish or MathLive packaging — authorise a successor sprint separately.
 
 | Fact | State |
 | ---- | ----- |
-| Sprint 94 | **CLOSED — ACCEPTED** — continuity commissioning |
-| Sprint 95 | **OPEN** |
-| M1 Renderer Lifecycle Demonstrator | **READY — not started** |
-| Multi-document LJ ZIP | Remains valid until explicitly superseded |
-| Standalone publishing | Must remain fully supported |
+| Sprint 94 | **CLOSED — ACCEPTED** |
+| Sprint 95 | **CLOSED — ACCEPTED** |
+| M1–M5 | **ACCEPTED** |
+| Multi-document LJ ZIP | Remains default until explicitly superseded |
+| Standalone publishing | Fully supported |
+| Presentation sprint | **Not started** |
 
 ---
 
-## Hard constraints
+## Hard constraints (still authoritative for successors)
 
 - No iframes for resource delivery.  
-- No server-side learner accounts / central learner DB in this sprint.  
+- No server-side learner accounts / central learner DB without a new sprint.  
 - No AI marking of shared learner artefacts.  
-- No new application framework; no wholesale visual redesign.  
-- No user-controlled themes yet — architectural readiness only.  
-- Do not change Learning Journey publishing during **M1**.  
-- Prefer Assessment Pack for the M1 lifecycle demonstrator.
-
----
-
-## Immediate next
-
-Authorise and implement **M1 — Renderer Lifecycle Demonstrator** (Assessment Pack): container-scoped init/dispose, persist, unmount, remount restore, no duplicate handlers; standalone behaviour unchanged.
+- No implicit sharing of all learner drafts — explicit artefact contracts only.  
+- Do not regenerate *Deciding Under Uncertainty* without authorisation.  
+- Do not reopen Sprint 94.

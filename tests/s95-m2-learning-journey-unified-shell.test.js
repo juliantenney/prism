@@ -166,18 +166,24 @@ test("S95-T-006 shell HTML has one main, persistent TOC, and two resource templa
   ]);
   assert.equal(shell.ok, true, shell.code);
   assert.match(shell.html, /data-lj-shell="unified"/);
-  assert.match(shell.html, /<aside class="lj-shell__sidebar"/);
+  assert.match(shell.html, /<aside class="lj-shell__sidebar"[^>]*id="lj-shell-sidebar"/);
   assert.match(shell.html, /aria-labelledby="lj-shell-toc-label"/);
   assert.match(shell.html, /data-lj-nav-id="c1"/);
   assert.match(shell.html, /data-lj-nav-id="c2"/);
-  assert.match(shell.html, /id="lj-shell-prev"/);
-  assert.match(shell.html, /id="lj-shell-next"/);
-  assert.match(shell.html, />Previous resource</);
-  assert.match(shell.html, />Next resource</);
-  assert.match(
-    shell.html,
-    /<aside class="lj-shell__sidebar"[\s\S]*id="lj-shell-prev"[\s\S]*<\/aside>/
-  );
+  assert.doesNotMatch(shell.html, /id="lj-shell-prev"/);
+  assert.doesNotMatch(shell.html, /id="lj-shell-next"/);
+  assert.doesNotMatch(shell.html, /Previous resource/);
+  assert.doesNotMatch(shell.html, /Next resource/);
+  assert.doesNotMatch(shell.html, /lj-shell__toolbar/);
+  assert.doesNotMatch(shell.html, /lj-shell__resource-step/);
+  assert.match(shell.html, /id="lj-shell-sidebar-toggle"/);
+  assert.doesNotMatch(shell.html, /id="lj-shell-sidebar-reopen"/);
+  assert.match(shell.html, /lj-shell__icon-btn/);
+  assert.match(shell.html, /aria-label="Hide journey contents"/);
+  assert.match(shell.html, /--lj-shell-rail-width:3\.5rem/);
+  assert.match(shell.html, /top:var\(--lj-shell-toolbar-height/);
+  assert.doesNotMatch(shell.html, /top:3\.75rem/);
+
   assert.match(shell.html, /id="lj-shell-live"[^>]*aria-live="polite"/);
   assert.equal((shell.html.match(/<main\b/gi) || []).length, 1);
   assert.match(shell.html, /<main id="lj-shell-main"/);
@@ -192,7 +198,7 @@ test("S95-T-006 shell HTML has one main, persistent TOC, and two resource templa
   assert.doesNotMatch(shell.html, /lj-shell__intro/);
   assert.match(
     shell.html,
-    /<\/aside><div class="lj-shell__workspace"><div class="lj-shell__toolbar"/
+    /<\/aside><div class="lj-shell__workspace"><div id="lj-shell-live"/
   );
   // Resource title demoted so journey keeps the sole document h1.
   assert.match(shell.html, /<h1>Unified shell journey<\/h1>/);
@@ -239,7 +245,7 @@ test("unified shell Overview renders Markdown and is the default destination", (
   assert.equal(shell.ok, true, shell.code);
   assert.equal(shell.navEntries[0].commissionId, "overview");
   assert.equal(shell.navEntries[1].commissionId, "c1");
-  assert.match(shell.html, /id="lj-shell-current-label">Overview</);
+  assert.doesNotMatch(shell.html, /lj-shell-current-label/);
   assert.match(shell.html, /data-lj-nav-id="overview"[^>]*aria-current="page"/);
   assert.doesNotMatch(shell.html, /## Why this matters/);
   assert.match(shell.html, /<h3[^>]*>Why this matters<\/h3>/);
@@ -264,7 +270,7 @@ test("unified shell prefers commission metadata titles over commission-id echoes
   assert.equal(shell.resources[0].title, "First formative stop");
   assert.equal(shell.resources[1].title, "Second formative stop");
   assert.match(shell.html, /data-lj-nav-id="c1"[^>]*>First formative stop</);
-  assert.match(shell.html, /id="lj-shell-current-label">Overview</);
+  assert.doesNotMatch(shell.html, /lj-shell-current-label/);
   assert.match(shell.html, /data-lj-nav-id="overview"[^>]*>Overview</);
   assert.doesNotMatch(shell.html, /data-lj-nav-id="c1"[^>]*>c1</);
 });

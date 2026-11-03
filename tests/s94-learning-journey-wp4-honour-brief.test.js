@@ -85,7 +85,7 @@ function assertHonourContract(text) {
   assert.match(body, /do not prove that learners completed those activities/);
   assert.match(body, /what individual learners answered/);
   assert.match(body, /ask learners to consult their own earlier work/);
-  assert.match(body, /Do not imply that PRISM automatically transfers learner responses/);
+  assert.match(body, /Do not state whether or how the delivery environment transfers, saves, or retrieves earlier responses/);
   assert.match(body, /Do not claim that earlier published resources have been inspected/);
   assert.match(body, /Do not discard relevant evidence merely because it challenges an earlier judgement/);
   assert.match(body, /Do not silently rewrite evidence to make it agree with an established scenario/);

@@ -94,11 +94,11 @@ function assertBringForwardContract(text) {
   assertOnce(body, WP5_HEADING);
   assert.match(body, /only when the commission explicitly requires learners to reuse their own earlier work/);
   assert.match(body, /Identify the relevant earlier learner activity/);
-  assert.match(body, /consult or retrieve from their own work/);
+  assert.match(body, /Tell learners what earlier work to use/);
   assert.match(body, /how that work informs the current activity/);
   assert.match(body, /Avoid assuming that learners completed the earlier activity/);
   assert.match(body, /If you completed the earlier activity, revisit/);
-  assert.match(body, /Avoid implying that PRISM automatically transfers learner responses/);
+  assert.match(body, /Do not state whether or how the delivery environment transfers, saves, copies, or retrieves earlier responses/);
   assert.match(body, /Refer only to educationally relevant predecessors/);
   assert.match(body, /Appear once in this product's existing learner-facing structure/);
   assert.match(body, /Do not infer a bring-forward requirement from shared scenario facts, journey position, or dependency identifiers alone/);
@@ -217,7 +217,7 @@ test("shared WP5 instruction states the learner-facing contract and product plac
   assert.doesNotMatch(expositoryText, /activity_preamble/);
   assert.match(assessmentText, /learner_context\.bring_forward/);
   assert.match(assessmentText, /Do not duplicate this copy in Design Page exposition/);
-  assert.match(assessmentText, /Do not populate bring_forward from dependency identifiers alone/);
+  assert.match(assessmentText, /Do not populate bring_forward from dependency identifiers or journey order alone/);
 });
 
 test("commissioned Interactive Design Learning Activities receives brief, honour, and WP5 instruction", () => {
@@ -284,7 +284,7 @@ test("commissioned Assessment Pack Interpret Evidence Purpose receives WP5 witho
   assert.match(purpose.text, /Grounding context:/);
   assert.match(purpose.text, /learner_context\.bring_forward/);
   assert.match(purpose.text, /what identifies the learner-owned earlier work/);
-  assert.match(purpose.text, /how_used explains its role in the current assessment/);
+  assert.match(purpose.text, /how_used explains its educational role in the current assessment/);
   assert.doesNotMatch(purpose.text, /Do not duplicate this copy in Design Page exposition[\s\S]*Do not duplicate this copy in Design Page exposition/);
 
   const designPage = api.resolveStepPromptText(

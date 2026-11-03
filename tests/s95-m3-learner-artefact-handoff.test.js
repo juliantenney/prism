@@ -337,7 +337,7 @@ test("resolved reference HTML is read-only and named for assistive tech", () => 
     artefactContract().references[0]
   );
   assert.match(html, /aria-labelledby=/);
-  assert.match(html, /Read-only/);
+  assert.match(html, /Available here for reference \(read-only\)/i);
   assert.match(html, /role="region"/);
   assert.match(html, /Your earlier independent judgement/);
   assert.doesNotMatch(html, /<textarea|<input|contenteditable/i);

@@ -146,7 +146,7 @@ function assertSprint94BlocksOnce(text) {
   assert.match(body, /Requires c1/);
   assert.match(body, /only when the commission explicitly requires learners to reuse their own earlier work/);
   assert.match(body, /If you completed the earlier activity, revisit/);
-  assert.match(body, /Avoid implying that PRISM automatically transfers learner responses/);
+  assert.match(body, /Do not state whether or how the delivery environment transfers, saves, copies, or retrieves earlier responses/);
   assert.match(body, /first relevant activity's existing activity_preamble/);
   assert.doesNotMatch(
     body,

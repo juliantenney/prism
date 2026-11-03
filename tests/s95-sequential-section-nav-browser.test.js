@@ -238,8 +238,8 @@ test(
       assert.equal(await page.locator(".util-journey-nav--sequential").count(), 1);
       assert.equal(await page.locator("#ws-a1").inputValue(), "Draft across remount");
 
-      assert.match(await page.locator("#lj-shell-prev").textContent(), /Previous resource/i);
-      await page.locator("#lj-shell-prev").click();
+      assert.equal(await page.locator("#lj-shell-prev").count(), 0);
+      await page.locator('[data-lj-nav-id="overview"]').click();
       await page.waitForFunction(() => window.__PRISM_LJ_SHELL__.currentId === "overview");
     } finally {
       await browser.close();

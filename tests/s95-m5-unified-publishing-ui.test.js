@@ -1,5 +1,6 @@
 /**
- * Sprint 95 M5 — author-facing Unified Learning Journey publishing UI.
+ * Sprint 95 M5 / Sprint 96 — author-facing Learning Journey publishing UI.
+ * Sprint 96: separate Unified control removed; ZIP/Journey is the sole LJ download.
  */
 "use strict";
 
@@ -26,6 +27,7 @@ function createElementStub(id) {
     innerHTML: "",
     disabled: true,
     className: "",
+    title: "",
     classList: {
       add: (...names) => names.forEach((n) => classes.add(n)),
       remove: (...names) => names.forEach((n) => classes.delete(n)),
@@ -61,15 +63,10 @@ function createElementStub(id) {
     querySelectorAll: () => [],
     dispatchEvent: () => true
   };
-  if (id === "utilitiesDownloadUnifiedJourneyBtn") {
-    classes.add("hidden");
-    attrs.set("hidden", "hidden");
-    stub.textContent = "Download Unified Learning Journey";
-    stub.setAttribute("aria-label", "Download Unified Learning Journey");
-  }
   if (id === "utilitiesDownloadPackageBtn") {
     stub.textContent = "ZIP";
-    stub.setAttribute("aria-label", "Learner package (.zip)");
+    stub.title = "Download Resource";
+    stub.setAttribute("aria-label", "Download Resource");
   }
   if (id === "utilitiesDownloadHtmlBtn") {
     stub.textContent = "HTML";
@@ -85,6 +82,8 @@ function loadPrismUi() {
     addEventListener: () => {},
     createElement: (tag) => createElementStub("dynamic-" + tag),
     getElementById: (id) => {
+      // Mirror production markup: separate Unified control removed (S96-D14).
+      if (id === "utilitiesDownloadUnifiedJourneyBtn") return null;
       if (!elementStore.has(id)) elementStore.set(id, createElementStub(id));
       return elementStore.get(id);
     },
@@ -133,35 +132,29 @@ function loadPrismUi() {
   return { api, elements: elementStore };
 }
 
-test("M5: index.html exposes Download Unified Learning Journey control", () => {
-  assert.match(indexHtml, /id="utilitiesDownloadUnifiedJourneyBtn"/);
-  assert.match(indexHtml, /aria-label="Download Unified Learning Journey"/);
-  assert.match(indexHtml, /Download Unified Learning Journey \(\.zip\)/);
-  assert.match(
-    indexHtml,
-    /utilitiesDownloadUnifiedJourneyBtn[\s\S]{0,500}>\s*Download Unified Learning Journey\s*</
-  );
+test("M5/S96: index.html exposes a single package download control (no separate Unified button)", () => {
+  assert.match(indexHtml, /id="utilitiesDownloadPackageBtn"/);
+  assert.doesNotMatch(indexHtml, /utilitiesDownloadUnifiedJourneyBtn/);
+  assert.doesNotMatch(indexHtml, /Download Unified Learning Journey/);
 });
 
-test("M5: author download path is wired without requiring console-only APIs", () => {
-  assert.match(appJs, /utilitiesDownloadUnifiedJourneyBtn/);
+test("M5/S96: Learning Journey ZIP routes to unified packaging without console-only APIs", () => {
   assert.match(
     appJs,
-    /utilitiesDownloadUnifiedJourneyBtn[\s\S]{0,400}handleLearningJourneyUnifiedShellPackageDownload/
+    /isLearningJourneyCommissioningPreviewActive\(\)[\s\S]{0,220}handleLearningJourneyUnifiedShellPackageDownload\(\)/
   );
-  assert.match(appJs, /Building Unified Learning Journey package/);
-  assert.match(appJs, /Unified Learning Journey package downloaded\./);
-  assert.doesNotMatch(
-    appJs,
-    /Unified Learning Journey shell downloaded \(developer path\)/
-  );
+  assert.match(appJs, /Building Learning Journey package/);
+  assert.match(appJs, /Learning Journey package downloaded\./);
+  assert.match(appJs, /handleLearningJourneyUnifiedShellPackageDownloadForTest/);
+  assert.match(appJs, /handleLearningJourneyLearnerPackageDownloadForTest/);
 });
 
-test("M5: Unified control appears only in Learning Journey authoring preview", () => {
+test("M5/S96: package control is labelled Download Learning Journey only in LJ preview", () => {
   const { api } = loadPrismUi();
   const before = api.getUtilitiesDownloadControlsStateForTest();
   assert.equal(before.unifiedHidden, true);
-  assert.equal(before.unifiedDisabled, true);
+  assert.equal(before.unifiedControlPresent, false);
+  assert.match(before.packageAriaLabel, /Download Resource/i);
 
   const journey = ljDesign.buildLearningJourneyDesignPageFixture({
     title: "M5 publishing journey",
@@ -200,16 +193,12 @@ test("M5: Unified control appears only in Learning Journey authoring preview", (
   assert.equal(active, true);
   api.setUtilitiesDownloadControlsDisabledForTest(false);
   const shown = api.getUtilitiesDownloadControlsStateForTest();
-  assert.equal(shown.unifiedHidden, false);
-  assert.equal(shown.unifiedDisabled, false);
-  assert.match(shown.unifiedAriaLabel, /Download Unified Learning Journey/i);
-  assert.match(
-    shown.packageLabel.length ? shown.packageLabel : "ZIP",
-    /ZIP|package/i
-  );
+  assert.equal(shown.unifiedHidden, true);
+  assert.match(shown.packageAriaLabel, /^Download Learning Journey$/i);
+  assert.equal(shown.packageLabel, "Journey");
 
   api.activateLearningJourneyCommissioningPreviewForTest(null);
   const hidden = api.getUtilitiesDownloadControlsStateForTest();
-  assert.equal(hidden.unifiedHidden, true);
-  assert.equal(hidden.unifiedDisabled, true);
+  assert.match(hidden.packageAriaLabel, /Download Resource/i);
+  assert.equal(hidden.packageLabel, "ZIP");
 });

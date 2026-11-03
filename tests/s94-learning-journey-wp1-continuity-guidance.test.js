@@ -50,8 +50,9 @@ test("Step 4 requires meaningful preceding activities, not generic continuation"
 });
 
 test("Step 4 bring-forward does not assume output inspection or response transport", () => {
-  assert.match(STEP4, /Learners retain responsibility for referring to their own earlier work/);
-  assert.match(STEP4, /Do not imply that PRISM automatically transfers learner responses/);
+  assert.match(STEP4, /Describe that educational reuse only/);
+  assert.match(STEP4, /Do not state whether or how the delivery environment transfers, saves, or retrieves learner responses/);
+  assert.match(STEP4, /Do not invent bring-forward requirements from journey order or shared scenario facts alone/);
   assert.match(STEP4, /inspecting previous published resources or knowing individual learner responses/);
   assert.match(STEP4, /do not prove what generated or published resources actually contain/i);
 });

@@ -5654,10 +5654,10 @@
     if (ctx.commissionDependencies) {
       var handoff =
         productLabel === "Situated Task"
-          ? "These declare intentional educational dependencies on learner work from earlier Learning Journey experiences when this Situated Task was commissioned. Honour them: identify what prior learner artefact must be brought forward and how it is used. Do not recreate or independently determine work the journey assigns to the earlier experience. PRISM does not transfer the learner's prior responses automatically — the learner-facing design must make the handoff intelligible."
+          ? "These declare intentional educational dependencies on learner work from earlier Learning Journey experiences when this Situated Task was commissioned. Honour them: identify what prior learner work the task must reuse and how that work is used educationally. Do not recreate or independently determine work the journey assigns to the earlier experience. Describe the learning task only. Do not state whether or how the delivery environment transfers, saves, or retrieves earlier responses — delivery explains availability. Do not invent dependencies from journey order alone."
           : "These declare intentional educational dependencies on learner work from earlier Learning Journey experiences when this " +
             productLabel +
-            " was commissioned. Honour them: identify what prior learner artefact must be brought forward and how it is used. Do not recreate or independently determine work the journey assigns to the earlier experience. PRISM does not transfer the learner's prior responses automatically — the learner-facing design must make the handoff intelligible. Do not claim that earlier published resources have been inspected.";
+            " was commissioned. Honour them: identify what prior learner work must be reused and how it is used educationally. Do not recreate or independently determine work the journey assigns to the earlier experience. Describe the learning task only. Do not state whether or how the delivery environment transfers, saves, or retrieves earlier responses — delivery explains availability. Do not invent dependencies from journey order alone. Do not claim that earlier published resources have been inspected.";
       parts.push(
         "EDUCATIONAL DEPENDENCIES (prior experience handoff)\n" +
           ctx.commissionDependencies +
@@ -5687,9 +5687,9 @@
       "",
       "Earlier learner activities. Descriptions of preceding activities establish intended educational progression. They do not prove that learners completed those activities, what individual learners answered, what earlier published resources contain, or that this model has inspected those resources. Do not claim that earlier published resources have been inspected.",
       "",
-      "Bring-forward. Where the commission requires earlier learner work, ask learners to consult their own earlier work and explain how that work informs the current activity. Do not imply that PRISM automatically transfers learner responses.",
+      "Bring-forward. Where the commission requires earlier learner work, ask learners to consult their own earlier work and explain how that work informs the current activity. Describe that educational reuse only. Do not state whether or how the delivery environment transfers, saves, or retrieves earlier responses.",
       "",
-      "Educational dependencies. Treat EDUCATIONAL DEPENDENCIES as references to relevant predecessor commissions or experiences. They do not establish that previous outputs have been inspected."
+      "Educational dependencies. Treat EDUCATIONAL DEPENDENCIES as references to relevant predecessor commissions or experiences. They do not establish that previous outputs have been inspected. Do not invent dependencies from journey order alone."
     ];
     var isAssessmentPack =
       (typeof workflowRecordIsAssessmentPack === "function" && workflowRecordIsAssessmentPack(wf)) ||
@@ -5699,7 +5699,7 @@
     if (isAssessmentPack) {
       lines.push(
         "",
-        "Assessment Pack clarification. LEARNING JOURNEY CONTEXT is authoritative for established journey facts and relevant preceding activities. Existing Grounding context remains this pack's topic or focus; it does not replace LEARNING JOURNEY CONTEXT. Where this stage produces learner_context.depends_on_prior_work or learner_context.bring_forward, derive those values from the authoritative commission context where relevant. Do not invent prior learner responses or assume automatic access to them."
+        "Assessment Pack clarification. LEARNING JOURNEY CONTEXT is authoritative for established journey facts and relevant preceding activities. Existing Grounding context remains this pack's topic or focus; it does not replace LEARNING JOURNEY CONTEXT. Where this stage produces learner_context.depends_on_prior_work or learner_context.bring_forward, derive those values from the authoritative commission context where relevant. Describe educational reuse only (what earlier work and how it is used). Do not invent prior learner responses. Do not embed save/copy/transfer mechanics in learner-facing fields — delivery explains availability."
       );
     }
     return lines.join("\n");
@@ -5719,10 +5719,10 @@
       "",
       "If a bring-forward is required, the learner-facing instruction must:",
       "1. Identify the relevant earlier learner activity.",
-      "2. Tell learners what to consult or retrieve from their own work.",
+      "2. Tell learners what earlier work to use.",
       "3. Explain how that work informs the current activity.",
       "4. Avoid assuming that learners completed the earlier activity or that particular answers are known. Prefer conditional language such as \"If you completed the earlier activity, revisit...\".",
-      "5. Avoid implying that PRISM automatically transfers learner responses.",
+      "5. Describe the educational task only. Do not state whether or how the delivery environment transfers, saves, copies, or retrieves earlier responses — delivery explains availability.",
       "6. Refer only to educationally relevant predecessors.",
       "7. Appear once in this product's existing learner-facing structure. Do not repeat it in every activity, section, or later stage.",
       "",
@@ -5752,7 +5752,7 @@
     } else if (isAssessmentPack) {
       lines.push(
         "",
-        "Assessment Pack. Where this stage produces learner_context.bring_forward, emit [{what, how_used}] only when the commission requires reuse of earlier learner work. what identifies the learner-owned earlier work to consult. how_used explains its role in the current assessment. Do not assume completion or known answers. Do not imply automatic response transfer. Do not duplicate this copy in Design Page exposition. Do not populate bring_forward from dependency identifiers alone. Existing Grounding context remains the pack's topic or focus. Existing Bind commissioning instructions remain in force."
+        "Assessment Pack. Where this stage produces learner_context.bring_forward, emit [{what, how_used}] only when the commission requires reuse of earlier learner work. what identifies the learner-owned earlier work to use. how_used explains its educational role in the current assessment. Do not assume completion or known answers. Do not embed save/copy/transfer mechanics. Do not duplicate this copy in Design Page exposition. Do not populate bring_forward from dependency identifiers or journey order alone. Existing Grounding context remains the pack's topic or focus. Existing Bind commissioning instructions remain in force."
       );
     }
     return lines.join("\n");
@@ -13913,6 +13913,9 @@
     assessmentDeterminateKeyCaptureErrors(parsed).forEach(function (message) {
       errors.push(message);
     });
+    assessmentStructuredStimulusCaptureErrors(parsed).forEach(function (message) {
+      errors.push(message);
+    });
     return errors.length ? { ok: false, errors: errors } : { ok: true, errors: [] };
   }
 
@@ -16253,6 +16256,14 @@
               ok: false,
               errors: keyErrors,
               message: keyErrors.join("; ")
+            };
+          }
+          var stimulusErrors = assessmentStructuredStimulusCaptureErrors(parsedAssessment);
+          if (stimulusErrors.length) {
+            return {
+              ok: false,
+              errors: stimulusErrors,
+              message: stimulusErrors.join("; ")
             };
           }
         }
@@ -33585,6 +33596,7 @@
         augmented = ensureAssessmentPackEditorialOpeningInDesignPrompt(augmented);
       }
       augmented = ensureAssessmentPackKeyDefencePrompt(augmented, step, wfRec);
+      augmented = ensureAssessmentPackEvidenceQualificationPrompt(augmented, step, wfRec);
       return applyCommissionedOriginalBriefDelivery(
         augmented,
         step,
@@ -36072,6 +36084,8 @@
     "Before returning a determinate item, check the keyed answer against only the scenario, stimulus, stem, options, and statements the learner can see. Consider whether a reasonable informed learner could justify another option, category, order, or pair. For a multiple-answer item, check an omitted option the visible evidence also supports and a selected option the visible evidence does not support. Where that ambiguity is material, revise the stem, the statement, the options, or the category boundaries so one key is defensible, or recast the performance as non-determinate. Do not return a confident key while another answer remains equally defensible. A stem that asks for the most justified or best supported conclusion may keep one key when the other options are less defensible on the visible evidence. Record the check as key_defence on the item with learner_evidence, resolution unambiguous or most_justified, and alternatives whose status is less_defensible. Do not use equally_defensible, omitted_but_defensible, included_without_support, or resolution unresolved. A hedged statement assigned to either side of a nested category boundary, such as claim and overclaim, stays ambiguous until the statement or the categories are revised.";
   var ASSESSMENT_KEY_DEFENCE_FORMATIVE =
     "Keep explanatory feedback on the same key as the elicitation. Do not name a different option or category as the answer. Do not introduce quantities, events, or assumptions the learner cannot see. If an item was revised, revise the feedback to match.";
+  var ASSESSMENT_EVIDENCE_QUALIFICATION_ELICITATION =
+    "When a constructed unit uses structured delivery.stimulus case material (scenario, alternatives[], evidence[], optional evidence_boundary), every evidence item must be { heading, information, qualification } with each value a non-empty string. qualification is a genuine limitation, uncertainty, caveat, or constraint on interpreting that particular evidence item. Its pedagogical purpose is to help the learner evaluate what that evidence does and does not establish. Make each qualification specific to its evidence item. Do not use empty strings, generic filler, or invented limitations unsupported by the scenario. Packs that use only prose stimulus, or no stimulus, omit structured delivery.stimulus entirely — do not invent one.";
 
   function assessmentCanonicalApi() {
     if (typeof PRISM_ASSESSMENT_PACK_CANONICAL !== "undefined" && PRISM_ASSESSMENT_PACK_CANONICAL) {
@@ -36091,6 +36105,34 @@
     return reviewed.errors.map(function (error) {
       var path = error && error.path ? String(error.path) + ": " : "";
       return path + String((error && (error.message || error.code)) || "answer key is not defensible");
+    });
+  }
+
+  function assessmentStructuredStimulusApi() {
+    if (typeof require === "function") {
+      try {
+        return require("./lib/learner-renderer-vnext/assessment-evidence-hydration.js");
+      } catch (_err) {}
+    }
+    var host = typeof window !== "undefined" ? window : typeof globalThis !== "undefined" ? globalThis : null;
+    var lib = host && host.PRISM_LEARNER_RENDERER_VNEXT ? host.PRISM_LEARNER_RENDERER_VNEXT : null;
+    return lib || null;
+  }
+
+  function assessmentStructuredStimulusCaptureErrors(parsed) {
+    if (!parsed || typeof parsed !== "object") return [];
+    var api = assessmentStructuredStimulusApi();
+    if (!api || typeof api.validateAssessmentPackStructuredStimuli !== "function") return [];
+    var reviewed = api.validateAssessmentPackStructuredStimuli(parsed);
+    if (!reviewed || reviewed.ok !== false || !Array.isArray(reviewed.errors) || !reviewed.errors.length) {
+      return [];
+    }
+    if (typeof api.formatStructuredStimulusCaptureErrors === "function") {
+      return api.formatStructuredStimulusCaptureErrors(reviewed.errors);
+    }
+    return reviewed.errors.map(function (error) {
+      var path = error && error.path ? String(error.path) + ": " : "";
+      return path + String((error && (error.message || error.code)) || "invalid structured stimulus");
     });
   }
 
@@ -36118,6 +36160,33 @@
       return (body + "\n" + ASSESSMENT_KEY_DEFENCE_FORMATIVE).trim();
     }
     return body;
+  }
+
+  function assessmentPackEvidenceQualificationContractPresent(text) {
+    var body = String(text || "");
+    return (
+      body.indexOf("heading, information, qualification") !== -1 &&
+      /does and does not establish/i.test(body)
+    );
+  }
+
+  function ensureAssessmentPackEvidenceQualificationPrompt(text, step, wf) {
+    var body = String(text || "");
+    if (!workflowRecordIsAssessmentPack(wf)) return body;
+    var outputName = String((step && (step.outputName || step.output_name)) || "")
+      .trim()
+      .toLowerCase();
+    var canonicalId = String((step && (step.canonical_step_id || step.canonicalStepId)) || "")
+      .trim()
+      .toLowerCase();
+    if (
+      outputName !== "assessment_evidence_elicitation" &&
+      canonicalId !== "step_design_evidence_elicitation"
+    ) {
+      return body;
+    }
+    if (assessmentPackEvidenceQualificationContractPresent(body)) return body;
+    return (body + "\n" + ASSESSMENT_EVIDENCE_QUALIFICATION_ELICITATION).trim();
   }
 
   function ensureAssessmentPackEditorialOpeningInDesignPrompt(text) {
@@ -50972,7 +51041,7 @@
       iconCss = String(lib.getLearnerIconPresentationCss() || "");
     }
     return (
-      ":root{--learner-navigation-width:1200px;--learner-reading-width:70ch;--learner-sticky-nav-height:7.5rem;--learner-page-gutter:1rem;--learner-space-1:.5rem;--learner-space-2:.75rem;--learner-space-3:1rem;--learner-space-4:1.5rem;--learner-space-5:2rem;--learner-font-sans:\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif;--learner-text-xs:.75rem;--learner-text-sm:.875rem;--learner-text-base:1rem;--learner-text-md:1.0625rem;--learner-text-lg:1.125rem;--learner-text-xl:1.25rem;--learner-text-title:1.75rem;--learner-leading-tight:1.25;--learner-leading-heading:1.35;--learner-leading-body:1.65}" +
+      ":root{--learner-navigation-width:1200px;--learner-reading-width:70ch;--learner-sticky-nav-height:7.5rem;--learner-page-gutter:1rem;--learner-space-1:.5rem;--learner-space-2:.75rem;--learner-space-3:1rem;--learner-space-4:1.5rem;--learner-space-5:2rem;--learner-font-sans:\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif;--learner-text-xs:.75rem;--learner-text-sm:.875rem;--learner-text-base:1rem;--learner-text-md:1.0625rem;--learner-text-lg:1.125rem;--learner-text-xl:1.25rem;--learner-text-title:1.75rem;--learner-leading-tight:1.25;--learner-leading-heading:1.35;--learner-leading-body:1.65;--learner-nav-radius:.55rem;--learner-nav-control-size:2.25rem;--learner-nav-font-size:.875rem;--learner-nav-hover-bg:#e2e8f0;--learner-nav-active-bg:#dbeafe;--learner-nav-focus:#2563eb;--learner-nav-text:#0f172a;--learner-nav-muted:#64748b}" +
       "body.util-page-export--vnext{margin:0;padding:0 0 calc(var(--learner-sticky-nav-height) + 2rem);max-width:none;font-family:var(--learner-font-sans);font-size:var(--learner-text-base);line-height:var(--learner-leading-body);color:#1f2937;background:#fff;overflow-x:clip}" +
       "body.util-page-export--vnext,body.util-page-export--vnext *{box-sizing:border-box}" +
       "body.util-page-export--vnext [data-journey-section]{scroll-margin-top:var(--learner-sticky-nav-height)}" +
@@ -50985,35 +51054,35 @@
       ".util-journey-nav{--journey-accent:#16a34a;position:sticky;top:0;z-index:50;margin-bottom:var(--learner-space-4);padding-block:.75rem .85rem;background:rgba(255,255,255,.97);backdrop-filter:blur(8px)}" +
       ".util-journey-nav--sequential{width:100%;max-width:none;margin-inline:0;padding-inline:var(--learner-page-gutter);box-sizing:border-box;overflow:visible}" +
       ".util-journey-sequential{--journey-all-btn-gap:.65rem;position:relative;width:100%;max-width:var(--learner-reading-width);margin-inline:auto;display:grid;gap:.55rem;padding-bottom:.45rem;border-bottom:1px solid #e2e8f0;overflow:visible}" +
-      ".util-journey-sequential__row{display:grid;grid-template-columns:44px repeat(3,minmax(0,1fr));align-items:start;column-gap:.85rem;row-gap:.35rem;width:100%;font-size:.875rem}" +
-      ".util-journey-all-btn{appearance:none;display:inline-flex;align-items:center;justify-content:center;width:44px;min-width:44px;min-height:44px;padding:.4rem;margin:0;border:1px solid #94a3b8;border-radius:8px;background:#f8fafc;color:#0f172a;box-shadow:0 1px 2px rgba(15,23,42,.06);cursor:pointer}" +
-      ".util-journey-all-btn:hover{background:#f1f5f9;border-color:#64748b}" +
-      ".util-journey-all-btn:focus-visible{outline:2px solid #2563eb;outline-offset:2px}" +
+      ".util-journey-sequential__row{display:grid;grid-template-columns:var(--learner-nav-control-size,2.25rem) repeat(3,minmax(0,1fr));align-items:start;column-gap:.85rem;row-gap:.35rem;width:100%;font-size:var(--learner-nav-font-size,.875rem)}" +
+      ".util-journey-all-btn{appearance:none;display:inline-flex;align-items:center;justify-content:center;width:var(--learner-nav-control-size,2.25rem);min-width:var(--learner-nav-control-size,2.25rem);height:var(--learner-nav-control-size,2.25rem);min-height:var(--learner-nav-control-size,2.25rem);padding:0;margin:0;border:1px solid transparent;border-radius:var(--learner-nav-radius,.55rem);background:transparent;color:#334155;box-shadow:none;cursor:pointer}" +
+      ".util-journey-all-btn:hover{background:var(--learner-nav-hover-bg,#e2e8f0);color:var(--learner-nav-text,#0f172a)}" +
+      ".util-journey-all-btn:focus-visible{outline:2px solid var(--learner-nav-focus,#2563eb);outline-offset:2px}" +
       ".util-journey-all-btn__icon{display:block}" +
       "@media (min-width:900px){.util-journey-sequential__row{grid-template-columns:repeat(3,minmax(0,1fr))}.util-journey-all-btn{position:absolute;inset-inline-end:calc(100% + var(--journey-all-btn-gap));top:0;z-index:2}}" +
       ".util-journey-current-wrap{display:grid;justify-items:center;align-content:start;gap:.2rem;min-width:0}" +
-      ".util-journey-position{margin:0;font-size:var(--learner-text-sm);line-height:1.4;font-weight:600;color:#475569;text-align:center}" +
-      ".util-journey-adjacent{display:grid;grid-template-columns:1.15em minmax(0,1fr) 1.15em;align-items:start;column-gap:0;min-width:0;min-height:44px;padding:.25rem .15rem;color:#111827;text-decoration:none;font-weight:400;text-align:center}" +
+      ".util-journey-position{margin:0;font-size:var(--learner-text-sm);line-height:1.4;font-weight:600;color:var(--learner-nav-muted,#64748b);text-align:center}" +
+      ".util-journey-adjacent{display:grid;grid-template-columns:1.15em minmax(0,1fr) 1.15em;align-items:start;column-gap:0;min-width:0;min-height:var(--learner-nav-control-size,2.25rem);padding:.45rem .5rem;border-radius:var(--learner-nav-radius,.55rem);color:var(--learner-nav-text,#0f172a);text-decoration:none;font-weight:400;font-size:var(--learner-nav-font-size,.875rem);text-align:center}" +
       ".util-journey-adjacent--placeholder{min-height:0;visibility:hidden;pointer-events:none}" +
-      ".util-journey-adjacent:hover{text-decoration:underline}" +
-      ".util-journey-adjacent:focus-visible{outline:2px solid #2563eb;outline-offset:2px;border-radius:4px}" +
-      ".util-journey-adjacent__chevron{grid-row:1;z-index:1;color:#64748b;font-size:1.15rem;line-height:1.25}" +
+      ".util-journey-adjacent:hover{background:var(--learner-nav-hover-bg,#e2e8f0);text-decoration:none}" +
+      ".util-journey-adjacent:focus-visible{outline:2px solid var(--learner-nav-focus,#2563eb);outline-offset:2px}" +
+      ".util-journey-adjacent__chevron{grid-row:1;z-index:1;color:var(--learner-nav-muted,#64748b);font-size:1.15rem;line-height:1.25}" +
       ".util-journey-adjacent--prev .util-journey-adjacent__chevron{grid-column:1;justify-self:start}" +
       ".util-journey-adjacent--next .util-journey-adjacent__chevron{grid-column:3;justify-self:end}" +
       ".util-journey-adjacent__title{grid-column:1/-1;grid-row:1;z-index:0;padding-inline:1.15em;text-align:center}" +
       ".util-journey-adjacent__title,.util-journey-current{display:block;min-width:0;line-height:1.25;white-space:normal;overflow-wrap:break-word;word-break:normal;hyphens:manual}" +
-      ".util-journey-current{justify-self:center;text-align:center;font-weight:700;color:#0f172a;padding:.25rem .15rem}" +
-      ".util-journey-all-panel{margin-top:.15rem;width:100%;max-width:100%;max-height:min(60vh,28rem);overflow:auto;border:1px solid #e2e8f0;border-radius:10px;background:#fff;box-shadow:0 10px 28px rgba(15,23,42,.08);font-size:.875rem}" +
+      ".util-journey-current{justify-self:center;text-align:center;font-weight:600;color:var(--learner-nav-text,#0f172a);padding:.45rem .55rem;border-radius:var(--learner-nav-radius,.55rem);background:var(--learner-nav-active-bg,#dbeafe)}" +
+      ".util-journey-all-panel{margin-top:.15rem;width:100%;max-width:100%;max-height:min(60vh,28rem);overflow:auto;border:1px solid #e2e8f0;border-radius:var(--learner-nav-radius,.55rem);background:#fff;box-shadow:0 8px 20px rgba(15,23,42,.06);font-size:var(--learner-nav-font-size,.875rem)}" +
       ".util-journey-all-panel__header{display:flex;align-items:center;justify-content:space-between;gap:.75rem;position:sticky;top:0;z-index:1;padding:.65rem .85rem;background:#fff;border-bottom:1px solid #e2e8f0}" +
-      ".util-journey-all-panel__title{margin:0;font-size:var(--learner-text-sm);font-weight:650;color:#0f172a}" +
-      ".util-journey-all-close{appearance:none;display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:.35rem .7rem;margin:0;border:1px solid #cbd5e1;border-radius:8px;background:#fff;color:#0f172a;font:inherit;font-size:var(--learner-text-sm);font-weight:600;cursor:pointer}" +
-      ".util-journey-all-close:hover{background:#f8fafc}" +
-      ".util-journey-all-close:focus-visible{outline:2px solid #2563eb;outline-offset:2px}" +
-      ".util-journey-all-list{list-style:none;margin:0;padding:.35rem}" +
-      ".util-journey-all-link{display:block;padding:.7rem .85rem;min-height:44px;color:#111827;text-decoration:none;border-radius:8px;line-height:1.35;white-space:normal;overflow-wrap:break-word;word-break:normal}" +
-      ".util-journey-all-link:hover{background:#f8fafc}" +
-      ".util-journey-all-link:focus-visible{outline:2px solid #2563eb;outline-offset:2px}" +
-      ".util-journey-all-link[aria-current=location]{background:#ecfdf5;box-shadow:inset 3px 0 0 var(--journey-accent);font-weight:650;color:#14532d}" +
+      ".util-journey-all-panel__title{margin:0;font-size:var(--learner-text-sm);font-weight:650;color:var(--learner-nav-text,#0f172a)}" +
+      ".util-journey-all-close{appearance:none;display:inline-flex;align-items:center;justify-content:center;min-height:var(--learner-nav-control-size,2.25rem);padding:.35rem .7rem;margin:0;border:1px solid transparent;border-radius:var(--learner-nav-radius,.55rem);background:transparent;color:var(--learner-nav-text,#0f172a);font:inherit;font-size:var(--learner-text-sm);font-weight:600;cursor:pointer}" +
+      ".util-journey-all-close:hover{background:var(--learner-nav-hover-bg,#e2e8f0)}" +
+      ".util-journey-all-close:focus-visible{outline:2px solid var(--learner-nav-focus,#2563eb);outline-offset:2px}" +
+      ".util-journey-all-list{list-style:none;margin:0;padding:.35rem;display:grid;gap:.2rem}" +
+      ".util-journey-all-link{display:block;padding:.5rem .6rem;min-height:0;color:var(--learner-nav-text,#0f172a);text-decoration:none;border-radius:var(--learner-nav-radius,.55rem);line-height:1.35;font-size:var(--learner-nav-font-size,.875rem);white-space:normal;overflow-wrap:break-word;word-break:normal}" +
+      ".util-journey-all-link:hover{background:var(--learner-nav-hover-bg,#e2e8f0)}" +
+      ".util-journey-all-link:focus-visible{outline:2px solid var(--learner-nav-focus,#2563eb);outline-offset:2px}" +
+      ".util-journey-all-link[aria-current=location]{background:var(--learner-nav-active-bg,#dbeafe);box-shadow:none;font-weight:600;color:var(--learner-nav-text,#0f172a)}" +
       ".util-learner-renderer-vnext{font-size:var(--learner-text-base);line-height:var(--learner-leading-body);color:#1f2937;text-align:left}" +
       ".util-learner-renderer-vnext p{font-size:var(--learner-text-base);line-height:var(--learner-leading-body);color:#1f2937;margin:0 0 var(--learner-space-3)}" +
       ".util-learner-renderer-vnext ul,.util-learner-renderer-vnext ol{margin:0 0 var(--learner-space-3);padding-left:1.25rem}" +
@@ -51148,7 +51217,7 @@
       getUtilityVnextCompositionMomentPresentationCss() +
       iconCss +
       getUtilityExpositoryPublishingCss() +
-      "@media (max-width:700px){.util-journey-sequential{width:100%;max-width:100%}.util-journey-sequential__row{grid-template-columns:44px minmax(0,1fr);grid-template-areas:\"btn current\" \"prev prev\" \"next next\";column-gap:.65rem;row-gap:.4rem;justify-content:stretch}.util-journey-all-btn{position:static;inset-inline-end:auto;top:auto;z-index:auto;grid-area:btn}.util-journey-current-wrap{grid-area:current;justify-items:center}.util-journey-adjacent--prev{grid-area:prev}.util-journey-adjacent--next{grid-area:next}.util-journey-adjacent--placeholder{display:none}.util-journey-all-panel{max-width:100%}}" +
+      "@media (max-width:700px){.util-journey-sequential{width:100%;max-width:100%}.util-journey-sequential__row{grid-template-columns:var(--learner-nav-control-size,2.25rem) minmax(0,1fr);grid-template-areas:\"btn current\" \"prev prev\" \"next next\";column-gap:.65rem;row-gap:.4rem;justify-content:stretch}.util-journey-all-btn{position:static;inset-inline-end:auto;top:auto;z-index:auto;grid-area:btn}.util-journey-current-wrap{grid-area:current;justify-items:center}.util-journey-adjacent--prev{grid-area:prev}.util-journey-adjacent--next{grid-area:next}.util-journey-adjacent--placeholder{display:none}.util-journey-all-panel{max-width:100%}}" +
       "@media (max-width:720px){:root{--learner-page-gutter:.75rem}.util-learning-header__intro{padding-block:.65rem var(--learner-space-2)}.util-journey-nav{padding-block:.65rem .75rem}.util-learning-header__title{font-size:var(--learner-text-xl)}.util-learner-renderer-vnext .util-section-heading{font-size:var(--learner-text-lg)}.util-learner-renderer-vnext .util-activity+.util-activity,.util-learner-renderer-vnext .util-page-orientation+.util-learning-activities>.util-activity:first-child{margin-top:2.5rem;padding-top:2rem}}" +
       "@media (max-width:390px){.util-journey-sequential{width:100%;max-width:100%}.util-journey-sequential__row{column-gap:.5rem}}" +
       "@media (prefers-reduced-motion:reduce){.util-journey-nav,.util-journey-all-panel{scroll-behavior:auto}}" +
@@ -56331,33 +56400,31 @@
     return slugify(safeBase) + "-learner-package.zip";
   }
 
+  /**
+   * Sprint 96 — one author-facing Learning Journey download action.
+   * The package button produces the unified Learning Journey when LJ preview
+   * is active. Legacy multi-document packaging remains internal only.
+   * The former separate "Download Unified Learning Journey" control is removed.
+   */
   function syncUtilitiesUnifiedJourneyDownloadControl() {
-    var btn = els.utilitiesDownloadUnifiedJourneyBtn;
-    if (!btn) return;
-    var ljActive = isLearningJourneyCommissioningPreviewActive();
-    var packageDisabled = !!(
-      els.utilitiesDownloadPackageBtn && els.utilitiesDownloadPackageBtn.disabled
-    );
-    btn.classList.toggle("hidden", !ljActive);
-    if (ljActive) {
-      btn.removeAttribute("hidden");
-    } else {
-      btn.setAttribute("hidden", "hidden");
+    var packageBtn = els.utilitiesDownloadPackageBtn;
+    if (packageBtn) {
+      if (isLearningJourneyCommissioningPreviewActive()) {
+        packageBtn.textContent = "Journey";
+        packageBtn.title = "Download Learning Journey";
+        packageBtn.setAttribute("aria-label", "Download Learning Journey");
+      } else {
+        packageBtn.textContent = "ZIP";
+        packageBtn.title = "Download Resource";
+        packageBtn.setAttribute("aria-label", "Download Resource");
+      }
     }
-    btn.disabled = !ljActive || packageDisabled;
-    btn.textContent = "Download Unified Learning Journey";
-    btn.title = "Download Unified Learning Journey (.zip)";
-    btn.setAttribute("aria-label", "Download Unified Learning Journey");
-    if (els.utilitiesDownloadPackageBtn && ljActive) {
-      els.utilitiesDownloadPackageBtn.title =
-        "Download multi-document Learning Journey package (.zip)";
-      els.utilitiesDownloadPackageBtn.setAttribute(
-        "aria-label",
-        "Multi-document Learning Journey package (.zip)"
-      );
-    } else if (els.utilitiesDownloadPackageBtn) {
-      els.utilitiesDownloadPackageBtn.title = "Download learner package (.zip)";
-      els.utilitiesDownloadPackageBtn.setAttribute("aria-label", "Learner package (.zip)");
+    // Gracefully hide any leftover unified control if present in older markup.
+    var legacyUnified = els.utilitiesDownloadUnifiedJourneyBtn;
+    if (legacyUnified) {
+      legacyUnified.classList.add("hidden");
+      legacyUnified.setAttribute("hidden", "hidden");
+      legacyUnified.disabled = true;
     }
   }
 
@@ -58135,10 +58202,13 @@
   }
 
   /**
-   * Sprint 95 M5 — author-facing unified Learning Journey package download.
-   * Reuses the multi-document prep/hydrate path. Does NOT replace the default multi-document ZIP.
-   * UI: utilitiesDownloadUnifiedJourneyBtn. Also available via
+   * Sprint 95 M5 / Sprint 96 — Learning Journey package download (unified shell).
+   * Author UI: utilitiesDownloadPackageBtn while Learning Journey preview is active
+   * (sole normal LJ download). Also available via
    * window.__PRISM_TEST_API.handleLearningJourneyUnifiedShellPackageDownloadForTest(options).
+   * Legacy multi-document packaging remains on
+   * handleLearningJourneyLearnerPackageDownload / ForTest — not exposed as a UI choice.
+   * No silent fallback to multi-document output when this path fails.
    *
    * @param {{
    *   artefactContract?: object,
@@ -58167,12 +58237,12 @@
       !ljPackageMod ||
       typeof ljPackageMod.assembleLearningJourneyUnifiedShellPackage !== "function"
     ) {
-      showToast("Unified Learning Journey packaging is unavailable.", "error");
+      showToast("Learning Journey packaging is unavailable.", "error");
       return Promise.resolve({ ok: false, code: "lj_unified_shell_unavailable" });
     }
     if (!ctx || !ctx.page) {
       showToast(
-        "Open Learning Journey Authoring Preview first, then choose Download Unified Learning Journey.",
+        "Open Learning Journey Authoring Preview first, then choose Download Learning Journey.",
         "error"
       );
       return Promise.resolve({ ok: false, code: "lj_preview_context_missing" });
@@ -58193,13 +58263,13 @@
     var sourceWorkflowId = String(ctx.sourceWorkflowId || state.selectedWorkflowId || "").trim();
     var page = ctx.page;
     var familyMod = getFirstClassWorkflowFamilyMod();
-    showToast("Building Unified Learning Journey package…", "info");
+    showToast("Building Learning Journey package…", "info");
 
     return resolveUnifiedShellRuntimeScriptSource(opts).then(function (runtimeResolved) {
       if (!runtimeResolved || !runtimeResolved.ok || !runtimeResolved.runtimeScript) {
         showToast(
           (runtimeResolved && runtimeResolved.message) ||
-            "Could not load the learner runtime required for the Unified Learning Journey package.",
+            "Could not load the learner runtime required for the Learning Journey package.",
           "error"
         );
         return {
@@ -58218,7 +58288,7 @@
           : null;
       if (!preparedRunState) {
         showToast(
-          "Unified Learning Journey preparation failed (constituent production state unavailable).",
+          "Learning Journey preparation failed (constituent production state unavailable).",
           "error"
         );
         return { ok: false, code: "preparation_runstate_missing" };
@@ -58244,7 +58314,7 @@
         var message =
           typeof ljPackageMod.formatPreflightBlockers === "function"
             ? ljPackageMod.formatPreflightBlockers(preflight.blockers)
-            : "Learning Journey is not ready for Unified Learning Journey export.";
+            : "Learning Journey is not ready for export.";
         showToast(message, "error");
         return {
           ok: false,
@@ -58369,7 +58439,7 @@
         if (!assembled || !assembled.ok || !assembled.bytes) {
           showToast(
             (assembled && assembled.error && assembled.error.message) ||
-              "Could not assemble the Unified Learning Journey package.",
+              "Could not assemble the Learning Journey package.",
             "error"
           );
           return {
@@ -58391,7 +58461,7 @@
             assembled.zipName || "learning-journey-unified-shell.zip",
             "application/zip"
           );
-          showToast("Unified Learning Journey package downloaded.", "success");
+          showToast("Learning Journey package downloaded.", "success");
         }
 
         return {
@@ -58422,7 +58492,7 @@
       var message =
         (err && err.message) ||
         (err && err.code) ||
-        "Unified Learning Journey package export failed.";
+        "Learning Journey package export failed.";
       if (err && err.commissionId) {
         message = String(err.commissionId) + ": " + message;
       }
@@ -58435,6 +58505,10 @@
     });
   }
 
+  /**
+   * Legacy multi-document Learning Journey ZIP (internal / regression only).
+   * Not exposed as a normal Authoring Preview download choice (Sprint 96).
+   */
   function handleLearningJourneyLearnerPackageDownload() {
     var ljPackageMod = resolveLearningJourneyLearnerPackageLib();
     var ljDesignMod = resolveLearningJourneyDesignPageLib();
@@ -58647,7 +58721,8 @@
 
   function handleUtilitiesDownloadLearnerPackage() {
     if (isLearningJourneyCommissioningPreviewActive()) {
-      return handleLearningJourneyLearnerPackageDownload();
+      // Sole normal Learning Journey download → unified package (no multi-doc fallback).
+      return handleLearningJourneyUnifiedShellPackageDownload();
     }
     return resolveUtilitiesExportHtmlForDownload().then(function (resolved) {
       if (!resolved || !resolved.ok || !resolved.html) {
@@ -60554,30 +60629,36 @@
     };
     prismTestApi.setUtilitiesDownloadControlsDisabledForTest = setUtilitiesDownloadControlsDisabled;
     prismTestApi.getUtilitiesDownloadControlsStateForTest = function () {
+      var legacyUnified = els.utilitiesDownloadUnifiedJourneyBtn;
       return {
         htmlDisabled: !!(els.utilitiesDownloadHtmlBtn && els.utilitiesDownloadHtmlBtn.disabled),
         packageDisabled: !!(
           els.utilitiesDownloadPackageBtn && els.utilitiesDownloadPackageBtn.disabled
         ),
-        unifiedDisabled: !!(
-          els.utilitiesDownloadUnifiedJourneyBtn && els.utilitiesDownloadUnifiedJourneyBtn.disabled
-        ),
-        unifiedHidden: !!(
-          els.utilitiesDownloadUnifiedJourneyBtn &&
-          (els.utilitiesDownloadUnifiedJourneyBtn.classList.contains("hidden") ||
-            els.utilitiesDownloadUnifiedJourneyBtn.hasAttribute("hidden"))
-        ),
+        packageTitle: els.utilitiesDownloadPackageBtn
+          ? String(els.utilitiesDownloadPackageBtn.title || "").trim()
+          : "",
+        packageAriaLabel: els.utilitiesDownloadPackageBtn
+          ? String(els.utilitiesDownloadPackageBtn.getAttribute("aria-label") || "").trim()
+          : "",
+        unifiedControlPresent: !!legacyUnified,
+        unifiedDisabled: !!(legacyUnified && legacyUnified.disabled),
+        unifiedHidden: !legacyUnified
+          ? true
+          : !!(
+              legacyUnified.classList.contains("hidden") || legacyUnified.hasAttribute("hidden")
+            ),
         htmlLabel: els.utilitiesDownloadHtmlBtn
           ? String(els.utilitiesDownloadHtmlBtn.textContent || "").trim()
           : "",
         packageLabel: els.utilitiesDownloadPackageBtn
           ? String(els.utilitiesDownloadPackageBtn.textContent || "").trim()
           : "",
-        unifiedLabel: els.utilitiesDownloadUnifiedJourneyBtn
-          ? String(els.utilitiesDownloadUnifiedJourneyBtn.textContent || "").trim()
+        unifiedLabel: legacyUnified
+          ? String(legacyUnified.textContent || "").trim()
           : "",
-        unifiedAriaLabel: els.utilitiesDownloadUnifiedJourneyBtn
-          ? String(els.utilitiesDownloadUnifiedJourneyBtn.getAttribute("aria-label") || "").trim()
+        unifiedAriaLabel: legacyUnified
+          ? String(legacyUnified.getAttribute("aria-label") || "").trim()
           : ""
       };
     };

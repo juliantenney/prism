@@ -2,8 +2,8 @@
 
 **Canonical location:** `docs/backlog/PRODUCT-BACKLOG.md`  
 **Status:** Active — **alpha-use period** (Alpha development complete, 2026-09-02)  
-**Last updated:** 2026-11-03 (Sprint 95 **CLOSED — ACCEPTED**; Sprint 94 **CLOSED — ACCEPTED**)  
-**Active sprint:** None — await presentation-sprint authorisation. Last closed: [Sprint 95 — Unified Learning Journey Runtime](../development/sprints/2026-11-03-sprint-95-unified-learning-journey-runtime/SPRINT-95-CLOSURE.md) — **CLOSED — ACCEPTED**.
+**Last updated:** 2026-11-03 (Sprint 96 **OPEN**; Sprint 95 **CLOSED — ACCEPTED**)  
+**Active sprint:** [Sprint 96 — Unified Learning Journey Experience & Compatibility](../development/sprints/2026-11-03-sprint-96-unified-learning-journey-experience/SPRINT-96-START-HERE.md). Last closed: [Sprint 95 — Unified Learning Journey Runtime](../development/sprints/2026-11-03-sprint-95-unified-learning-journey-runtime/SPRINT-95-CLOSURE.md) — **CLOSED — ACCEPTED**.
 
 This file answers: **what might we actually choose to work on next?**
 
@@ -353,9 +353,24 @@ Establish foundations for a unified, accessible, single-document Learning Journe
 
 **Delivered:** M1 Assessment Pack lifecycle; M2 additive unified shell; M3 explicit artefact handoff; M4 wider compatibility (qualified); M5 author-facing **Download Unified Learning Journey** with automatic artefact proposal; live *Deciding Under Uncertainty* verified.
 
-**Deferred (not reopen):** presentation polish; MathLive remount/packaging; making unified the default download — see Sprint 95 [ARCHITECTURAL-DEBT.md](../development/sprints/2026-11-03-sprint-95-unified-learning-journey-runtime/ARCHITECTURAL-DEBT.md).
+**Deferred (absorbed by Sprint 96 / PB-FA-024):** presentation polish; MathLive remount/packaging; making unified the default download — see Sprint 95 [ARCHITECTURAL-DEBT.md](../development/sprints/2026-11-03-sprint-95-unified-learning-journey-runtime/ARCHITECTURAL-DEBT.md) and [PB-FA-024](#pb-fa-024--unified-learning-journey-experience--compatibility).
 
 **Out of scope (unchanged):** iframes; server learner accounts; AI marking; new application framework; regenerating existing journeys; Interactive V2; Course Home.
+
+### PB-FA-024 — Unified Learning Journey experience & compatibility
+
+**Status:** **Sprint-allocated — Sprint 96 OPEN.**  
+**Type:** Bounded implementation — experience polish + mathematics compatibility + publishing default gate.  
+**Pack:** [Sprint 96](../development/sprints/2026-11-03-sprint-96-unified-learning-journey-experience/SPRINT-96-START-HERE.md)  
+**Baseline:** `c5d93e85cb4bf1457f499ccac76763d75d272dad`
+
+Deliver a polished, accessible unified Learning Journey experience while preserving constituent functionality (including MathLive and MathJax). After acceptance gates pass, unified publishing becomes the standard Learning Journey author output; multi-document ZIP remains a compatibility fallback. Do not switch the default until M5 gates pass.
+
+**In scope:** M1 navigation/layout; M2 visual coherence (reuse tokens); M3 contextual guidance without content regen; M4 mathematics compatibility gate (blocking); M5 final acceptance + default switch.
+
+**Out of scope:** prompt-pipeline changes; regenerating journeys; new frameworks; server learner storage; AI marking; Interactive V2; Course Home; accepting MathLive via textarea fallback alone.
+
+**Readiness:** Sprint 95 closed. Read-only investigation complete (2026-11-03). M1 awaiting authorisation.
 
 ### PB-FA-016 — Course Home / course assembly
 

@@ -2,18 +2,14 @@
 
 **Sprint 95 is CLOSED — ACCEPTED (S95-D07). Do not reopen.**
 
-Predecessor Sprint 94 is **CLOSED — ACCEPTED**. Do not reopen.
+Successor: **[Sprint 96 — Unified Learning Journey Experience & Compatibility](../2026-11-03-sprint-96-unified-learning-journey-experience/SPRINT-96-START-HERE.md)** is **OPEN** (S96-D01). Load that pack for continuation.
 
-## Load
+## Sprint 95 capability (complete)
 
-1. [SPRINT-95-CLOSURE.md](SPRINT-95-CLOSURE.md)  
-2. [ARCHITECTURAL-DEBT.md](ARCHITECTURAL-DEBT.md) — presentation + MathLive debt  
-3. [decisions.md](decisions.md) — S95-D01…D07  
+Authors can **Download Unified Learning Journey** from Utilities Learning Journey preview. Unified shell is additive; multi-document ZIP remains default until Sprint 96 M5 gates pass.
 
-## Capability available
+## Do not
 
-Authors can **Download Unified Learning Journey** from Utilities Learning Journey preview. Unified shell is additive; multi-document ZIP remains default.
-
-## Next
-
-Presentation-sprint polish and MathLive remount/packaging are **deferred**. Do **not** begin them until a new sprint is explicitly authorised. Do **not** regenerate *Deciding Under Uncertainty*.
+- Reopen Sprint 95 for presentation or MathLive work — that is Sprint 96.  
+- Regenerate *Deciding Under Uncertainty*.  
+- Switch the default LJ download before Sprint 96 M5 acceptance.

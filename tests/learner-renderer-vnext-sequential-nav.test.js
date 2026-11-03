@@ -328,7 +328,7 @@ test("sequential nav: compact centred desktop unit and panel chrome", () => {
   );
   assert.match(
     html,
-    /\.util-journey-sequential__row\{display:grid;grid-template-columns:44px repeat\(3,minmax\(0,1fr\)\)/
+    /\.util-journey-sequential__row\{display:grid;grid-template-columns:var\(--learner-nav-control-size,2\.25rem\) repeat\(3,minmax\(0,1fr\)\)/
   );
   assert.match(
     html,
@@ -337,7 +337,9 @@ test("sequential nav: compact centred desktop unit and panel chrome", () => {
   assert.doesNotMatch(html, /\.util-journey-sequential__row::after/);
   assert.match(html, /\.util-journey-sequential\{[^}]*border-bottom:1px solid #e2e8f0/);
   assert.match(html, /\.util-journey-all-panel\{[^}]*width:100%;max-width:100%/);
-  assert.match(html, /\.util-journey-all-btn\{[^}]*min-height:44px/);
+  assert.match(html, /\.util-journey-all-btn\{[^}]*min-height:var\(--learner-nav-control-size,2\.25rem\)/);
+  assert.match(html, /--learner-nav-active-bg:#dbeafe/);
+  assert.match(html, /--learner-nav-hover-bg:#e2e8f0/);
   assert.match(html, /overflow-wrap:break-word/);
   assert.doesNotMatch(
     html,

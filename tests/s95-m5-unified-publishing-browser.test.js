@@ -256,16 +256,17 @@ test(
         waitUntil: "domcontentloaded",
         timeout: 60000
       });
-      const control = uiPage.locator("#utilitiesDownloadUnifiedJourneyBtn");
-      await control.waitFor({ state: "attached", timeout: 30000 });
-      assert.equal(await control.getAttribute("aria-label"), "Download Unified Learning Journey");
-      assert.match(
-        String((await control.textContent()) || "").trim(),
-        /Download Unified Learning Journey/
+      // Sprint 96: sole LJ package control is #utilitiesDownloadPackageBtn; no separate Unified button.
+      assert.equal(
+        await uiPage.locator("#utilitiesDownloadUnifiedJourneyBtn").count(),
+        0
       );
-      const hiddenAttr = await control.getAttribute("hidden");
-      const hasHiddenClass = await control.evaluate((el) => el.classList.contains("hidden"));
-      assert.ok(hiddenAttr !== null || hasHiddenClass);
+      const control = uiPage.locator("#utilitiesDownloadPackageBtn");
+      await control.waitFor({ state: "attached", timeout: 30000 });
+      assert.match(
+        String((await control.getAttribute("aria-label")) || ""),
+        /Download Resource|Download Learning Journey/i
+      );
 
       const shellPage = await context.newPage();
       await shellPage.goto(packageServer.baseUrl, {

@@ -261,16 +261,11 @@ test(
       assert.equal(await page.locator("[data-lj-overview]").count(), 1);
       assert.equal(await page.locator(".lj-shell__intro").count(), 0);
 
-      assert.match(
-        await page.locator("#lj-shell-next").textContent(),
-        /Next resource/i
-      );
-      assert.ok(
-        await page.locator(".lj-shell__sidebar #lj-shell-next").count(),
-        "resource next control lives in the journey sidebar"
-      );
+      assert.equal(await page.locator("#lj-shell-next").count(), 0);
+      assert.equal(await page.locator("#lj-shell-prev").count(), 0);
+      assert.equal(await page.locator(".lj-shell__toolbar").count(), 0);
 
-      await page.locator("#lj-shell-next").click();
+      await page.locator('[data-lj-nav-id="c1"]').click();
       await page.waitForFunction(() => window.__PRISM_LJ_SHELL__.currentId === "c1", {
         timeout: 15000
       });
@@ -304,7 +299,7 @@ test(
       assert.ok(focusedTag);
       assert.equal(focusedTag.tag, "H2");
 
-      await page.locator("#lj-shell-prev").click();
+      await page.locator('[data-lj-nav-id="c1"]').click();
       await page.waitForFunction(() => window.__PRISM_LJ_SHELL__.currentId === "c1", {
         timeout: 15000
       });
@@ -315,8 +310,8 @@ test(
       const mountCountAfterReturn = await page.evaluate(() => window.__PRISM_LJ_SHELL__.mountCount);
       assert.ok(mountCountAfterReturn > mountCountAfterFirst);
 
-      // Keyboard: Tab to Next, activate with Enter.
-      await page.locator("#lj-shell-next").focus();
+      // Keyboard: activate Contents entry with Enter.
+      await page.locator('[data-lj-nav-id="c2"]').focus();
       await page.keyboard.press("Enter");
       await page.waitForFunction(() => window.__PRISM_LJ_SHELL__.currentId === "c2", {
         timeout: 15000

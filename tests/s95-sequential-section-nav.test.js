@@ -64,7 +64,7 @@ test("prepareUnifiedShellResources restores section nav for extracted Interactiv
   assert.match(prepared.resources[0].html, /aria-label="Learning sections"/);
 });
 
-test("unified shell moves resource prev/next into the sidebar", () => {
+test("unified shell keeps Learning sections nav without shell prev/next", () => {
   const journey = ljDesign.buildLearningJourneyDesignPageFixture({
     title: "Nav placement journey",
     sections: [
@@ -101,21 +101,17 @@ test("unified shell moves resource prev/next into the sidebar", () => {
     }
   ]);
   assert.equal(shell.ok, true, shell.code);
-  assert.match(shell.html, /lj-shell__resource-step/);
-  assert.match(shell.html, />Previous resource</);
-  assert.match(shell.html, />Next resource</);
-  assert.match(
-    shell.html,
-    /<aside class="lj-shell__sidebar"[\s\S]*id="lj-shell-prev"[\s\S]*<\/aside>/
-  );
-  assert.doesNotMatch(
-    shell.html,
-    /<div class="lj-shell__toolbar"[\s\S]*id="lj-shell-prev"/
-  );
+  assert.doesNotMatch(shell.html, /lj-shell__resource-step/);
+  assert.doesNotMatch(shell.html, /Previous resource/);
+  assert.doesNotMatch(shell.html, /Next resource/);
+  assert.doesNotMatch(shell.html, /id="lj-shell-prev"/);
+  assert.match(shell.html, /id="lj-shell-sidebar-toggle"/);
+  assert.match(shell.html, /--lj-shell-toolbar-height/);
+  assert.doesNotMatch(shell.html, /top:3\.75rem/);
+  assert.doesNotMatch(shell.html, /lj-shell__toolbar/);
   assert.match(shell.html, /util-journey-nav--sequential/);
   assert.match(shell.html, /aria-label="Learning sections"/);
   assert.match(shell.html, /aria-label="Journey navigation"/);
-  assert.match(shell.html, /aria-label="Resource step controls"/);
 });
 
 test("renderLearnerResourceFragment leaves single-section resources without sequential nav", () => {

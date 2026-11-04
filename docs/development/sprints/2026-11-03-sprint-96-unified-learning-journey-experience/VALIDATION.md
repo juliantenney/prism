@@ -1,7 +1,7 @@
 # Sprint 96 — Validation ledger
 
 **Sprint:** 96 — Unified Learning Journey Experience & Compatibility  
-**Status:** **OPEN** — M1 accepted; M2 evidence recorded; awaiting author acceptance
+**Status:** **OPEN** — M1–M4 accepted (M3/M4/D15 qualified); M5 verification prepared — **not accepted**
 
 ## Planned evidence
 
@@ -185,7 +185,7 @@ Automated: `tests/s96-m3-contextual-guidance.test.js`, `tests/s96-m3-contextual-
 
 Evidence: [evidence/m3-contextual-guidance/](evidence/m3-contextual-guidance/).
 
-**M3 acceptance:** Proposed (S96-D13) — awaiting author.
+**M3 acceptance:** **ACCEPTED** (qualified, S96-D13) — runtime + pipeline accepted; stored C5/C6 legacy transfer wording deferred (not a unified-runtime failure); no C5/C6 regen in S96.
 
 ---
 
@@ -210,7 +210,7 @@ Automated: `tests/s96-lj-publishing-default.test.js`; updated `tests/s95-m5-unif
 
 ## M4 — Mathematics compatibility (2026-11-04)
 
-**Status:** **IMPLEMENTED** — awaiting author acceptance (S96-D16). Policy: [S96-D05](decisions.md#s96-d05--mathematics-packaging-policy-m4).
+**Status:** **ACCEPTED** (qualified, S96-D16). Policy: [S96-D05](decisions.md#s96-d05--mathematics-packaging-policy-m4).
 
 | Check | Result |
 | ----- | ------ |
@@ -235,7 +235,8 @@ Automated:
 - `tests/s95-m4-lifecycle-compatibility.test.js` — fallback negative control retained — **passed**
 - S82 MathLive + MathJax packaging suites — **passed**
 
-**Not done:** DUU six-resource regen; formal screen-reader sign-off; M5.
+**Qualifications (accepted, not resolved):** Formal SR not demonstrated; MathLive VK residual risk documented; fixture ≠ DUU-native maths.  
+**Deferred separately:** Optional DUU C5/C6 source regen (S96-D13); M5 verification ([M5-VERIFICATION.md](M5-VERIFICATION.md)).
 
 ---
 
@@ -259,4 +260,24 @@ Automated: `tests/s96-viewport-centred-reading.test.js` — **2 passed**.
 
 Cache marker: `?v=20261103-s96-viewport-centred-reading`.
 
-**Acceptance:** Proposed (S96-D15) — awaiting author review.
+**Acceptance:** **ACCEPTED** (qualified, S96-D15) — ordinary desktop contract accepted; **400% zoom imperfect** and must not be claimed as comprehensive accessibility verification ([S95-AD-020](ARCHITECTURAL-DEBT.md) / [S96-AD-007](ARCHITECTURAL-DEBT.md)).
+
+---
+
+## M5 — Final acceptance (OPEN)
+
+**Status:** **Not accepted.** Sprint 96 remains **OPEN**. Plan: [M5-VERIFICATION.md](M5-VERIFICATION.md).
+
+| Gate | Classification |
+| ---- | -------------- |
+| M5.1 Consolidated DUU verification | Requires S96 confirmation (reuse prior evidence with provenance) |
+| M5.2 Maths journey | D16 accepted (qualified); confirm disposition |
+| M5.3 A11y smoke | Not completed — protocol prepared |
+| M5.4 Standalone + multi-doc regressions | Passed — cite existing suites |
+| M5.5–M5.6 Unified default + decision | Satisfied by S96-D14 |
+
+### Educational QA v1.2 calibration (supporting)
+
+Archive: [evidence/lj-qa-v1.2-calibration/](evidence/lj-qa-v1.2-calibration/).  
+Author-reported (not yet filed): 86/100 and 87/100, both *Ready with qualifications*.  
+**Do not** treat as repo-evidenced until source reports are archived and checked. Freeze statement applies only after filing.

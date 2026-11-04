@@ -1,7 +1,7 @@
 # Sprint 96 — Plan / work log
 
 **Sprint:** 96 — Unified Learning Journey Experience & Compatibility  
-**Status:** **OPEN** — M1/M2 + fidelity accepted; M3 await accept; publishing UI unified-only (S96-D14); stop before M4  
+**Status:** **OPEN** — M1–M4 accepted (M3/M4/D15 qualified); M5 verification prepared — not accepted  
 **Baseline:** `c5d93e85cb4bf1457f499ccac76763d75d272dad`
 
 ## Ordered work
@@ -10,10 +10,11 @@
 2. M1 — Navigation and layout. **ACCEPTED** (S96-D08).  
 3. M2 — Visual coherence. **ACCEPTED** (S96-D09).  
 4. Resource-fidelity repair gate. **ACCEPTED** (S96-D10/D11).  
-5. M3 — Contextual guidance. **IMPLEMENTED** — S96-D13 proposed.  
+5. M3 — Contextual guidance. **ACCEPTED** (qualified, S96-D13) — no C5/C6 regen in S96.  
 6. Publishing UI simplification. **COMPLETE** (S96-D14) — unified is the sole normal LJ download.  
-7. M4 — Mathematics compatibility gate (blocking). **Not started.**  
-8. M5 — Final acceptance after M4 (product default already unified per S96-D14).
+7. M4 — Mathematics compatibility gate. **ACCEPTED** (qualified, S96-D16).  
+8. Viewport-centred reading. **ACCEPTED** (qualified, S96-D15).  
+9. M5 — Final acceptance. **OPEN** — [M5-VERIFICATION.md](M5-VERIFICATION.md); product default already unified per S96-D14.
 
 ## Log
 
@@ -29,3 +30,5 @@
 | 2026-11-03 | **S96-D11** fidelity accepted. **S96-D12** M3 authorised (narrow regen allowed). Delivery-neutral prompts + unified runtime handoff guidance. Stored journey not overwritten; candidate C5/C6 wording documented. S96-D13 proposed. |
 | 2026-11-03 | **S96-D14** All Learning Journeys publish as unified experiences. Removed separate Unified download; normal Journey download → unified package. Legacy multi-doc retained internally. M4 still blocking. |
 | 2026-11-03 | **S96-D15** Viewport-centred 70ch reading column (measured sidebar inset); wide tables use 100cqw available space. Awaiting author review. |
+| 2026-11-04 | M4 implemented and committed (`19300d4`). S96-D16 proposed. |
+| 2026-11-04 | **S96-D13 / D15 / D16 ACCEPTED (qualified).** M5 verification plan prepared. Sprint remains OPEN. No closure. |

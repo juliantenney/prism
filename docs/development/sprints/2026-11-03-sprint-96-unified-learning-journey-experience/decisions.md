@@ -77,7 +77,7 @@
 
 **Decision:** Bundle MathLive and MathJax according to demonstrated constituent requirements. Do not automatically include both when only one is needed.
 
-**Implementation:** See [S96-D16](#s96-d16--propose-accept-m4-mathematics-compatibility).
+**Implementation:** See [S96-D16](#s96-d16--accept-m4-mathematics-compatibility-qualified).
 
 ---
 
@@ -210,34 +210,35 @@ Acceptance includes:
 ## S96-D12 — Authorise M3 — Contextual Guidance
 
 **Date:** 2026-11-03  
-**Status:** **Accepted** (implementation authorised; acceptance pending)  
+**Status:** **Accepted** (implementation authorised; milestone accepted under S96-D13)  
 **Depends on:** [S96-D11](#s96-d11--accept-resource-fidelity-repair-gate), [S96-D04](#s96-d04--contextual-guidance-approach-m3)
 
 **Decision:** Authorise **M3 — Contextual Guidance**, including narrowly scoped regeneration of affected instructional content where necessary. This supersedes S96-D04’s regeneration ban **for M3’s specific purpose only**.
 
 **Responsibility boundary:** Generated educational content describes the learning task; the delivery runtime explains how learner work is made available.
 
-**Not authorised:** M4 mathematics packaging; M5 default switch; overwriting the author’s stored real journey without explicit confirmation; regenerating unrelated resources.
+**Follow-on:** Milestone acceptance recorded in [S96-D13](#s96-d13--accept-m3-contextual-guidance-qualified) (qualified; no C5/C6 overwrite in S96).
+
+**Not authorised by D12 alone:** M5 acceptance; Sprint 96 closure; overwriting the author’s stored real journey without explicit confirmation; regenerating unrelated resources.
 
 ---
 
-## S96-D13 — Propose accept M3 Contextual Guidance
+## S96-D13 — Accept M3 Contextual Guidance (qualified)
 
-**Date:** 2026-11-03  
-**Status:** **Proposed — awaiting author**  
+**Date:** 2026-11-03 (proposed); **Accepted:** 2026-11-04  
+**Status:** **Accepted** (qualified)  
 **Depends on:** [S96-D12](#s96-d12--authorise-m3--contextual-guidance)
 
-**Decision (proposed):** Accept M3 for:
+**Decision:** Accept **M3 — Contextual Guidance**, with the following explicit qualifications:
 
-- Delivery-neutral commissioning / bring-forward prompts (no embedded save/copy/transfer mechanics);
-- Unified runtime neutralization of contradictory delivery-mechanics prose when an explicit artefact contract applies;
-- Accurate artefact availability / missing messaging;
-- Standalone source HTML retaining manual-reference prose until optional C5/C6 regeneration;
-- Candidate C5/C6 wording documented without overwriting stored workflows.
+1. Delivery-neutral commissioning / bring-forward prompts, unified-runtime neutralization of obsolete save/copy/transfer prose when an explicit artefact contract applies, and accurate available/missing artefact messaging are **accepted**.  
+2. Existing automated and browser evidence for that behaviour is **accepted**.  
+3. The **stored** *Deciding Under Uncertainty* C5/C6 source resources may still contain legacy manual-transfer wording. That residual source prose is **not** treated as a failure of the unified-runtime behaviour.  
+4. **Author decision (2026-11-04):** Do **not** regenerate or overwrite C5/C6 as part of Sprint 96. Retain the accepted resources. Optional source-prose cleanup is **deferred** (see [M3-CANDIDATE-CONTENT.md](M3-CANDIDATE-CONTENT.md)).
 
-**Evidence:** [VALIDATION.md](VALIDATION.md); [M3-CANDIDATE-CONTENT.md](M3-CANDIDATE-CONTENT.md); `tests/s96-m3-contextual-guidance*.test.js`.
+**Not authorised by this acceptance:** M5 acceptance; Sprint 96 closure; overwriting stored DUU resources; changing generation prompts; claiming stored C5/C6 source prose is already cleaned.
 
-**Author action still needed to clean stored source prose:** confirm regenerate C5/C6, approve overwrite after backup, or leave source as-is (runtime fix sufficient for unified delivery).
+**Evidence:** [VALIDATION.md](VALIDATION.md); [M3-CANDIDATE-CONTENT.md](M3-CANDIDATE-CONTENT.md); `tests/s96-m3-contextual-guidance*.test.js`; `evidence/m3-contextual-guidance/`.
 
 ---
 
@@ -269,29 +270,40 @@ Acceptance includes:
 
 ---
 
-## S96-D15 — Viewport-centred reading column (shell layout)
+## S96-D15 — Accept viewport-centred reading column (qualified)
 
-**Date:** 2026-11-03  
-**Status:** **Proposed — awaiting author review**  
+**Date:** 2026-11-03 (proposed); **Accepted:** 2026-11-04  
+**Status:** **Accepted** (qualified)  
 **Depends on:** [S96-D09](#s96-d09--accept-m2-visual-coherence)
 
-**Decision (proposed):** On sufficiently wide viewports, the **70ch** reading column is centred on the **browser viewport**, independent of sidebar expanded/collapsed state. Wide tables use the remaining visible main content width (`100cqw` after measured prose inset) and must not pass under the sidebar or reopen document-level horizontal overflow.
+**Decision:** Accept the viewport-centred reading contract for the unified Learning Journey shell, with the following explicit qualifications:
 
-**Mechanism:** Measure side-by-side sidebar occupancy into `--lj-shell-sidebar-occupied`; set `#lj-shell-main` padding-left to `max(gutter, (100vw - 70ch)/2 - occupied)`; left-align `.util-learner-page` inside the shell. Stacked (narrow) sidebars report occupied `0`.
+1. On sufficiently wide viewports, the **70ch** prose column is centred relative to the **browser viewport** (not only the remaining area beside the sidebar).  
+2. Tables and wider content use the available main-content width appropriately and must not pass under the sidebar or reopen ordinary document-level horizontal overflow.  
+3. Ordinary desktop presentation meets the intended design.  
+4. **Qualification:** Geometry at **400% zoom** remains imperfect and must **not** be represented as having passed comprehensive accessibility verification. Outstanding zoom/a11y assurance remains under [S95-AD-020](ARCHITECTURAL-DEBT.md) / [S96-AD-007](ARCHITECTURAL-DEBT.md) and M5 smoke (not resolved by this acceptance).
 
-**Not authorised by D15 alone:** M5; sidebar redesign; reading-width change; educational content changes.
+**Mechanism (unchanged):** Measure side-by-side sidebar occupancy into `--lj-shell-sidebar-occupied`; set `#lj-shell-main` padding-left to `max(gutter, (100vw - 70ch)/2 - occupied)`; left-align `.util-learner-page` inside the shell. Stacked (narrow) sidebars report occupied `0`.
+
+**Not authorised by this acceptance:** M5 acceptance; Sprint 96 closure; sidebar redesign; reading-width change; educational content changes; claiming comprehensive zoom/a11y verification.
 
 **Evidence:** [VALIDATION.md](VALIDATION.md); `evidence/viewport-centred-reading/`; `tests/s96-viewport-centred-reading.test.js`.
 
 ---
 
-## S96-D16 — Propose accept M4 mathematics compatibility
+## S96-D16 — Accept M4 mathematics compatibility (qualified)
 
 **Date:** 2026-11-04  
-**Status:** **Proposed — awaiting author review**  
+**Status:** **Accepted** (qualified)  
 **Depends on:** [S96-D05](#s96-d05--mathematics-packaging-policy-m4)
 
-**Decision (proposed):** Accept Sprint 96 **M4** — unified Learning Journeys package and run MathLive / MathJax offline with the same response semantics as standalone resources.
+**Decision:** Accept Sprint 96 **M4 — Mathematics compatibility**, with the following explicit qualifications:
+
+1. Need-based local MathLive/MathJax packaging, offline operation without CDN dependence, post-mount typesetting, MathLive enhancement, and resource-remount behaviour are **accepted**.  
+2. Existing automated and representative browser evidence for that behaviour is **accepted**.  
+3. **Qualification:** Formal screen-reader acceptance has **not** been demonstrated (remains [S95-AD-020](ARCHITECTURAL-DEBT.md) / M5.3).  
+4. **Qualification:** Residual MathLive virtual-keyboard singleton risk remains documented (S95-AD-011 residual).  
+5. **Qualification:** Representative fixture testing must **not** be described as full DUU-native mathematics testing.
 
 **Delivered:**
 
@@ -301,6 +313,6 @@ Acceptance includes:
 - MathLive `installMathEntryRuntime` enhanced path on mount; remount ≥2; draft TeX restore; reload restore.
 - Fallback retained only as negative control when libraries are absent — not as enhanced-mode success.
 
-**Not claimed:** Formal screen-reader acceptance (S95-AD-020 / M5). DUU six-resource content regeneration. M5 final acceptance.
+**Not authorised by this acceptance:** M5 acceptance; Sprint 96 closure; claiming formal AT acceptance; describing the M4 fixture as DUU-native maths coverage; additional mathematics implementation.
 
 **Evidence:** [VALIDATION.md](VALIDATION.md) M4 section; `tests/s96-m4-math-compatibility.test.js`; `tests/s96-m4-math-compatibility-browser.test.js`.

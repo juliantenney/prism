@@ -1,7 +1,7 @@
 # Sprint 96 M3 — Candidate educational wording (C5 / C6)
 
-**Status:** Candidate for author review — **not applied** to the stored real journey  
-**Date:** 2026-11-03  
+**Status:** Candidate retained — **not applied** to the stored real journey  
+**Date:** 2026-11-03; **Author decision (S96-D13, 2026-11-04):** do **not** regenerate or overwrite C5/C6 in Sprint 96; optional source-prose cleanup **deferred**  
 **Constraint:** Do not overwrite the author's stored *Deciding Under Uncertainty* journey without explicit confirmation.
 
 ## Why regeneration is gated

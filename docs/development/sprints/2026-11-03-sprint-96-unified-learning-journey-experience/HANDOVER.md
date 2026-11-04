@@ -1,19 +1,22 @@
 # Sprint 96 — Handover
 
-**Sprint:** 96 — Unified Learning Journey Experience & Compatibility  
-**Status:** **OPEN** — S96-D15 viewport-centred reading **proposed for author review**; M4 not started  
-**Baseline:** `c5d93e85cb4bf1457f499ccac76763d75d272dad`
+**Status:** **OPEN** — M1–M4 accepted (M3/M4/D15 qualified); M5 verification prepared — not accepted  
+**Updated:** 2026-11-04
 
-## Resume here
+## Accepted (qualified where noted)
 
-1. [evidence/viewport-centred-reading/measurements.json](evidence/viewport-centred-reading/measurements.json)  
-2. [decisions.md](decisions.md) — S96-D15  
-3. [VALIDATION.md](VALIDATION.md)
+- M1 / M2 / fidelity / S96-D14 publishing UI  
+- **S96-D13** M3 contextual guidance (stored C5/C6 cleanup deferred)  
+- **S96-D15** viewport-centred reading (400% zoom not comprehensive a11y)  
+- **S96-D16** M4 maths compatibility (SR / VK residual / fixture ≠ DUU-native)
 
-## Latest change
+## Open
 
-Viewport-centred 70ch column via measured `--lj-shell-sidebar-occupied` and `#lj-shell-main` prose inset. Wide content stays on `100cqw` available space. Cache: `?v=20261103-s96-viewport-centred-reading`.
+- **M5** — [M5-VERIFICATION.md](M5-VERIFICATION.md)  
+- Sprint closure — **not authorised**  
+- QA v1.2 archive — location ready; source reports not filed  
+- Deferred: C5/C6 source prose cleanup; comprehensive a11y; QA cross-journey validation  
 
-## Next
+## Continuity
 
-Author accepts or qualifies S96-D15. Do **not** begin M4 without authorisation.
+Standalone publishing preserved. No `SPRINT-96-CLOSURE.md` yet.

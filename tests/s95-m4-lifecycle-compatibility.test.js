@@ -252,6 +252,13 @@ function createElement(tagName) {
     disabled: false,
     _html: "",
     _listeners: [],
+    style: {
+      setProperty: function () {},
+      getPropertyValue: function () {
+        return "";
+      },
+      removeProperty: function () {}
+    },
     classList: {
       _classes: Object.create(null),
       contains(name) {
@@ -320,7 +327,12 @@ function createElement(tagName) {
     },
     dispatchEvent() {
       return true;
-    }
+    },
+    getBoundingClientRect() {
+      return { top: 0, bottom: 0, left: 0, right: 0, width: 0, height: 0 };
+    },
+    focus() {},
+    blur() {}
   };
   Object.defineProperty(node, "innerHTML", {
     get() {
@@ -329,6 +341,29 @@ function createElement(tagName) {
     set(value) {
       node._html = String(value || "");
       node.children = [];
+    }
+  });
+  Object.defineProperty(node, "clientHeight", {
+    get() {
+      return 0;
+    }
+  });
+  Object.defineProperty(node, "scrollHeight", {
+    get() {
+      return 0;
+    }
+  });
+  Object.defineProperty(node, "scrollTop", {
+    get() {
+      return node._scrollTop || 0;
+    },
+    set(value) {
+      node._scrollTop = Number(value) || 0;
+    }
+  });
+  Object.defineProperty(node, "parentElement", {
+    get() {
+      return node.parentNode && node.parentNode.tagName ? node.parentNode : null;
     }
   });
   return node;
@@ -345,7 +380,7 @@ function matchesSelector(node, selector) {
   while (rest.length) {
     if (rest[0] === ".") {
       const cls = rest.slice(1).match(/^[a-zA-Z0-9_-]+/);
-      if (!cls || !node.classList.contains(cls[0])) return false;
+      if (!cls || !node.classList || !node.classList.contains(cls[0])) return false;
       rest = rest.slice(1 + cls[0].length);
       continue;
     }
@@ -713,25 +748,69 @@ test("S95-T-010 six-resource synthetic DUU-shaped shell reaches all commissions 
 });
 
 test("S95-T-010 Assessment Pack fragment still mounts with extended lifecycle handles", () => {
+  const hadWindow = Object.prototype.hasOwnProperty.call(global, "window");
+  const hadDocument = Object.prototype.hasOwnProperty.call(global, "document");
+  const previousWindow = global.window;
+  const previousDocument = global.document;
+
   const documentRef = createDocument();
-  const container = createMountContainer(documentRef);
-  const fragment = renderLearnerResourceFragment(
-    assessmentPage({ workflowId: "wf-m4-ap", pageId: "page-m4-ap" })
-  );
-  assert.equal(fragment.error, null, String(fragment.error || ""));
-  const mounted = mountLearnerResource(container, {
-    html: fragment.html,
-    storage: memoryStorage(),
-    pageKey: "m4-ap",
-    debounceMs: 0
-  });
-  assert.equal(mounted.ok, true);
-  assert.ok(mounted.assessment);
-  assert.ok(mounted.ordering);
-  assert.ok(mounted.mathEntry);
-  assert.ok(mounted.revisionCriterion);
-  const result = unmountLearnerResource(mounted);
-  assert.equal(result.ok, true);
+  documentRef.body = createElement("body");
+  documentRef.documentElement = createElement("html");
+  documentRef.addEventListener = function () {};
+  documentRef.removeEventListener = function () {};
+  global.document = documentRef;
+  global.window = {
+    addEventListener: function () {},
+    removeEventListener: function () {},
+    scrollBy: function () {},
+    getComputedStyle: function () {
+      return {
+        overflowY: "visible",
+        position: "static",
+        paddingTop: "0",
+        paddingBottom: "0",
+        getPropertyValue: function () {
+          return "";
+        }
+      };
+    },
+    matchMedia: function () {
+      return { matches: false, addEventListener: function () {}, addListener: function () {} };
+    },
+    requestAnimationFrame: function (fn) {
+      return setTimeout(fn, 0);
+    },
+    dispatchEvent: function () {
+      return true;
+    }
+  };
+
+  try {
+    const container = createMountContainer(documentRef);
+    documentRef.body.appendChild(container);
+    const fragment = renderLearnerResourceFragment(
+      assessmentPage({ workflowId: "wf-m4-ap", pageId: "page-m4-ap" })
+    );
+    assert.equal(fragment.error, null, String(fragment.error || ""));
+    const mounted = mountLearnerResource(container, {
+      html: fragment.html,
+      storage: memoryStorage(),
+      pageKey: "m4-ap",
+      debounceMs: 0
+    });
+    assert.equal(mounted.ok, true);
+    assert.ok(mounted.assessment);
+    assert.ok(mounted.ordering);
+    assert.ok(mounted.mathEntry);
+    assert.ok(mounted.revisionCriterion);
+    const result = unmountLearnerResource(mounted);
+    assert.equal(result.ok, true);
+  } finally {
+    if (hadWindow) global.window = previousWindow;
+    else delete global.window;
+    if (hadDocument) global.document = previousDocument;
+    else delete global.document;
+  }
 });
 
 test("real DUU source gap remains documented: no committed seven-component HTML", () => {

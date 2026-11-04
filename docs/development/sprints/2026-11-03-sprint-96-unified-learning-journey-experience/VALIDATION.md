@@ -202,9 +202,40 @@ Evidence: [evidence/m3-contextual-guidance/](evidence/m3-contextual-guidance/).
 | No silent multi-doc fallback on unified failure | **Pass** — route calls unified only |
 | Legacy multi-doc assembler still callable | **Pass** — `handleLearningJourneyLearnerPackageDownloadForTest` + `assembleLearningJourneyLearnerPackage` |
 | Standalone resource ZIP path unchanged | **Pass** — non-LJ still uses resource package builder |
-| Mathematics compatibility claimed | **No** — M4 outstanding |
+| Mathematics compatibility claimed | **No** at D14 — see M4 section below |
 
 Automated: `tests/s96-lj-publishing-default.test.js`; updated `tests/s95-m5-unified-publishing-ui.test.js` / browser.
+
+---
+
+## M4 — Mathematics compatibility (2026-11-04)
+
+**Status:** **IMPLEMENTED** — awaiting author acceptance (S96-D16). Policy: [S96-D05](decisions.md#s96-d05--mathematics-packaging-policy-m4).
+
+| Check | Result |
+| ----- | ------ |
+| Need-based packaging (none / MathJax-only / MathLive-only / both) | **Pass** |
+| Missing assets fail closed | **Pass** (`mathlive_assets_missing` / `mathjax_assets_missing`) |
+| Shell loads local MathLive + MathJax (no CDN) | **Pass** — head inject; ZIP root `lib/mathlive/…`, `lib/mathjax/…` |
+| MathLive enhanced `<math-field>` on first mount | **Pass** (browser) |
+| Remount ≥2 + TeX draft restore | **Pass** (browser) |
+| Reload restores distinctive expression | **Pass** (browser) |
+| MathJax typeset after mount and remount | **Pass** — `mjx-container`; no raw delimiters |
+| Switch maths ↔ non-maths resources | **Pass** |
+| Offline / CDN blocked | **Pass** — Playwright aborts CDN hosts; zero CDN requests |
+| Standalone maths packaging regressions | **Pass** — S82 MathLive + MathJax suites |
+| Fallback alone not counted as enhanced success | **Pass** — S95 unit keeps fallback negative control; browser asserts enhanced |
+| Screen-reader acceptance | **Not claimed** — keyboard/focus labels retained; formal AT deferred (S95-AD-020 / M5) |
+
+Automated:
+
+- `tests/s96-m4-math-compatibility.test.js` — **8 passed**
+- `tests/s96-m4-math-compatibility-browser.test.js` — **1 passed** (~9.5s)
+- `tests/s95-m4-compatibility-browser.test.js` — updated for enhanced MathLive — **passed**
+- `tests/s95-m4-lifecycle-compatibility.test.js` — fallback negative control retained — **passed**
+- S82 MathLive + MathJax packaging suites — **passed**
+
+**Not done:** DUU six-resource regen; formal screen-reader sign-off; M5.
 
 ---
 

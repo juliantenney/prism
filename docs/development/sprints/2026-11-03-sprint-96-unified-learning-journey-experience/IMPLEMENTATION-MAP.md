@@ -1,6 +1,6 @@
 # Sprint 96 — Implementation map
 
-**Status:** **OPEN** — M1/M2 + fidelity **ACCEPTED**; M3 **IMPLEMENTED** (S96-D13 proposed); stop before M4  
+**Status:** **OPEN** — M1/M2 + fidelity **ACCEPTED**; M3 **IMPLEMENTED**; M4 **IMPLEMENTED** (S96-D16 proposed); stop before M5  
 **Sprint:** 96 — Unified Learning Journey Experience & Compatibility  
 **Opening:** [S96-D01](decisions.md#s96-d01--open-sprint-96--unified-learning-journey-experience--compatibility)  
 **Charter:** [SPRINT-96-CHARTER.md](SPRINT-96-CHARTER.md)  
@@ -8,7 +8,7 @@
 **Investigation:** [INITIAL-INVESTIGATION.md](INITIAL-INVESTIGATION.md)  
 **Baseline:** `c5d93e85cb4bf1457f499ccac76763d75d272dad`
 
-Do not reorder milestones without a decision. Do not start M3/M4 until authorised.
+Do not reorder milestones without a decision. Do not start M5 until M4 is accepted.
 
 ---
 
@@ -22,11 +22,10 @@ M1 Navigation and layout              ACCEPTED (S96-D08)
 M2 Visual coherence                   ACCEPTED (S96-D09)
 Resource-fidelity repair gate         ACCEPTED (S96-D11)
 M3 Contextual guidance                IMPLEMENTED — awaiting acceptance (S96-D13)
-M4 Mathematics compatibility gate     Not started (blocking for M5)
-M5 Final acceptance + default switch  After M1–M4 acceptance
+M4 Mathematics compatibility gate     IMPLEMENTED — await accept (S96-D16)
+M5 Final acceptance + default switch  After M4 acceptance
 Default LJ download (author UI)       Unified package (S96-D14)
 Legacy multi-document packager        Internal / tests only
-M4 Mathematics gate                   Not started (blocking)
 ```
 
 ---
@@ -39,7 +38,7 @@ M4 Mathematics gate                   Not started (blocking)
 | M2 | Visual coherence | **ACCEPTED** | S96-D09 |
 | — | Resource-fidelity repair gate | **COMPLETE** | S96-D10 |
 | M3 | Contextual guidance | **IMPLEMENTED** — await accept | S96-D13 |
-| M4 | Mathematics compatibility gate | **PLANNED** | **blocking for M5** |
+| M4 | Mathematics compatibility gate | **IMPLEMENTED** — await accept | **blocking for M5** |
 | M5 | Final acceptance and publishing default | **PLANNED** | M1–M4 accepted |
 
 ### Task index (initial)
@@ -54,10 +53,10 @@ M4 Mathematics gate                   Not started (blocking)
 | S96-T-006 | Shell typography / spacing / hierarchy | M2 | **COMPLETE** (await accept) |
 | S96-T-007 | Resource heading + control consistency | M2 | **COMPLETE** — shell title bar removed; resource titles retained |
 | S96-T-008 | Unified vs standalone contextual guidance | M3 | **COMPLETE** (await accept) |
-| S96-T-009 | Bundle MathLive/MathJax in unified ZIP | M4 | Not started |
-| S96-T-010 | MathLive enhanced remount + draft | M4 | Not started |
-| S96-T-011 | MathJax remount typeset | M4 | Not started |
-| S96-T-012 | Offline static-serve maths browser tests | M4 | Not started |
+| S96-T-009 | Bundle MathLive/MathJax in unified ZIP | M4 | **COMPLETE** |
+| S96-T-010 | MathLive enhanced remount + draft | M4 | **COMPLETE** |
+| S96-T-011 | MathJax remount typeset | M4 | **COMPLETE** |
+| S96-T-012 | Offline static-serve maths browser tests | M4 | **COMPLETE** |
 | S96-T-013 | Real DUU + maths journeys + a11y gates | M5 | Not started |
 | S96-T-014 | Switch default LJ download to unified | Publishing / was M5 | **COMPLETE (UI)** — S96-D14; M4/M5 technical accept still open |
 
@@ -166,25 +165,23 @@ Hard-coded `top:3.75rem` under dual sticky (toolbar + `.util-journey-nav`); `--l
 
 ---
 
-## M4 — Mathematics compatibility gate (**blocking**)
+## M4 — Mathematics compatibility gate (**blocking**) — **IMPLEMENTED** (await accept)
 
 **Goal:** MathLive enhancement and MathJax typesetting work in the unified shell with remount, draft persistence, offline ZIP packaging, and AT/keyboard parity. Textarea fallback alone is **insufficient**.
 
-### Acceptance (draft — blocking)
+### Acceptance
 
-1. Unified ZIP for maths constituents includes resolvable MathLive and/or MathJax assets (prefer top-level `lib/mathlive/…`, `lib/mathjax/…`).  
-2. Shell loads local MathLive CSS/JS and MathJax bootstrap (no CDN required offline).  
-3. First mount: `math-field` enhanced mode (`util-learner-workspace--math-enhanced`), not only fallback.  
-4. Remount ≥2 times: still enhanced; draft TeX restores into MathLive; no orphaned VK/listeners.  
-5. MathJax: delimiters typeset after mount **and** remount.  
-6. Static serve with network blocked: maths still works.  
-7. Non-maths journeys are not forced to ship maths assets.  
-8. Standalone maths packaging regressions remain green.  
-9. Keyboard / representative AT behaviour recorded for enhanced fields.
+1. Unified ZIP for maths constituents includes resolvable MathLive and/or MathJax assets (prefer top-level `lib/mathlive/…`, `lib/mathjax/…`). — **Pass**  
+2. Shell loads local MathLive CSS/JS and MathJax bootstrap (no CDN required offline). — **Pass**  
+3. First mount: `math-field` enhanced mode (`util-learner-workspace--math-enhanced`), not only fallback. — **Pass**  
+4. Remount ≥2 times: still enhanced; draft TeX restores into MathLive; no orphaned VK/listeners. — **Pass** (browser; VK hide on unmount)  
+5. MathJax: delimiters typeset after mount **and** remount. — **Pass**  
+6. Static serve with network blocked: maths still works. — **Pass** (CDN routes aborted)  
+7. Non-maths journeys are not forced to ship maths assets. — **Pass**  
+8. Standalone maths packaging regressions remain green. — **Pass**  
+9. Keyboard / representative AT behaviour recorded for enhanced fields. — **Partial** — labels/focus retained; formal SR not claimed (M5 / S95-AD-020)
 
-### Investigation summary
-
-Standalone packages already vendor and fail-closed on MathLive/MathJax. Unified ZIP ships only `index.html` + runtime + `media/…`; fragments strip scripts and omit head bootstrap. M4 of Sprint 95 proved fallback only. Detail: [INITIAL-INVESTIGATION.md](INITIAL-INVESTIGATION.md).
+Evidence: [VALIDATION.md](VALIDATION.md) M4; decision [S96-D16](decisions.md#s96-d16--propose-accept-m4-mathematics-compatibility).
 
 ---
 

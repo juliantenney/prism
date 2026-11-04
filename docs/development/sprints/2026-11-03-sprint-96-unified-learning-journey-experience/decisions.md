@@ -72,12 +72,12 @@
 ## S96-D05 — Mathematics packaging policy (M4)
 
 **Date:** 2026-11-03  
-**Status:** Accepted (forward-looking; **M4 not authorised**)  
+**Status:** **Accepted** (implemented 2026-11-04)  
 **Depends on:** [S96-D01](#s96-d01--open-sprint-96--unified-learning-journey-experience--compatibility)
 
 **Decision:** Bundle MathLive and MathJax according to demonstrated constituent requirements. Do not automatically include both when only one is needed.
 
-**Not authorised:** Implementing M4 in this chat.
+**Implementation:** See [S96-D16](#s96-d16--propose-accept-m4-mathematics-compatibility).
 
 ---
 
@@ -279,6 +279,28 @@ Acceptance includes:
 
 **Mechanism:** Measure side-by-side sidebar occupancy into `--lj-shell-sidebar-occupied`; set `#lj-shell-main` padding-left to `max(gutter, (100vw - 70ch)/2 - occupied)`; left-align `.util-learner-page` inside the shell. Stacked (narrow) sidebars report occupied `0`.
 
-**Not authorised:** M4; sidebar redesign; reading-width change; educational content changes.
+**Not authorised by D15 alone:** M5; sidebar redesign; reading-width change; educational content changes.
 
 **Evidence:** [VALIDATION.md](VALIDATION.md); `evidence/viewport-centred-reading/`; `tests/s96-viewport-centred-reading.test.js`.
+
+---
+
+## S96-D16 — Propose accept M4 mathematics compatibility
+
+**Date:** 2026-11-04  
+**Status:** **Proposed — awaiting author review**  
+**Depends on:** [S96-D05](#s96-d05--mathematics-packaging-policy-m4)
+
+**Decision (proposed):** Accept Sprint 96 **M4** — unified Learning Journeys package and run MathLive / MathJax offline with the same response semantics as standalone resources.
+
+**Delivered:**
+
+- Need-based ZIP-root `lib/mathlive/…` and/or `lib/mathjax/…` (S96-D05); fail closed if required assets missing.
+- Unified shell head loads local libraries once (no CDN); Math entry presentation CSS when MathLive needed.
+- Post-mount scoped MathJax `typesetPromise([root])` with generation guard against stale async typeset after unmount.
+- MathLive `installMathEntryRuntime` enhanced path on mount; remount ≥2; draft TeX restore; reload restore.
+- Fallback retained only as negative control when libraries are absent — not as enhanced-mode success.
+
+**Not claimed:** Formal screen-reader acceptance (S95-AD-020 / M5). DUU six-resource content regeneration. M5 final acceptance.
+
+**Evidence:** [VALIDATION.md](VALIDATION.md) M4 section; `tests/s96-m4-math-compatibility.test.js`; `tests/s96-m4-math-compatibility-browser.test.js`.

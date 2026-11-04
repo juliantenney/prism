@@ -288,7 +288,7 @@ function startStaticServer(rootDir) {
 }
 
 test(
-  "S95-T-010 browser: six resources, ordering, math fallback, C5→C6, a11y landmarks",
+  "S95-T-010 browser: six resources, ordering, MathLive enhance, C5→C6, a11y landmarks",
   { skip: process.env.PRISM_SKIP_BROWSER_E2E === "1" },
   async (t) => {
     const playwright = loadPlaywright();
@@ -426,18 +426,35 @@ test(
 
       await page.locator('[data-lj-nav-id="c4"]').click();
       await page.waitForFunction(() => window.__PRISM_LJ_SHELL__.currentId === "c4");
+      await page.waitForSelector("math-field.util-math-entry__field", { timeout: 15000 });
       assert.ok(
-        (await page.locator(".util-learner-workspace--math-fallback").count()) >= 1,
-        "math workspace should use textarea fallback without MathLive"
+        (await page.locator(".util-learner-workspace--math-enhanced").count()) >= 1,
+        "math workspace must enhance to MathLive (fallback alone is not M4 success)"
       );
-      await page.locator("#lj-shell-main textarea").first().fill("P(H)");
-      await page.locator("#lj-shell-main textarea").first().blur();
+      assert.equal(await page.locator(".util-learner-workspace--math-fallback").count(), 0);
+      await page.evaluate(() => {
+        const field = document.querySelector("#lj-shell-main math-field.util-math-entry__field");
+        if (!field || typeof field.setValue !== "function") {
+          throw new Error("enhanced math-field missing");
+        }
+        field.setValue("P(H)");
+        field.dispatchEvent(new Event("input", { bubbles: true }));
+      });
       await page.waitForTimeout(400);
       await page.locator('[data-lj-nav-id="c2"]').click();
       await page.waitForFunction(() => window.__PRISM_LJ_SHELL__.currentId === "c2");
       await page.locator('[data-lj-nav-id="c4"]').click();
       await page.waitForFunction(() => window.__PRISM_LJ_SHELL__.currentId === "c4");
-      assert.equal(await page.locator("#lj-shell-main textarea").first().inputValue(), "P(H)");
+      await page.waitForSelector("math-field.util-math-entry__field", { timeout: 15000 });
+      assert.equal(
+        await page.evaluate(() => {
+          const ta = document.querySelector(
+            "#lj-shell-main textarea.util-learner-workspace__input"
+          );
+          return ta ? ta.value : "";
+        }),
+        "P(H)"
+      );
 
       await page.locator('[data-lj-nav-id="c6"]').click();
       await page.waitForFunction(() => window.__PRISM_LJ_SHELL__.currentId === "c6");

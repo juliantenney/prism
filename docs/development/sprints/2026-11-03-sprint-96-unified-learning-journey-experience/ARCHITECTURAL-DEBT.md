@@ -27,8 +27,8 @@ Inherits Sprint 95 deferred items that this sprint intends to address. New findi
 | S95-AD-018 | Responsive layout and zoom behaviour | **Addressed in M1** (accepted); rechecked in M2 |
 | S95-AD-019 | Context-sensitive C5/C6 manual-transfer instructions | **Addressed in M3** (await accept) |
 | S95-AD-020 | Further keyboard / screen-reader verification | **M5** (ongoing through M1–M4) |
-| S95-AD-011 | MathLive remount stability | **M4** (blocking) |
-| S95-AD-012 | MathJax / MathLive not auto-bundled in unified ZIP | **M4** (blocking) |
+| S95-AD-011 | MathLive remount stability | **Addressed in M4** (await accept) — remount ≥2 + draft/reload browser pass; residual VK singleton risk documented |
+| S95-AD-012 | MathJax / MathLive not auto-bundled in unified ZIP | **Addressed in M4** (await accept) — need-based shell-level packaging (S96-D05) |
 | S95-AD-008 | Unified not yet default LJ download | **Resolved in UI (S96-D14)** | Author download is unified-only; M4 math gate + M5 final accept still open |
 
 ---
@@ -52,7 +52,7 @@ Inherits Sprint 95 deferred items that this sprint intends to address. New findi
 | -- | ------- | ------ | ----- |
 | S96-AD-001 | Shell sticky offset hard-coded `3.75rem`; sticky token omits toolbar | **Resolved in M1/M2** | Toolbar removed; var remains `0px` |
 | S96-AD-002 | Revision reminder fixed chrome unaware of shell toolbar | **Mitigated in M2** | Toolbar gone; reminder uses `--learner-sticky-nav-height` only |
-| S96-AD-003 | Unified ZIP omits MathLive/MathJax; fragments strip script/head bootstrap | **Open — M4** | Standalone packaging reusable |
+| S96-AD-003 | Unified ZIP omits MathLive/MathJax; fragments strip script/head bootstrap | **Addressed in M4** (await accept) | Shell-level need-based `lib/` + post-mount typeset |
 | S96-AD-004 | Content-viewer CSS may be incomplete in shell Node resolve | **Resolved in M2** | `getUtilityLearnerContentViewerCss` wired in Node resolve |
 | S96-AD-005 | M3 guidance surface scope (runtime-only vs generated prose) | **Resolved in M3** | Runtime + delivery-neutral prompts; optional C5/C6 regen |
 | S96-AD-006 | Sidebar/TOC visual hierarchy and reading typography | **Addressed in M2** (accepted) | Shell + shared `--learner-nav-*` |

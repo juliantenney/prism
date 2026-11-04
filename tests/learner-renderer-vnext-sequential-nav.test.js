@@ -187,7 +187,7 @@ test("sequential nav: All Activities list, disclosure attrs, aria-current", () =
   const html = api.utilityRenderVnextSequentialJourneyNavHtmlForTest(items, { currentIndex: 5 });
   assert.match(
     html,
-    /<button type="button" class="util-journey-all-btn"[^>]*aria-expanded="false"[^>]*aria-controls="util-journey-all-panel"[^>]*aria-label="All activities"/
+    /<button type="button" class="util-journey-all-btn"[^>]*aria-expanded="false"[^>]*aria-controls="util-journey-all-panel"[^>]*aria-label="All sections"/
   );
   assert.match(html, /id="util-journey-all-panel"[^>]*hidden/);
   const links = html.match(/class="util-journey-all-link"/g) || [];

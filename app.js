@@ -51371,7 +51371,7 @@
     var parts = [
       '<div id="util-journey-all-panel" class="util-journey-all-panel" hidden>',
       '<div class="util-journey-all-panel__header">',
-      '<p class="util-journey-all-panel__title">All activities</p>',
+      '<p class="util-journey-all-panel__title">All sections</p>',
       '<button type="button" class="util-journey-all-close">Close</button>',
       "</div>",
       '<ul class="util-journey-all-list">'
@@ -51422,7 +51422,7 @@
       '">' +
       '<div class="util-journey-sequential">' +
       '<div class="util-journey-sequential__row">' +
-      '<button type="button" class="util-journey-all-btn" aria-expanded="false" aria-controls="util-journey-all-panel" title="All activities" aria-label="All activities">' +
+      '<button type="button" class="util-journey-all-btn" aria-expanded="false" aria-controls="util-journey-all-panel" title="All sections" aria-label="All sections">' +
       listIcon +
       "</button>" +
       (prevItem
@@ -51542,12 +51542,15 @@
       "syncStickyOffset();" +
       "if(focusDir){var restore=titlesHost&&titlesHost.querySelector('a.util-journey-adjacent--'+focusDir);if(restore&&restore.focus){try{restore.focus({preventScroll:true});}catch(e){restore.focus();}}}" +
       "}" +
+      "function findScrollParent(node){var el=node;while(el&&el!==document.body&&el!==document.documentElement){if(el.nodeType===1){var style=window.getComputedStyle(el);var overflowY=style&&style.overflowY;if((overflowY==='auto'||overflowY==='scroll')&&el.scrollHeight>el.clientHeight+1)return el;}el=el.parentElement;}return null;}" +
+      "var scrollRoot=sections[0]?findScrollParent(sections[0]):null;" +
       "function computeIndex(){" +
       "var offset=stickyClearanceHeight()+8;var idx=0;" +
       "for(var i=0;i<sections.length;i+=1){if(sections[i].getBoundingClientRect().top-offset<=1)idx=i;}" +
-      "var maxScroll=Math.max(0,(document.documentElement.scrollHeight||0)-(window.innerHeight||0));" +
+      "if(scrollRoot){var maxNested=Math.max(0,scrollRoot.scrollHeight-scrollRoot.clientHeight);if(maxNested>0&&scrollRoot.scrollTop>=maxNested-4)idx=sections.length-1;}" +
+      "else{var maxScroll=Math.max(0,(document.documentElement.scrollHeight||0)-(window.innerHeight||0));" +
       "var scrollTop=window.scrollY||document.documentElement.scrollTop||0;" +
-      "if(maxScroll>0&&scrollTop>=maxScroll-4)idx=sections.length-1;" +
+      "if(maxScroll>0&&scrollTop>=maxScroll-4)idx=sections.length-1;}" +
       "return idx;}" +
       "function requestUpdate(){if(ticking)return;ticking=true;window.requestAnimationFrame(function(){ticking=false;updateNav(computeIndex());});}" +
       "function closePanelToButton(){setPanelOpen(false);if(allBtn)allBtn.focus();}" +
@@ -51557,6 +51560,7 @@
       "panel.addEventListener('click',function(ev){var t=ev.target;if(t&&t.closest&&t.closest('.util-journey-all-link')){setPanelOpen(false);}});" +
       "document.addEventListener('keydown',function(ev){if(ev.key==='Escape'&&panel&&!panel.hidden){closePanelToButton();}});}" +
       "window.addEventListener('scroll',requestUpdate,{passive:true});" +
+      "if(scrollRoot&&scrollRoot!==window&&scrollRoot.addEventListener){scrollRoot.addEventListener('scroll',requestUpdate,{passive:true});}" +
       "window.addEventListener('resize',function(){syncStickyOffset();requestUpdate();});" +
       "syncStickyOffset();updateNav(computeIndex());" +
       "})();" +
@@ -56649,10 +56653,35 @@
     return { title: title, duration: duration };
   }
 
+  function utilityResolveSequentialSectionNavMod() {
+    if (typeof require === "function") {
+      try {
+        return require("./lib/learner-renderer-vnext/sequential-section-nav.js");
+      } catch (_err) {}
+    }
+    if (
+      typeof globalThis !== "undefined" &&
+      globalThis.PRISM_LEARNER_RENDERER_VNEXT &&
+      typeof globalThis.PRISM_LEARNER_RENDERER_VNEXT.buildSectionNavItems === "function"
+    ) {
+      return globalThis.PRISM_LEARNER_RENDERER_VNEXT;
+    }
+    return null;
+  }
+
   function utilityBuildVnextJourneyNavItems(contentHtml, modelResult) {
+    var model = modelResult && modelResult.model ? modelResult.model : null;
+    var sequentialNav = utilityResolveSequentialSectionNavMod();
+    if (sequentialNav && typeof sequentialNav.buildSectionNavItems === "function") {
+      var prepared =
+        typeof sequentialNav.prepareJourneySectionMarkers === "function"
+          ? sequentialNav.prepareJourneySectionMarkers(contentHtml)
+          : String(contentHtml || "");
+      return sequentialNav.buildSectionNavItems(prepared, model);
+    }
+    // Fallback: Interactive-only legacy builder (shared module unavailable).
     var source = String(contentHtml || "");
     var items = [];
-    var model = modelResult && modelResult.model ? modelResult.model : null;
     var hasAssessment =
       !!(
         model &&
@@ -56695,6 +56724,14 @@
     var meta = utilityExtractVnextExportPageMeta(contentHtml);
     var content = utilityPrepareVnextExportJourneyRegions(contentHtml);
     content = utilityStripVnextInlinePageHeader(content);
+    var sequentialNavMod = utilityResolveSequentialSectionNavMod();
+    if (
+      sequentialNavMod &&
+      typeof sequentialNavMod.prepareJourneySectionMarkers === "function"
+    ) {
+      // Stamp stable destination ids before building nav and emitting body HTML.
+      content = sequentialNavMod.prepareJourneySectionMarkers(content);
+    }
     var navItems = utilityBuildVnextJourneyNavItems(content, modelResult);
     var hasJourneyNav = navItems.length >= 2;
     var navHtml = hasJourneyNav ? utilityRenderVnextSequentialJourneyNavHtml(navItems, { currentIndex: 0 }) : "";

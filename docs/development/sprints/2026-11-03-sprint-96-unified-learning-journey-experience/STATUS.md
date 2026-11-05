@@ -29,4 +29,6 @@
 
 **Closure:** [SPRINT-96-CLOSURE.md](SPRINT-96-CLOSURE.md)
 
-**Next:** Do **not** reopen Sprint 96 for deferred a11y / QA cross-journey / C5–C6 source cleanup. Select next work from the product backlog and next-phase priorities in the closure record.
+**Outstanding post-closure content:** **S96-AD-017** — generation prevention implemented (uncommitted pending review); stored DUU C3–C6 still needs author correction. S96 remains **CLOSED** (S96-D20).
+
+**Next:** Review/commit prevention; then author-edit or targeted-regenerate affected DUU constituents and republish. Do **not** reopen Sprint 96 without a separate decision.

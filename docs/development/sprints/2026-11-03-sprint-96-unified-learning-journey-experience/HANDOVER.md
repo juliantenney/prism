@@ -13,6 +13,7 @@
 
 ## Remains open (do not mark resolved)
 
+- **S96-AD-017** learner-facing `cN` identifiers in stored DUU (author editorial — [EDITORIAL-CORRECTION.md](evidence/duu-cross-resource-title-refs/EDITORIAL-CORRECTION.md))  
 - Comprehensive a11y / AT (S95-AD-020 / S96-AD-007)  
 - MathLive VK residual (S95-AD-011)  
 - Stored C5/C6 transfer-prose cleanup (S96-AD-015)  

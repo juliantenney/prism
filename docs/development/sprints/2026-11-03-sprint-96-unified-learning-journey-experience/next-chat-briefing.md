@@ -10,7 +10,8 @@
 
 ## Do
 
-- Select next work from the backlog and closure next-phase priorities.  
+- **Priority:** Author-edit stored DUU C3–C6 to replace learner-facing `cN` with journey published titles ([EDITORIAL-CORRECTION.md](evidence/duu-cross-resource-title-refs/EDITORIAL-CORRECTION.md)); republish unified package.  
+- Select further work from the backlog and closure next-phase priorities.  
 - Keep QA v1.2 frozen; next QA activity is cross-disciplinary validation (unchanged workflow).
 
 ## Do not

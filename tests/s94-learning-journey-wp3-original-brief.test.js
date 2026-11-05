@@ -157,7 +157,10 @@ test("shared composer emits labelled blocks for commissioned Interactive, Exposi
     assert.match(brief, /longer library opening hours/i);
     assert.match(brief, /EDUCATIONAL DEPENDENCIES/);
     assert.match(brief, /Requires c1/);
-    assert.match(brief, /does not transfer the learner's prior responses/i);
+    assert.match(
+      brief,
+      /Do not state whether or how the delivery environment transfers, saves, or retrieves earlier responses/i
+    );
     assert.match(brief, /Do not claim that earlier published resources have been inspected/);
     assertOnce(brief, "COMMISSION SPECIFICATION");
     assertOnce(brief, "LEARNING JOURNEY CONTEXT");

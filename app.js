@@ -5589,14 +5589,43 @@
         initial.commissionDependencies ||
         ""
     ).trim();
+    var publishedTitleDirectory = String(
+      seed.commission_published_titles ||
+        initial.publishedTitleDirectory ||
+        initial.commissionPublishedTitleDirectory ||
+        ""
+    ).trim();
     return {
       seed: seed,
       initial: initial,
       commissionSpec: commissionSpec,
       journeyContext: journeyContext,
       commissionDependencies: commissionDependencies,
-      hasCommissionContext: !!(commissionSpec || journeyContext || commissionDependencies)
+      publishedTitleDirectory: publishedTitleDirectory,
+      hasCommissionContext: !!(
+        commissionSpec ||
+        journeyContext ||
+        commissionDependencies ||
+        publishedTitleDirectory
+      )
     };
+  }
+
+  function composeLearnerFacingCrossResourceReferenceConstraint(hasPublishedTitles) {
+    var lines = [
+      "CROSS-RESOURCE REFERENCES IN LEARNER-FACING PROSE",
+      "",
+      "Internal commission identifiers (for example c1, c2, c3, c4, c5, c6) and other machine ids may appear in structured metadata such as EDUCATIONAL DEPENDENCIES. They must never appear in learner-facing prose.",
+      "",
+      "When referring learners to another learning resource:",
+      hasPublishedTitles
+        ? "1. Use that resource's published title from PUBLISHED LEARNING JOURNEY RESOURCE TITLES."
+        : "1. If no published-title directory is supplied, do not invent a title and do not expose internal commission identifiers (for example c3 or c5). Use a natural generic reference instead (for example \"the earlier evidence-evaluation activity\" or \"your earlier written judgement\").",
+      "2. Explain the educational purpose of the connection: what earlier work to use and why it matters in the current activity.",
+      "3. Do not rely on positional wording alone such as \"next resource\", \"previous chapter\", or \"the next activity\".",
+      "4. Do not expose implementation concepts such as artefact contracts, state keys, workspace ids, or delivery transfer/save/retrieve mechanics."
+    ];
+    return lines.join("\n");
   }
 
   function resolveCommissionedProductLabel(wf) {
@@ -5651,18 +5680,26 @@
     if (ctx.journeyContext) {
       parts.push("LEARNING JOURNEY CONTEXT\n" + ctx.journeyContext);
     }
+    if (ctx.publishedTitleDirectory) {
+      parts.push(ctx.publishedTitleDirectory);
+    }
     if (ctx.commissionDependencies) {
       var handoff =
         productLabel === "Situated Task"
-          ? "These declare intentional educational dependencies on learner work from earlier Learning Journey experiences when this Situated Task was commissioned. Honour them: identify what prior learner work the task must reuse and how that work is used educationally. Do not recreate or independently determine work the journey assigns to the earlier experience. Describe the learning task only. Do not state whether or how the delivery environment transfers, saves, or retrieves earlier responses — delivery explains availability. Do not invent dependencies from journey order alone."
+          ? "These declare intentional educational dependencies on learner work from earlier Learning Journey experiences when this Situated Task was commissioned. Honour them: identify what prior learner work the task must reuse and how that work is used educationally. Do not recreate or independently determine work the journey assigns to the earlier experience. Describe the learning task only. Do not state whether or how the delivery environment transfers, saves, or retrieves earlier responses — delivery explains availability. Do not invent dependencies from journey order alone. Dependency identifiers are machine-readable metadata only; learner-facing prose must use published resource titles (see CROSS-RESOURCE REFERENCES IN LEARNER-FACING PROSE)."
           : "These declare intentional educational dependencies on learner work from earlier Learning Journey experiences when this " +
             productLabel +
-            " was commissioned. Honour them: identify what prior learner work must be reused and how it is used educationally. Do not recreate or independently determine work the journey assigns to the earlier experience. Describe the learning task only. Do not state whether or how the delivery environment transfers, saves, or retrieves earlier responses — delivery explains availability. Do not invent dependencies from journey order alone. Do not claim that earlier published resources have been inspected.";
+            " was commissioned. Honour them: identify what prior learner work must be reused and how it is used educationally. Do not recreate or independently determine work the journey assigns to the earlier experience. Describe the learning task only. Do not state whether or how the delivery environment transfers, saves, or retrieves earlier responses — delivery explains availability. Do not invent dependencies from journey order alone. Do not claim that earlier published resources have been inspected. Dependency identifiers are machine-readable metadata only; learner-facing prose must use published resource titles (see CROSS-RESOURCE REFERENCES IN LEARNER-FACING PROSE).";
       parts.push(
         "EDUCATIONAL DEPENDENCIES (prior experience handoff)\n" +
           ctx.commissionDependencies +
           "\n\n" +
           handoff
+      );
+    }
+    if (ctx.hasCommissionContext) {
+      parts.push(
+        composeLearnerFacingCrossResourceReferenceConstraint(!!ctx.publishedTitleDirectory)
       );
     }
     if (parts.length) return parts.join("\n\n");
@@ -5689,7 +5726,11 @@
       "",
       "Bring-forward. Where the commission requires earlier learner work, ask learners to consult their own earlier work and explain how that work informs the current activity. Describe that educational reuse only. Do not state whether or how the delivery environment transfers, saves, or retrieves earlier responses.",
       "",
-      "Educational dependencies. Treat EDUCATIONAL DEPENDENCIES as references to relevant predecessor commissions or experiences. They do not establish that previous outputs have been inspected. Do not invent dependencies from journey order alone."
+      "Educational dependencies. Treat EDUCATIONAL DEPENDENCIES as references to relevant predecessor commissions or experiences. They do not establish that previous outputs have been inspected. Do not invent dependencies from journey order alone. Identifiers in EDUCATIONAL DEPENDENCIES are structured metadata only.",
+      "",
+      composeLearnerFacingCrossResourceReferenceConstraint(
+        !!readWorkflowCommissionContext(wf).publishedTitleDirectory
+      )
     ];
     var isAssessmentPack =
       (typeof workflowRecordIsAssessmentPack === "function" && workflowRecordIsAssessmentPack(wf)) ||
@@ -5699,7 +5740,7 @@
     if (isAssessmentPack) {
       lines.push(
         "",
-        "Assessment Pack clarification. LEARNING JOURNEY CONTEXT is authoritative for established journey facts and relevant preceding activities. Existing Grounding context remains this pack's topic or focus; it does not replace LEARNING JOURNEY CONTEXT. Where this stage produces learner_context.depends_on_prior_work or learner_context.bring_forward, derive those values from the authoritative commission context where relevant. Describe educational reuse only (what earlier work and how it is used). Do not invent prior learner responses. Do not embed save/copy/transfer mechanics in learner-facing fields — delivery explains availability."
+        "Assessment Pack clarification. LEARNING JOURNEY CONTEXT is authoritative for established journey facts and relevant preceding activities. Existing Grounding context remains this pack's topic or focus; it does not replace LEARNING JOURNEY CONTEXT. Where this stage produces learner_context.depends_on_prior_work or learner_context.bring_forward, derive those values from the authoritative commission context where relevant. Describe educational reuse only (what earlier work and how it is used). Do not invent prior learner responses. Do not embed save/copy/transfer mechanics in learner-facing fields — delivery explains availability. In bring_forward.what / how_used and all other learner-facing Assessment fields, name earlier resources by published title, never by bare commission ids."
       );
     }
     return lines.join("\n");
@@ -5718,7 +5759,7 @@
       "When to write a bring-forward instruction. Generate one concise learner-facing bring-forward instruction only when the commission explicitly requires learners to reuse their own earlier work. Use the educational requirement expressed in COMMISSION SPECIFICATION, LEARNING JOURNEY CONTEXT, and EDUCATIONAL DEPENDENCIES. Do not infer a bring-forward requirement from shared scenario facts, journey position, or dependency identifiers alone. A shared scenario is not automatically a bring-forward requirement: a commission may preserve established facts without asking learners to reuse their own earlier work. A journey that explicitly has no recurring scenario may still require bring-forward when the commission asks learners to reuse earlier work. Where the commission does not require learner-owned reuse, do not invent a bring-forward instruction.",
       "",
       "If a bring-forward is required, the learner-facing instruction must:",
-      "1. Identify the relevant earlier learner activity.",
+      "1. Identify the relevant earlier learner activity by its published Learning Journey title (never by bare commission ids such as c3 or c4).",
       "2. Tell learners what earlier work to use.",
       "3. Explain how that work informs the current activity.",
       "4. Avoid assuming that learners completed the earlier activity or that particular answers are known. Prefer conditional language such as \"If you completed the earlier activity, revisit...\".",
@@ -5726,7 +5767,11 @@
       "6. Refer only to educationally relevant predecessors.",
       "7. Appear once in this product's existing learner-facing structure. Do not repeat it in every activity, section, or later stage.",
       "",
-      "Write to the learner. Do not dump COMMISSION SPECIFICATION, LEARNING JOURNEY CONTEXT, or EDUCATIONAL DEPENDENCIES into learner-facing output."
+      "Write to the learner. Do not dump COMMISSION SPECIFICATION, LEARNING JOURNEY CONTEXT, or EDUCATIONAL DEPENDENCIES into learner-facing output.",
+      "",
+      composeLearnerFacingCrossResourceReferenceConstraint(
+        !!readWorkflowCommissionContext(wf).publishedTitleDirectory
+      )
     ];
     var product = String((wf && wf.product) || "")
       .trim()
@@ -5742,17 +5787,17 @@
     if (isInteractive) {
       lines.push(
         "",
-        "Interactive Resource. Place any required bring-forward in the first relevant activity's existing activity_preamble. Explain what learners should bring from their own earlier work and how they will use it in that activity. Do not repeat it on every activity. Do not add an overview banner. Do not require an overview field."
+        "Interactive Resource. Place any required bring-forward in the first relevant activity's existing activity_preamble. Explain what learners should bring from their own earlier work and how they will use it in that activity. Name other journey resources by published title only. Do not repeat it on every activity. Do not add an overview banner. Do not require an overview field."
       );
     } else if (isExpository) {
       lines.push(
         "",
-        "Expository Resource. Place any required bring-forward naturally in the opening section's existing exposition. Orient learners to the relevant earlier activity and explain how their own work informs the current reading or analysis. Do not create a new section. Do not treat within-chapter continuity_hooks as cross-component dependencies."
+        "Expository Resource. Place any required bring-forward naturally in the opening section's existing exposition. Orient learners to the relevant earlier activity by published title and explain how their own work informs the current reading or analysis. Do not create a new section. Do not treat within-chapter continuity_hooks as cross-component dependencies."
       );
     } else if (isAssessmentPack) {
       lines.push(
         "",
-        "Assessment Pack. Where this stage produces learner_context.bring_forward, emit [{what, how_used}] only when the commission requires reuse of earlier learner work. what identifies the learner-owned earlier work to use. how_used explains its educational role in the current assessment. Do not assume completion or known answers. Do not embed save/copy/transfer mechanics. Do not duplicate this copy in Design Page exposition. Do not populate bring_forward from dependency identifiers or journey order alone. Existing Grounding context remains the pack's topic or focus. Existing Bind commissioning instructions remain in force."
+        "Assessment Pack. Where this stage produces learner_context.bring_forward, emit [{what, how_used}] only when the commission requires reuse of earlier learner work. what identifies the learner-owned earlier work to use and names any referenced journey resource by published title. how_used explains its educational role in the current assessment. Do not assume completion or known answers. Do not embed save/copy/transfer mechanics. Do not duplicate this copy in Design Page exposition. Do not populate bring_forward from dependency identifiers or journey order alone. Existing Grounding context remains the pack's topic or focus. Existing Bind commissioning instructions remain in force."
       );
     }
     return lines.join("\n");
@@ -24686,7 +24731,11 @@
         dependencies: String(envelope.dependencies || "").trim(),
         commissionDependencies: String(envelope.dependencies || "").trim(),
         sourceJourneyWorkflowId: String(envelope.sourceJourneyWorkflowId || "").trim(),
-        sourceCommissionId: String(envelope.sourceCommissionId || "").trim()
+        sourceCommissionId: String(envelope.sourceCommissionId || "").trim(),
+        publishedTitleDirectory: String(envelope.publishedTitleDirectory || "").trim(),
+        commissionPublishedTitles: Array.isArray(envelope.commissionPublishedTitles)
+          ? envelope.commissionPublishedTitles.slice()
+          : []
       },
       askedFactors: [],
       inferredFactors: {},
@@ -60805,6 +60854,8 @@
       composeCommissionedContextHonourInstruction;
     prismTestApi.composeCommissionedLearnerFacingBringForwardInstruction =
       composeCommissionedLearnerFacingBringForwardInstruction;
+    prismTestApi.composeLearnerFacingCrossResourceReferenceConstraint =
+      composeLearnerFacingCrossResourceReferenceConstraint;
     prismTestApi.isCommissionLearnerFacingCopyStep = isCommissionLearnerFacingCopyStep;
     prismTestApi.applyCommissionedOriginalBriefDelivery = applyCommissionedOriginalBriefDelivery;
     prismTestApi.readWorkflowCommissionContext = readWorkflowCommissionContext;

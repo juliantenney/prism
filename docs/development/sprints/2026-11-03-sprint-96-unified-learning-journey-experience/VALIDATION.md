@@ -322,6 +322,21 @@ Automated: `tests/s96-m5-skip-main-a11y.test.js` — **2 passed**.
 | M5.4 | Publishing VALIDATION rows; fidelity standalone unchanged; S82 maths packaging; `tests/s96-lj-publishing-default.test.js` |
 | M5.5–M5.6 | [S96-D14](decisions.md#s96-d14--learning-journeys-publish-as-unified-experiences) |
 
+### Post-closure — DUU learner-facing cross-resource identifiers (2026-11-05)
+
+**Status:** Generation **prevention implemented** (await review/commit); stored DUU content **still open** ([S96-AD-017](ARCHITECTURAL-DEBT.md)). S96 remains **CLOSED**.
+
+| Check | Result |
+| ----- | ------ |
+| Confirmed C3–C6 learner-facing `cN` leaks in export | **Found** — see editorial inventory |
+| Prevention: title directory at LJ → constituent intake | **Implemented** — `buildCommissionPublishedTitleDirectory` + deliverySeed |
+| Prevention: shared commissioning constraint (Interactive / Assessment / shared composers) | **Implemented** — original brief, honour, bring-forward |
+| Automated coverage | `tests/s96-learner-facing-resource-title-refs.test.js` |
+| Stored DUU corrected | **Not done** — no regenerate/overwrite in this change |
+| Publication-time HTML rewrite | **Not used** (by design) |
+
+Inventory + author correction path: [evidence/duu-cross-resource-title-refs/EDITORIAL-CORRECTION.md](evidence/duu-cross-resource-title-refs/EDITORIAL-CORRECTION.md).
+
 ### Educational QA v1.2 calibration (supporting)
 
 **Status:** **QA v1.2 — Provisionally calibrated; frozen pending cross-journey validation.**  

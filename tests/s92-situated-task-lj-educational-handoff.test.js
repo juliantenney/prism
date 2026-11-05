@@ -82,7 +82,10 @@ test("composeSituatedTaskOriginalBrief surfaces commission handoff into ORIGINAL
   assert.match(commissionedBrief, /come directly from c6/i);
   assert.match(commissionedBrief, /EDUCATIONAL DEPENDENCIES/);
   assert.match(commissionedBrief, /Requires c6/);
-  assert.match(commissionedBrief, /does not transfer the learner's prior responses/i);
+  assert.match(
+    commissionedBrief,
+    /Do not state whether or how the delivery environment transfers, saves, or retrieves earlier responses/i
+  );
   // Must not leave commission context hidden behind bare original_brief.
   assert.notEqual(commissionedBrief, commissionedWf.workflowBriefResolution.resolvedFactors.original_brief);
 });

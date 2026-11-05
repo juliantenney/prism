@@ -66,6 +66,7 @@ Residual debt at close. Do **not** mark comprehensive accessibility as resolved.
 | S96-AD-014 | Reading column shifts when sidebar toggles | **Accepted** (S96-D15 qualified) | Viewport-centred; 400% zoom not comprehensive a11y |
 | S96-AD-015 | Optional C5/C6 source-prose cleanup after M3 | **Deferred** | Author: do not regen in S96; candidate wording retained |
 | S96-AD-016 | LJ QA v1.2 cross-journey validation | **Deferred** | DUU provisionally calibrated/frozen (author summary); second journey still required |
+| S96-AD-017 | Learner-facing `cN` identifiers in stored DUU prose | **Open — content still uncorrected** | Generation prevention shipped (title directory + commissioning constraint); stored DUU C3–C6 still needs author edit/targeted regen — [EDITORIAL-CORRECTION.md](evidence/duu-cross-resource-title-refs/EDITORIAL-CORRECTION.md) |
 
 ---
 

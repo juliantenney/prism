@@ -316,3 +316,25 @@ Acceptance includes:
 **Not authorised by this acceptance:** M5 acceptance; Sprint 96 closure; claiming formal AT acceptance; describing the M4 fixture as DUU-native maths coverage; additional mathematics implementation.
 
 **Evidence:** [VALIDATION.md](VALIDATION.md) M4 section; `tests/s96-m4-math-compatibility.test.js`; `tests/s96-m4-math-compatibility-browser.test.js`.
+
+---
+
+## S96-D17 — Accept M5.3 accessibility smoke (qualified)
+
+**Date:** 2026-11-05  
+**Status:** **Accepted** (qualified)  
+**Depends on:** [S96-D08](#s96-d08--accept-m1-navigation-and-layout-engineering-visual-not-final) (shell keyboard baseline)
+
+**Decision:** Accept Sprint 96 **M5.3 — Accessibility smoke** for the unified Learning Journey shell, with the following explicit qualifications:
+
+1. Manual Windows/NVDA testing confirmed heading navigation, landmark discovery, reading of static learning content, and successful resource transitions.  
+2. Manual keyboard testing confirmed sidebar navigation, access to representative interactive controls, and focus on resource headings after resource selection.  
+3. The unified shell provides a **Skip to main content** link (first focusable; visually hidden until focused) and an accessible name for the main landmark (`aria-label="Learning content"`).  
+4. Targeted unit and browser tests for the skip link and named main passed (**2/2**); M1 navigation/layout regression tests passed (**2/2**).  
+5. **Qualification:** The newly implemented skip link has automated browser coverage but has **not** been separately retested manually with NVDA.  
+6. **Qualification:** This is a **representative accessibility smoke test**, not a comprehensive WCAG audit. No claim of full accessibility conformance is authorised.  
+7. Broader keyboard, screen-reader, zoom, and assistive-technology assurance remains tracked as architectural debt ([S95-AD-020](ARCHITECTURAL-DEBT.md) / [S96-AD-007](ARCHITECTURAL-DEBT.md)) — do **not** create duplicate debt items.
+
+**Not authorised by this acceptance:** M5 final acceptance; Sprint 96 closure; claiming comprehensive WCAG / AT conformance; unrelated accessibility refactoring.
+
+**Evidence:** [VALIDATION.md](VALIDATION.md) M5.3; [M5-VERIFICATION.md](M5-VERIFICATION.md); `tests/s96-m5-skip-main-a11y.test.js`; `tests/s96-m1-navigation-layout.test.js`.

@@ -1,7 +1,7 @@
 # Sprint 96 — M5 verification plan
 
-**Status:** **OPEN** — prepared after qualified acceptances of S96-D13 / S96-D15 / S96-D16  
-**Sprint:** 96 remains **OPEN**. M5 is **not accepted**.  
+**Status:** **OPEN** — M5.3 **ACCEPTED** (qualified, S96-D17); M5.1 / M5.2 disposition remain  
+**Sprint:** 96 remains **OPEN**. M5 final is **not accepted**.  
 **Authoritative gates:** [IMPLEMENTATION-MAP.md](IMPLEMENTATION-MAP.md) § M5  
 **Do not** create `SPRINT-96-CLOSURE.md` from this document alone.
 
@@ -44,20 +44,40 @@ Default engineering recommendation: treat **D16 as closing M5.2 for S96** with t
 
 ---
 
-## M5.3 — Accessibility smoke (bounded)
+## M5.3 — Accessibility smoke (bounded) — **ACCEPTED (qualified, S96-D17)**
 
-**Prefer perform** this short smoke rather than defer without investigation. Comprehensive a11y remains [S95-AD-020](ARCHITECTURAL-DEBT.md) / [S96-AD-007](ARCHITECTURAL-DEBT.md).
+**Decision:** [S96-D17](decisions.md#s96-d17--accept-m53-accessibility-smoke-qualified).  
+Comprehensive a11y remains [S95-AD-020](ARCHITECTURAL-DEBT.md) / [S96-AD-007](ARCHITECTURAL-DEBT.md). This gate is **smoke / targeted shell fixes only** — not a full audit. No WCAG conformance claim.
 
-### Protocol (unified DUU export, desktop)
+### Shell improvements (2026-11-05) — accepted
 
-1. **Keyboard:** Tab through sidebar toggle → TOC → into active resource; Escape collapses expanded sidebar when focus is in sidebar (existing M1 behaviour).  
-2. **Focus:** After resource switch, focus lands on resource title / main (existing shell behaviour); no keyboard trap in TOC or section nav.  
-3. **Landmarks:** Single `<main>`; journey nav labelled; resource section nav distinguishable.  
-4. **MathLive (if present in package):** Enhanced field reachable and labelled — else N/A for DUU.  
-5. **Screen-reader (representative):** One pass (e.g. NVDA/VoiceOver): announce current resource on TOC activate; announce C6 artefact available or missing state; do **not** claim full audit.
+| Change | Detail |
+| ------ | ------ |
+| Skip to main content | First focusable `<a class="lj-shell__skip-link" href="#lj-shell-main" data-lj-skip-main>` — visually hidden until focused; Enter/click calls `focusResource({ preventScroll: false })` |
+| Named `<main>` | `aria-label="Learning content"` on `#lj-shell-main` |
+| Preserved | TOC focus-on-navigate (`preventScroll` default true); polite live announce; no new Tab stops on static prose |
 
-Record: tool, OS, date, pass/fail per step, and that this is **smoke only**.
+Automated: `tests/s96-m5-skip-main-a11y.test.js` — **2 passed** (unit + browser).  
+Regression: `tests/s96-m1-navigation-layout.test.js` — **2 passed**.
 
+### Manual NVDA / keyboard observations (author, unified DUU — recorded separately from automation)
+
+| Observation | Result |
+| ----------- | ------ |
+| Sidebar keyboard navigation | Works |
+| Interactive controls reachable | Yes |
+| Resource selection moves focus to resource heading | Yes |
+| NVDA recognises main + navigation landmarks | Yes |
+| NVDA heading navigation + static content reading | Yes |
+| NVDA begins reading newly displayed resource after transition | Yes |
+| Sidebar keyboard trap | Not demonstrated |
+| Skip link retested with NVDA after implementation | **Not done** (qualification in S96-D17) |
+
+### Qualifications (authoritative)
+
+- Representative smoke only — not a comprehensive WCAG audit.  
+- Broader keyboard / SR / zoom / AT assurance remains architectural debt (existing S95-AD-020 / S96-AD-007 — no duplicates).  
+- Skip link: automated browser coverage only for the new control.
 ---
 
 ## M5.4 — Standalone + multi-document regressions
@@ -94,4 +114,4 @@ Until source reports are supplied and checked, do **not** treat scores as repo-e
 
 ## Exit to sprint closure (future — not authorised here)
 
-Only after M5.1 recorded, M5.2 disposition confirmed, M5.3 smoke recorded (or explicit author deferral), M5.4–M5.6 cited, and author approves: write `SPRINT-96-CLOSURE.md` and close decision.
+Only after M5.1 recorded, M5.2 disposition confirmed, M5.3 accepted (S96-D17 — done), M5.4–M5.6 cited, and author approves: write `SPRINT-96-CLOSURE.md` and close decision. **Not authorised yet.**

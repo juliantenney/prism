@@ -41,7 +41,7 @@ Legacy multi-document packager        Internal / tests only
 | — | Resource-fidelity repair gate | **COMPLETE** | S96-D10 |
 | M3 | Contextual guidance | **ACCEPTED** (qualified) | S96-D13 |
 | M4 | Mathematics compatibility gate | **ACCEPTED** (qualified) | S96-D16 |
-| M5 | Final acceptance and publishing default | **OPEN** — not accepted | M1–M4 accepted; [M5-VERIFICATION.md](M5-VERIFICATION.md) |
+| M5 | Final acceptance and publishing default | **OPEN** — not accepted | M5.3 accepted (S96-D17); M5.1 / M5.2 disposition remain; [M5-VERIFICATION.md](M5-VERIFICATION.md) |
 
 ### Task index (initial)
 
@@ -59,8 +59,8 @@ Legacy multi-document packager        Internal / tests only
 | S96-T-010 | MathLive enhanced remount + draft | M4 | **COMPLETE** |
 | S96-T-011 | MathJax remount typeset | M4 | **COMPLETE** |
 | S96-T-012 | Offline static-serve maths browser tests | M4 | **COMPLETE** |
-| S96-T-013 | Real DUU + maths journeys + a11y gates | M5 | **IN PROGRESS** — plan in M5-VERIFICATION.md |
-| S96-T-014 | Switch default LJ download to unified | Publishing / was M5 | **COMPLETE (UI)** — S96-D14; M5.1–M5.3 still open |
+| S96-T-013 | Real DUU + maths journeys + a11y gates | M5 | **IN PROGRESS** — M5.3 done (S96-D17); M5.1 / M5.2 remain |
+| S96-T-014 | Switch default LJ download to unified | Publishing / was M5 | **COMPLETE (UI)** — S96-D14; M5.1–M5.2 still open for final accept |
 
 ---
 
@@ -197,7 +197,7 @@ Evidence: [VALIDATION.md](VALIDATION.md) M4; decision [S96-D16](decisions.md#s96
 
 1. Real *Deciding Under Uncertainty* unified experience accepted (nav, artefacts, persistence, zoom/responsive). — **Requires S96 confirmation** (reuse M1/M2/fidelity/S95 with provenance)  
 2. Representative maths journey under M4 criteria. — **D16 accepted (qualified)**; confirm M5.2 disposition in M5-VERIFICATION  
-3. Keyboard/focus + representative screen-reader **smoke** recorded. — **Not completed** (prefer perform; comprehensive a11y separate)  
+3. Keyboard/focus + representative screen-reader **smoke** recorded. — **ACCEPTED** (qualified, [S96-D17](decisions.md#s96-d17--accept-m53-accessibility-smoke-qualified)); comprehensive a11y separate  
 4. Standalone + multi-document regressions green. — **Passed** (cite existing suites)  
 5. Default author-facing LJ download switches to unified; multi-doc fallback. — **Satisfied by S96-D14**  
 6. Explicit decision records the default switch. — **Satisfied by S96-D14**

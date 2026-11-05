@@ -1,7 +1,7 @@
 # Sprint 96 — Index
 
 **Sprint:** 96 — Unified Learning Journey Experience & Compatibility  
-**Status:** **OPEN** — M1–M4 accepted (M3/M4/D15 qualified); M5 verification prepared — not accepted  
+**Status:** **OPEN** — M1–M4 accepted (M3/M4/D15 qualified); M5.3 accepted (S96-D17 qualified); M5 final not accepted  
 **Entry:** [SPRINT-96-START-HERE.md](SPRINT-96-START-HERE.md)  
 **Charter:** [SPRINT-96-CHARTER.md](SPRINT-96-CHARTER.md)  
 **Map:** [IMPLEMENTATION-MAP.md](IMPLEMENTATION-MAP.md)  

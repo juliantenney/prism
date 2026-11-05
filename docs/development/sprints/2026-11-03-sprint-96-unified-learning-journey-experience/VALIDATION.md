@@ -272,9 +272,27 @@ Cache marker: `?v=20261103-s96-viewport-centred-reading`.
 | ---- | -------------- |
 | M5.1 Consolidated DUU verification | Requires S96 confirmation (reuse prior evidence with provenance) |
 | M5.2 Maths journey | D16 accepted (qualified); confirm disposition |
-| M5.3 A11y smoke | Not completed — protocol prepared |
+| M5.3 A11y smoke | **ACCEPTED** (qualified, [S96-D17](decisions.md#s96-d17--accept-m53-accessibility-smoke-qualified)) |
 | M5.4 Standalone + multi-doc regressions | Passed — cite existing suites |
 | M5.5–M5.6 Unified default + decision | Satisfied by S96-D14 |
+
+### M5.3 targeted shell a11y (2026-11-05) — **ACCEPTED (qualified, S96-D17)**
+
+| Check | Result |
+| ----- | ------ |
+| Skip to main content link (first focusable) | **Pass** — unit + browser |
+| Skip activation focuses resource title / main | **Pass** (browser Enter) |
+| `<main aria-label="Learning content">` | **Pass** |
+| TOC resource transition still focuses title | **Pass** (browser) |
+| Interactive control + sidebar toggle still keyboard operable | **Pass** (browser) |
+| M1 navigation/layout regression | **Pass** — `tests/s96-m1-navigation-layout.test.js` (**2/2**) |
+| Static prose Tab stops added | **No** (by design) |
+| Manual NVDA / keyboard observations (DUU) | **Accepted** — landmarks, headings, content reading, resource transitions, no trap — see [M5-VERIFICATION.md](M5-VERIFICATION.md) |
+| Skip link retested manually with NVDA | **Not done** (qualification) |
+| Comprehensive WCAG / AT audit | **Not claimed** — debt remains [S95-AD-020](ARCHITECTURAL-DEBT.md) / [S96-AD-007](ARCHITECTURAL-DEBT.md) |
+| M5.3 milestone acceptance | **ACCEPTED (qualified, S96-D17)** — M5 final / S96 remain OPEN |
+
+Automated: `tests/s96-m5-skip-main-a11y.test.js` — **2 passed**.
 
 ### Educational QA v1.2 calibration (supporting)
 

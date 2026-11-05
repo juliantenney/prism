@@ -1,7 +1,7 @@
 # Sprint 96 — START HERE
 
 **Sprint:** 96 — Unified Learning Journey Experience & Compatibility  
-**Status:** **OPEN** — M1–M4 **ACCEPTED** (M3/M4/D15 qualified); LJ download **unified-only (S96-D14)**; **M5 verification prepared — not accepted**  
+**Status:** **OPEN** — M1–M4 **ACCEPTED** (M3/M4/D15 qualified); M5.3 **ACCEPTED** (qualified, S96-D17); LJ download **unified-only (S96-D14)**; **M5 final not accepted**  
 **Opened:** 2026-11-03  
 **Type:** Bounded implementation — experience polish + mathematics compatibility + publishing default gate  
 **Opening decision:** [S96-D01](decisions.md#s96-d01--open-sprint-96--unified-learning-journey-experience--compatibility)  
@@ -19,9 +19,9 @@
 ## If you are starting a new session
 
 1. Read this file.  
-2. Read [decisions.md](decisions.md) — especially S96-D13 / D15 / D16 (accepted qualified) and S96-D14.  
+2. Read [decisions.md](decisions.md) — especially S96-D13 / D15 / D16 / D17 (accepted qualified) and S96-D14.  
 3. Read [M5-VERIFICATION.md](M5-VERIFICATION.md), [VALIDATION.md](VALIDATION.md), [STATUS.md](STATUS.md).  
-4. Execute remaining M5 checks; do **not** create `SPRINT-96-CLOSURE.md` without author approval.  
+4. Execute remaining M5 checks (M5.1, M5.2 disposition); do **not** create `SPRINT-96-CLOSURE.md` without author approval.  
 5. Do **not** regenerate or overwrite stored DUU C5/C6 (deferred per S96-D13).  
 6. Do **not** reopen Sprint 94 or Sprint 95.  
 7. Author LJ download is already unified-only (S96-D14); do **not** claim Sprint 96 complete until M5 is accepted.
@@ -40,6 +40,7 @@
 | Legacy multi-document packager | Internal / tests only |
 | Standalone publishing | Must remain fully supported |
 | M4 mathematics gate | **ACCEPTED** (qualified, S96-D16) |
+| M5.3 Accessibility smoke | **ACCEPTED** (qualified, S96-D17) |
 | M5 Final acceptance | **OPEN** — not accepted |
 | MathLive textarea fallback | **Not** accepted as proof MathLive works |
 

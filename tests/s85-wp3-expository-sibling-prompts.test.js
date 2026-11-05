@@ -159,6 +159,10 @@ test("DP visual planning requires warrantable value and explicit connectors when
   assert.match(dp, /authorise each connector explicitly/i);
   assert.match(dp, /Do not rely on spatial adjacency or parallel-list order/i);
   assert.match(dp, /visual_affordances may be \[\] when no figure is warranted/i);
+  assert.match(dp, /unrealised figure/i);
+  assert.match(dp, /structured JSON specification/i);
+  assert.match(dp, /worked_example_sufficient_first[\s\S]*must NOT cancel/i);
+  assert.match(dp, /number_line_segments/i);
 });
 
 test("EJP and XM keep learning_content as richness / source authority", () => {

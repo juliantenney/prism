@@ -1,0 +1,58 @@
+CANONICAL SYNTHETIC INVESTIGATION: WATER TEMPERATURE AND SOLUBLE-TABLET DISSOLUTION
+
+SOURCE STATUS
+Synthetic educational dataset created for this Learning Journey. Measurements are illustrative, not records of a verified laboratory experiment. All six commissions must preserve the facts and numerical values below.
+
+INVESTIGATION QUESTION
+Does water temperature affect the time taken for a standard soluble tablet to dissolve?
+
+EXPERIMENTAL DESIGN
+Two conditions are compared, each with six independent repeated trials. The independent variable is water temperature. The dependent variable is dissolution time, measured in seconds.
+Condition A — Cooler water: 20 °C; six trials.
+Condition B — Warmer water: 40 °C; six trials.
+
+CONTROLLED PROCEDURE
+Each trial uses a tablet of the same product and nominal size, 200 mL of water, the same type of vessel and no deliberate stirring. A stopwatch is started when the tablet enters the water. Timing stops when no visible solid tablet remains. A fresh tablet and fresh water are used for each trial.
+These are intended controls, not proof that all variables were perfectly controlled. Actual water temperature during dissolution, tablet-to-tablet differences, endpoint judgement and human reaction time remain potential limitations.
+
+CANONICAL RAW DATASET
+Trial | Condition A: 20 °C (s) | Condition B: 40 °C (s)
+1 | 93 | 78
+2 | 89 | 72
+3 | 96 | 81
+4 | 91 | 75
+5 | 94 | 70
+6 | 87 | 77
+
+MEASUREMENT CONVENTION
+Recorded dissolution times are whole seconds. The values represent six independent repeated trials in each condition, not matched measurements of the same tablet.
+
+CANONICAL VERIFICATION VALUES — RESTRICTED UNTIL RELEVANT LEARNER ATTEMPTS
+Condition A: n = 6; sum = 550 s; mean = 91.6667 s; range = 9 s; sample standard deviation = 3.3862 s.
+Condition B: n = 6; sum = 453 s; mean = 75.5000 s; range = 11 s; sample standard deviation = 4.0373 s.
+Mean difference, Condition B minus Condition A = -16.1667 s, approximately -16.2 s.
+Equivalent description: the observed mean dissolution time at 40 °C is approximately 16.2 s shorter than at 20 °C.
+Use sample standard deviation, dividing the sum of squared deviations by n - 1. The standard deviations are approximately 3.39 s and 4.04 s. Intermediate calculations may retain additional decimal places; final reporting should use sensible precision and consistent units.
+
+INTERPRETIVE BOUNDARY
+These synthetic observations show shorter recorded dissolution times in the warmer-water condition. They do not independently establish a general causal law, statistical significance, the magnitude of a population effect or the absence of confounding influences. No inferential statistical test is required.
+
+CANONICAL WORKED-EXAMPLE DATASET
+Use the separate illustrative measurements 10 s, 12 s and 14 s when explaining statistical procedures before learners analyse the main investigation.
+Mean = 12 s; range = 4 s; sample standard deviation = 2 s.
+This practice dataset is not part of the soluble-tablet experiment and must not be presented as additional experimental evidence.
+
+CANONICAL EXPLANATORY POSSIBILITIES
+1. Temperature-related explanation: warmer water may be associated with faster tablet dissolution.
+2. Procedural explanation: differences in agitation, temperature maintenance or endpoint judgement may influence measured times.
+3. Measurement and sampling explanation: random variation, tablet differences and the small number of trials may affect the observed comparison.
+These possibilities must be evaluated rather than treated as equally established findings.
+
+PROGRESSIVE DISCLOSURE
+C1: Establish the experimental question, procedure, variables and raw observations. Do not provide summary statistics or a conclusion.
+C2: Explain statistical methods using the separate worked-example dataset. Do not disclose the main investigation's calculated statistics.
+C3: Require learners to calculate the main investigation's statistics before presenting verified numerical feedback. Do not provide the final scientific conclusion.
+C4: Require learners to interpret numerical and graphical evidence before presenting explanatory feedback. Do not supply a fully developed final conclusion.
+C5: Require learners to evaluate uncertainty and competing explanations before presenting model evaluative reasoning.
+C6: Require an independent scientific conclusion before releasing model reasoning, detailed feedback or self-evaluation guidance that could reveal the intended argument.
+All numerical feedback and graphs must be checked against the canonical dataset. The same scientific question, condition labels, temperatures, raw values, controls and explanatory possibilities must be preserved throughout the Learning Journey.

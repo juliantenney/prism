@@ -252,11 +252,15 @@
   };
 
   var WORKFLOW_STORAGE_KEY = "promptr.workflows.v1";
+  var WORKFLOW_STORAGE_BACKEND_KEY = "promptr.workflows.v1.backend";
   var WORKFLOW_RUN_STATE_STORAGE_KEY = "promptr.workflows.runstate.v1";
   var RUN_CAPTURE_STORAGE_VERSION_KEY = "promptr.runCaptureStorageVersion";
   var RUN_CAPTURE_MIGRATION_REPORT_KEY = "promptr.runCaptureMigrationReport.v1";
   var RUN_CAPTURE_STORAGE_VERSION = 2;
   var workflowRunAutosaveToastTimer = null;
+  // IndexedDB-first catalogue: in-memory revision + serialised save queue.
+  var workflowCatalogueRevision = 0;
+  var workflowCatalogueSaveTail = Promise.resolve();
 
   function cacheElements() {
     els.apiKeyFile = document.getElementById("apiKeyFile");
@@ -5643,6 +5647,145 @@
     return "product";
   }
 
+  function readAuthoritativeSharedSourceContext(seed, initial) {
+    var fromSeed = String((seed && seed.source_context) || "").trim();
+    if (fromSeed) return fromSeed;
+    var fromInitial = String(
+      (initial && (initial.sourceContext || initial.source_context)) || ""
+    ).trim();
+    if (fromInitial) return fromInitial;
+    return "";
+  }
+
+  /**
+   * Read durable shared source text from a parent Learning Journey workflow.
+   * Prefers resolvedFactors.source_context (Create → buildLearningJourneyFamily).
+   * Falls back to artefacts, then BODY OF KNOWLEDGE section of original_brief.
+   */
+  function readLearningJourneyAuthoritativeSourceContext(sourceWorkflowId) {
+    var wid = String(sourceWorkflowId || "").trim();
+    if (!wid) return "";
+    var list = Array.isArray(state.workflows) ? state.workflows : [];
+    var wf = null;
+    var i;
+    for (i = 0; i < list.length; i += 1) {
+      if (list[i] && String(list[i].id || "") === wid) {
+        wf = list[i];
+        break;
+      }
+    }
+    if (!wf) return "";
+    var brief =
+      wf.workflowBriefResolution && typeof wf.workflowBriefResolution === "object"
+        ? wf.workflowBriefResolution
+        : null;
+    var seed =
+      brief && brief.resolvedFactors && typeof brief.resolvedFactors === "object"
+        ? brief.resolvedFactors
+        : {};
+    var initial =
+      brief && brief.initialBrief && typeof brief.initialBrief === "object"
+        ? brief.initialBrief
+        : {};
+    var fromSeed = String(seed.source_context || "").trim();
+    if (fromSeed) return fromSeed;
+    var fromInitial = String(initial.sourceContext || initial.source_context || initial.inputs || "").trim();
+    if (fromInitial) return fromInitial;
+    var artefacts = String(wf.artefacts || "").trim();
+    if (artefacts) return artefacts;
+    var original = String(seed.original_brief || "").trim();
+    if (!original) return "";
+    var marker = "BODY OF KNOWLEDGE / SOURCE MATERIAL\n";
+    var at = original.indexOf(marker);
+    if (at === -1) return "";
+    var rest = original.slice(at + marker.length);
+    var next = rest.search(/\n\n[A-Z][A-Z /]+\n/);
+    return (next === -1 ? rest : rest.slice(0, next)).trim();
+  }
+
+  function isPrismLocalDevelopmentHost() {
+    if (typeof window === "undefined" || !window.location) return false;
+    var h = String(window.location.hostname || "").toLowerCase();
+    return h === "localhost" || h === "127.0.0.1" || h === "[::1]";
+  }
+
+  function isPrismLocalRepairAllowed() {
+    if (isPrismLocalDevelopmentHost()) return true;
+    // Node/jsdom test harness only — never set in production pages.
+    return !!(
+      typeof window !== "undefined" && window.__PRISM_TEST_HARNESS__ === true
+    );
+  }
+
+  /**
+   * Narrow repair: clear ONLY source_context on one Learning Journey parent so a
+   * corrected Step 5 capture can lock again. Requires confirmWorkflowId to equal
+   * the target id. Local-development / test-harness only. Does not clear captures,
+   * steps, or other brief factors. Write-once protection remains for normal capture.
+   */
+  function clearLearningJourneyAuthoritativeSourceContextForRepair(
+    sourceWorkflowId,
+    confirmWorkflowId
+  ) {
+    if (!isPrismLocalRepairAllowed()) {
+      return {
+        ok: false,
+        code: "local_development_only",
+        cleared: false,
+        errors: ["local_development_only"]
+      };
+    }
+    var wid = String(sourceWorkflowId || "").trim();
+    var confirm = String(confirmWorkflowId || "").trim();
+    if (!wid || !confirm || wid !== confirm) {
+      return {
+        ok: false,
+        code: "confirm_workflow_id_required",
+        cleared: false,
+        errors: ["confirm_workflow_id_required"]
+      };
+    }
+    var list = Array.isArray(state.workflows) ? state.workflows : [];
+    var wf = null;
+    var i;
+    for (i = 0; i < list.length; i += 1) {
+      if (list[i] && String(list[i].id || "") === wid) {
+        wf = list[i];
+        break;
+      }
+    }
+    if (!wf) {
+      return { ok: false, code: "workflow_not_found", cleared: false, errors: ["workflow_not_found"] };
+    }
+    if (!(isLearningJourneyWorkflow(wf) || workflowRecordIsLearningJourney(wf))) {
+      return {
+        ok: false,
+        code: "not_learning_journey",
+        cleared: false,
+        errors: ["not_learning_journey"]
+      };
+    }
+    var sharedLib = resolveLearningJourneySharedSourceLib();
+    if (
+      !sharedLib ||
+      typeof sharedLib.clearSharedSourceOnWorkflowBriefResolution !== "function"
+    ) {
+      return {
+        ok: false,
+        code: "shared_source_module_unavailable",
+        cleared: false,
+        errors: ["shared_source_module_unavailable"]
+      };
+    }
+    var result = sharedLib.clearSharedSourceOnWorkflowBriefResolution(wf);
+    if (result && result.cleared && typeof saveWorkflows === "function") {
+      try {
+        saveWorkflows();
+      } catch (_err) {}
+    }
+    return result || { ok: false, cleared: false, code: "clear_failed" };
+  }
+
   function composeCommissionedOriginalBrief(wf, options) {
     var ctx = readWorkflowCommissionContext(wf);
     var seed = ctx.seed;
@@ -5668,8 +5811,22 @@
         ""
     ).trim();
     if (audience) parts.push("LEARNERS / AUDIENCE\n" + audience);
-    var source = String(seed.source_context || initial.inputs || "").trim();
-    if (source) parts.push("SOURCE / CONTEXT MATERIAL\n" + source);
+    // Shared source must come from the dedicated source_context slot — not from
+    // commission Create inputs (which may embed COMMISSION SPECIFICATION prose).
+    var source = readAuthoritativeSharedSourceContext(seed, initial);
+    if (source) {
+      parts.push("SOURCE / CONTEXT MATERIAL\n" + source);
+      parts.push(
+        [
+          "AUTHORITATIVE SHARED SOURCE MATERIAL",
+          "",
+          "The SOURCE / CONTEXT MATERIAL block is the authoritative shared source for this Learning Journey component.",
+          "Preserve its facts, figures, and values exactly. Do not invent replacement or approximate values.",
+          "Disclose content from this source in learner-facing outputs only as required by COMMISSION SPECIFICATION.",
+          "Do not dump the full shared source indiscriminately into learner-facing prose."
+        ].join("\n")
+      );
+    }
     var constraints = String(
       seed.constraints || initial.scopeConstraints || (wf && wf.scopeAndConstraints) || ""
     ).trim();
@@ -5711,6 +5868,8 @@
   }
 
   function composeCommissionedContextHonourInstruction(wf) {
+    var ctx = readWorkflowCommissionContext(wf);
+    var sharedSource = readAuthoritativeSharedSourceContext(ctx.seed, ctx.initial);
     var lines = [
       "AUTHORITATIVE COMMISSION CONTEXT",
       "",
@@ -5728,10 +5887,14 @@
       "",
       "Educational dependencies. Treat EDUCATIONAL DEPENDENCIES as references to relevant predecessor commissions or experiences. They do not establish that previous outputs have been inspected. Do not invent dependencies from journey order alone. Identifiers in EDUCATIONAL DEPENDENCIES are structured metadata only.",
       "",
-      composeLearnerFacingCrossResourceReferenceConstraint(
-        !!readWorkflowCommissionContext(wf).publishedTitleDirectory
-      )
+      composeLearnerFacingCrossResourceReferenceConstraint(!!ctx.publishedTitleDirectory)
     ];
+    if (sharedSource) {
+      lines.push(
+        "",
+        "Authoritative shared source. When SOURCE / CONTEXT MATERIAL is supplied, treat it as the authoritative shared Learning Journey source. Preserve its facts, figures, and values exactly. Do not invent replacement values. Disclose shared-source content in learner-facing outputs only as required by COMMISSION SPECIFICATION."
+      );
+    }
     var isAssessmentPack =
       (typeof workflowRecordIsAssessmentPack === "function" && workflowRecordIsAssessmentPack(wf)) ||
       String((wf && wf.product) || "")
@@ -5946,6 +6109,374 @@
       } catch (_err2) {}
     }
     return null;
+  }
+
+  function resolveLearningJourneySharedSourceLib() {
+    var roots = [];
+    if (typeof globalThis !== "undefined") roots.push(globalThis);
+    if (typeof window !== "undefined") roots.push(window);
+    if (typeof self !== "undefined") roots.push(self);
+    var i;
+    for (i = 0; i < roots.length; i += 1) {
+      if (roots[i] && roots[i].PRISM_LEARNING_JOURNEY_SHARED_SOURCE) {
+        return roots[i].PRISM_LEARNING_JOURNEY_SHARED_SOURCE;
+      }
+    }
+    if (typeof require === "function") {
+      try {
+        return require("./lib/learning-journey-shared-source.js");
+      } catch (_err) {}
+      try {
+        return require("../lib/learning-journey-shared-source.js");
+      } catch (_err2) {}
+    }
+    return null;
+  }
+
+  function isLearningJourneyCommissioningStep(step) {
+    if (!step || typeof step !== "object") return false;
+    var cid = String(step.canonical_step_id || step.canonicalStepId || "")
+      .trim()
+      .toLowerCase();
+    if (cid === "step_journey_commissioning") return true;
+    var outputName = String(step.outputName || step.output_name || "")
+      .trim()
+      .toLowerCase();
+    if (outputName === "learning_commissions") return true;
+    var title = String(step.title || "")
+      .trim()
+      .toLowerCase();
+    return (
+      title === "commissioning" ||
+      title.indexOf("journey commission") !== -1 ||
+      title === "journeycommission" ||
+      title === "journeycommissioning"
+    );
+  }
+
+  function composeLearningJourneyAuthoritativeSharedSourceToken(wf, stepRow) {
+    var sharedLib = resolveLearningJourneySharedSourceLib();
+    if (!sharedLib) return "";
+    var existing = "";
+    if (wf && wf.id) {
+      existing = readLearningJourneyAuthoritativeSourceContext(wf.id);
+    }
+    if (!existing && wf) {
+      var brief =
+        wf.workflowBriefResolution && typeof wf.workflowBriefResolution === "object"
+          ? wf.workflowBriefResolution
+          : null;
+      var seed =
+        brief && brief.resolvedFactors && typeof brief.resolvedFactors === "object"
+          ? brief.resolvedFactors
+          : {};
+      var initial =
+        brief && brief.initialBrief && typeof brief.initialBrief === "object"
+          ? brief.initialBrief
+          : {};
+      existing = String(
+        seed.source_context || initial.sourceContext || initial.source_context || ""
+      ).trim();
+    }
+    var useDesignPage =
+      stepRow &&
+      typeof isWorkflowStepDesignPageRow === "function" &&
+      isWorkflowStepDesignPageRow(stepRow);
+    if (
+      useDesignPage &&
+      typeof sharedLib.composeAuthoritativeSharedSourceDesignPageSection === "function"
+    ) {
+      return sharedLib.composeAuthoritativeSharedSourceDesignPageSection(existing);
+    }
+    if (typeof sharedLib.composeAuthoritativeSharedSourcePromptSection !== "function") {
+      return "";
+    }
+    return sharedLib.composeAuthoritativeSharedSourcePromptSection(existing);
+  }
+
+  /**
+   * On Commissioning capture: validate SHARED markers; persist material into
+   * parent source_context only when empty. Never overwrite established material.
+   */
+  function applyLearningJourneySharedSourceFromCommissionCapture(wf, captureText, options) {
+    var opts = options && typeof options === "object" ? options : {};
+    var sharedLib = resolveLearningJourneySharedSourceLib();
+    if (!sharedLib || typeof sharedLib.extractSharedAuthoritativeMaterial !== "function") {
+      return {
+        ok: false,
+        code: "shared_source_module_unavailable",
+        errors: ["shared_source_module_unavailable"]
+      };
+    }
+    var extractFn =
+      typeof sharedLib.extractAndSanitizeSharedAuthoritativeMaterial === "function"
+        ? sharedLib.extractAndSanitizeSharedAuthoritativeMaterial
+        : sharedLib.extractSharedAuthoritativeMaterial;
+    var extracted = extractFn.call(sharedLib, captureText);
+    if (!extracted || !extracted.ok) {
+      // Soft mode: missing markers are non-blocking (LJ Steps 1–4 are chat-context).
+      if (
+        opts.softMissing &&
+        extracted &&
+        (extracted.kind === "missing" || extracted.kind === "malformed")
+      ) {
+        return {
+          ok: true,
+          code: "shared_material_absent_soft",
+          written: false,
+          skipped: true,
+          soft: true,
+          extracted: extracted
+        };
+      }
+      return {
+        ok: false,
+        code: (extracted && extracted.kind) || "shared_material_invalid",
+        errors: (extracted && extracted.errors) || ["shared_material_invalid"],
+        extracted: extracted || null
+      };
+    }
+    if (extracted.kind === "none") {
+      return {
+        ok: true,
+        code: "shared_material_none",
+        written: false,
+        skipped: true,
+        extracted: extracted
+      };
+    }
+    if (!wf) {
+      return {
+        ok: false,
+        code: "workflow_required",
+        errors: ["workflow_required"],
+        extracted: extracted
+      };
+    }
+    var applied = sharedLib.applySharedSourceToWorkflowBriefResolution(wf, extracted.body, {
+      readExisting: function (row) {
+        return row && row.id ? readLearningJourneyAuthoritativeSourceContext(row.id) : "";
+      }
+    });
+    if (applied && applied.written && typeof saveWorkflows === "function") {
+      try {
+        saveWorkflows();
+      } catch (_err) {}
+    }
+    return {
+      ok: true,
+      code: (applied && applied.code) || "shared_material_applied",
+      written: !!(applied && applied.written),
+      skipped: !!(applied && applied.skipped),
+      sourceContext: (applied && applied.sourceContext) || extracted.body,
+      extracted: extracted,
+      corrections: extracted.corrections || []
+    };
+  }
+
+  /**
+   * Authoritative write-once slot only (resolvedFactors / initialBrief).
+   * Does not treat wf.artefacts as an established lock — artefacts fallback must
+   * not skip Design Page contradiction validation after a source_context clear.
+   */
+  function readLearningJourneyLockedSourceContextSlot(wf) {
+    if (!wf || typeof wf !== "object") return "";
+    var brief =
+      wf.workflowBriefResolution && typeof wf.workflowBriefResolution === "object"
+        ? wf.workflowBriefResolution
+        : null;
+    var seed =
+      brief && brief.resolvedFactors && typeof brief.resolvedFactors === "object"
+        ? brief.resolvedFactors
+        : {};
+    var initial =
+      brief && brief.initialBrief && typeof brief.initialBrief === "object"
+        ? brief.initialBrief
+        : {};
+    return String(
+      seed.source_context || initial.sourceContext || initial.source_context || ""
+    ).trim();
+  }
+
+  /**
+   * Design Page capture is the durable LJ boundary for Phase 2 shared material.
+   * Steps 1–4 remain chat-context. Step 5 JSON carries shared_authoritative_material.
+   * Contradiction validation ALWAYS runs on the pasted page (even when a parent
+   * source is already locked). Write-once still prevents overwrite.
+   */
+  function applyLearningJourneySharedSourceFromDesignPageCapture(wf, captureTextOrPage) {
+    var sharedLib = resolveLearningJourneySharedSourceLib();
+    if (
+      !sharedLib ||
+      typeof sharedLib.extractSharedAuthoritativeMaterialFromPage !== "function"
+    ) {
+      return {
+        ok: false,
+        code: "shared_source_module_unavailable",
+        errors: ["shared_source_module_unavailable"]
+      };
+    }
+    var lockedSlot = readLearningJourneyLockedSourceContextSlot(wf);
+    var page = null;
+    if (
+      captureTextOrPage &&
+      typeof captureTextOrPage === "object" &&
+      !Array.isArray(captureTextOrPage)
+    ) {
+      page = captureTextOrPage;
+    } else {
+      var pageCapture =
+        typeof parsePageArtefactCaptureForStorage === "function"
+          ? parsePageArtefactCaptureForStorage(String(captureTextOrPage || ""))
+          : null;
+      if (pageCapture && pageCapture.ok && pageCapture.parsed) page = pageCapture.parsed;
+    }
+    if (!page) {
+      if (lockedSlot) {
+        return {
+          ok: true,
+          code: "source_context_already_set",
+          written: false,
+          skipped: true,
+          sourceContext: lockedSlot
+        };
+      }
+      return {
+        ok: true,
+        code: "shared_material_absent_soft",
+        written: false,
+        skipped: true,
+        soft: true,
+        errors: []
+      };
+    }
+    var extractFn =
+      typeof sharedLib.extractAndSanitizeSharedAuthoritativeMaterialFromPage === "function"
+        ? sharedLib.extractAndSanitizeSharedAuthoritativeMaterialFromPage
+        : sharedLib.extractSharedAuthoritativeMaterialFromPage;
+    var extracted = extractFn.call(sharedLib, page);
+    if (!extracted) {
+      return {
+        ok: false,
+        code: "shared_material_invalid",
+        errors: ["shared_material_invalid"]
+      };
+    }
+    if (extracted.kind === "absent") {
+      if (lockedSlot) {
+        return {
+          ok: true,
+          code: "source_context_already_set",
+          written: false,
+          skipped: true,
+          soft: true,
+          sourceContext: lockedSlot,
+          extracted: extracted
+        };
+      }
+      return {
+        ok: true,
+        code: "shared_material_absent_soft",
+        written: false,
+        skipped: true,
+        soft: true,
+        extracted: extracted
+      };
+    }
+    if (!extracted.ok) {
+      return {
+        ok: false,
+        code: extracted.kind || "shared_material_invalid",
+        errors: extracted.errors || ["shared_material_invalid"],
+        extracted: extracted
+      };
+    }
+    if (extracted.kind === "none") {
+      if (lockedSlot) {
+        return {
+          ok: true,
+          code: "source_context_already_set",
+          written: false,
+          skipped: true,
+          sourceContext: lockedSlot,
+          extracted: extracted
+        };
+      }
+      return {
+        ok: true,
+        code: "shared_material_none",
+        written: false,
+        skipped: true,
+        extracted: extracted
+      };
+    }
+    var material = String(extracted.content || "").trim();
+    var originalMaterial = String(
+      extracted.originalContent || extracted.content || ""
+    ).trim();
+    // Always validate commissions against the paste's original shared claims.
+    // Do this even when source_context is already locked (write-once skip must
+    // not accept contradictory Design Page JSON).
+    if (typeof sharedLib.collectContradictoryDerivedStatisticErrors === "function") {
+      var contra = sharedLib.collectContradictoryDerivedStatisticErrors(
+        page,
+        originalMaterial || material,
+        {
+          precomputedSharedSanitize: {
+            text: material,
+            corrections: extracted.corrections || []
+          }
+        }
+      );
+      if (contra && contra.length) {
+        return {
+          ok: false,
+          code: "contradictory_derived_statistics",
+          errors: contra,
+          extracted: extracted,
+          corrections: extracted.corrections || [],
+          sourceContext: lockedSlot || ""
+        };
+      }
+    }
+    if (lockedSlot) {
+      return {
+        ok: true,
+        code: "source_context_already_set",
+        written: false,
+        skipped: true,
+        sourceContext: lockedSlot,
+        extracted: extracted,
+        corrections: extracted.corrections || []
+      };
+    }
+    if (!wf) {
+      return {
+        ok: false,
+        code: "workflow_required",
+        errors: ["workflow_required"],
+        extracted: extracted
+      };
+    }
+    var applied = sharedLib.applySharedSourceToWorkflowBriefResolution(wf, material, {
+      readExisting: function (row) {
+        return readLearningJourneyLockedSourceContextSlot(row);
+      }
+    });
+    if (applied && applied.written && typeof saveWorkflows === "function") {
+      try {
+        saveWorkflows();
+      } catch (_err) {}
+    }
+    return {
+      ok: true,
+      code: (applied && applied.code) || "shared_material_applied",
+      written: !!(applied && applied.written),
+      skipped: !!(applied && applied.skipped),
+      sourceContext: (applied && applied.sourceContext) || material,
+      extracted: extracted,
+      corrections: extracted.corrections || []
+    };
   }
 
   function isLearningJourneyWorkflow(wf) {
@@ -6928,7 +7459,11 @@
           ? composeSituatedTaskOriginalBrief(wf)
           : readWorkflowCommissionContext(wf).hasCommissionContext
             ? composeCommissionedOriginalBrief(wf)
-            : ""
+            : "",
+      AUTHORITATIVE_SHARED_SOURCE:
+        isLearningJourneyWorkflow(wf) || workflowRecordIsLearningJourney(wf)
+          ? composeLearningJourneyAuthoritativeSharedSourceToken(wf, step)
+          : ""
     };
     if (cfg.defaultPromptVariables && typeof cfg.defaultPromptVariables === "object") {
       Object.keys(cfg.defaultPromptVariables).forEach(function (k) {
@@ -6962,11 +7497,17 @@
       templateVars["option:" + opt.id] = formatted;
     });
     // Known internal tokens always resolve (empty when unset) so Copy never prompts for them.
-    ["stepNotes", "preferredOutputFormat", "stepTitle", "stepOutputName", "inputArtefactTypes", "ORIGINAL_BRIEF"].forEach(
-      function (k) {
-        if (!Object.prototype.hasOwnProperty.call(templateVars, k)) templateVars[k] = "";
-      }
-    );
+    [
+      "stepNotes",
+      "preferredOutputFormat",
+      "stepTitle",
+      "stepOutputName",
+      "inputArtefactTypes",
+      "ORIGINAL_BRIEF",
+      "AUTHORITATIVE_SHARED_SOURCE"
+    ].forEach(function (k) {
+      if (!Object.prototype.hasOwnProperty.call(templateVars, k)) templateVars[k] = "";
+    });
     return applyWorkflowStepPromptTemplate(body, templateVars).trim();
   }
 
@@ -14082,6 +14623,26 @@
           errors.push(path + ": activity_visual_value.decision is required (high|medium|low|none)");
         }
       });
+    }
+    // Expository backstop: defer/skip must not suppress recognised unrealised XM graphics
+    // when the capture already carries section materials (assembled / enriched pages).
+    if (
+      expositoryWorkflow &&
+      Array.isArray(parsed.sections) &&
+      Array.isArray(parsed.visual_affordances)
+    ) {
+      var xmHandoff =
+        typeof PRISM_EXPOSITORY_XM_ILLUSTRATION_HANDOFF !== "undefined"
+          ? PRISM_EXPOSITORY_XM_ILLUSTRATION_HANDOFF
+          : null;
+      if (
+        xmHandoff &&
+        typeof xmHandoff.collectSuppressedUnrealizedXmGraphics === "function"
+      ) {
+        xmHandoff.collectSuppressedUnrealizedXmGraphics(parsed).forEach(function (issue) {
+          if (issue && issue.message) errors.push(String(issue.message));
+        });
+      }
     }
     return errors.length ? { ok: false, errors: errors } : { ok: true, errors: [] };
   }
@@ -24705,10 +25266,19 @@
         productId: intakeResult.productId,
         sourceJourneyWorkflowId: envelope.sourceJourneyWorkflowId || "",
         sourceCommissionId: envelope.sourceCommissionId || "",
-        hasJourneyContext: !!String(envelope.journeyContextText || "").trim()
+        hasJourneyContext: !!String(envelope.journeyContextText || "").trim(),
+        hasSharedSourceContext: !!String(
+          seed.sourceContext || envelope.sourceContext || ""
+        ).trim()
       },
       callsModel: false
     };
+    var sharedSourceContext = String(
+      seed.sourceContext ||
+        envelope.sourceContext ||
+        (family.deliverySeed && family.deliverySeed.source_context) ||
+        ""
+    ).trim();
     state.workflowBriefResolved = {
       initialBrief: {
         name: focus,
@@ -24730,6 +25300,7 @@
         journeyContextText: String(envelope.journeyContextText || "").trim(),
         dependencies: String(envelope.dependencies || "").trim(),
         commissionDependencies: String(envelope.dependencies || "").trim(),
+        sourceContext: sharedSourceContext,
         sourceJourneyWorkflowId: String(envelope.sourceJourneyWorkflowId || "").trim(),
         sourceCommissionId: String(envelope.sourceCommissionId || "").trim(),
         publishedTitleDirectory: String(envelope.publishedTitleDirectory || "").trim(),
@@ -24740,7 +25311,10 @@
       askedFactors: [],
       inferredFactors: {},
       resolvedFactors: Object.assign({}, family.deliverySeed || {}, {
-        topic: focus
+        topic: focus,
+        source_context:
+          sharedSourceContext ||
+          String((family.deliverySeed && family.deliverySeed.source_context) || "").trim()
       }),
       mappedBindings: {
         workflowOutputSpecPatch: {},
@@ -24963,19 +25537,26 @@
         .replace(/^Learning Journey:\s*/i, "")
         .trim();
     }
+    var parentSourceContext = readLearningJourneyAuthoritativeSourceContext(sourceWorkflowId);
     var envelope = designMod.commissionToIntakeEnvelope(commission, pageResolved.page, {
       sourceJourneyWorkflowId: sourceWorkflowId,
-      focus: focus
+      focus: focus,
+      sourceContext: parentSourceContext
     });
     // Authoritative product identity always wins over Preview hints.
     envelope.productId = authoritativeProductId;
     envelope.sourceCommissionId = commissionId;
     if (sourceWorkflowId) envelope.sourceJourneyWorkflowId = sourceWorkflowId;
+    // Ensure envelope carries parent shared source even if opts were ignored.
+    if (parentSourceContext && !String(envelope.sourceContext || "").trim()) {
+      envelope.sourceContext = parentSourceContext;
+    }
 
     var intakeOpts = {};
     if (authoritativeProductId === "interactive") {
       intakeOpts.ldCreateOutputType = "self_study_resource";
     }
+    // Keep existing commissioned topology (no Normalize Content) unless caller opts in.
 
     var intakeResult = intakeLib.intakeCommission(envelope, intakeOpts);
     if (!intakeResult || !intakeResult.ok || !intakeResult.accepted) {
@@ -25006,82 +25587,118 @@
     (Array.isArray(state.workflows) ? state.workflows : []).forEach(function (row) {
       if (row && row.id) beforeIds[String(row.id)] = true;
     });
-    handleSaveDesignedWorkflow();
-    var created = null;
-    var i;
-    for (i = (state.workflows || []).length - 1; i >= 0; i -= 1) {
-      var candidate = state.workflows[i];
-      if (!candidate || !candidate.id) continue;
-      if (beforeIds[String(candidate.id)]) continue;
-      created = candidate;
-      break;
+
+    function buildCreatedCommissionResult(saveResult) {
+      var created =
+        saveResult && saveResult.workflow
+          ? saveResult.workflow
+          : null;
+      if (!created) {
+        var i;
+        for (i = (state.workflows || []).length - 1; i >= 0; i -= 1) {
+          var candidate = state.workflows[i];
+          if (!candidate || !candidate.id) continue;
+          if (beforeIds[String(candidate.id)]) continue;
+          created = candidate;
+          break;
+        }
+      }
+      if (!saveResult || !saveResult.ok || !created) {
+        return {
+          ok: false,
+          code: "persist_failed",
+          reason: (saveResult && saveResult.reason) || "persist_failed",
+          commissionId: commissionId,
+          productId: authoritativeProductId,
+          sourceJourneyWorkflowId: sourceWorkflowId,
+          sourceCommissionId: commissionId,
+          workflow: null,
+          intake: intakeResult,
+          pageSource: pageResolved.source
+        };
+      }
+      return {
+        ok: true,
+        code: "created",
+        commissionId: commissionId,
+        productId: authoritativeProductId,
+        sourceJourneyWorkflowId: sourceWorkflowId,
+        sourceCommissionId: commissionId,
+        workflow: created,
+        intake: intakeResult,
+        pageSource: pageResolved.source
+      };
     }
 
-    return {
-      ok: true,
-      code: "created",
-      commissionId: commissionId,
-      productId: authoritativeProductId,
-      sourceJourneyWorkflowId: sourceWorkflowId,
-      sourceCommissionId: commissionId,
-      workflow: created,
-      intake: intakeResult,
-      pageSource: pageResolved.source
-    };
+    var saveOutcome = handleSaveDesignedWorkflow();
+    if (saveOutcome && typeof saveOutcome.then === "function") {
+      return saveOutcome.then(buildCreatedCommissionResult);
+    }
+    return buildCreatedCommissionResult(saveOutcome);
   }
 
   function handleLearningJourneyPreviewCreateProductAction(actionHint) {
-    var result = initialiseFirstClassProductFromLearningJourneyCommission(actionHint);
-    if (!result || !result.ok) {
-      var code = result && result.code ? String(result.code) : "commission_create_failed";
-      var message = "Could not create product from commission.";
-      if (code === "commission_not_found" || code === "commission_id_required") {
-        message = "Commission could not be resolved from the Learning Journey page.";
-      } else if (code === "commission_unsupported") {
-        message = "This experience is unsupported in PRISM and cannot create a product.";
-      } else if (code === "product_identity_mismatch" || code === "section_identity_mismatch") {
-        message = "Commission identity did not match the authoritative Learning Journey page.";
-      } else if (code === "product_not_commissionable") {
-        message = "Target product does not accept commissions.";
-      } else if (code === "learning_journey_page_unavailable") {
-        message = "Authoritative Learning Journey page is unavailable.";
-      } else if (code === "commission_already_commissioned") {
-        message = "This commission already has a constituent workflow. Opening it instead.";
-        showToast(message, "info");
-        if (result.constituentWorkflowId || (result.workflow && result.workflow.id)) {
-          handleLearningJourneyPreviewOpenProductAction({
-            workflowId: result.constituentWorkflowId || result.workflow.id,
-            commissionId: actionHint && actionHint.commissionId,
-            sourceWorkflowId: actionHint && actionHint.sourceWorkflowId,
-            productId: actionHint && actionHint.productId
-          });
+    function finishCreateProductAction(result) {
+      if (!result || !result.ok) {
+        var code = result && result.code ? String(result.code) : "commission_create_failed";
+        var message = "Could not create product from commission.";
+        if (code === "commission_not_found" || code === "commission_id_required") {
+          message = "Commission could not be resolved from the Learning Journey page.";
+        } else if (code === "commission_unsupported") {
+          message = "This experience is unsupported in PRISM and cannot create a product.";
+        } else if (code === "product_identity_mismatch" || code === "section_identity_mismatch") {
+          message = "Commission identity did not match the authoritative Learning Journey page.";
+        } else if (code === "product_not_commissionable") {
+          message = "Target product does not accept commissions.";
+        } else if (code === "learning_journey_page_unavailable") {
+          message = "Authoritative Learning Journey page is unavailable.";
+        } else if (code === "persist_failed") {
+          message =
+            "Could not save the new workflow because browser storage is full. Free space or remove unused workflows, then try again.";
+        } else if (code === "commission_already_commissioned") {
+          message = "This commission already has a constituent workflow. Opening it instead.";
+          showToast(message, "info");
+          if (result.constituentWorkflowId || (result.workflow && result.workflow.id)) {
+            handleLearningJourneyPreviewOpenProductAction({
+              workflowId: result.constituentWorkflowId || result.workflow.id,
+              commissionId: actionHint && actionHint.commissionId,
+              sourceWorkflowId: actionHint && actionHint.sourceWorkflowId,
+              productId: actionHint && actionHint.productId
+            });
+          }
+          return result;
+        } else if (code === "commission_constituent_ambiguous") {
+          message =
+            "Multiple constituent workflows claim this commission. Open one from Preview or resolve duplicates first.";
         }
+        showToast(message, "error");
         return result;
-      } else if (code === "commission_constituent_ambiguous") {
-        message =
-          "Multiple constituent workflows claim this commission. Open one from Preview or resolve duplicates first.";
       }
-      showToast(message, "error");
+      var label =
+        result.productId === "expository"
+          ? "Expository"
+          : result.productId === "assessment_pack"
+            ? "Assessment Pack"
+            : "Interactive";
+      showToast(label + " workflow created from Learning Journey commission.", "success");
+      appendWorkflowDesignLog(
+        "assistant",
+        "Learning Journey commission " +
+          String(result.commissionId || "") +
+          " initialised ordinary " +
+          label +
+          " workflow" +
+          (result.workflow && result.workflow.id ? " (" + result.workflow.id + ")" : "") +
+          "."
+      );
       return result;
     }
-    var label =
-      result.productId === "expository"
-        ? "Expository"
-        : result.productId === "assessment_pack"
-          ? "Assessment Pack"
-          : "Interactive";
-    showToast(label + " workflow created from Learning Journey commission.", "success");
-    appendWorkflowDesignLog(
-      "assistant",
-      "Learning Journey commission " +
-        String(result.commissionId || "") +
-        " initialised ordinary " +
-        label +
-        " workflow" +
-        (result.workflow && result.workflow.id ? " (" + result.workflow.id + ")" : "") +
-        "."
-    );
-    return result;
+
+    var result = initialiseFirstClassProductFromLearningJourneyCommission(actionHint);
+    if (result && typeof result.then === "function") {
+      return result.then(finishCreateProductAction);
+    }
+    return finishCreateProductAction(result);
   }
 
   /**
@@ -27471,6 +28088,8 @@
         state.workflowRunPageMaterialsClosureValidation[sid]) ||
       (state.workflowRunGamFormatValidation && state.workflowRunGamFormatValidation[sid]) ||
       (state.workflowRunGamPageValidation && state.workflowRunGamPageValidation[sid]) ||
+      (state.workflowRunLjSharedSourceValidation &&
+        state.workflowRunLjSharedSourceValidation[sid]) ||
       gamMaterialsVerificationBlocksAdvance(sid) ||
       workflowRunLearnerPageFramingGateMessage(sid)
     );
@@ -27977,6 +28596,58 @@
     ) {
       recomposeWorkflowPageCapturesFromUpstream();
     }
+    // Phase 2 durable boundary: Learning Journey Design Page capture (Steps 1–4 are chat-context).
+    // Optional soft path: if Commissioning text is pasted into Run, persist markers when present.
+    if (
+      wf &&
+      stepRow &&
+      (isLearningJourneyWorkflow(wf) || workflowRecordIsLearningJourney(wf))
+    ) {
+      state.workflowRunLjSharedSourceValidation =
+        state.workflowRunLjSharedSourceValidation || {};
+      var sharedCaptureText = String(
+        (state.workflowRunCapturedOutputs && state.workflowRunCapturedOutputs[sid]) ||
+          finalizedCapture ||
+          raw ||
+          ""
+      );
+      if (
+        isWorkflowStepDesignPageRow(stepRow) &&
+        String(sharedCaptureText || "").trim()
+      ) {
+        var sharedDpApply = applyLearningJourneySharedSourceFromDesignPageCapture(
+          wf,
+          sharedCaptureText
+        );
+        if (!sharedDpApply || !sharedDpApply.ok) {
+          state.workflowRunLjSharedSourceValidation[sid] = String(
+            ((sharedDpApply && sharedDpApply.errors) || []).join("; ") ||
+              (sharedDpApply && sharedDpApply.code) ||
+              "shared_material_invalid"
+          );
+          if (state.workflowRunStepCompleted[sid]) {
+            delete state.workflowRunStepCompleted[sid];
+          }
+          // Keep page-validation aligned so Next/Authoring readiness stays blocked.
+          state.workflowRunPageValidation = state.workflowRunPageValidation || {};
+          if (!state.workflowRunPageValidation[sid]) {
+            state.workflowRunPageValidation[sid] = String(
+              state.workflowRunLjSharedSourceValidation[sid]
+            );
+          }
+        } else {
+          delete state.workflowRunLjSharedSourceValidation[sid];
+        }
+      } else if (
+        isLearningJourneyCommissioningStep(stepRow) &&
+        String(sharedCaptureText || "").trim()
+      ) {
+        applyLearningJourneySharedSourceFromCommissionCapture(wf, sharedCaptureText, {
+          softMissing: true
+        });
+        delete state.workflowRunLjSharedSourceValidation[sid];
+      }
+    }
     updateRunStepOutputStatus(li);
     if (
       els.workflowModeRunBtn &&
@@ -27993,7 +28664,9 @@
         (state.workflowRunPageMaterialsClosureValidation &&
           state.workflowRunPageMaterialsClosureValidation[sid]) ||
         workflowRunLearnerPageFramingGateMessage(sid) ||
-        (state.workflowRunGamFormatValidation && state.workflowRunGamFormatValidation[sid])
+        (state.workflowRunGamFormatValidation && state.workflowRunGamFormatValidation[sid]) ||
+        (state.workflowRunLjSharedSourceValidation &&
+          state.workflowRunLjSharedSourceValidation[sid])
       );
       var persistedRawNow =
         sid && state.workflowRunCapturedOutputsRaw
@@ -28019,8 +28692,16 @@
       if (isWorkflowRunCapturePayloadEmpty(persistedRawNow, persistedFinalNow)) {
         return;
       }
+      // Learning Journey Design Page: never durable-persist a capture that failed
+      // shared-source / page validation (contradictory stats must not become "accepted").
+      var ljDesignPageBlocked =
+        hasBlockingValidationError &&
+        stepRow &&
+        isWorkflowStepDesignPageRow(stepRow) &&
+        (isLearningJourneyWorkflow(wf) || workflowRecordIsLearningJourney(wf));
       var shouldPersist =
         (captureChanged || !captureDurablyCurrent) &&
+        !ljDesignPageBlocked &&
         (!hasBlockingValidationError || hasNonEmptyAcceptedCaptureNow);
       if (shouldPersist) {
         return persistWorkflowRunCapturePayloadForStep(
@@ -31374,23 +32055,139 @@
     }) || null;
   }
 
-  function loadWorkflows() {
-    var raw = null;
+  function resolveWorkflowCatalogueStore() {
     try {
-      raw = window.localStorage.getItem(WORKFLOW_STORAGE_KEY);
-    } catch (e) {
-      raw = null;
+      if (typeof PRISM_WORKFLOW_CATALOGUE_STORE !== "undefined" && PRISM_WORKFLOW_CATALOGUE_STORE) {
+        return PRISM_WORKFLOW_CATALOGUE_STORE;
+      }
+    } catch (_e) {}
+    try {
+      if (
+        typeof window !== "undefined" &&
+        window.PRISM_WORKFLOW_CATALOGUE_STORE
+      ) {
+        return window.PRISM_WORKFLOW_CATALOGUE_STORE;
+      }
+    } catch (_e2) {}
+    return null;
+  }
+
+  function isQuotaExceededStorageError(err) {
+    var errName = String((err && err.name) || "Error");
+    var errMsg = String((err && err.message) || err || "");
+    return /quota|exceed|storage/i.test(errName + " " + errMsg);
+  }
+
+  function readWorkflowStorageBackendMarker() {
+    try {
+      return String(window.localStorage.getItem(WORKFLOW_STORAGE_BACKEND_KEY) || "")
+        .trim()
+        .toLowerCase();
+    } catch (_e) {
+      return "";
     }
+  }
+
+  function writeWorkflowStorageBackendMarker(backend) {
+    var value = String(backend || "").trim().toLowerCase();
+    try {
+      if (!value || value === "localstorage") {
+        window.localStorage.removeItem(WORKFLOW_STORAGE_BACKEND_KEY);
+      } else {
+        window.localStorage.setItem(WORKFLOW_STORAGE_BACKEND_KEY, value);
+      }
+    } catch (_e) {}
+  }
+
+  function catalogueJsonWorkflowCount(raw) {
+    if (!raw) return -1;
+    try {
+      var parsed = JSON.parse(raw);
+      return Array.isArray(parsed) ? parsed.length : -1;
+    } catch (_e) {
+      return -1;
+    }
+  }
+
+  function catalogueJsonNewestUpdatedAt(raw) {
+    if (!raw) return 0;
+    try {
+      var parsed = JSON.parse(raw);
+      if (!Array.isArray(parsed)) return 0;
+      var newest = 0;
+      parsed.forEach(function (wf) {
+        var ts = Number((wf && (wf.updatedAt || wf.createdAt)) || 0);
+        if (ts > newest) newest = ts;
+      });
+      return newest;
+    } catch (_e) {
+      return 0;
+    }
+  }
+
+  /**
+   * Prefer the richer catalogue snapshot.
+   * Never prefer an older/smaller localStorage copy over a newer IndexedDB catalogue.
+   */
+  function preferRicherWorkflowCatalogueJson(lsRaw, idbRaw) {
+    var lsCount = catalogueJsonWorkflowCount(lsRaw);
+    var idbCount = catalogueJsonWorkflowCount(idbRaw);
+    if (idbCount < 0 && lsCount < 0) return null;
+    if (idbCount < 0) return lsRaw;
+    if (lsCount < 0) return idbRaw;
+    if (idbCount > lsCount) return idbRaw;
+    if (lsCount > idbCount) return lsRaw;
+    var lsNewest = catalogueJsonNewestUpdatedAt(lsRaw);
+    var idbNewest = catalogueJsonNewestUpdatedAt(idbRaw);
+    // Tie on count: keep IndexedDB when timestamps are equal or IDB is newer.
+    return idbNewest >= lsNewest ? idbRaw : lsRaw;
+  }
+
+  function readLocalWorkflowCatalogueJson() {
+    try {
+      return window.localStorage.getItem(WORKFLOW_STORAGE_KEY);
+    } catch (_e) {
+      return null;
+    }
+  }
+
+  /**
+   * Best-effort recovery backup only. Never required for durability after IDB-first migration.
+   * On quota failure, leave the previous localStorage payload untouched.
+   */
+  function tryWriteLocalWorkflowCatalogueBackup(json) {
+    try {
+      window.localStorage.setItem(WORKFLOW_STORAGE_KEY, json);
+      return { ok: true };
+    } catch (err) {
+      return {
+        ok: false,
+        quota: isQuotaExceededStorageError(err),
+        reason: isQuotaExceededStorageError(err) ? "quota_exceeded" : "storage_write_failed"
+      };
+    }
+  }
+
+  function applyLoadedWorkflowCatalogueRaw(raw) {
     if (!raw) {
+      // Do not clobber an already-populated in-memory catalogue with an empty durable
+      // read. Protects the startup race where init()'s loadWorkflows resolves after a
+      // create/save has already begun.
+      if (Array.isArray(state.workflows) && state.workflows.length) {
+        return { migratedAny: false, skippedEmptyClobber: true };
+      }
       state.workflows = [];
       state.selectedWorkflowId = null;
-      renderWorkflowList();
-      clearWorkflowDetail();
-      return Promise.resolve();
+      return { migratedAny: false };
     }
     try {
       var data = JSON.parse(raw);
       var source = Array.isArray(data) ? data : [];
+      // Prefer the richer in-memory catalogue when a create/save raced ahead of load.
+      var memoryCount = Array.isArray(state.workflows) ? state.workflows.length : 0;
+      if (memoryCount > source.length) {
+        return { migratedAny: false, skippedStaleLoad: true };
+      }
       var migratedAny = false;
       state.workflows = source.map(function (wf) {
         var normalized = normalizeWorkflowForV1(wf, []);
@@ -31398,28 +32195,312 @@
         if (migrated.changed) migratedAny = true;
         return migrated.workflow;
       });
-      if (migratedAny) {
-        saveWorkflows();
+      return { migratedAny: migratedAny };
+    } catch (_e) {
+      if (Array.isArray(state.workflows) && state.workflows.length) {
+        return { migratedAny: false, skippedEmptyClobber: true };
       }
-    } catch (e) {
       state.workflows = [];
+      return { migratedAny: false };
     }
-    renderWorkflowList();
-    if (!state.selectedWorkflowId) {
-      clearWorkflowDetail();
-    }
-    // Workflows can reference prompts; re-render library so "In workflow" indicators update.
-    renderLibraryList();
-    return Promise.resolve();
   }
 
-  function saveWorkflows() {
-    try {
-      var json = JSON.stringify(state.workflows || []);
-      window.localStorage.setItem(WORKFLOW_STORAGE_KEY, json);
-    } catch (e) {
-      // Ignore storage errors; workflows just won't persist.
+  /**
+   * Resolve the authoritative catalogue JSON for startup.
+   * Migrates localStorage → IndexedDB when IDB is empty or LS is strictly richer.
+   * Never overwrites a newer IDB catalogue with an older LS copy.
+   * Leaves the original localStorage payload in place as a recovery backup.
+   */
+  function resolveAuthoritativeWorkflowCatalogueOnStartup() {
+    var lsRaw = readLocalWorkflowCatalogueJson();
+    var store = resolveWorkflowCatalogueStore();
+    if (!store || typeof store.readCatalogueRecord !== "function") {
+      if (!store || typeof store.readCatalogueJson !== "function") {
+        return Promise.resolve({
+          raw: lsRaw,
+          revision: 0,
+          migrated: false,
+          source: lsRaw ? "localStorage" : "empty",
+          backend: "unavailable"
+        });
+      }
     }
+
+    var readPromise =
+      typeof store.readCatalogueRecord === "function"
+        ? store.readCatalogueRecord()
+        : store.readCatalogueJson().then(function (json) {
+            return json ? { json: json, revision: 0, updatedAt: 0 } : null;
+          });
+
+    return readPromise
+      .then(function (idbRecord) {
+        var idbRaw = idbRecord && idbRecord.json ? idbRecord.json : null;
+        var idbRevision = idbRecord && idbRecord.revision != null ? Number(idbRecord.revision) : 0;
+        var preferred = preferRicherWorkflowCatalogueJson(lsRaw, idbRaw);
+
+        function stampIdbAuthoritative(raw, revision, meta) {
+          writeWorkflowStorageBackendMarker("idb");
+          workflowCatalogueRevision = revision > 0 ? revision : workflowCatalogueRevision;
+          return {
+            raw: raw,
+            revision: workflowCatalogueRevision,
+            migrated: !!(meta && meta.migrated),
+            source: meta && meta.source ? meta.source : "idb",
+            backend: "idb",
+            backupRetained: !!lsRaw
+          };
+        }
+
+        // Case A: nothing anywhere.
+        if (!preferred) {
+          writeWorkflowStorageBackendMarker("idb");
+          workflowCatalogueRevision = 0;
+          return {
+            raw: null,
+            revision: 0,
+            migrated: false,
+            source: "empty",
+            backend: "idb",
+            backupRetained: false
+          };
+        }
+
+        // Case B: IDB empty, LS has data → first migration.
+        if (!idbRaw && lsRaw) {
+          var migrateRevision = 1;
+          return store
+            .writeCatalogueJson(lsRaw, { nextRevision: migrateRevision, expectedRevision: 0 })
+            .then(function (writeResult) {
+              if (!writeResult || !writeResult.ok) {
+                // Fall back to loading LS in-memory; keep trying IDB on next save.
+                workflowCatalogueRevision = 0;
+                return {
+                  raw: lsRaw,
+                  revision: 0,
+                  migrated: false,
+                  source: "localStorage",
+                  backend: "idb_migrate_failed",
+                  backupRetained: true,
+                  migrateError: (writeResult && writeResult.reason) || "migrate_failed"
+                };
+              }
+              try {
+                if (typeof console !== "undefined" && typeof console.info === "function") {
+                  console.info("[PRISM] migrated workflow catalogue localStorage → IndexedDB", {
+                    workflowCount: catalogueJsonWorkflowCount(lsRaw),
+                    revision: writeResult.revision || migrateRevision
+                  });
+                }
+              } catch (_e) {}
+              return stampIdbAuthoritative(lsRaw, writeResult.revision || migrateRevision, {
+                migrated: true,
+                source: "localStorage_migrated"
+              });
+            });
+        }
+
+        // Case C: both present — only promote LS when it is strictly richer/newer.
+        if (idbRaw && lsRaw && preferred === lsRaw && preferred !== idbRaw) {
+          var promoteRevision = (idbRevision > 0 ? idbRevision : 0) + 1;
+          return store
+            .writeCatalogueJson(lsRaw, {
+              nextRevision: promoteRevision,
+              expectedRevision: idbRevision
+            })
+            .then(function (writeResult) {
+              if (!writeResult || !writeResult.ok) {
+                // Keep newer-or-equal IDB; do not clobber with failed promote.
+                return stampIdbAuthoritative(idbRaw, idbRevision, {
+                  migrated: false,
+                  source: "idb"
+                });
+              }
+              try {
+                if (typeof console !== "undefined" && typeof console.info === "function") {
+                  console.info("[PRISM] promoted richer localStorage catalogue into IndexedDB", {
+                    workflowCount: catalogueJsonWorkflowCount(lsRaw),
+                    revision: writeResult.revision || promoteRevision
+                  });
+                }
+              } catch (_e2) {}
+              return stampIdbAuthoritative(lsRaw, writeResult.revision || promoteRevision, {
+                migrated: true,
+                source: "localStorage_promoted"
+              });
+            });
+        }
+
+        // Case D: IDB authoritative (including prior overflow, equal snapshots, or LS absent).
+        return stampIdbAuthoritative(idbRaw || preferred, idbRevision, {
+          migrated: false,
+          source: idbRaw ? "idb" : "localStorage"
+        });
+      })
+      .catch(function () {
+        workflowCatalogueRevision = 0;
+        return {
+          raw: lsRaw,
+          revision: 0,
+          migrated: false,
+          source: lsRaw ? "localStorage" : "empty",
+          backend: "idb_read_failed",
+          backupRetained: !!lsRaw
+        };
+      });
+  }
+
+  function persistWorkflowCatalogueToIndexedDb(json, options) {
+    var opts = options && typeof options === "object" ? options : {};
+    var store = resolveWorkflowCatalogueStore();
+    if (!store || typeof store.writeCatalogueJson !== "function") {
+      return Promise.resolve({
+        ok: false,
+        reason: "catalogue_store_unavailable"
+      });
+    }
+    var expected =
+      opts.expectedRevision != null ? Number(opts.expectedRevision) : workflowCatalogueRevision;
+    var next =
+      opts.nextRevision != null ? Number(opts.nextRevision) : expected + 1;
+    return store
+      .writeCatalogueJson(json, {
+        expectedRevision: expected,
+        nextRevision: next
+      })
+      .then(function (writeResult) {
+        if (!writeResult || !writeResult.ok) {
+          return {
+            ok: false,
+            reason: (writeResult && writeResult.reason) || "catalogue_write_failed",
+            currentRevision: writeResult && writeResult.currentRevision,
+            expectedRevision: expected
+          };
+        }
+        workflowCatalogueRevision =
+          writeResult.revision != null ? Number(writeResult.revision) : next;
+        writeWorkflowStorageBackendMarker("idb");
+        // Recovery backup only — never delete existing LS on failure.
+        var backup = tryWriteLocalWorkflowCatalogueBackup(json);
+        return {
+          ok: true,
+          backend: "idb",
+          revision: workflowCatalogueRevision,
+          backupOk: !!(backup && backup.ok),
+          backupReason: backup && !backup.ok ? backup.reason : null
+        };
+      });
+  }
+
+  function loadWorkflows() {
+    return resolveAuthoritativeWorkflowCatalogueOnStartup()
+      .then(function (resolved) {
+        var applied = applyLoadedWorkflowCatalogueRaw(resolved && resolved.raw);
+        if (applied.migratedAny) {
+          return Promise.resolve(saveWorkflows()).then(function () {
+            return resolved;
+          });
+        }
+        return resolved;
+      })
+      .then(function () {
+        try {
+          renderWorkflowList();
+          if (!state.selectedWorkflowId) {
+            clearWorkflowDetail();
+          }
+          // Workflows can reference prompts; re-render library so "In workflow" indicators update.
+          renderLibraryList();
+        } catch (_renderErr) {}
+      })
+      .catch(function () {
+        if (!(Array.isArray(state.workflows) && state.workflows.length)) {
+          state.workflows = [];
+        }
+        try {
+          renderWorkflowList();
+          clearWorkflowDetail();
+          renderLibraryList();
+        } catch (_renderErr) {}
+      });
+  }
+
+  /**
+   * Persist the in-memory workflow catalogue to IndexedDB (sole authoritative store).
+   * Saves are serialised FIFO so an older in-flight write cannot finish after a newer
+   * one and clobber it. Each turn reads the current revision just before writing.
+   * localStorage is updated only as a best-effort recovery backup.
+   * Always returns a Promise of { ok, backend, revision, reason? }.
+   */
+  function saveWorkflows() {
+    var json = JSON.stringify(state.workflows || []);
+
+    var savePromise = workflowCatalogueSaveTail.then(function () {
+      var expectedRevision = workflowCatalogueRevision;
+      return persistWorkflowCatalogueToIndexedDb(json, {
+        expectedRevision: expectedRevision,
+        nextRevision: expectedRevision + 1
+      }).then(function (result) {
+        if (result && result.ok) return result;
+        if (result && result.reason === "stale_revision") {
+          var retryExpected =
+            result.currentRevision != null
+              ? Number(result.currentRevision)
+              : workflowCatalogueRevision;
+          workflowCatalogueRevision = retryExpected;
+          return persistWorkflowCatalogueToIndexedDb(json, {
+            expectedRevision: retryExpected,
+            nextRevision: retryExpected + 1
+          });
+        }
+        try {
+          if (typeof console !== "undefined" && typeof console.error === "function") {
+            console.error("[PRISM] saveWorkflows failed", result && result.reason);
+          }
+        } catch (_e) {}
+        return result || { ok: false, reason: "catalogue_write_failed" };
+      });
+    });
+
+    workflowCatalogueSaveTail = savePromise.then(
+      function () {
+        return null;
+      },
+      function () {
+        return null;
+      }
+    );
+
+    return savePromise.catch(function (err) {
+      return {
+        ok: false,
+        reason: "catalogue_write_exception",
+        error: err || null
+      };
+    });
+  }
+
+  function resolveSaveWorkflowsOutcome(saveOutcome) {
+    if (saveOutcome && typeof saveOutcome.then === "function") {
+      return saveOutcome.catch(function (err) {
+        return {
+          ok: false,
+          reason: "catalogue_write_exception",
+          error: err || null
+        };
+      });
+    }
+    return Promise.resolve(
+      saveOutcome && typeof saveOutcome === "object"
+        ? saveOutcome
+        : { ok: !!saveOutcome, backend: "idb" }
+    );
+  }
+
+  function readDurableWorkflowCatalogueJson() {
+    return resolveAuthoritativeWorkflowCatalogueOnStartup().then(function (resolved) {
+      return resolved && resolved.raw ? resolved.raw : null;
+    });
   }
 
   function loadWorkflowRunStateStore() {
@@ -35104,6 +36185,49 @@
     return draft;
   }
 
+  /**
+   * Edit/Save gather only collects DOM-editable definition fields. First-class product
+   * identity and Learning Journey constituent provenance live on the stored record and
+   * must survive Save without a matching form control.
+   */
+  function carryForwardWorkflowProvenanceFieldsFromExisting(existing, data) {
+    if (!existing || !data || typeof existing !== "object" || typeof data !== "object") {
+      return data;
+    }
+    var keys = [
+      "product",
+      "variant",
+      "startingPoint",
+      "startingArtefact",
+      "sourceWorkflowId",
+      "sourceCommissionId",
+      "authoritativeLearningOutcomes",
+      "scopeAndConstraints"
+    ];
+    keys.forEach(function (key) {
+      if (Object.prototype.hasOwnProperty.call(data, key) && data[key] != null) {
+        if (typeof data[key] === "string" && !String(data[key]).trim()) {
+          // blank gathered string should not wipe durable provenance
+        } else {
+          return;
+        }
+      }
+      if (!Object.prototype.hasOwnProperty.call(existing, key)) return;
+      if (existing[key] == null) return;
+      if (typeof existing[key] === "string" && !String(existing[key]).trim()) return;
+      if (typeof existing[key] === "object") {
+        try {
+          data[key] = JSON.parse(JSON.stringify(existing[key]));
+        } catch (_e) {
+          data[key] = existing[key];
+        }
+      } else {
+        data[key] = existing[key];
+      }
+    });
+    return data;
+  }
+
   function handleNewWorkflow() {
     var now = Date.now();
     var newId =
@@ -35233,6 +36357,9 @@
       if (existing.workflowBriefResolution && typeof existing.workflowBriefResolution === "object") {
         data.workflowBriefResolution = JSON.parse(JSON.stringify(existing.workflowBriefResolution));
       }
+      // Gather/DOM save does not re-author first-class / LJ provenance fields.
+      // Carry them forward so Edit → Save cannot detach a constituent from its parent.
+      carryForwardWorkflowProvenanceFieldsFromExisting(existing, data);
       var recoveredBriefConfig = getRecoveredBriefConfigForWorkflow(data.id);
       if (recoveredBriefConfig) {
         data.workflowBriefResolution = mergeRecoveredBriefConfigIntoResolution(
@@ -39597,28 +40724,94 @@
 
     state.workflows = state.workflows || [];
     state.workflows.push(wf);
-    saveWorkflows();
-    renderWorkflowList();
-    renderLibraryList();
-    showToast("Workflow scaffold created. You can now add prompts and refine steps in the Workflows tab.", "success");
-    if (normalizeWarnings.length) {
-      showToast(
-        "Generated workflow loaded with " + normalizeWarnings.length + " warning(s).",
-        "warning"
-      );
-    }
-
-    // Switch to My Workflows, select the new workflow, and enter Run (Create → Run handoff).
-    switchTab("workflows");
-    selectWorkflow(wfId);
-    setWorkflowMode("run");
+    var saveOutcome = saveWorkflows();
     } catch (err) {
       try {
         console.error("[PRISM] handleSaveDesignedWorkflow failed", err);
       } catch (_e) {}
       showToast("Could not save workflow: " + (err && err.message ? err.message : "unknown error"), "error");
       setWorkflowDesignStatusBadge("Error", "badge badge-danger");
+      return {
+        ok: false,
+        code: "save_exception",
+        reason: err && err.message ? String(err.message) : "unknown_error",
+        workflow: null
+      };
     }
+
+    // Persist result handling and UI handoff stay outside the build try/catch so a
+    // selectWorkflow/render failure cannot undo a successful durable write.
+    function rollbackUnpersistedDesignedWorkflow() {
+      var removeId = String(wfId || "").trim();
+      state.workflows = (state.workflows || []).filter(function (row) {
+        if (!row || !removeId) return true;
+        return String(row.id) !== removeId;
+      });
+      try {
+        renderWorkflowList();
+        renderLibraryList();
+      } catch (_renderErr) {}
+    }
+
+    function finishDesignedWorkflowPersistFailure(saveResult) {
+      rollbackUnpersistedDesignedWorkflow();
+      var quota =
+        !!(saveResult && (saveResult.quota || saveResult.reason === "quota_exceeded")) ||
+        (saveResult && String(saveResult.reason || "").indexOf("catalogue") !== -1);
+      var message = quota
+        ? "Could not save workflow: browser storage is full. Free space or remove unused workflows, then try again."
+        : "Could not save workflow: persistence failed.";
+      showToast(message, "error");
+      setWorkflowDesignStatusBadge("Error", "badge badge-danger");
+      return {
+        ok: false,
+        code: "persist_failed",
+        reason: (saveResult && saveResult.reason) || "persist_failed",
+        workflow: null
+      };
+    }
+
+    function finishDesignedWorkflowPersistSuccessUi() {
+      try {
+        renderWorkflowList();
+        renderLibraryList();
+      } catch (_renderErr) {}
+      showToast(
+        "Workflow scaffold created. You can now add prompts and refine steps in the Workflows tab.",
+        "success"
+      );
+      if (normalizeWarnings.length) {
+        showToast(
+          "Generated workflow loaded with " + normalizeWarnings.length + " warning(s).",
+          "warning"
+        );
+      }
+      try {
+        switchTab("workflows");
+        selectWorkflow(wfId);
+        setWorkflowMode("run");
+      } catch (uiErr) {
+        try {
+          console.error(
+            "[PRISM] handleSaveDesignedWorkflow UI handoff failed after persist",
+            uiErr
+          );
+        } catch (_e) {}
+      }
+      return { ok: true, workflow: wf, workflowId: wfId };
+    }
+
+    function applyDesignedWorkflowSaveResult(saveResult) {
+      if (!saveResult || !saveResult.ok) {
+        return finishDesignedWorkflowPersistFailure(saveResult);
+      }
+      return finishDesignedWorkflowPersistSuccessUi();
+    }
+
+    if (saveOutcome && typeof saveOutcome.then === "function") {
+      return resolveSaveWorkflowsOutcome(saveOutcome).then(applyDesignedWorkflowSaveResult);
+    }
+    return applyDesignedWorkflowSaveResult(saveOutcome);
   }
 
   function handleSaveRefinedToLibrary() {
@@ -53428,7 +54621,7 @@
    * Learning Journey Step 5 storage parse — shared page parse, then LJ semantic validation.
    * LJ pages are ordinary artifact_type "page"; product_id + commissions are the product gate.
    */
-  function parseLearningJourneyDesignPageCaptureForStorage(raw) {
+  function parseLearningJourneyDesignPageCaptureForStorage(raw, wf) {
     var designMod = resolveLearningJourneyDesignPageLib();
     if (!designMod || typeof designMod.validateLearningJourneyDesignPage !== "function") {
       return {
@@ -53474,11 +54667,38 @@
           (gate.errors && gate.errors.length ? " (" + gate.errors.join("; ") + ")" : ".")
       };
     }
+    var sharedApply = null;
+    if (wf && (isLearningJourneyWorkflow(wf) || workflowRecordIsLearningJourney(wf))) {
+      var sharedLibForDp = resolveLearningJourneySharedSourceLib();
+      // Fail closed: LJ Design Page acceptance must run shared-source validation.
+      if (!sharedLibForDp) {
+        return {
+          ok: false,
+          errors: ["shared_source_module_unavailable"],
+          message:
+            "Learning Journey shared-source validator is unavailable; Design Page cannot be accepted"
+        };
+      }
+      sharedApply = applyLearningJourneySharedSourceFromDesignPageCapture(wf, parsed);
+      if (!sharedApply || !sharedApply.ok) {
+        return {
+          ok: false,
+          errors: (sharedApply && sharedApply.errors) || ["shared_material_required"],
+          message:
+            "Learning Journey Design Page shared_authoritative_material is invalid" +
+            (sharedApply && sharedApply.errors && sharedApply.errors.length
+              ? " (" + sharedApply.errors.join("; ") + ")"
+              : "."),
+          sharedSource: sharedApply || null
+        };
+      }
+    }
     return {
       ok: true,
       errors: [],
       parsed: parsed,
-      json: JSON.stringify(parsed, null, 2)
+      json: JSON.stringify(parsed, null, 2),
+      sharedSource: sharedApply || null
     };
   }
 
@@ -53492,7 +54712,7 @@
       isWorkflowStepDesignPageRow(stepRow) &&
       (isLearningJourneyWorkflow(wf) || workflowRecordIsLearningJourney(wf))
     ) {
-      return parseLearningJourneyDesignPageCaptureForStorage(raw);
+      return parseLearningJourneyDesignPageCaptureForStorage(raw, wf);
     }
     if (stepRow && isWorkflowStepDesignEpisodePlanRow(stepRow)) {
       return parseEpisodePlanOrPageCaptureForStorage(raw);
@@ -59544,6 +60764,36 @@
               return;
             }
           }
+          if (
+            stepRow &&
+            body &&
+            (isLearningJourneyWorkflow(wf) || workflowRecordIsLearningJourney(wf)) &&
+            isLearningJourneyCommissioningStep(stepRow)
+          ) {
+            // Steps 1–4 are chat-context; markers here are optional. Persist if present.
+            applyLearningJourneySharedSourceFromCommissionCapture(wf, body, {
+              softMissing: true
+            });
+          }
+          if (
+            stepRow &&
+            body &&
+            (isLearningJourneyWorkflow(wf) || workflowRecordIsLearningJourney(wf)) &&
+            isWorkflowStepDesignPageRow(stepRow)
+          ) {
+            var sharedDpGate = applyLearningJourneySharedSourceFromDesignPageCapture(wf, body);
+            if (!sharedDpGate || !sharedDpGate.ok) {
+              updateRunStepOutputStatus(currentLi);
+              showToast(
+                "Learning Journey Design Page shared_authoritative_material is invalid (status generated|provided|none with matching content), unless authoritative source_context is already set." +
+                  (sharedDpGate && sharedDpGate.errors && sharedDpGate.errors.length
+                    ? " (" + sharedDpGate.errors.join("; ") + ")"
+                    : ""),
+                "error"
+              );
+              return;
+            }
+          }
           if (storesArtefact && workflowRunLearnerPageFramingGateMessage(sid)) {
             updateRunStepOutputStatus(currentLi);
             showToast(workflowRunLearnerPageFramingGateMessage(sid), "error");
@@ -59670,6 +60920,15 @@
     updateApiKeyStatus(false);
     tryLoadLocalDevOpenAiApiKey();
     resetSession();
+    // Vm/node harnesses set workflows explicitly and call loadWorkflowsForTest when needed.
+    // Skipping the async catalogue load here prevents racing an empty durable read against
+    // in-test constituent creates now that catalogue persistence is IndexedDB/async.
+    if (typeof window !== "undefined" && window.__PRISM_TEST_HARNESS__) {
+      try {
+        finalizeInitialUiSetup();
+      } catch (_harnessInitErr) {}
+      return;
+    }
     loadLibrary()
       .then(function () {
         return loadWorkflows();
@@ -60178,6 +61437,8 @@
     prismTestApi.getAssessmentPostGenerationElicitationQueue = getAssessmentPostGenerationElicitationQueue;
     prismTestApi.normalizeWorkflowForV1 = normalizeWorkflowForV1;
     prismTestApi.gatherWorkflowDetailFormDataForTest = gatherWorkflowDetailFormData;
+    prismTestApi.carryForwardWorkflowProvenanceFieldsFromExistingForTest =
+      carryForwardWorkflowProvenanceFieldsFromExisting;
     prismTestApi.handleSaveWorkflowForTest = handleSaveWorkflow;
     prismTestApi.handleNewWorkflowForTest = handleNewWorkflow;
     prismTestApi.handleRenameWorkflowForTest = handleRenameWorkflow;
@@ -60189,6 +61450,19 @@
     };
     prismTestApi.loadWorkflowsForTest = loadWorkflows;
     prismTestApi.saveWorkflowsForTest = saveWorkflows;
+    prismTestApi.resolveSaveWorkflowsOutcomeForTest = resolveSaveWorkflowsOutcome;
+    prismTestApi.WORKFLOW_STORAGE_KEY_FOR_TEST = WORKFLOW_STORAGE_KEY;
+    prismTestApi.WORKFLOW_STORAGE_BACKEND_KEY_FOR_TEST = WORKFLOW_STORAGE_BACKEND_KEY;
+    prismTestApi.readDurableWorkflowCatalogueJsonForTest = readDurableWorkflowCatalogueJson;
+    prismTestApi.preferRicherWorkflowCatalogueJsonForTest = preferRicherWorkflowCatalogueJson;
+    prismTestApi.resolveAuthoritativeWorkflowCatalogueOnStartupForTest =
+      resolveAuthoritativeWorkflowCatalogueOnStartup;
+    prismTestApi.getWorkflowCatalogueRevisionForTest = function () {
+      return workflowCatalogueRevision;
+    };
+    prismTestApi.setWorkflowCatalogueRevisionForTest = function (revision) {
+      workflowCatalogueRevision = Number(revision) || 0;
+    };
     prismTestApi.buildWorkflowSearchHaystack = buildWorkflowSearchHaystack;
     prismTestApi.applyWorkflowListFilters = applyWorkflowListFilters;
     prismTestApi.resolveWorkflowSelectionForCurrentViewForTest =
@@ -60850,6 +62124,22 @@
       clearSituatedTaskDesignPageModelPromptSeed;
     prismTestApi.composeSituatedTaskOriginalBrief = composeSituatedTaskOriginalBrief;
     prismTestApi.composeCommissionedOriginalBrief = composeCommissionedOriginalBrief;
+    prismTestApi.readLearningJourneyAuthoritativeSourceContext =
+      readLearningJourneyAuthoritativeSourceContext;
+    // Destructive shared-source repair: expose only on local/dev or test harness.
+    if (isPrismLocalRepairAllowed()) {
+      prismTestApi.clearLearningJourneyAuthoritativeSourceContextForRepair =
+        clearLearningJourneyAuthoritativeSourceContextForRepair;
+    }
+    prismTestApi.readAuthoritativeSharedSourceContext = readAuthoritativeSharedSourceContext;
+    prismTestApi.applyLearningJourneySharedSourceFromCommissionCapture =
+      applyLearningJourneySharedSourceFromCommissionCapture;
+    prismTestApi.applyLearningJourneySharedSourceFromDesignPageCapture =
+      applyLearningJourneySharedSourceFromDesignPageCapture;
+    prismTestApi.composeLearningJourneyAuthoritativeSharedSourceToken =
+      composeLearningJourneyAuthoritativeSharedSourceToken;
+    prismTestApi.isLearningJourneyCommissioningStep = isLearningJourneyCommissioningStep;
+    prismTestApi.materializeWorkflowPromptTemplateTokens = materializeWorkflowPromptTemplateTokens;
     prismTestApi.composeCommissionedContextHonourInstruction =
       composeCommissionedContextHonourInstruction;
     prismTestApi.composeCommissionedLearnerFacingBringForwardInstruction =
@@ -61544,6 +62834,15 @@
     };
     prismTestApi.resolveEpisodePlanDlaIntegrationLib = resolveEpisodePlanDlaIntegrationLib;
     window.__PRISM_TEST_API = prismTestApi;
+    // Local-console repair surface (localhost / 127.0.0.1 / ::1 only).
+    // Not created on production hosts.
+    if (isPrismLocalDevelopmentHost()) {
+      window.PRISM_LOCAL_DEV = window.PRISM_LOCAL_DEV || {};
+      window.PRISM_LOCAL_DEV.clearLearningJourneyAuthoritativeSourceContextForRepair =
+        clearLearningJourneyAuthoritativeSourceContextForRepair;
+      window.PRISM_LOCAL_DEV.readLearningJourneyAuthoritativeSourceContext =
+        readLearningJourneyAuthoritativeSourceContext;
+    }
   }
 
   if (document.readyState === "loading") {

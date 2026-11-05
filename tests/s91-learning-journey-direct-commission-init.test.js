@@ -86,8 +86,11 @@ function buildLiveLikePage() {
 }
 
 function loadApi() {
+  const catalogueStore = require("../lib/prism-workflow-catalogue-store.js");
+  catalogueStore.resetStorageBackendForTests();
   const loaded = loadPrismAppJsTestApi({
     extraLibs: [
+      "lib/prism-workflow-catalogue-store.js",
       "lib/first-class-workflow-family.js",
       "lib/first-class-commission-intake.js",
       "lib/learning-journey-design-page.js"
@@ -105,7 +108,19 @@ function loadApi() {
   if (loaded.sandbox && loaded.sandbox.globalThis) {
     loaded.sandbox.globalThis.PRISM_FIRST_CLASS_COMMISSION_INTAKE = intakeApi;
   }
+  if (loaded.window) loaded.window.PRISM_WORKFLOW_CATALOGUE_STORE = catalogueStore;
+  if (loaded.sandbox) {
+    loaded.sandbox.PRISM_WORKFLOW_CATALOGUE_STORE = catalogueStore;
+    if (loaded.sandbox.globalThis) {
+      loaded.sandbox.globalThis.PRISM_WORKFLOW_CATALOGUE_STORE = catalogueStore;
+    }
+  }
   return loaded;
+}
+
+async function awaitMaybe(value) {
+  if (value && typeof value.then === "function") return value;
+  return value;
 }
 
 test("valid LJ Preview create-product action resolves authoritative commission and reuses shared intake", () => {
@@ -146,7 +161,7 @@ test("valid LJ Preview create-product action resolves authoritative commission a
   assert.match(intakeResult.createSeed.inputs, /AUTHORITATIVE_C1_SPEC/);
 });
 
-test("supported Interactive commission creates ordinary Interactive workflow seeded from authoritative page", () => {
+test("supported Interactive commission creates ordinary Interactive workflow seeded from authoritative page", async () => {
   const { api } = loadApi();
   const page = buildLiveLikePage();
   api.setLearningJourneyCommissioningPreviewContextForTest({
@@ -155,12 +170,14 @@ test("supported Interactive commission creates ordinary Interactive workflow see
   });
 
   const beforeCount = (api.getWorkflowsForTest ? api.getWorkflowsForTest() : []).length;
-  const result = api.initialiseFirstClassProductFromLearningJourneyCommissionForTest({
-    commissionId: "c1",
-    sectionId: "exp_1",
-    productId: "interactive",
-    sourceWorkflowId: "wf-lj-source-2"
-  });
+  const result = await awaitMaybe(
+    api.initialiseFirstClassProductFromLearningJourneyCommissionForTest({
+      commissionId: "c1",
+      sectionId: "exp_1",
+      productId: "interactive",
+      sourceWorkflowId: "wf-lj-source-2"
+    })
+  );
 
   assert.equal(result.ok, true, result.code || "");
   assert.equal(result.productId, "interactive");
@@ -193,7 +210,7 @@ test("supported Interactive commission creates ordinary Interactive workflow see
   );
 });
 
-test("product mismatch / unknown / unsupported / non-commissionable actions fail safely", () => {
+test("product mismatch / unknown / unsupported / non-commissionable actions fail safely", async () => {
   const { api, sandbox } = loadApi();
   const page = buildLiveLikePage();
   api.setLearningJourneyCommissioningPreviewContextForTest({
@@ -201,32 +218,38 @@ test("product mismatch / unknown / unsupported / non-commissionable actions fail
     sourceWorkflowId: "wf-lj-source-3"
   });
 
-  const mismatch = api.initialiseFirstClassProductFromLearningJourneyCommissionForTest({
-    commissionId: "c1",
-    sectionId: "exp_1",
-    productId: "expository",
-    sourceWorkflowId: "wf-lj-source-3"
-  });
+  const mismatch = await awaitMaybe(
+    api.initialiseFirstClassProductFromLearningJourneyCommissionForTest({
+      commissionId: "c1",
+      sectionId: "exp_1",
+      productId: "expository",
+      sourceWorkflowId: "wf-lj-source-3"
+    })
+  );
   assert.equal(mismatch.ok, false);
   assert.equal(mismatch.code, "product_identity_mismatch");
 
-  const unknown = api.initialiseFirstClassProductFromLearningJourneyCommissionForTest({
-    commissionId: "c-missing",
-    productId: "interactive",
-    sourceWorkflowId: "wf-lj-source-3"
-  });
+  const unknown = await awaitMaybe(
+    api.initialiseFirstClassProductFromLearningJourneyCommissionForTest({
+      commissionId: "c-missing",
+      productId: "interactive",
+      sourceWorkflowId: "wf-lj-source-3"
+    })
+  );
   assert.equal(unknown.ok, false);
   assert.ok(
     unknown.code === "commission_not_found" ||
       unknown.code === "learning_journey_page_unavailable"
   );
 
-  const unsupported = api.initialiseFirstClassProductFromLearningJourneyCommissionForTest({
-    commissionId: "c4",
-    sectionId: "exp_4",
-    productId: "",
-    sourceWorkflowId: "wf-lj-source-3"
-  });
+  const unsupported = await awaitMaybe(
+    api.initialiseFirstClassProductFromLearningJourneyCommissionForTest({
+      commissionId: "c4",
+      sectionId: "exp_4",
+      productId: "",
+      sourceWorkflowId: "wf-lj-source-3"
+    })
+  );
   assert.equal(unsupported.ok, false);
   assert.equal(unsupported.code, "commission_unsupported");
 
@@ -237,18 +260,20 @@ test("product mismatch / unknown / unsupported / non-commissionable actions fail
     if (String(productId || "") === "interactive") return false;
     return original(productId);
   };
-  const blocked = api.initialiseFirstClassProductFromLearningJourneyCommissionForTest({
-    commissionId: "c1",
-    sectionId: "exp_1",
-    productId: "interactive",
-    sourceWorkflowId: "wf-lj-source-3"
-  });
+  const blocked = await awaitMaybe(
+    api.initialiseFirstClassProductFromLearningJourneyCommissionForTest({
+      commissionId: "c1",
+      sectionId: "exp_1",
+      productId: "interactive",
+      sourceWorkflowId: "wf-lj-source-3"
+    })
+  );
   familyApi.productAcceptsCommission = original;
   assert.equal(blocked.ok, false);
   assert.equal(blocked.code, "product_not_commissionable");
 });
 
-test("commission body is not taken from HTML attributes; Preview export still omits specs", () => {
+test("commission body is not taken from HTML attributes; Preview export still omits specs", async () => {
   const { api } = loadApi();
   const page = buildLiveLikePage();
   const rendered = api.runUtilityPageExportPipelineForTest(page, {
@@ -265,12 +290,14 @@ test("commission body is not taken from HTML attributes; Preview export still om
     page: page,
     sourceWorkflowId: "wf-lj-source-4"
   });
-  const result = api.initialiseFirstClassProductFromLearningJourneyCommissionForTest({
-    commissionId: "c1",
-    // Deliberately omit substantive commission fields — only identity hints.
-    productId: "interactive",
-    sourceWorkflowId: "wf-lj-source-4"
-  });
+  const result = await awaitMaybe(
+    api.initialiseFirstClassProductFromLearningJourneyCommissionForTest({
+      commissionId: "c1",
+      // Deliberately omit substantive commission fields — only identity hints.
+      productId: "interactive",
+      sourceWorkflowId: "wf-lj-source-4"
+    })
+  );
   assert.equal(result.ok, true, result.code || "");
   assert.equal(result.intake.envelope.specificationText, SPEC_C1);
 });

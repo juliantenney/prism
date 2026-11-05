@@ -227,6 +227,23 @@ test("provenance fields are retained when supplied and optional when absent", ()
   assert.equal(without.createSeed.sourceCommissionId, "");
 });
 
+test("optional sourceContext stamps deliverySeed.source_context without Normalize Content", () => {
+  const shared = "Cool water (20°C): 82, 79, 85, 81, 83, 80 seconds";
+  const withSource = intake.intakeCommission({
+    productId: "interactive",
+    specificationText: SPEC,
+    focus: "Credibility",
+    sourceContext: shared
+  });
+  assert.equal(withSource.ok, true);
+  assert.equal(withSource.family.deliverySeed.source_context, shared);
+  assert.equal(withSource.createSeed.sourceContext, shared);
+  assert.equal(withSource.createSeed.sourceMaterial, shared);
+  assert.equal(withSource.family.deliverySeed.commission_specification, SPEC);
+  assert.deepEqual(withSource.family.titles, INTERACTIVE_TITLES);
+  assert.equal(withSource.family.titles.indexOf("Normalize Content"), -1);
+});
+
 test("manual Commission Intake UI is removed; shared programmatic intake path remains", () => {
   const appSource = fs.readFileSync(path.join(__dirname, "..", "app.js"), "utf8");
   assert.doesNotMatch(appSource, /mountLearningJourneyCommissionIntakePanel/);

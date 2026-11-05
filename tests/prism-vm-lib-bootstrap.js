@@ -15,6 +15,7 @@ const DEFAULT_LIBS = [
   "lib/prism-image-brief-compiler.js",
   "lib/prism-visual-assets.js",
   "lib/prism-workflow-resources.js",
+  "lib/prism-workflow-catalogue-store.js",
   "lib/utilities-visual-jobs-workspace.js",
   "lib/learner-package.js",
   "lib/learner-package-zip.js",
@@ -376,7 +377,8 @@ function loadPrismAppJsTestApi(options) {
     document: documentStub,
     addEventListener: function () {},
     removeEventListener: function () {},
-    location: { hash: "", pathname: "/" },
+    location: { hash: "", pathname: "/", hostname: "localhost", href: "http://localhost/" },
+    __PRISM_TEST_HARNESS__: true,
     _: sandbox._,
     Utils: {
       debounce: function (fn) {
@@ -418,6 +420,17 @@ function loadPrismAppJsTestApi(options) {
     skipLearnerRendererVNextInject: !!opts.skipLearnerRendererVNextInject,
     skipGamCanonicalAssemblerInject: !!opts.skipGamCanonicalAssemblerInject
   });
+  // Use one shared catalogue-store instance for libs + app.js so init() loadWorkflows
+  // and later test saves cannot diverge across separate module copies.
+  try {
+    var catalogueStore = require(path.join(root, "lib", "prism-workflow-catalogue-store.js"));
+    catalogueStore.resetStorageBackendForTests();
+    sandbox.PRISM_WORKFLOW_CATALOGUE_STORE = catalogueStore;
+    windowStub.PRISM_WORKFLOW_CATALOGUE_STORE = catalogueStore;
+    if (sandbox.globalThis) {
+      sandbox.globalThis.PRISM_WORKFLOW_CATALOGUE_STORE = catalogueStore;
+    }
+  } catch (_catalogueErr) {}
   vm.runInContext(source, sandbox, { filename: "app.js" });
   var api = sandbox.window.__PRISM_TEST_API;
   if (!api) {

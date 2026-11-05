@@ -2,7 +2,7 @@
 
 **Canonical location:** `docs/backlog/PRODUCT-BACKLOG.md`  
 **Status:** Active — **alpha-use period** (Alpha development complete, 2026-09-02)  
-**Last updated:** 2026-11-05 (Sprint 96 **CLOSED — ACCEPTED**; no active sprint allocated)  
+**Last updated:** 2026-11-05 (PB-FA-019 refined — Interactive v2 educational-solution / interaction-surfaces direction; Sprint 96 **CLOSED — ACCEPTED**; no active sprint allocated)  
 **Last closed sprint:** [Sprint 96 — Unified Learning Journey Experience & Compatibility](../development/sprints/2026-11-03-sprint-96-unified-learning-journey-experience/SPRINT-96-CLOSURE.md) — **CLOSED — ACCEPTED**. Prior: [Sprint 95](../development/sprints/2026-11-03-sprint-95-unified-learning-journey-runtime/SPRINT-95-CLOSURE.md).
 
 This file answers: **what might we actually choose to work on next?**
@@ -128,44 +128,57 @@ Potential applications include:
 
 **Readiness:** Proposed from the 2026-10-08 charting audit. Approach not yet chosen — **not sprint-allocated**.
 
-### PB-FA-019 — Interactive V2: educational and architectural discovery
+### PB-FA-019 — Interactive V2: educational solution design and interaction surfaces
 
-**Status:** Proposed — unassigned. **Not sprint-allocated.**  
-**Type:** Major product discovery.  
-**Dependency:** Learning Journey commissioning evidence, and the accepted Assessment Pack revisit [Sprint 93](../development/sprints/2026-10-07-sprint-93-assessment-pack-educational-contract/SPRINT-93-CLOSURE.md) ([PB-FA-017](#pb-fa-017--assessment-pack-first-class-product-revisit)), which is **CLOSED — ACCEPTED**. This item remains proposed and is not opened by that closure.
+**Status:** Proposed — future development. **Not sprint-allocated.**  
+**Type:** Major product discovery → later implementation (discovery first).  
+**Priority:** Future development.
 
-**Central question:** How should Interactive be redesigned when Learning Journey establishes the educational context, progression, and commissioning brief, allowing Interactive to concentrate on designing and realising precisely the consequential engagement required?
+**Dependencies:**
 
-**Discovery responsibilities:**
+- Learning Journey commissioning model (in place).
+- Shared-material pipeline — Phase 1 handoff (parent LJ `source_context` → constituent prompts) landed 2026-11-05; **Phase 2** (automatic detection / generate-once shared material) and live stability of LJ generation should be proven before Interactive workflow changes.
+- Accepted Assessment Pack educational-contract revisit [Sprint 93](../development/sprints/2026-10-07-sprint-93-assessment-pack-educational-contract/SPRINT-93-CLOSURE.md) ([PB-FA-017](#pb-fa-017--assessment-pack-first-class-product-revisit)) — **CLOSED — ACCEPTED** (pattern reference for educational-solution design).
 
-1. **Examine the current Interactive product.** Identify which educational responsibilities it currently carries, which belong upstream in Learning Journey, and which must remain within Interactive.
-2. **Investigate authentic commissions.** Use demanding Learning Journey briefs, including potential research-methods experiences arising from Richard's teaching, to discover what Interactive actually needs to deliver.
-3. **Reconsider the educational contract.** Establish what constitutes consequential engagement, how learners exercise judgement and agency, and how their work carries forward.
-4. **Investigate implementation freedom.** Determine where existing interaction types are sufficient, where shared platform capabilities can help (including [PB-FA-018](#pb-fa-018--shared-data-and-mathematical-visualisation) if that capability exists), and where bounded bespoke behaviour might exceptionally be necessary.
-5. **Evaluate architectural options.** Compare evolution of the existing pipeline with more fundamental redesign. Do not assume replacement is necessary.
+**Rationale:** The original Interactive workflow was designed to support a complete learning experience within a standalone resource. Learning Journeys now provide a stronger mechanism for orchestrating pedagogical progression across resources. Interactive v2 should adopt the educational-solution design approach already working well for Assessment Packs and other Learning Journey components.
 
-**Expected discovery outputs:**
+**Design principle:** *Learning Journeys orchestrate progression between learning experiences; Interactive designs the pedagogy within an individual experience.*
 
-- Evidence of current Interactive strengths and limitations.
-- A clarified division of responsibility between Learning Journey and Interactive.
-- A proposed Interactive V2 educational contract.
-- Candidate authoring and implementation architectures.
-- Live acceptance scenarios derived from authentic educational commissions.
-- A recommendation for whether and how to proceed to implementation.
+**Central question:** How should Interactive be redesigned when Learning Journey establishes educational context, progression, commissioning brief, and (when present) authoritative shared material, so Interactive concentrates on designing and realising the consequential engagement required inside one experience?
 
-**Guardrails:**
+**Proposed direction:**
 
+- Commission Interactive to design an educational solution from learning purpose, audience, context and constraints.
+- Allow the designer to select appropriate interaction capabilities rather than prescribe a fixed structure.
+- Develop a small, reusable repertoire of accessible, tested **interaction surfaces** (candidates: data exploration, decision-making scenarios, simulations, classification, annotation, constructed responses).
+- Allow surfaces to be combined where pedagogically appropriate.
+- Support authoritative shared datasets and scenarios inherited from Learning Journeys, while retaining standalone resource generation.
+- Reduce duplication of pedagogical decisions already made at Learning Journey level.
+- Related platform capability where visuals/data apply: [PB-FA-018](#pb-fa-018--shared-data-and-mathematical-visualisation).
+
+**Initial investigation (when opened):**
+
+1. Review the current Interactive workflow against the Learning Journey commissioning model.
+2. Identify which stages can be simplified, retained or replaced.
+3. Assess a small initial set of interaction surfaces.
+4. Clarify division of responsibility between Learning Journey and Interactive; propose an Interactive V2 educational contract.
+5. Evaluate architectural options (evolve existing pipeline vs more fundamental redesign). Do not assume replacement is necessary.
+6. Use authentic commissions (including demanding LJ briefs) as discovery evidence.
+
+**Guardrails / out of scope for now:**
+
+- **No changes to the current Interactive workflow** until the shared-material pipeline is proven and existing Learning Journey generation is stable.
 - No implementation during discovery.
 - No assumption that more widgets equal better learning.
 - No routine stochastic JavaScript generation.
 - Preserve standalone Interactive capability.
 - No weakening of deterministic execution or learner-facing reliability.
 
-**Success criterion:** We understand what Interactive must become educationally before deciding how to build it.
+**Success criterion (discovery):** We understand what Interactive must become educationally — including the interaction-surface repertoire and LJ/shared-material contract — before deciding how to build it.
 
 This is a revisit of the existing Interactive product, not a new first-class product under [PB-FA-015](#pb-fa-015--additional-first-class-learning-resource-pipelines).
 
-**Readiness:** Proposed. The Sprint 93 dependency is met. This item remains **not sprint-allocated**. Sprint 94 does **not** open it. Interactive V1 expansion (forced activity structure / transfer beats) is recorded as Sprint 94 debt, not absorbed.
+**Readiness:** Proposed. Dependencies partially met (LJ commissioning + Assessment Pack pattern + Phase 1 shared-material handoff). Remains **not sprint-allocated**. Do not open until shared-material Phase 2 / LJ generation stability criteria are accepted. Interactive V1 expansion (forced activity structure / transfer beats) remains Sprint 94 debt, not absorbed.
 
 ### PB-FA-020 — Structured visual specifications for generated graphics
 

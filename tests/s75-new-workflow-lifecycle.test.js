@@ -7,11 +7,17 @@ const path = require("node:path");
 const vm = require("node:vm");
 const { runPrismLibScriptsInSandbox, PEDAGOGICAL_ICON_LIBS } = require("./prism-vm-lib-bootstrap.js");
 const workflowResources = require("../lib/prism-workflow-resources.js");
+const catalogueStore = require("../lib/prism-workflow-catalogue-store.js");
 
 const repoRoot = path.resolve(__dirname, "..");
 const appJsPath = path.join(repoRoot, "app.js");
 const RUNKEY = "promptr.workflows.runstate.v1";
 const WFKEY = "promptr.workflows.v1";
+
+async function awaitMaybe(value) {
+  if (value && typeof value.then === "function") return value;
+  return value;
+}
 
 function createElementStub(tagName) {
   const tag = String(tagName || "div").toUpperCase();
@@ -174,6 +180,7 @@ function boot(options) {
     addEventListener() {},
     removeEventListener() {},
     location: { hash: "", pathname: "/" },
+    __PRISM_TEST_HARNESS__: true,
     _: sandbox._,
     Utils: {
       debounce: (fn) => fn,
@@ -197,8 +204,11 @@ function boot(options) {
   windowStub.PRISM_WORKFLOW_RESOURCES = workflowResources;
   vm.createContext(sandbox);
   runPrismLibScriptsInSandbox(sandbox, repoRoot, PEDAGOGICAL_ICON_LIBS);
+  catalogueStore.resetStorageBackendForTests();
+  sandbox.PRISM_WORKFLOW_CATALOGUE_STORE = catalogueStore;
+  windowStub.PRISM_WORKFLOW_CATALOGUE_STORE = catalogueStore;
   vm.runInContext(source, sandbox, { filename: "app.js" });
-  return { api: sandbox.window.__PRISM_TEST_API, storage };
+  return { api: sandbox.window.__PRISM_TEST_API, storage, catalogueStore };
 }
 
 test("New creates persists selects and orients to Edit; Save updates same identity", async () => {
@@ -236,6 +246,7 @@ test("New creates persists selects and orients to Edit; Save updates same identi
 
   const beforeCount = api.getWorkflowsForTest().length;
   api.handleNewWorkflowForTest();
+  await awaitMaybe(api.saveWorkflowsForTest());
 
   const afterNew = api.getWorkflowsForTest();
   assert.equal(afterNew.length, beforeCount + 1, "New adds exactly one workflow");
@@ -246,11 +257,12 @@ test("New creates persists selects and orients to Edit; Save updates same identi
   assert.equal(api.getSelectedWorkflowIdForTest(), created.id, "new workflow selected");
   assert.equal(api.getWorkflowDetailModeForTest(), "edit", "workflow mode switched to Edit");
 
-  const persistedAfterNew = JSON.parse(storage[WFKEY] || "[]");
+  const idbRaw = await catalogueStore.readCatalogueJson();
+  const persistedAfterNew = JSON.parse(idbRaw || storage[WFKEY] || "[]");
   assert.equal(
     persistedAfterNew.length,
     beforeCount + 1,
-    "new workflow persisted immediately to storage"
+    "new workflow persisted immediately to IndexedDB catalogue"
   );
   assert.ok(persistedAfterNew.some((wf) => wf.id === created.id));
 
@@ -310,6 +322,7 @@ test("Reload after New keeps persisted minimal workflow and repeated New creates
   api.handleNewWorkflowForTest();
   api.handleNewWorkflowForTest();
   api.handleNewWorkflowForTest();
+  await awaitMaybe(api.saveWorkflowsForTest());
 
   const created = api.getWorkflowsForTest();
   assert.equal(created.length, 3, "each New creates one workflow");
@@ -318,14 +331,26 @@ test("Reload after New keeps persisted minimal workflow and repeated New creates
   assert.equal(api.getSelectedWorkflowIdForTest(), ids[2], "latest New is selected");
   assert.equal(api.getWorkflowDetailModeForTest(), "edit");
 
-  const persisted = JSON.parse(storage[WFKEY] || "[]");
+  const idbRaw = await catalogueStore.readCatalogueJson();
+  const persisted = JSON.parse(idbRaw || storage[WFKEY] || "[]");
   assert.equal(persisted.length, 3, "all new workflows persisted immediately");
 
+  // Seed the next boot's catalogue store with the durable IDB payload.
+  catalogueStore.resetStorageBackendForTests();
+  await catalogueStore.writeCatalogueJson(JSON.stringify(persisted), {
+    nextRevision: 1,
+    expectedRevision: 0
+  });
   const reloaded = boot({
     seedStorage: {
-      [WFKEY]: storage[WFKEY],
-      [RUNKEY]: storage[RUNKEY]
+      [WFKEY]: storage[WFKEY] || JSON.stringify(persisted),
+      [RUNKEY]: storage[RUNKEY],
+      "promptr.workflows.v1.backend": "idb"
     }
+  });
+  await catalogueStore.writeCatalogueJson(JSON.stringify(persisted), {
+    nextRevision: 1,
+    expectedRevision: 0
   });
   await reloaded.api.loadWorkflowsForTest();
   const reloadedWorkflows = reloaded.api.getWorkflowsForTest();

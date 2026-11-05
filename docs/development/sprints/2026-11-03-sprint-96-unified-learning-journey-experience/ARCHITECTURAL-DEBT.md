@@ -1,9 +1,9 @@
 # Sprint 96 — Architectural debt
 
 **Sprint:** 96 — Unified Learning Journey Experience & Compatibility  
-**Status:** **OPEN**
+**Status:** **CLOSED — ACCEPTED** — residual items below remain deferred (not reopen triggers)
 
-Inherits Sprint 95 deferred items that this sprint intends to address. New findings are added here during the sprint.
+Residual debt at close. Do **not** mark comprehensive accessibility as resolved.
 
 ---
 
@@ -29,7 +29,7 @@ Inherits Sprint 95 deferred items that this sprint intends to address. New findi
 | S95-AD-020 | Further keyboard / screen-reader verification | **Open — comprehensive a11y** (M5.3 smoke accepted qualified, S96-D17) |
 | S95-AD-011 | MathLive remount stability | **Addressed in M4** (S96-D16 accepted) — residual VK singleton risk remains documented |
 | S95-AD-012 | MathJax / MathLive not auto-bundled in unified ZIP | **Addressed in M4** (S96-D16 accepted) — need-based shell-level packaging (S96-D05) |
-| S95-AD-008 | Unified not yet default LJ download | **Resolved in UI (S96-D14)** | Author download is unified-only; M5 final accept still open |
+| S95-AD-008 | Unified not yet default LJ download | **Resolved** (S96-D14 + S96-D19/D20) | Author download is unified-only |
 
 ---
 
@@ -65,7 +65,7 @@ Inherits Sprint 95 deferred items that this sprint intends to address. New findi
 | S96-AD-013 | Generated C5/C6 prose embeds transfer mechanics | **Mitigated in M3** (S96-D13) | Runtime neutralize + prompt fix; **stored source cleanup deferred** |
 | S96-AD-014 | Reading column shifts when sidebar toggles | **Accepted** (S96-D15 qualified) | Viewport-centred; 400% zoom not comprehensive a11y |
 | S96-AD-015 | Optional C5/C6 source-prose cleanup after M3 | **Deferred** | Author: do not regen in S96; candidate wording retained |
-| S96-AD-016 | LJ QA v1.2 cross-journey validation | **Deferred** | Archive prepared; freeze pending filed reports + second journey |
+| S96-AD-016 | LJ QA v1.2 cross-journey validation | **Deferred** | DUU provisionally calibrated/frozen (author summary); second journey still required |
 
 ---
 

@@ -1,43 +1,23 @@
 # Learning Journey QA v1.2 — calibration archive
 
-**Status:** **Archive prepared — source reports not yet filed**  
-**Sprint:** 96 (supporting evidence; does not close M5 by itself)  
-**Instrument:** Learning Journey QA **v1.2**
+**Status:** **QA v1.2 — Provisionally calibrated; frozen pending cross-journey validation.**  
+**Sprint:** 96 (supporting evidence; does not close M5)  
+**Authoritative summary:** [CALIBRATION-SUMMARY.md](CALIBRATION-SUMMARY.md) (author-supplied; original reports not in repo)
 
-## Purpose
-
-Hold the two independent DUU calibration runs used to provisionally calibrate and freeze the v1.2 workflow pending cross-journey validation.
-
-## Author-reported results (awaiting source files)
-
-| Run | Author-reported score | Readiness class |
-| --- | --------------------- | --------------- |
-| Run 1 | 86/100 | Ready with qualifications |
-| Run 2 | 87/100 | Ready with qualifications |
-
-These figures are **author-supplied**. They are **not** independently evidenced in this repository until the actual reports are placed under `run-01/` and `run-02/` and checked against this index.
-
-## Intended layout (when files arrive)
+## Contents
 
 ```text
 lj-qa-v1.2-calibration/
-  README.md                 (this file)
-  CALIBRATION-INDEX.md      (filled from source reports only)
-  run-01/                   (report artefact + optional export pointer)
-  run-02/
+  README.md                 (this index)
+  CALIBRATION-SUMMARY.md    (author-supplied DUU calibration record)
 ```
 
-## Freeze statement (apply only after both reports are archived)
+Original external QA report artefacts are **not** filed here. Optional later addition of `run-01/` / `run-02/` source files would not change the freeze statement above unless the author revises it.
 
-Learning Journey QA **v1.2 is provisionally calibrated and frozen pending cross-journey validation**.
-
-**Non-claims:**
+## Non-claims
 
 - Not proof of general inter-reviewer reliability.  
 - Not accessibility / screen-reader acceptance.  
-- Not Sprint 96 M5 acceptance by itself.  
-- Rubric and QA generation prompts are **not** modified as part of this archive.
-
-## Cross-journey validation
-
-Deferred follow-up: validate the frozen v1.2 workflow against a second, independently assembled Learning Journey (outside mandatory S96 closure unless author requires otherwise).
+- Not independently verified source artefacts in-repo.  
+- Rubric and QA prompts are **not** modified.  
+- Sprint 96 M5 acceptance is separate ([S96-D19](../../decisions.md#s96-d19--accept-m5-final-acceptance-qualified)).

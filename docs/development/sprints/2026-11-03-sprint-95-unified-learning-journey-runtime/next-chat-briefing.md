@@ -2,7 +2,7 @@
 
 **Sprint 95 is CLOSED — ACCEPTED (S95-D07). Do not reopen.**
 
-Successor: **[Sprint 96 — Unified Learning Journey Experience & Compatibility](../2026-11-03-sprint-96-unified-learning-journey-experience/SPRINT-96-START-HERE.md)** is **OPEN** (S96-D01). Load that pack for continuation.
+Successor: **[Sprint 96 — Unified Learning Journey Experience & Compatibility](../2026-11-03-sprint-96-unified-learning-journey-experience/SPRINT-96-CLOSURE.md)** is **CLOSED — ACCEPTED**. Do not reopen Sprint 95 or 96 for deferred assurance.
 
 ## Sprint 95 capability (complete)
 

@@ -1,7 +1,7 @@
 # Sprint 96 — Plan / work log
 
 **Sprint:** 96 — Unified Learning Journey Experience & Compatibility  
-**Status:** **OPEN** — M1–M4 accepted (M3/M4/D15 qualified); M5 verification prepared — not accepted  
+**Status:** **CLOSED — ACCEPTED** ([S96-D20](decisions.md#s96-d20--close-sprint-96--unified-learning-journey-experience--compatibility-accepted); [SPRINT-96-CLOSURE.md](SPRINT-96-CLOSURE.md))  
 **Baseline:** `c5d93e85cb4bf1457f499ccac76763d75d272dad`
 
 ## Ordered work
@@ -14,7 +14,7 @@
 6. Publishing UI simplification. **COMPLETE** (S96-D14) — unified is the sole normal LJ download.  
 7. M4 — Mathematics compatibility gate. **ACCEPTED** (qualified, S96-D16).  
 8. Viewport-centred reading. **ACCEPTED** (qualified, S96-D15).  
-9. M5 — Final acceptance. **OPEN** — M5.3 **ACCEPTED** (qualified, S96-D17); M5.1 / M5.2 disposition remain — [M5-VERIFICATION.md](M5-VERIFICATION.md); product default already unified per S96-D14.
+9. M5 — Final acceptance. **ACCEPTED** (qualified, S96-D19). Sprint **CLOSED — ACCEPTED** (S96-D20) — [SPRINT-96-CLOSURE.md](SPRINT-96-CLOSURE.md).
 
 ## Log
 
@@ -34,3 +34,6 @@
 | 2026-11-04 | **S96-D13 / D15 / D16 ACCEPTED (qualified).** M5 verification plan prepared. Sprint remains OPEN. No closure. |
 | 2026-11-05 | M5.3: skip-to-main link + `aria-label="Learning content"` on `<main>`; tests green; NVDA observations recorded. M5/S96 remain OPEN. |
 | 2026-11-05 | **S96-D17 ACCEPTED (qualified)** — M5.3 accessibility smoke. M5 final / S96 remain OPEN. No closure. |
+| 2026-11-05 | **S96-D18** — D16 satisfies M5.2. M5 gates reconciled; M5 final / S96 remain OPEN. No commit / closure. |
+| 2026-11-05 | QA v1.2 DUU calibration summary filed (author-supplied); provisionally calibrated / frozen pending cross-journey. M5/S96 remain OPEN. |
+| 2026-11-05 | **S96-D19** M5 ACCEPTED (qualified). **S96-D20** Sprint 96 **CLOSED — ACCEPTED**. |

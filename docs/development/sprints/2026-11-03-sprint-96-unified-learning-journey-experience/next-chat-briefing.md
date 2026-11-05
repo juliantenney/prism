@@ -1,23 +1,21 @@
 # Sprint 96 — Next chat briefing
 
-**Sprint 96 is OPEN.** M1–M4 are **ACCEPTED** (M3/M4/D15 **qualified**). M5.3 is **ACCEPTED** (qualified, S96-D17). Publishing is unified-only (S96-D14). **M5 final is not accepted.**
+**Sprint 96 is CLOSED — ACCEPTED** ([SPRINT-96-CLOSURE.md](SPRINT-96-CLOSURE.md); S96-D19 / S96-D20).
 
 ## Load order
 
-1. [STATUS.md](STATUS.md)  
-2. [decisions.md](decisions.md) — S96-D13 / D15 / D16 / D17 acceptances  
-3. [M5-VERIFICATION.md](M5-VERIFICATION.md)  
-4. [VALIDATION.md](VALIDATION.md)
+1. [SPRINT-96-CLOSURE.md](SPRINT-96-CLOSURE.md)  
+2. [ARCHITECTURAL-DEBT.md](ARCHITECTURAL-DEBT.md) — outstanding a11y / QA cross-journey  
+3. [PRODUCT-BACKLOG.md](../../../backlog/PRODUCT-BACKLOG.md)
 
 ## Do
 
-- Execute M5.1 DUU confirmation and confirm M5.2 disposition.  
-- Archive QA v1.2 source reports under `evidence/lj-qa-v1.2-calibration/` when supplied.  
+- Select next work from the backlog and closure next-phase priorities.  
+- Keep QA v1.2 frozen; next QA activity is cross-disciplinary validation (unchanged workflow).
 
 ## Do not
 
-- Create `SPRINT-96-CLOSURE.md` or mark S96 CLOSED without author approval.  
-- Regenerate/overwrite stored DUU C5/C6 (deferred per S96-D13).  
-- Claim 400% zoom, comprehensive WCAG, or formal AT conformance.  
-- Treat fixture maths as DUU-native maths.  
-- Commit unless asked.
+- Reopen Sprint 96 for deferred assurance.  
+- Claim WCAG conformance or formal maths AT acceptance from S96.  
+- Regenerate stored DUU C5/C6 without a new authorisation.  
+- Modify QA v1.2 rubric / prompts as part of ordinary follow-on.

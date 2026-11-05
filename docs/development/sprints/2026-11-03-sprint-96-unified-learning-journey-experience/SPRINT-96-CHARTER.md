@@ -1,7 +1,7 @@
 # Sprint 96 — Charter
 
 **Sprint:** 96 — Unified Learning Journey Experience & Compatibility  
-**Status:** **OPEN**  
+**Status:** **CLOSED — ACCEPTED** — [SPRINT-96-CLOSURE.md](SPRINT-96-CLOSURE.md)  
 **Opened:** 2026-11-03  
 **Type:** Bounded implementation  
 **Predecessor:** [Sprint 95 — CLOSED — ACCEPTED](../2026-11-03-sprint-95-unified-learning-journey-runtime/SPRINT-95-CLOSURE.md) — **do not reopen**  

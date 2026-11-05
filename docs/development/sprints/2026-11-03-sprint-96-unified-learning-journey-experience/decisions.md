@@ -301,7 +301,7 @@ Acceptance includes:
 
 1. Need-based local MathLive/MathJax packaging, offline operation without CDN dependence, post-mount typesetting, MathLive enhancement, and resource-remount behaviour are **accepted**.  
 2. Existing automated and representative browser evidence for that behaviour is **accepted**.  
-3. **Qualification:** Formal screen-reader acceptance has **not** been demonstrated (remains [S95-AD-020](ARCHITECTURAL-DEBT.md) / M5.3).  
+3. **Qualification:** Formal screen-reader acceptance has **not** been demonstrated (remains [S95-AD-020](ARCHITECTURAL-DEBT.md) / [S96-AD-007](ARCHITECTURAL-DEBT.md); M5.3 is representative smoke only — [S96-D17](#s96-d17--accept-m53-accessibility-smoke-qualified)).  
 4. **Qualification:** Residual MathLive virtual-keyboard singleton risk remains documented (S95-AD-011 residual).  
 5. **Qualification:** Representative fixture testing must **not** be described as full DUU-native mathematics testing.
 
@@ -338,3 +338,79 @@ Acceptance includes:
 **Not authorised by this acceptance:** M5 final acceptance; Sprint 96 closure; claiming comprehensive WCAG / AT conformance; unrelated accessibility refactoring.
 
 **Evidence:** [VALIDATION.md](VALIDATION.md) M5.3; [M5-VERIFICATION.md](M5-VERIFICATION.md); `tests/s96-m5-skip-main-a11y.test.js`; `tests/s96-m1-navigation-layout.test.js`.
+
+---
+
+## S96-D18 — Accept S96-D16 as satisfying M5.2 mathematics journey gate
+
+**Date:** 2026-11-05  
+**Status:** **Accepted**  
+**Depends on:** [S96-D16](#s96-d16--accept-m4-mathematics-compatibility-qualified)
+
+**Decision:** For Sprint 96 **M5.2 — Mathematics journey acceptance**, accept [S96-D16](#s96-d16--accept-m4-mathematics-compatibility-qualified) and its recorded mathematics compatibility evidence as **sufficient**. No additional DUU-native mathematics smoke test is required.
+
+**Qualifications preserved from S96-D16 (not resolved by this disposition):**
+
+1. Formal screen-reader acceptance for enhanced mathematics fields has **not** been demonstrated.  
+2. Residual MathLive virtual-keyboard singleton risk remains documented (S95-AD-011 residual).  
+3. Representative fixture testing must **not** be described as DUU-native mathematics coverage (*Deciding Under Uncertainty* does not embed maths resources).
+
+**Not authorised by this disposition:** M5 final acceptance; Sprint 96 closure; claiming formal AT acceptance for maths; claiming DUU embeds mathematics; new mathematics implementation.
+
+**Evidence:** [VALIDATION.md](VALIDATION.md) M4 / M5.2; [M5-VERIFICATION.md](M5-VERIFICATION.md); `tests/s96-m4-math-compatibility.test.js`; `tests/s96-m4-math-compatibility-browser.test.js`.
+
+---
+
+## S96-D19 — Accept M5 final acceptance (qualified)
+
+**Date:** 2026-11-05  
+**Status:** **Accepted** (qualified)  
+**Depends on:** [S96-D17](#s96-d17--accept-m53-accessibility-smoke-qualified), [S96-D18](#s96-d18--accept-s96-d16-as-satisfying-m52-mathematics-journey-gate), [S96-D14](#s96-d14--learning-journeys-publish-as-unified-experiences)
+
+**Decision:** Accept Sprint 96 **M5 — Final acceptance**, with qualifications. Disposition: **M5 ACCEPTED (qualified).**
+
+| Gate | Disposition |
+| ---- | ----------- |
+| M5.1 Consolidated DUU unified experience | **Accepted** — reconciled against existing S95/S96 evidence and author acceptance (layered provenance; see [M5-VERIFICATION.md](M5-VERIFICATION.md)) |
+| M5.2 Mathematics journey | **Satisfied** under [S96-D18](#s96-d18--accept-s96-d16-as-satisfying-m52-mathematics-journey-gate) using accepted M4 evidence |
+| M5.3 Accessibility smoke | **Accepted** under [S96-D17](#s96-d17--accept-m53-accessibility-smoke-qualified) — representative keyboard/NVDA smoke |
+| M5.4 Standalone + multi-doc regressions | **Satisfied** — existing regression evidence |
+| M5.5–M5.6 Unified default download + explicit decision | **Satisfied** under [S96-D14](#s96-d14--learning-journeys-publish-as-unified-experiences) |
+
+**Qualifications preserved (not resolved by this acceptance):**
+
+1. Comprehensive WCAG conformance and full screen-reader / AT audit are **not** claimed ([S95-AD-020](ARCHITECTURAL-DEBT.md) / [S96-AD-007](ARCHITECTURAL-DEBT.md)).  
+2. M5.3 skip link not separately retested with NVDA after implementation.  
+3. M5.1 C5→C6 live DUU uses layered provenance (S95-D06 + S96 artefact regressions + S96 DUU author accepts) — not a fresh S96-dated C5→C6 author checklist.  
+4. M4 / M5.2: formal maths SR not demonstrated; MathLive VK residual; fixture ≠ DUU-native maths.  
+5. Stored DUU C5/C6 legacy transfer wording deferred ([S96-D13](#s96-d13--accept-m3-contextual-guidance-qualified)).  
+6. 400% zoom imperfect — not comprehensive a11y ([S96-D15](#s96-d15--accept-viewport-centred-reading-column-qualified)).
+
+**Not authorised by this acceptance alone:** Sprint 96 closure (see [S96-D20](#s96-d20--close-sprint-96--unified-learning-journey-experience--compatibility-accepted)); claiming WCAG conformance; regenerating DUU; modifying QA prompts.
+
+**Evidence:** [M5-VERIFICATION.md](M5-VERIFICATION.md); [VALIDATION.md](VALIDATION.md) M5 section.
+
+---
+
+## S96-D20 — Close Sprint 96 — Unified Learning Journey Experience & Compatibility (Accepted)
+
+**Date:** 2026-11-05  
+**Status:** **Accepted**  
+**Depends on:** [S96-D19](#s96-d19--accept-m5-final-acceptance-qualified)
+
+**Decision:** Close **Sprint 96 — Unified Learning Journey Experience & Compatibility** as **CLOSED — ACCEPTED**.
+
+**Completed milestones:** M1–M5 accepted (qualifications recorded under S96-D13 / D15 / D16 / D17 / D19 and related decisions). Publishing default is unified (S96-D14). Educational QA v1.2 DUU calibration is provisionally calibrated and frozen pending cross-journey validation ([evidence/lj-qa-v1.2-calibration/CALIBRATION-SUMMARY.md](evidence/lj-qa-v1.2-calibration/CALIBRATION-SUMMARY.md)).
+
+**Closing Sprint 96 does not mean** any of the following have been done:
+
+- comprehensive WCAG / full screen-reader / AT conformance;  
+- resolving residual MathLive virtual-keyboard singleton risk;  
+- regenerating or cleaning stored DUU C5/C6 source prose;  
+- claiming general inter-reviewer reliability for QA v1.2;  
+- cross-disciplinary QA validation of v1.2;  
+- Interactive V2, Course Home, server learner accounts, or AI marking.
+
+Those remain deferred (see [ARCHITECTURAL-DEBT.md](ARCHITECTURAL-DEBT.md) and [SPRINT-96-CLOSURE.md](SPRINT-96-CLOSURE.md)). Do **not** reopen Sprint 96 for deferred assurance.
+
+**Evidence:** [SPRINT-96-CLOSURE.md](SPRINT-96-CLOSURE.md); [VALIDATION.md](VALIDATION.md); [M5-VERIFICATION.md](M5-VERIFICATION.md).

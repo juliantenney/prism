@@ -1,7 +1,7 @@
 # Sprint 96 — Validation ledger
 
 **Sprint:** 96 — Unified Learning Journey Experience & Compatibility  
-**Status:** **OPEN** — M1–M4 accepted (M3/M4/D15 qualified); M5 verification prepared — **not accepted**
+**Status:** **CLOSED — ACCEPTED** ([S96-D20](decisions.md#s96-d20--close-sprint-96--unified-learning-journey-experience--compatibility-accepted); [SPRINT-96-CLOSURE.md](SPRINT-96-CLOSURE.md))
 
 ## Planned evidence
 
@@ -235,8 +235,9 @@ Automated:
 - `tests/s95-m4-lifecycle-compatibility.test.js` — fallback negative control retained — **passed**
 - S82 MathLive + MathJax packaging suites — **passed**
 
-**Qualifications (accepted, not resolved):** Formal SR not demonstrated; MathLive VK residual risk documented; fixture ≠ DUU-native maths.  
-**Deferred separately:** Optional DUU C5/C6 source regen (S96-D13); M5 verification ([M5-VERIFICATION.md](M5-VERIFICATION.md)).
+**Qualifications (accepted, not resolved):** Formal SR not demonstrated; MathLive VK residual risk documented; fixture ≠ DUU-native maths.
+**M5.2 disposition:** [S96-D18](decisions.md#s96-d18--accept-s96-d16-as-satisfying-m52-mathematics-journey-gate) — D16 evidence satisfies M5.2; no DUU-native maths smoke required.
+**Deferred separately:** Optional DUU C5/C6 source regen (S96-D13); M5 final author acceptance ([M5-VERIFICATION.md](M5-VERIFICATION.md)).
 
 ---
 
@@ -264,19 +265,40 @@ Cache marker: `?v=20261103-s96-viewport-centred-reading`.
 
 ---
 
-## M5 — Final acceptance (OPEN)
+## M5 — Final acceptance — **ACCEPTED (qualified, S96-D19)**
 
-**Status:** **Not accepted.** Sprint 96 remains **OPEN**. Plan: [M5-VERIFICATION.md](M5-VERIFICATION.md).
+**Status:** **M5 ACCEPTED (qualified)** — [S96-D19](decisions.md#s96-d19--accept-m5-final-acceptance-qualified). Sprint 96 **CLOSED — ACCEPTED** ([S96-D20](decisions.md#s96-d20--close-sprint-96--unified-learning-journey-experience--compatibility-accepted)). Detail: [M5-VERIFICATION.md](M5-VERIFICATION.md).  
+**Export tip:** unified DUU via **Download Learning Journey** (S96-D14); shell a11y tip `6fdd423`.
 
-| Gate | Classification |
-| ---- | -------------- |
-| M5.1 Consolidated DUU verification | Requires S96 confirmation (reuse prior evidence with provenance) |
-| M5.2 Maths journey | D16 accepted (qualified); confirm disposition |
-| M5.3 A11y smoke | **ACCEPTED** (qualified, [S96-D17](decisions.md#s96-d17--accept-m53-accessibility-smoke-qualified)) |
-| M5.4 Standalone + multi-doc regressions | Passed — cite existing suites |
-| M5.5–M5.6 Unified default + decision | Satisfied by S96-D14 |
+### Final M5 acceptance table
 
-### M5.3 targeted shell a11y (2026-11-05) — **ACCEPTED (qualified, S96-D17)**
+| Gate | Evidence | Disposition | Remaining qualifications |
+| ---- | -------- | ----------- | ------------------------ |
+| M5.1 Consolidated DUU | S95-D06 live C5→C6; S96-D09/D11/D15 DUU author accepts; M5.3 DUU AT smoke; S96 nav/fidelity/artefact/M3 suites | **ACCEPTED** (qualified provenance) | Layered C5→C6 provenance; D13 stored prose deferred; 400% ≠ a11y |
+| M5.2 Maths journey | S96-D16 M4 evidence | **SATISFIED** ([S96-D18](decisions.md#s96-d18--accept-s96-d16-as-satisfying-m52-mathematics-journey-gate)) | No formal SR; VK residual; fixture ≠ DUU-native |
+| M5.3 A11y smoke | S96-D17; skip/named-main tests; manual NVDA | **ACCEPTED** ([S96-D17](decisions.md#s96-d17--accept-m53-accessibility-smoke-qualified)) | Smoke ≠ WCAG; skip not retested with NVDA |
+| M5.4 Standalone + multi-doc | S96-D14; publishing/fidelity/S82 suites | **SATISFIED** | — |
+| M5.5 Unified default download | S96-D14 | **SATISFIED** | — |
+| M5.6 Explicit default decision | S96-D14 | **SATISFIED** | — |
+| **M5 final** | This table + S96-D19 | **ACCEPTED (qualified)** | Comprehensive a11y / AT remain debt |
+
+### M5.1 provenance notes (2026-11-05)
+
+| Check | Recorded basis |
+| ----- | -------------- |
+| TOC / transitions / section nav | S96 M1/M2/fidelity browser + author M5.3 DUU transitions |
+| Graphics + editable tables | S96-D11 on real DUU |
+| Ordinary zoom/responsive | S96 M1/M2/D15 + DUU screenshots |
+| Drafts across resources | S96 fidelity C2↔C4 + M1/M2 |
+| C5→C6 labelled read-only / missing notice / reload | **S95-D06 author live DUU** + S96 artefact/M3 automated regressions — **not** a fresh S96 author C5→C6 checklist |
+
+Optional tightening (author preference only): 2-minute C5→C6 confirm on current unified DUU ZIP.
+
+### M5.2 disposition (2026-11-05) — **S96-D18**
+
+S96-D16 mathematics compatibility evidence satisfies M5.2. No additional DUU-native mathematics smoke. Qualifications from D16 preserved (SR, VK residual, fixture ≠ DUU-native).
+
+### M5.3 targeted shell a11y — **ACCEPTED (qualified, S96-D17)**
 
 | Check | Result |
 | ----- | ------ |
@@ -287,15 +309,21 @@ Cache marker: `?v=20261103-s96-viewport-centred-reading`.
 | Interactive control + sidebar toggle still keyboard operable | **Pass** (browser) |
 | M1 navigation/layout regression | **Pass** — `tests/s96-m1-navigation-layout.test.js` (**2/2**) |
 | Static prose Tab stops added | **No** (by design) |
-| Manual NVDA / keyboard observations (DUU) | **Accepted** — landmarks, headings, content reading, resource transitions, no trap — see [M5-VERIFICATION.md](M5-VERIFICATION.md) |
+| Manual NVDA / keyboard observations (DUU) | **Accepted** — see [M5-VERIFICATION.md](M5-VERIFICATION.md) |
 | Skip link retested manually with NVDA | **Not done** (qualification) |
-| Comprehensive WCAG / AT audit | **Not claimed** — debt remains [S95-AD-020](ARCHITECTURAL-DEBT.md) / [S96-AD-007](ARCHITECTURAL-DEBT.md) |
-| M5.3 milestone acceptance | **ACCEPTED (qualified, S96-D17)** — M5 final / S96 remain OPEN |
+| Comprehensive WCAG / AT audit | **Not claimed** — [S95-AD-020](ARCHITECTURAL-DEBT.md) / [S96-AD-007](ARCHITECTURAL-DEBT.md) |
 
 Automated: `tests/s96-m5-skip-main-a11y.test.js` — **2 passed**.
 
+### M5.4–M5.6 citation
+
+| Gate | Citation |
+| ---- | -------- |
+| M5.4 | Publishing VALIDATION rows; fidelity standalone unchanged; S82 maths packaging; `tests/s96-lj-publishing-default.test.js` |
+| M5.5–M5.6 | [S96-D14](decisions.md#s96-d14--learning-journeys-publish-as-unified-experiences) |
+
 ### Educational QA v1.2 calibration (supporting)
 
-Archive: [evidence/lj-qa-v1.2-calibration/](evidence/lj-qa-v1.2-calibration/).  
-Author-reported (not yet filed): 86/100 and 87/100, both *Ready with qualifications*.  
-**Do not** treat as repo-evidenced until source reports are archived and checked. Freeze statement applies only after filing.
+**Status:** **QA v1.2 — Provisionally calibrated; frozen pending cross-journey validation.**  
+Author-supplied summary (original reports not in repo): [evidence/lj-qa-v1.2-calibration/CALIBRATION-SUMMARY.md](evidence/lj-qa-v1.2-calibration/CALIBRATION-SUMMARY.md).  
+DUU runs: **86/100** and **87/100**, both *Ready with qualifications*. Supporting evidence only — not M5 acceptance; not general inter-reviewer reliability; not accessibility acceptance.

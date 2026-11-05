@@ -1,21 +1,19 @@
 # Next sprint — active programme
 
-**Status:** **Sprint 96 OPEN.** Sprint 95 **CLOSED — ACCEPTED**. Sprint 94–82 **CLOSED**. Alpha development **complete**.  
-**Updated:** 2026-11-03
+**Status:** **No sprint allocated.** Sprint 96 **CLOSED — ACCEPTED**. Sprint 95–82 **CLOSED**. Alpha development **complete**.  
+**Updated:** 2026-11-05
 
 ---
 
 ## Current programme
 
-**Open sprint:** [Sprint 96 — Unified Learning Journey Experience & Compatibility](../development/sprints/2026-11-03-sprint-96-unified-learning-journey-experience/SPRINT-96-START-HERE.md) — **OPEN** ([programme stub](sprint-96-unified-learning-journey-experience.md))
+**Open sprint:** none  
 
-**Opening:** [S96-D01](../development/sprints/2026-11-03-sprint-96-unified-learning-journey-experience/decisions.md#s96-d01--open-sprint-96--unified-learning-journey-experience--compatibility)
+**Last closed sprint:** [Sprint 96 — Unified Learning Journey Experience & Compatibility](../development/sprints/2026-11-03-sprint-96-unified-learning-journey-experience/SPRINT-96-CLOSURE.md) — **CLOSED — ACCEPTED** ([programme stub](sprint-96-unified-learning-journey-experience.md))
 
-**Baseline:** `c5d93e85cb4bf1457f499ccac76763d75d272dad`
+**Close:** [S96-D20](../development/sprints/2026-11-03-sprint-96-unified-learning-journey-experience/decisions.md#s96-d20--close-sprint-96--unified-learning-journey-experience--compatibility-accepted)
 
-**Last closed sprint:** [Sprint 95 — Unified Learning Journey Runtime](../development/sprints/2026-11-03-sprint-95-unified-learning-journey-runtime/SPRINT-95-CLOSURE.md) — **CLOSED — ACCEPTED** — **do not reopen**
-
-**Hard invariants:** Assessment Pack remains **NON-SUMMATIVE**. Constituent Learning Journey products remain standalone-publishable. No implicit sharing of all learner responses. No AI marking of shared artefacts. Author Learning Journey download is **unified-only** (S96-D14); legacy multi-document packager is internal. **M4 mathematics compatibility remains blocking** — not Sprint 96 complete.
+**Hard invariants:** Assessment Pack remains **NON-SUMMATIVE**. Constituent Learning Journey products remain standalone-publishable. No implicit sharing of all learner responses. No AI marking of shared artefacts. Author Learning Journey download is **unified-only** (S96-D14); legacy multi-document packager is internal.
 
 ### Alpha milestone (still authoritative)
 
@@ -25,28 +23,29 @@
 
 | Item | State |
 | ---- | ----- |
-| Sprint 82–95 | **CLOSED** (95 CLOSED — ACCEPTED) |
-| Open sprint | **Sprint 96** |
-| Unified LJ runtime | **Sprint 95 CLOSED — ACCEPTED** (additive) |
-| Unified LJ experience / maths | **Sprint 96 OPEN** — M3 await accept; publishing UI unified-only (S96-D14); M4 not started |
+| Sprint 82–96 | **CLOSED** (96 CLOSED — ACCEPTED) |
+| Open sprint | **None** |
+| Unified LJ runtime | **Sprint 95 CLOSED — ACCEPTED** |
+| Unified LJ experience / maths | **Sprint 96 CLOSED — ACCEPTED** (qualified a11y / maths residual debt) |
 | Learning Journey continuity | **Sprint 94 CLOSED — ACCEPTED** |
 | Situated Task | **Implemented** — `situated_task` |
 | Assessment Pack | **CLOSED — ACCEPTED** first-class product |
 | LJ author download | **Unified package** (S96-D14); legacy multi-doc internal |
+| QA v1.2 | Provisionally calibrated / frozen pending cross-journey |
 
 ---
 
 ## Immediate next
 
-Author accepts M3 (optional C5/C6 regen). Await authorisation for **M4 — Mathematics compatibility**. Do not claim Sprint 96 complete. Do not reopen Sprint 94 or 95. Do not overwrite the stored real journey without confirmation.
+Select next work from [PRODUCT-BACKLOG.md](../backlog/PRODUCT-BACKLOG.md) and Sprint 96 closure next-phase priorities (cross-disciplinary QA v1.2; evidence-led generation/commissioning improvements; authoring usability; sector demonstration prep). Do **not** reopen Sprint 96 for deferred assurance.
 
-Start here: [SPRINT-96-START-HERE.md](../development/sprints/2026-11-03-sprint-96-unified-learning-journey-experience/SPRINT-96-START-HERE.md).
+Start here: [SPRINT-96-CLOSURE.md](../development/sprints/2026-11-03-sprint-96-unified-learning-journey-experience/SPRINT-96-CLOSURE.md).
 
 ---
 
 ## Previous sprints
 
-- [Sprint 96](sprint-96-unified-learning-journey-experience.md) — **OPEN**
+- [Sprint 96](sprint-96-unified-learning-journey-experience.md) — **CLOSED — ACCEPTED**
 - [Sprint 95](sprint-95-unified-learning-journey-runtime.md) — **CLOSED — ACCEPTED**
 - [Sprint 94](sprint-94-learning-journey-continuity.md) — **CLOSED — ACCEPTED**
 - [Sprint 93](sprint-93-assessment-pack-educational-contract.md) — **CLOSED — ACCEPTED**

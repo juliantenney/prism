@@ -1,23 +1,23 @@
 # Sprint 96 — Handover
 
-**Status:** **OPEN** — M1–M4 accepted (M3/M4/D15 qualified); M5.3 accepted (S96-D17 qualified); M5 final not accepted  
-**Updated:** 2026-11-05
+**Status:** **CLOSED — ACCEPTED**  
+**Updated:** 2026-11-05  
+**Closure:** [SPRINT-96-CLOSURE.md](SPRINT-96-CLOSURE.md)
 
-## Accepted (qualified where noted)
+## Accepted
 
-- M1 / M2 / fidelity / S96-D14 publishing UI  
-- **S96-D13** M3 contextual guidance (stored C5/C6 cleanup deferred)  
-- **S96-D15** viewport-centred reading (400% zoom not comprehensive a11y)  
-- **S96-D16** M4 maths compatibility (SR / VK residual / fixture ≠ DUU-native)  
-- **S96-D17** M5.3 accessibility smoke (not a WCAG audit; skip link not retested with NVDA)
+- M1–M5 (qualifications under S96-D13 / D15 / D16 / D17 / D19)  
+- S96-D14 unified-only LJ download  
+- S96-D18 M5.2 disposition  
+- QA v1.2 DUU calibration — provisionally calibrated / frozen pending cross-journey ([CALIBRATION-SUMMARY.md](evidence/lj-qa-v1.2-calibration/CALIBRATION-SUMMARY.md))
 
-## Open
+## Remains open (do not mark resolved)
 
-- **M5** final — M5.1 DUU confirmation + M5.2 disposition — [M5-VERIFICATION.md](M5-VERIFICATION.md)  
-- Sprint closure — **not authorised**  
-- QA v1.2 archive — location ready; source reports not filed  
-- Deferred: C5/C6 source prose cleanup; comprehensive a11y (S95-AD-020 / S96-AD-007); QA cross-journey validation  
+- Comprehensive a11y / AT (S95-AD-020 / S96-AD-007)  
+- MathLive VK residual (S95-AD-011)  
+- Stored C5/C6 transfer-prose cleanup (S96-AD-015)  
+- QA v1.2 cross-journey validation (S96-AD-016)
 
-## Continuity
+## Next-phase priorities (not launched)
 
-Standalone publishing preserved. No `SPRINT-96-CLOSURE.md` yet.
+See [SPRINT-96-CLOSURE.md](SPRINT-96-CLOSURE.md). Do not reopen Sprint 96. Select next work from the product backlog.

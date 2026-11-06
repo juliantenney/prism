@@ -394,3 +394,246 @@ test("stored output visibility rule hides non-artefact steps and shows artefact 
   assert.equal(api.workflowStepProducesStoredArtefact(pageStep, wf), true);
   assert.equal(api.workflowStepProducesStoredArtefact(nonArtefactStep, wf), false);
 });
+
+function c4Material(id, type, title, body, bodyFormat) {
+  const activityId = id.split("-")[0];
+  return {
+    material_id: id,
+    material_type: type,
+    activity_id: activityId,
+    title: title,
+    body_format: bodyFormat || "markdown",
+    body: body
+  };
+}
+
+function c4Checklist(statements) {
+  return {
+    review_mode: "guided_criteria",
+    criteria: statements.map((statement) => ({
+      statement: statement,
+      why_it_matters: "The comparison must stay consistent with the recorded samples.",
+      features: [
+        {
+          expected: "The response uses the recorded values for the named condition.",
+          repair: "Revise the response so it matches the recorded dissolution times."
+        }
+      ]
+    }))
+  };
+}
+
+function c4ComparingConditionsGamCapture() {
+  const degree = "\u00B0";
+  const plot = [
+    "## Individual-value dot plot",
+    "",
+    "The plot below represents the twelve synthetic educational measurements. Each marker is one independent trial. Both conditions use the same linear horizontal axis, from 60 to 100 seconds, with labelled ticks at 60, 70, 80, 90 and 100. The marker symbols distinguish the conditions without relying on colour.",
+    "",
+    "```text",
+    "                         Dissolution time (s)",
+    "                    60        70        80        90       100",
+    "                    |---------|---------|---------|---------|",
+    "Condition B: 40 " + degree + "C            \u25CF \u25CF  \u25CF \u25CF\u25CF  \u25CF",
+    "Condition A: 20 " + degree + "C                             \u25C6 \u25C6 \u25C6 \u25C6\u25C6 \u25C6",
+    "                    |---------|---------|---------|---------|",
+    "                    60        70        80        90       100",
+    "```",
+    "",
+    "**Plot key:** \u25CF = Condition B at 40 " + degree + "C; \u25C6 = Condition A at 20 " + degree + "C.",
+    "",
+    "Use the common axis and the accompanying exact-value table to examine each condition's location and spread. Record your own graphical interpretation before revealing the explanatory feedback. No mean markers or model comparison are supplied in this plot."
+  ].join("\n");
+  return {
+    artifact_type: "page",
+    schema_version: "2.0.0",
+    assembly_state: { current_stage: "gam", enriched_by: ["gam"] },
+    activities: [
+      {
+        activity_id: "A1",
+        materials: [
+          c4Material(
+            "A1-M1",
+            "data_table",
+            "Recorded Dissolution Times",
+            "These synthetic educational observations record the time taken for a soluble tablet to dissolve.\n\n| Trial | Condition A: 20 " + degree + "C (s) | Condition B: 40 " + degree + "C (s) |\n|---|---:|---:|\n| 1 | 93 | 78 |\n| 6 | 87 | 77 |"
+          ),
+          c4Material(
+            "A1-M2",
+            "comparison_table",
+            "Compare the Descriptive Statistics",
+            "| Statistic | Condition A: 20 " + degree + "C | Condition B: 40 " + degree + "C | Comparison or interpretation |\n|---|---|---|---|\n| Mean dissolution time (s) | | | |\n| Range (s) | | | |\n| Sample standard deviation (s) | | | |"
+          ),
+          c4Material(
+            "A1-M3",
+            "checklist",
+            "Review Your Numerical Comparison",
+            c4Checklist([
+              "Have you calculated the descriptive statistics for both conditions using the correct observations, conventions and units?",
+              "Does your interpretation identify the condition with the shorter observed mean correctly?"
+            ]),
+            "json"
+          ),
+          c4Material(
+            "A1-M4",
+            "reference_table",
+            "Verified Descriptive Statistics",
+            "### Reveal after completing and reviewing your comparison\n\n| Statistic | Condition A: 20 " + degree + "C | Condition B: 40 " + degree + "C |\n|---|---:|---:|\n| Mean dissolution time (s) | 91.6667 | 75.5000 |\n| Range (s) | 9 | 11 |\n| Sample standard deviation (s) | 3.3267 | 4.0373 |\n\nRounded to two decimal places, the sample standard deviations are 3.33 s and 4.04 s."
+          )
+        ]
+      },
+      {
+        activity_id: "A2",
+        materials: [
+          c4Material(
+            "A2-M1",
+            "template",
+            "Calculate and Interpret the Signed Mean Difference",
+            "Follow the specified order, **Condition B minus Condition A**.\n\n**Subtraction and signed difference:**\n\n"
+          ),
+          c4Material(
+            "A2-M2",
+            "checklist",
+            "Review Your Mean-Difference Calculation",
+            c4Checklist([
+              "Have you identified the correct sample mean for each condition?",
+              "Does your calculation use Condition B minus Condition A in the required order?"
+            ]),
+            "json"
+          ),
+          c4Material(
+            "A2-M3",
+            "text",
+            "Verified Difference Between the Means",
+            "### Reveal after completing and reviewing your calculation\n\nThe verified sample means are 75.5000 s for Condition B at 40 " + degree + "C and 91.6667 s for Condition A at 20 " + degree + "C.\n\n\\[\n75.5000-91.6667\\approx-16.1667\n\\]\n\nThe signed difference is approximately **\u221216.17 s**."
+          )
+        ]
+      },
+      {
+        activity_id: "A3",
+        materials: [
+          c4Material(
+            "A3-M1",
+            "scenario",
+            "Individual-Value Dot Plot of Dissolution Times",
+            plot
+          ),
+          c4Material(
+            "A3-M2",
+            "data_table",
+            "Measurements Underlying the Dot Plot",
+            "| Trial | Condition A: 20 " + degree + "C (s) | Condition B: 40 " + degree + "C (s) |\n|---|---:|---:|\n| 1 | 93 | 78 |"
+          ),
+          c4Material(
+            "A3-M3",
+            "template",
+            "Interpret the Individual-Value Plot",
+            "**Condition A pattern:**\n\n\n\n**Condition B pattern:**\n\n"
+          ),
+          c4Material(
+            "A3-M4",
+            "checklist",
+            "Review Your Graphical Interpretation",
+            c4Checklist([
+              "Have you used accurate individual observations to support your descriptions of both conditions?",
+              "Have you interpreted the two groups using the shared horizontal scale correctly?"
+            ]),
+            "json"
+          ),
+          c4Material(
+            "A3-M5",
+            "text",
+            "What the Individual Measurements Reveal",
+            "### Reveal after completing and reviewing your graphical interpretation\n\nThe Condition B observations range from **70 to 81 s**, while the Condition A observations range from **87 to 96 s**."
+          )
+        ]
+      },
+      {
+        activity_id: "A4",
+        materials: [
+          c4Material(
+            "A4-M1",
+            "task_card",
+            "Evidence Card: Tablet-Dissolution Investigation",
+            "**Signed difference between sample means:** Condition B minus Condition A = **\u221216.1667 s**."
+          ),
+          c4Material(
+            "A4-M2",
+            "template",
+            "Compose an Evidence-Based Provisional Comparison",
+            "**Observed direction and magnitude:**\n\n"
+          ),
+          c4Material(
+            "A4-M3",
+            "transfer_prompt",
+            "Write a Scientific Results Caption",
+            "Write a concise scientific results caption for those readers."
+          ),
+          c4Material(
+            "A4-M4",
+            "template",
+            "Your Scientific Results Caption",
+            "**Scientific results caption:**\n\n"
+          ),
+          c4Material(
+            "A4-M5",
+            "checklist",
+            "Review Your Provisional Comparison and Results Caption",
+            c4Checklist([
+              "Have you reported the observed direction, magnitude and units accurately in both written responses?",
+              "Have you kept both interpretations within the evidential limits of the synthetic investigation?"
+            ]),
+            "json"
+          ),
+          c4Material(
+            "A4-M6",
+            "text",
+            "Feedback: Strength and Limits of the Provisional Comparison",
+            "### Reveal after completing and reviewing both written responses\n\n### Page learner-resource closure\n\n- Reconnect the mean with average recorded time."
+          )
+        ]
+      }
+    ]
+  };
+}
+
+test("C4 GAM raw JSON with an internal text-diagram fence is accepted", () => {
+  const api = loadPrismTestApi();
+  const gamEnrich = require(path.join(repoRoot, "lib", "page-gam-enrich.js"));
+  const capture = c4ComparingConditionsGamCapture();
+  const pasted = "\n  " + JSON.stringify(capture, null, 2) + "\n";
+  assert.equal(JSON.parse(pasted).artifact_type, "page");
+  assert.match(pasted, /```text/);
+  assert.doesNotMatch(pasted.trim(), /^```/);
+
+  const result = api.parsePageArtefactCaptureForStorage(pasted);
+  assert.equal(result.ok, true, result.message || (result.errors || []).join("; "));
+  assert.equal(result.errors.length, 0);
+  assert.equal(result.parsed.schema_version, "2.0.0");
+  assert.equal(result.parsed.assembly_state.current_stage, "gam");
+  assert.equal(result.parsed.activities.length, 4);
+  const plotBody = result.parsed.activities[2].materials[0].body;
+  assert.match(plotBody, /```text/);
+  assert.match(plotBody, /Dissolution time \(s\)/);
+  assert.match(result.parsed.activities[0].materials[3].body, /3\.3267/);
+  assert.match(result.parsed.activities[0].materials[3].body, /4\.0373/);
+  assert.match(result.parsed.activities[1].materials[2].body, /16\.17/);
+
+  const partial = gamEnrich.validateGamPartialPageCapture(result.parsed, { baseline: null });
+  assert.equal(partial.ok, true, (partial.errors || []).join("; "));
+
+  const malformed = api.parsePageArtefactCaptureForStorage('{"artifact_type":"page",');
+  assert.equal(malformed.ok, false);
+  assert.match(String(malformed.message || ""), /parse failed|invalid|JSON/i);
+
+  const notPage = api.parsePageArtefactCaptureForStorage(
+    JSON.stringify({ artifact_type: "gam_notes", schema_version: "2.0.0", activities: [] })
+  );
+  assert.equal(notPage.ok, false);
+  assert.match(String(notPage.message || ""), /artifact_type "page"/);
+
+  const brokenFence = api.parsePageArtefactCaptureForStorage("```text\nnot json\n```");
+  assert.equal(brokenFence.ok, false);
+  assert.match(String(brokenFence.message || ""), /fenced/);
+  assert.ok((brokenFence.errors || []).indexOf("invalid_fenced_block") >= 0);
+});

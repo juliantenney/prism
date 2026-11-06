@@ -73,7 +73,7 @@ function guidedMaterial(payload) {
   );
 }
 
-function createGuidedReviewHarness() {
+function createGuidedReviewHarness(options) {
   const listeners = { click: [] };
 
   function makeEl(tagName, attrs) {
@@ -193,7 +193,9 @@ function createGuidedReviewHarness() {
     });
   }
 
-  const root = makeEl("div", { "data-guided-review": "true", "data-guided-review-count": "3" });
+  const rootAttrs = { "data-guided-review": "true", "data-guided-review-count": "3" };
+  if (options && options.listed) rootAttrs["data-guided-review-presentation"] = "listed";
+  const root = makeEl("div", rootAttrs);
   const status = makeEl("p", { "data-guided-review-status": "" });
   status.className = "util-visually-hidden";
   const panelsWrap = makeEl("div", {});
@@ -352,7 +354,27 @@ test("guided checklist: renderer emits one-at-a-time shell with all panels in DO
   assert.match(html, /data-guided-review-nav/);
   assert.match(html, /data-checklist-item-id="checklist-a1-a1-m4-item-0"/);
   assert.match(html, /data-workspace-kind="checklist_entry"/);
+  assert.match(html, /data-guided-review-presentation="listed"/);
+  assert.equal((html.match(/<details class="util-composition-reveal/g) || []).length, 3);
+  assert.doesNotMatch(html, /<details[^>]*\sopen(?:\s|>)/);
+  assert.match(
+    html,
+    /<summary>Show guidance<span class="util-visually-hidden"> for criterion 1<\/span><\/summary>/
+  );
   assert.doesNotMatch(html, /<h[456]\b/);
+  const firstPanel = html.slice(
+    html.indexOf('data-guided-review-index="0"'),
+    html.indexOf('data-guided-review-index="1"')
+  );
+  const statementAt = firstPanel.indexOf("Have you described how each genome type produces mRNA?");
+  const guidanceAt = firstPanel.indexOf("<details");
+  const whyAt = firstPanel.indexOf("Why this matters");
+  const lookAt = firstPanel.indexOf("What to look for");
+  const repairAt = firstPanel.indexOf("If something is missing");
+  const confirmAt = firstPanel.indexOf("My response now meets this criterion");
+  assert.ok(statementAt >= 0 && statementAt < guidanceAt);
+  assert.ok(guidanceAt < whyAt && whyAt < lookAt && lookAt < repairAt);
+  assert.ok(repairAt < firstPanel.indexOf("</details>") && firstPanel.indexOf("</details>") < confirmAt);
 });
 
 test("guided checklist: progressive enhancement one-at-a-time with nav focus and checkbox persistence", () => {
@@ -393,6 +415,16 @@ test("guided checklist: progressive enhancement one-at-a-time with nav focus and
   harness.prev.click();
   assert.equal(harness.document.activeElement, harness.prev);
   assert.equal(harness.firstCheckbox.checked, true);
+});
+
+test("guided checklist: listed presentation keeps every question visible", () => {
+  const harness = createGuidedReviewHarness({ listed: true });
+  assert.equal(harness.root.getAttribute("data-guided-review-enhanced"), null);
+  assert.equal(harness.nav.hidden, true);
+  harness.panels.forEach((panel) => {
+    assert.equal(panel.hidden, false);
+    assert.equal(panel.hasAttribute("inert"), false);
+  });
 });
 
 test("guided checklist: simple markdown checklist rendering unchanged", () => {

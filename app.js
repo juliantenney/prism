@@ -52441,6 +52441,8 @@
       "@media (prefers-reduced-motion:reduce){.util-learner-renderer-vnext .util-guided-review__panel{transition:none}}" +
       "@media print{.util-learner-renderer-vnext .util-guided-review__nav{display:none!important}.util-learner-renderer-vnext .util-guided-review__panel,.util-learner-renderer-vnext .util-guided-review__panel[hidden]{display:block!important}}" +
       ".util-learner-renderer-vnext .util-prose-measure{max-width:var(--learner-reading-width);margin-left:0;margin-right:0}" +
+      ".util-learner-renderer-vnext .util-fenced-text{max-width:100%;margin:var(--learner-space-3) 0;overflow-x:auto;-webkit-overflow-scrolling:touch}" +
+      ".util-learner-renderer-vnext .util-fenced-text pre{margin:0;width:max-content;min-width:100%;font-family:ui-monospace,\"Cascadia Mono\",\"Segoe UI Mono\",Consolas,monospace;font-size:.8125rem;line-height:1.35;white-space:pre;tab-size:4}" +
       ".util-learner-renderer-vnext .util-page-video__content iframe,.util-learner-renderer-vnext .util-page-video__content video{max-width:100%}" +
       ".util-learner-renderer-vnext .util-table-scroll,.util-learner-renderer-vnext .util-material-table,.util-learner-renderer-vnext .util-material-table-block{max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}" +
       ".util-learner-renderer-vnext .util-table-scroll.util-material-table table{width:100%;table-layout:auto}" +
@@ -54586,7 +54588,10 @@
     }
 
     var body = trimmed;
-    var hasFence = /```/.test(trimmed);
+    // A capture is fenced only when the paste itself opens with ```.
+    // Triple backticks inside a JSON string (for example a ```text diagram)
+    // are content, not a second artefact wrapper.
+    var hasFence = /^\s*```/.test(trimmed);
     if (hasFence) {
       var fenced = extractSingleFencedJsonBody(trimmed);
       if (!fenced.ok) {

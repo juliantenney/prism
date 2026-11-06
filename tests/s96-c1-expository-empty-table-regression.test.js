@@ -1,10 +1,11 @@
 /**
  * C1 Expository empty-table regression — Understanding Experimental Evidence.
  *
- * Assembled Design Page / XM bodies populate snake_case row fields, but shortened
- * or human column labels previously only partially matched those keys. The
- * S87 all-empty recovery did not run, so explanatory <td> cells shipped blank
- * in packaged learner HTML.
+ * Assembled tables use natural-language headings that do not token-match every
+ * row key (for example "What this means" against meaning). Exact and unique
+ * prefix/suffix matches stay in place. Unmatched columns are filled only when
+ * the unused data keys line up one-to-one, excluding metadata such as
+ * relationship_label. Abbreviated headings remain covered separately.
  */
 
 const test = require("node:test");
@@ -18,6 +19,118 @@ const learnerPackage = require("../lib/learner-package.js");
 
 const VARIABLES_TITLE = "The three roles of experimental variables";
 const STATEMENTS_TITLE = "Three kinds of scientific statement";
+const RAW_DATA_TITLE = "Recorded dissolution times";
+
+const ASSEMBLED_VARIABLES_BODY = {
+  title: VARIABLES_TITLE,
+  representation_type: "Three-row relationship matrix",
+  columns: [
+    "Variable role",
+    "What this means",
+    "In the soluble-tablet investigation"
+  ],
+  rows: [
+    {
+      variable_role: "Independent variable",
+      meaning: "The factor deliberately changed between experimental conditions.",
+      investigation_example:
+        "Water temperature: 20 C in Condition A and 40 C in Condition B.",
+      relationship_label: "What changes"
+    },
+    {
+      variable_role: "Dependent variable",
+      meaning: "The outcome measured in each trial.",
+      investigation_example: "Dissolution time, recorded in seconds (s).",
+      relationship_label: "What is measured"
+    },
+    {
+      variable_role: "Intended controlled variables",
+      meaning:
+        "Features the procedure seeks to keep consistent so that the intended comparison is more interpretable.",
+      investigation_example:
+        "Tablet product and nominal size; 200 mL of water; the same type of vessel; no deliberate stirring.",
+      relationship_label: "What is intended to stay consistent"
+    }
+  ],
+  repetition_note: "Each independent trial uses a fresh tablet and fresh water."
+};
+
+const ASSEMBLED_STATEMENTS_BODY = {
+  title: STATEMENTS_TITLE,
+  representation_type: "Three-category comparison",
+  columns: [
+    "Statement type",
+    "What the statement does",
+    "Example or formulation",
+    "Evidential status"
+  ],
+  rows: [
+    {
+      statement_type: "Observation",
+      function: "Reports something directly recorded.",
+      example: "In Condition B, Trial 5 had a recorded dissolution time of 70 s.",
+      evidential_status: "Directly checkable against the raw-data table."
+    },
+    {
+      statement_type: "Prediction",
+      function: "Expresses a provisional expectation about what might happen.",
+      example:
+        "I predict that the two temperature conditions may produce different dissolution times.",
+      evidential_status:
+        "An expectation to reconsider when the evidence is examined; not a finding."
+    },
+    {
+      statement_type: "Explanation",
+      function: "Proposes a possible reason for an observation or pattern.",
+      example: "Water temperature may influence dissolution time.",
+      evidential_status:
+        "A possible explanation requiring evaluation; not an established causal conclusion."
+    }
+  ]
+};
+
+const ASSEMBLED_VARIABLES_MARKERS = [
+  "Independent variable",
+  "The factor deliberately changed between experimental conditions.",
+  "Water temperature: 20 C in Condition A and 40 C in Condition B.",
+  "Dependent variable",
+  "The outcome measured in each trial.",
+  "Dissolution time, recorded in seconds (s).",
+  "Intended controlled variables",
+  "Tablet product and nominal size; 200 mL of water; the same type of vessel; no deliberate stirring."
+];
+
+const ASSEMBLED_STATEMENTS_MARKERS = [
+  "Observation",
+  "Reports something directly recorded.",
+  "In Condition B, Trial 5 had a recorded dissolution time of 70 s.",
+  "Directly checkable against the raw-data table.",
+  "Prediction",
+  "Expresses a provisional expectation about what might happen.",
+  "Explanation",
+  "Proposes a possible reason for an observation or pattern.",
+  "Water temperature may influence dissolution time.",
+  "A possible explanation requiring evaluation; not an established causal conclusion."
+];
+
+const RAW_DATA_BODY = {
+  title: RAW_DATA_TITLE,
+  columns: ["Trial", "Condition", "Dissolution time (s)"],
+  rows: [
+    {
+      trial: "1",
+      condition: "A",
+      dissolution_time_s: "93",
+      relationship_label: "What changes"
+    },
+    {
+      trial: "5",
+      condition: "B",
+      dissolution_time_s: "70",
+      relationship_label: "What is measured"
+    }
+  ]
+};
 
 const VARIABLES_BODY = {
   title: VARIABLES_TITLE,
@@ -161,6 +274,122 @@ function assertMarkers(html, markers, label) {
     );
   });
 }
+
+test("assembled C1 variables table keeps natural-language headings and explanatory cells", () => {
+  const page = c1Page([ASSEMBLED_VARIABLES_BODY]);
+  const model = buildPageModel(page);
+  assert.equal(model.ok, true, JSON.stringify(model.errors || []));
+  const mat = model.model.expositionSections[0].materials[0];
+  assert.equal(mat.type, "expository_structured_table");
+  assert.deepEqual(mat.columns, [
+    "Variable role",
+    "What this means",
+    "In the soluble-tablet investigation"
+  ]);
+  assert.deepEqual(mat.rows[0], [
+    "Independent variable",
+    "The factor deliberately changed between experimental conditions.",
+    "Water temperature: 20 C in Condition A and 40 C in Condition B."
+  ]);
+  assert.equal(mat.rows[0].indexOf("What changes"), -1);
+
+  const rendered = renderLearnerPageHtml(page);
+  assert.equal(rendered.error, null);
+  const html = String(rendered.html || "");
+  assertMarkers(html, ASSEMBLED_VARIABLES_MARKERS, "assembled-variables");
+  assert.doesNotMatch(html, /What changes/);
+  assert.doesNotMatch(html, /What is measured/);
+  assertNoEmptyTableCells(html, "assembled-variables");
+
+  const pkg = learnerPackage.buildLearnerPackage({
+    html: html,
+    visualAssetManifest: []
+  });
+  assert.equal(pkg.ok, true, JSON.stringify(pkg.error || {}));
+  const packaged = String(pkg.package && pkg.package.html ? pkg.package.html : "");
+  assertMarkers(packaged, ASSEMBLED_VARIABLES_MARKERS, "assembled-variables-package");
+  assertNoEmptyTableCells(packaged, "assembled-variables-package");
+});
+
+test("assembled C1 scientific-statement table fills the unmatched function column", () => {
+  const page = c1Page([ASSEMBLED_STATEMENTS_BODY]);
+  const model = buildPageModel(page);
+  assert.equal(model.ok, true, JSON.stringify(model.errors || []));
+  const mat = model.model.expositionSections[0].materials[0];
+  assert.equal(mat.type, "expository_structured_table");
+  assert.deepEqual(mat.columns, [
+    "Statement type",
+    "What the statement does",
+    "Example or formulation",
+    "Evidential status"
+  ]);
+  assert.deepEqual(mat.rows[0], [
+    "Observation",
+    "Reports something directly recorded.",
+    "In Condition B, Trial 5 had a recorded dissolution time of 70 s.",
+    "Directly checkable against the raw-data table."
+  ]);
+
+  const rendered = renderLearnerPageHtml(page);
+  assert.equal(rendered.error, null);
+  const html = String(rendered.html || "");
+  assertMarkers(html, ASSEMBLED_STATEMENTS_MARKERS, "assembled-statements");
+  assertNoEmptyTableCells(html, "assembled-statements");
+
+  const pkg = learnerPackage.buildLearnerPackage({
+    html: html,
+    visualAssetManifest: []
+  });
+  assert.equal(pkg.ok, true, JSON.stringify(pkg.error || {}));
+  const packaged = String(pkg.package && pkg.package.html ? pkg.package.html : "");
+  assertMarkers(packaged, ASSEMBLED_STATEMENTS_MARKERS, "assembled-statements-package");
+  assertNoEmptyTableCells(packaged, "assembled-statements-package");
+});
+
+test("canonical raw-data table keeps exact column alignment and ignores relationship_label", () => {
+  const page = c1Page([RAW_DATA_BODY]);
+  const model = buildPageModel(page);
+  assert.equal(model.ok, true, JSON.stringify(model.errors || []));
+  const mat = model.model.expositionSections[0].materials[0];
+  assert.deepEqual(mat.columns, ["Trial", "Condition", "Dissolution time (s)"]);
+  assert.deepEqual(mat.rows, [
+    ["1", "A", "93"],
+    ["5", "B", "70"]
+  ]);
+
+  const rendered = renderLearnerPageHtml(page);
+  const html = String(rendered.html || "");
+  assert.match(html, new RegExp(RAW_DATA_TITLE));
+  assert.match(html, /<td>1<\/td><td>A<\/td><td>93<\/td>/);
+  assert.match(html, /<td>5<\/td><td>B<\/td><td>70<\/td>/);
+  assert.doesNotMatch(html, /What changes/);
+  assert.doesNotMatch(html, /What is measured/);
+  assertNoEmptyTableCells(html, "raw-data");
+});
+
+test("ambiguous unused keys are not guessed into unmatched columns", () => {
+  const page = c1Page([
+    {
+      title: "Ambiguous comparison",
+      columns: ["Variable role", "First unexplained heading", "Second unexplained heading"],
+      rows: [
+        {
+          variable_role: "Independent variable",
+          meaning: "Changed deliberately.",
+          investigation_example: "Water temperature.",
+          qualification: "Controls are imperfect."
+        }
+      ]
+    }
+  ]);
+  const model = buildPageModel(page);
+  const mat = model.model.expositionSections[0].materials[0];
+  assert.deepEqual(mat.rows[0], ["Independent variable", "", ""]);
+  const html = String(renderLearnerPageHtml(page).html || "");
+  assert.doesNotMatch(html, /Changed deliberately/);
+  assert.doesNotMatch(html, /Water temperature/);
+  assert.doesNotMatch(html, /Controls are imperfect/);
+});
 
 test("C1 variables table retains explanatory cells in packaged HTML", () => {
   const page = c1Page([VARIABLES_BODY]);

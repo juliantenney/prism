@@ -10,13 +10,17 @@ const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const path = require("node:path");
 const vm = require("node:vm");
+const fflate = require("fflate");
 
 const handoff = require("../lib/expository-xm-illustration-handoff.js");
+const learnerPackage = require("../lib/learner-package.js");
+const learnerPackageZip = require("../lib/learner-package-zip.js");
 const workspace = require("../lib/utilities-visual-jobs-workspace.js");
 const contracts = require("../lib/expository-contracts.js");
 const {
   buildExpositionStructuredMaterial,
-  renderExpositionStructuredMaterial
+  renderExpositionStructuredMaterial,
+  renderStructuredValue
 } = require("../lib/learner-renderer-vnext/expository-structured-materials.js");
 const { buildPageModel } = require("../lib/learner-renderer-vnext/build-page-model.js");
 const { renderLearnerPageHtml } = require("../lib/learner-renderer-vnext/render-learner-page.js");
@@ -24,6 +28,21 @@ const { runPrismLibScriptsInSandbox, PEDAGOGICAL_ICON_LIBS } = require("./prism-
 
 const NUMBER_LINE_ALT =
   "Three reaction times appear at 10 s, 12 s and 14 s on a shared axis. A range indicator spans from 10 s to 14 s, a width of 4 s.";
+const XM_NUMBER_LINE_AFFORDANCE_ID = "va-xm-xms301";
+const XM_NUMBER_LINE_BRIEF_ID = "vb-38-4-va-xm-xms301-section-s3-section-after-content";
+const NUMBER_LINE_PNG_BYTES = Uint8Array.from([
+  0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0x00, 0x00, 0x00, 0x0d, 0x49, 0x48, 0x44, 0x52,
+  0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x01, 0x08, 0x02, 0x00, 0x00, 0x00, 0x90, 0x77, 0x53,
+  0xde, 0x00, 0x00, 0x00, 0x0c, 0x49, 0x44, 0x41, 0x54, 0x08, 0xd7, 0x63, 0xf8, 0xcf, 0xc0, 0x00,
+  0x00, 0x00, 0x03, 0x00, 0x01, 0x00, 0x05, 0xfe, 0xd4, 0xef, 0x00, 0x00, 0x00, 0x00, 0x49, 0x45,
+  0x4e, 0x44, 0xae, 0x42, 0x60, 0x82
+]);
+const NUMBER_LINE_PNG_DATA_URL =
+  "data:image/png;base64," + Buffer.from(NUMBER_LINE_PNG_BYTES).toString("base64");
+const EDITORIAL_PNG_BYTES = Uint8Array.from(NUMBER_LINE_PNG_BYTES);
+EDITORIAL_PNG_BYTES[40] = 0x64;
+const EDITORIAL_PNG_DATA_URL =
+  "data:image/png;base64," + Buffer.from(EDITORIAL_PNG_BYTES).toString("base64");
 
 function numberLineMaterial() {
   return {
@@ -90,6 +109,165 @@ function deviationTableMaterial() {
         { Observation: "Trial B", Value: "12 s", "Deviation from mean": "0 s" },
         { Observation: "Trial C", Value: "14 s", "Deviation from mean": "+2 s" }
       ]
+    }
+  };
+}
+
+function assembledMeanMaterial() {
+  return {
+    material_id: "XM-S2-01",
+    commission_id: "XM-S2-01",
+    section_id: "S2",
+    kind: "Annotated calculation sequence",
+    body: {
+      title: "Calculating the Arithmetic Mean",
+      introductory_text:
+        "The mean is calculated by adding every observation and dividing by the number of observations. This worked example uses three separate illustrative measurements: 10 s, 12 s and 14 s.",
+      formula: {
+        expression: "x̄ = Σxᵢ / n",
+        spoken_equivalent:
+          "The sample mean equals the sum of the observations divided by the number of observations.",
+        notation: [
+          {
+            symbol: "x̄",
+            meaning: "The arithmetic mean of the sample.",
+            pronunciation: "x-bar"
+          },
+          {
+            symbol: "Σ",
+            meaning: "Add together all the specified values.",
+            pronunciation: "sum"
+          },
+          {
+            symbol: "xᵢ",
+            meaning: "An individual observation in the dataset.",
+            pronunciation: "x sub i"
+          },
+          {
+            symbol: "n",
+            meaning: "The number of observations in the sample.",
+            pronunciation: "n"
+          }
+        ]
+      }
+    }
+  };
+}
+
+function assembledDeviationMaterial() {
+  return {
+    material_id: "XM-S4-01",
+    commission_id: "XM-S4-01",
+    section_id: "S4",
+    kind: "Worked deviation table",
+    body: {
+      title: "Calculating Sample Standard Deviation from Deviations",
+      introductory_text:
+        "Sample standard deviation uses each observation's deviation from the sample mean. For the illustrative measurements 10 s, 12 s and 14 s, the mean is 12 s.",
+      formula: {
+        expression: "s = √[Σ(xᵢ − x̄)² / (n − 1)]",
+        spoken_equivalent:
+          "The sample standard deviation is the square root of the sum of squared deviations from the mean, divided by the sample size minus one.",
+        symbols: [
+          { symbol: "s", meaning: "Sample standard deviation" },
+          { symbol: "xᵢ", meaning: "An individual observation" },
+          { symbol: "x̄", meaning: "Sample mean" },
+          { symbol: "Σ", meaning: "Sum of the specified values" },
+          { symbol: "n", meaning: "Number of observations" },
+          { symbol: "√", meaning: "Square root" }
+        ]
+      },
+      table: {
+        columns: [
+          { key: "observation", heading: "Observation", unit: "s" },
+          { key: "deviation", heading: "Deviation from 12 s", unit: "s" },
+          { key: "squared_deviation", heading: "Squared deviation", unit: "s²" }
+        ],
+        rows: [
+          {
+            observation: "10 s",
+            deviation: "10 − 12 = −2 s",
+            squared_deviation: "(−2)² = 4 s²"
+          },
+          {
+            observation: "12 s",
+            deviation: "12 − 12 = 0 s",
+            squared_deviation: "0² = 0 s²"
+          },
+          {
+            observation: "14 s",
+            deviation: "14 − 12 = +2 s",
+            squared_deviation: "(+2)² = 4 s²"
+          }
+        ],
+        footer: {
+          label: "Sum of squared deviations",
+          expression: "4 s² + 0 s² + 4 s² = 8 s²"
+        }
+      },
+      calculation_sequence: [
+        {
+          step: 1,
+          label: "Establish the mean",
+          expression: "x̄ = 12 s",
+          explanation: "Every deviation is calculated relative to the same sample mean."
+        }
+      ]
+    }
+  };
+}
+
+function assembledComparisonMaterial() {
+  return {
+    material_id: "XM-S5-01",
+    commission_id: "XM-S5-01",
+    section_id: "S5",
+    kind: "Comparative statistics table",
+    body: {
+      title: "Three Complementary Descriptions of the Same Measurements",
+      introductory_text:
+        "The three descriptive statistics answer different questions about the illustrative observations 10 s, 12 s and 14 s. Reading them together gives a description of both centre and spread.",
+      table: {
+        columns: [
+          { key: "statistic", heading: "Statistic" },
+          { key: "practice_result", heading: "Practice result" },
+          { key: "descriptive_question", heading: "What does it describe?" },
+          { key: "calculation_basis", heading: "What information does it use?" },
+          { key: "limitation", heading: "What does it not tell us?" }
+        ],
+        rows: [
+          {
+            statistic: "Arithmetic mean",
+            practice_result: "12 s",
+            descriptive_question: "Where is the arithmetic centre of the observations?",
+            calculation_basis: "All observations, added together and divided by the sample size.",
+            limitation: "It does not describe how widely the observations vary around that centre."
+          },
+          {
+            statistic: "Range",
+            practice_result: "4 s",
+            descriptive_question: "How far apart are the smallest and largest observed values?",
+            calculation_basis: "The minimum and maximum observations.",
+            limitation:
+              "It does not directly describe the positions of the observations between the extremes or guarantee limits for future observations."
+          },
+          {
+            statistic: "Sample standard deviation",
+            practice_result: "2 s",
+            descriptive_question: "How much do the observations vary around their mean?",
+            calculation_basis:
+              "Every observation's deviation from the mean, using the sample standard-deviation calculation.",
+            limitation:
+              "It does not establish measurement accuracy, explain the cause of variation or directly quantify uncertainty in the mean."
+          }
+        ]
+      },
+      integrated_interpretation:
+        "The illustrative observations have an arithmetic centre of 12 seconds, an observed span of 4 seconds and a sample standard deviation of 2 seconds. The mean describes centre; the range and sample standard deviation describe different aspects of spread. None of the three statistics alone provides a complete scientific explanation.",
+      accessible_text_equivalent:
+        "Arithmetic mean: 12 seconds. It uses all observations to describe the arithmetic centre, but does not describe spread. Range: 4 seconds. It uses the minimum and maximum to describe the observed span, but does not describe the distribution of intermediate values. Sample standard deviation: 2 seconds. It uses all observations' deviations from the mean to describe spread around the centre, but does not establish measurement accuracy or explain why variation occurred.",
+      interpretive_boundary:
+        "All three results refer exclusively to the separate practice dataset. They are not numerical summaries of Condition A or Condition B in the soluble-tablet investigation."
     }
   };
 }
@@ -279,6 +457,439 @@ test("object-valued formula renders expression; structured formal_notes stay aut
   const stringHtml = renderExpositionStructuredMaterial(stringBuilt);
   assert.match(stringHtml, /Range = max − min/);
   assert.doesNotMatch(stringHtml, /\[object Object\]/);
+});
+
+function assertNoSchemaHeadings(html) {
+  assert.equal(html.includes('<th scope="col">Key</th>'), false);
+  assert.equal(html.includes('<th scope="col">Heading</th>'), false);
+  assert.equal(html.includes("[object Object]"), false);
+}
+
+test("assembled C2 mean notation, deviation table and comparison table render in learner HTML", () => {
+  const mean = buildExpositionStructuredMaterial(assembledMeanMaterial(), "S2", 0);
+  assert.equal(mean.type, "expository_structured_equation");
+  assert.equal(mean.equation, "x̄ = Σxᵢ / n");
+  assert.equal(
+    mean.annotations.some(function (ann) {
+      return ann.description === "[object Object]";
+    }),
+    false
+  );
+  ["x-bar", "sum", "x sub i", "The arithmetic mean of the sample."].forEach(function (part) {
+    assert.ok(
+      mean.annotations.some(function (ann) {
+        return String(ann.label + " " + ann.description).indexOf(part) !== -1;
+      }),
+      part
+    );
+  });
+
+  const deviation = buildExpositionStructuredMaterial(assembledDeviationMaterial(), "S4", 0);
+  assert.equal(deviation.type, "expository_structured_equation");
+  assert.equal(deviation.equation, "s = √[Σ(xᵢ − x̄)² / (n − 1)]");
+  assert.deepEqual(deviation.columns, ["Observation", "Deviation from 12 s", "Squared deviation"]);
+  assert.equal(deviation.rows.length, 3);
+  assert.match(deviation.tableCaption, /8 s²/);
+
+  const comparison = buildExpositionStructuredMaterial(assembledComparisonMaterial(), "S5", 0);
+  assert.equal(comparison.type, "expository_structured_table");
+  assert.deepEqual(comparison.columns, [
+    "Statistic",
+    "Practice result",
+    "What does it describe?",
+    "What information does it use?",
+    "What does it not tell us?"
+  ]);
+
+  const symbolMap = buildExpositionStructuredMaterial(
+    {
+      material_id: "XM-MAP-01",
+      section_id: "S2",
+      kind: "equation",
+      body: {
+        title: "Symbol map",
+        formula: {
+          expression: "s²",
+          notation: {
+            "xᵢ": "Individual observation",
+            "x̄": "Sample mean",
+            "Σ": "Sum of the specified quantities",
+            n: "Number of observations"
+          }
+        }
+      }
+    },
+    "S2",
+    1
+  );
+  assert.equal(symbolMap.annotations.length, 4);
+  assert.equal(symbolMap.annotations[0].label, "xᵢ");
+  assert.equal(symbolMap.annotations[0].description, "Individual observation");
+
+  const page = pageWith([
+    assembledMeanMaterial(),
+    numberLineMaterial(),
+    assembledDeviationMaterial(),
+    assembledComparisonMaterial()
+  ]);
+  const rendered = renderLearnerPageHtml(page);
+  const html = String(rendered.html || "");
+  assertNoSchemaHeadings(html);
+
+  const meanHtml = article(html, "XM-S2-01");
+  assert.match(meanHtml, /x̄ = Σxᵢ \/ n/);
+  assert.match(meanHtml, /Spoken form/);
+  assert.match(meanHtml, /The sample mean equals the sum of the observations/);
+  assert.match(meanHtml, /The arithmetic mean of the sample\. \(x-bar\)/);
+  assert.match(meanHtml, /Add together all the specified values\. \(sum\)/);
+  assert.match(meanHtml, /An individual observation in the dataset\. \(x sub i\)/);
+  assert.match(meanHtml, /The number of observations in the sample\./);
+  assertNoSchemaHeadings(meanHtml);
+
+  const numberLineHtml = article(html, "XM-S3-01");
+  assert.match(numberLineHtml, /data-illustration-status="unfulfilled"/);
+  assert.match(numberLineHtml, /10 s, 12 s and 14 s/);
+  assert.doesNotMatch(numberLineHtml, /\[object Object\]/);
+
+  const deviationHtml = article(html, "XM-S4-01");
+  const equationAt = deviationHtml.indexOf('data-field="equation"');
+  const tableAt = deviationHtml.indexOf("<table");
+  assert.ok(equationAt !== -1 && tableAt > equationAt);
+  assert.match(deviationHtml, /s = √\[Σ\(xᵢ − x̄\)² \/ \(n − 1\)\]/);
+  assert.match(deviationHtml, /Sample standard deviation/);
+  assert.match(deviationHtml, /Deviation from 12 s/);
+  assert.match(deviationHtml, /Squared deviation/);
+  assert.match(deviationHtml, /10 s/);
+  assert.match(deviationHtml, /10 − 12 = −2 s/);
+  assert.match(deviationHtml, /\(−2\)² = 4 s²/);
+  assert.match(deviationHtml, /12 − 12 = 0 s/);
+  assert.match(deviationHtml, /14 − 12 = \+2 s/);
+  assert.match(deviationHtml, /\(\+2\)² = 4 s²/);
+  const captionAt = deviationHtml.indexOf("<caption>");
+  const captionEnd = deviationHtml.indexOf("</caption>");
+  const tableEnd = deviationHtml.indexOf("</table>");
+  assert.ok(captionAt > tableAt && captionEnd < tableEnd);
+  assert.match(deviationHtml.slice(captionAt, captionEnd), /Sum of squared deviations: 4 s² \+ 0 s² \+ 4 s² = 8 s²/);
+  assert.equal((deviationHtml.match(/<table\b/g) || []).length, 1);
+  assertNoSchemaHeadings(deviationHtml);
+
+  const comparisonHtml = article(html, "XM-S5-01");
+  assert.equal(comparisonHtml.includes('data-material-type="expository_structured_fallback"'), false);
+  assert.equal((comparisonHtml.match(/<table\b/g) || []).length, 1);
+  ["Statistic", "Practice result", "What does it describe?", "What information does it use?", "What does it not tell us?"].forEach(
+    function (heading) {
+      assert.ok(comparisonHtml.includes("<th scope=\"col\">" + heading + "</th>"), heading);
+    }
+  );
+  assert.match(comparisonHtml, /Arithmetic mean/);
+  assert.match(comparisonHtml, /12 s/);
+  assert.match(comparisonHtml, /4 s/);
+  assert.match(comparisonHtml, /2 s/);
+  assertNoSchemaHeadings(comparisonHtml);
+});
+
+test("C2 comparison table is published once without interpretation-support prose", () => {
+  const source = assembledComparisonMaterial();
+  const bodyBefore = JSON.stringify(source.body);
+  const built = buildExpositionStructuredMaterial(source, "S5", 0);
+  assert.equal(built.type, "expository_structured_table");
+  assert.equal(built.accessibleText, source.body.accessible_text_equivalent);
+  assert.equal(JSON.stringify(source.body), bodyBefore);
+  assert.equal(built.columns.length, 5);
+  assert.equal(built.rows.length, 3);
+  assert.equal(built.rows[0][1], "12 s");
+  assert.equal(built.rows[1][1], "4 s");
+  assert.equal(built.rows[2][1], "2 s");
+
+  const rendered = renderLearnerPageHtml(pageWith([source]));
+  const html = String(rendered.html || "");
+  const comparison = article(html, "XM-S5-01");
+  assert.equal((comparison.match(/<table\b/g) || []).length, 1);
+  [
+    "Statistic",
+    "Practice result",
+    "What does it describe?",
+    "What information does it use?",
+    "What does it not tell us?"
+  ].forEach(function (heading) {
+    assert.ok(comparison.includes('<th scope="col">' + heading + "</th>"), heading);
+  });
+  assert.match(comparison, /Arithmetic mean/);
+  assert.match(comparison, /guarantee limits for future observations/);
+  assert.match(comparison, /does not establish measurement accuracy/);
+  assert.equal(comparison.includes("Introductory text"), false);
+  assert.equal(comparison.includes("Integrated interpretation"), false);
+  assert.equal(comparison.includes("Interpretive boundary"), false);
+  assert.equal(comparison.includes("Accessible text equivalent"), false);
+  assert.equal(
+    comparison.includes("Reading them together gives a description of both centre and spread."),
+    false
+  );
+  assert.equal(
+    comparison.includes("None of the three statistics alone provides a complete scientific explanation."),
+    false
+  );
+  assert.equal(comparison.includes("distribution of intermediate values"), false);
+  assert.equal(comparison.includes("soluble-tablet investigation"), false);
+  assert.equal(comparison.includes('data-field="accessible-description"'), false);
+});
+
+test("table companion prose that is not interpretation support still renders", () => {
+  const source = {
+    material_id: "XM-NOTE-01",
+    section_id: "S5",
+    kind: "comparison table",
+    body: {
+      title: "Practice units",
+      note: "Record each result with its unit.",
+      introductory_text: "This lead-in restates the table and should not be published.",
+      table: {
+        columns: [
+          { key: "statistic", heading: "Statistic" },
+          { key: "result", heading: "Result" }
+        ],
+        rows: [{ statistic: "Range", result: "4 s" }]
+      }
+    }
+  };
+  const html = renderExpositionStructuredMaterial(
+    buildExpositionStructuredMaterial(source, "S5", 0)
+  );
+  assert.match(html, /<th scope="col">Statistic<\/th>/);
+  assert.match(html, /Record each result with its unit\./);
+  assert.equal(html.includes("Introductory text"), false);
+  assert.equal(html.includes("This lead-in restates the table"), false);
+});
+
+test("an accessible equivalent that does not restate the table rows stays available", () => {
+  const source = {
+    material_id: "XM-ALT-01",
+    section_id: "S5",
+    kind: "comparison table",
+    body: {
+      title: "Practice boundary",
+      accessible_text_equivalent:
+        "These three results belong only to the practice set, not to either temperature condition.",
+      table: {
+        columns: [
+          { key: "statistic", heading: "Statistic" },
+          { key: "result", heading: "Result" }
+        ],
+        rows: [
+          { statistic: "Arithmetic mean", result: "12 s" },
+          { statistic: "Range", result: "4 s" }
+        ]
+      }
+    }
+  };
+  const built = buildExpositionStructuredMaterial(source, "S5", 0);
+  assert.equal(built.accessibleText, source.body.accessible_text_equivalent);
+  const html = renderExpositionStructuredMaterial(built);
+  assert.match(html, /data-field="accessible-description"/);
+  assert.match(html, /practice set, not to either temperature condition/);
+  assert.match(html, /<th scope="col">Result<\/th>/);
+});
+
+test("column-definition arrays are not published as learner tables", () => {
+  const definitions = [
+    { key: "statistic", heading: "Statistic" },
+    { key: "practice_result", heading: "Practice result" },
+    { key: "limitation", heading: "What does it not tell us?" }
+  ];
+  assert.equal(renderStructuredValue(definitions, 0), "");
+
+  const built = buildExpositionStructuredMaterial(
+    {
+      material_id: "XM-SCHEMA-01",
+      section_id: "S9",
+      kind: "column notes",
+      body: {
+        title: "Hidden column schema",
+        column_definitions: definitions
+      }
+    },
+    "S9",
+    0
+  );
+  assert.equal(built.type, "expository_structured_fallback");
+  const html = renderExpositionStructuredMaterial(built);
+  assertNoSchemaHeadings(html);
+  assert.equal(html.includes("<table"), false);
+});
+
+function numberLineAsset(dataUrl) {
+  return {
+    brief_id: XM_NUMBER_LINE_BRIEF_ID,
+    affordance_id: XM_NUMBER_LINE_AFFORDANCE_ID,
+    scope: "section",
+    section_id: "S3",
+    activity_id: "",
+    visual_slot: "section-after-content",
+    mime_type: "image/png",
+    alt_text: "Number line with observations at 10 s, 12 s and 14 s.",
+    subject: "Reaction-time range on a number line",
+    render_source: { kind: "data_url", value: dataUrl }
+  };
+}
+
+function editorialOpeningAsset(dataUrl) {
+  return {
+    brief_id: "brief-editorial-opening",
+    affordance_id: "va-editorial-opening",
+    scope: "editorial",
+    activity_id: "",
+    visual_slot: "editorial-opening",
+    mime_type: "image/png",
+    alt_text: "Illustration of a soluble tablet dissolving in water beside a stopwatch.",
+    subject: "Understanding Descriptive Statistics",
+    render_source: { kind: "data_url", value: dataUrl }
+  };
+}
+
+function unpreparedC2Page() {
+  return pageWith([
+    assembledMeanMaterial(),
+    numberLineMaterial(),
+    assembledDeviationMaterial(),
+    assembledComparisonMaterial()
+  ]);
+}
+
+test("attached XM number-line survives into learner HTML and the exported package", () => {
+  const source = unpreparedC2Page();
+  assert.equal(source.visual_affordances.length, 0);
+  const affordancesBefore = JSON.stringify(source.visual_affordances);
+
+  const rendered = renderLearnerPageHtml(source, {
+    compositionMode: "moments",
+    visualAssets: { assets: [numberLineAsset(NUMBER_LINE_PNG_DATA_URL)] }
+  });
+  assert.equal(rendered.error, null);
+  assert.equal(JSON.stringify(source.visual_affordances), affordancesBefore);
+
+  const html = String(rendered.html || "");
+  const numberLine = article(html, "XM-S3-01");
+  const s3 = rendered.modelResult.model.expositionSections.find(function (section) {
+    return section.id === "S3";
+  });
+  assert.equal(s3.visualAffordanceAfterContent.affordanceId, XM_NUMBER_LINE_AFFORDANCE_ID);
+  assert.equal(s3.visualAffordanceAfterContent.slot, "section-after-content");
+  const sectionStart = html.indexOf('id="exposition-S3"');
+  const sectionHtml = html.slice(sectionStart, html.indexOf("</section>", sectionStart));
+  assert.match(sectionHtml, /data-visual-slot="section-after-content"/);
+  assert.match(sectionHtml, /<img /);
+  assert.match(numberLine, /data-representation-spec-suppressed="section-figure"/);
+  assert.doesNotMatch(html, /The commissioned illustration is not yet available/);
+  assert.doesNotMatch(html, /data-illustration-status="unfulfilled"/);
+  assert.match(html, /10 s, 12 s and 14 s/);
+  assert.match(html, /x̄ = Σxᵢ \/ n/);
+  assert.match(html, /The arithmetic mean of the sample/);
+  assert.match(html, /Deviation from 12 s/);
+  assert.match(html, /What does it describe\?/);
+  assert.doesNotMatch(html, /\[object Object\]/);
+  assertNoSchemaHeadings(html);
+  assert.equal((html.match(/data-visual-slot="section-after-content"/g) || []).length, 1);
+
+  const built = learnerPackage.buildLearnerPackage({
+    html: html,
+    visualAssetManifest: { assets: [numberLineAsset(NUMBER_LINE_PNG_DATA_URL)] },
+    title: "Understanding Descriptive Statistics"
+  });
+  assert.equal(built.ok, true, JSON.stringify(built.error || {}));
+  const zipped = learnerPackageZip.serializeLearnerPackageToZip(built.package);
+  assert.equal(zipped.ok, true, JSON.stringify(zipped.error || {}));
+  const entries = fflate.unzipSync(zipped.bytes);
+  assert.ok(entries["learner-page.html"]);
+  assert.ok(entries["assets/section-after-content.png"]);
+  const packagedHtml = fflate.strFromU8(entries["learner-page.html"]);
+  assert.match(packagedHtml, /src="assets\/section-after-content\.png"/);
+  assert.doesNotMatch(packagedHtml, /The commissioned illustration is not yet available/);
+  assert.doesNotMatch(packagedHtml, /data:image\/png;base64/);
+  assert.deepEqual(
+    Array.from(entries["assets/section-after-content.png"]),
+    Array.from(NUMBER_LINE_PNG_BYTES)
+  );
+});
+
+test("unattached XM number-line keeps the accessible alternative", () => {
+  const rendered = renderLearnerPageHtml(unpreparedC2Page(), {
+    compositionMode: "moments",
+    visualAssets: { assets: [] }
+  });
+  assert.equal(rendered.error, null);
+  const html = String(rendered.html || "");
+  const numberLine = article(html, "XM-S3-01");
+  assert.match(numberLine, /data-illustration-status="unfulfilled"/);
+  assert.match(numberLine, /The commissioned illustration is not yet available/);
+  assert.match(numberLine, /10 s, 12 s and 14 s/);
+  assert.equal(html.includes("util-visual-asset--section-after-content"), false);
+});
+
+test("XM illustration preparation is idempotent", () => {
+  const source = unpreparedC2Page();
+  const first = handoff.preparePageForXmIllustrationJobs(source);
+  const second = handoff.preparePageForXmIllustrationJobs(first);
+  assert.equal(source.visual_affordances.length, 0);
+  assert.equal(
+    first.visual_affordances.filter(function (row) {
+      return row && row.affordance_id === XM_NUMBER_LINE_AFFORDANCE_ID;
+    }).length,
+    1
+  );
+  assert.equal(
+    second.visual_affordances.filter(function (row) {
+      return row && row.affordance_id === XM_NUMBER_LINE_AFFORDANCE_ID;
+    }).length,
+    1
+  );
+  assert.equal(first.visual_affordances.length, second.visual_affordances.length);
+
+  const rendered = renderLearnerPageHtml(second, {
+    compositionMode: "moments",
+    visualAssets: { assets: [numberLineAsset(NUMBER_LINE_PNG_DATA_URL)] }
+  });
+  const html = String(rendered.html || "");
+  assert.equal((html.match(/data-visual-slot="section-after-content"/g) || []).length, 1);
+  assert.doesNotMatch(html, /The commissioned illustration is not yet available/);
+});
+
+test("editorial opening still renders beside an attached XM number line", () => {
+  const rendered = renderLearnerPageHtml(unpreparedC2Page(), {
+    compositionMode: "moments",
+    visualAssets: {
+      assets: [
+        editorialOpeningAsset(EDITORIAL_PNG_DATA_URL),
+        numberLineAsset(NUMBER_LINE_PNG_DATA_URL)
+      ]
+    }
+  });
+  assert.equal(rendered.error, null);
+  const html = String(rendered.html || "");
+  assert.match(html, /data-region="editorial-opening"/);
+  assert.match(html, /data-affordance-id="va-editorial-opening"/);
+  assert.match(html, /data-visual-slot="editorial-opening"/);
+  assert.match(html, /data-visual-slot="section-after-content"/);
+  assert.match(html, /soluble tablet dissolving in water/);
+  assert.doesNotMatch(html, /The commissioned illustration is not yet available/);
+
+  const built = learnerPackage.buildLearnerPackage({
+    html: html,
+    visualAssetManifest: {
+      assets: [
+        editorialOpeningAsset(EDITORIAL_PNG_DATA_URL),
+        numberLineAsset(NUMBER_LINE_PNG_DATA_URL)
+      ]
+    }
+  });
+  assert.equal(built.ok, true, JSON.stringify(built.error || {}));
+  const zipped = learnerPackageZip.serializeLearnerPackageToZip(built.package);
+  assert.equal(zipped.ok, true, JSON.stringify(zipped.error || {}));
+  const entries = fflate.unzipSync(zipped.bytes);
+  const packagedHtml = fflate.strFromU8(entries["learner-page.html"]);
+  assert.match(packagedHtml, /src="assets\/editorial-opening\.png"/);
+  assert.match(packagedHtml, /src="assets\/section-after-content\.png"/);
+  assert.ok(entries["assets/editorial-opening.png"]);
+  assert.ok(entries["assets/section-after-content.png"]);
 });
 
 function createElementStub() {

@@ -196,6 +196,10 @@ test("T-041 DLA production commissions culminating transfer production", () => {
   assert.match(production, /culminating transfer production/i);
   assert.match(production, /transfer_prompt/);
   assert.match(production, /meaningfully changed/i);
+  assert.match(production, /distinguishable from the activity's principal task/i);
+  assert.match(production, /meaningfully different claim, audience, purpose, decision, representation or context/i);
+  assert.match(production, /Do not repeat the same stimulus with essentially the same intellectual demand/i);
+  assert.match(production, /Reusing an underlying dataset or investigation is acceptable/i);
   assert.match(production, /learner production/i);
   assert.match(production, /study_tips|page learner-resource closure/i);
   assert.doesNotMatch(production, /Lagrange|shadow price|first-order condition/i);
@@ -207,6 +211,8 @@ test("T-041 DLA commissioning requires transfer_prompt on culminating activity",
   assert.match(commissioning, /transfer_prompt/);
   assert.match(commissioning, /culminating\/final activity/i);
   assert.match(commissioning, /changed context/i);
+  assert.match(commissioning, /distinguishable from the activity's principal task/i);
+  assert.match(commissioning, /do not reuse the same stimulus with essentially the same intellectual demand/i);
   assert.doesNotMatch(commissioning, /Study tips as the transfer/i);
 });
 
@@ -226,6 +232,10 @@ test("T-041 GAM enrich contract fulfils transfer_prompt as production distinct f
   const block = gamContract.buildGamPageEnrichContractBlock();
   assert.match(block, /S78-T-041 transfer_prompt fulfilment/i);
   assert.match(block, /meaningfully changed context/i);
+  assert.match(block, /distinguishable from the activity's principal task/i);
+  assert.match(block, /Do not repeat the same stimulus with essentially the same intellectual demand/i);
+  assert.match(block, /critiquing and rewriting the same claim twice/i);
+  assert.match(block, /Reusing an underlying dataset or investigation is acceptable/i);
   assert.match(block, /learner response/i);
   assert.match(block, /Do not embed ### Page learner-resource closure/i);
   assert.match(block, /page learner-resource closure \/ study_tips is consolidation only/i);
@@ -240,6 +250,8 @@ test("T-041 live GAM V2 Copy / buildWorkflowStepInstructions receives transfer s
   const brief = api.buildGamV2CopyMaterialAuthoringBrief();
   assert.match(brief, /S78-T-041 transfer_prompt/i);
   assert.match(brief, /meaningfully changed context/i);
+  assert.match(brief, /distinguishable from the activity's principal task/i);
+  assert.match(brief, /do not repeat the same stimulus with essentially the same intellectual demand/i);
   assert.match(brief, /Distinct from ### Page learner-resource closure/i);
   assert.match(brief, /NEVER host this section inside a transfer_prompt/i);
   assert.match(brief, /Do not author ### Transfer task boilerplate/i);
@@ -252,6 +264,7 @@ test("T-041 live GAM V2 Copy / buildWorkflowStepInstructions receives transfer s
   const gamStep = wf.steps.find((s) => s.id === "gam_step");
   const copy = api.buildWorkflowStepInstructions(gamStep, 3, null);
   assert.match(copy, /S78-T-041 transfer_prompt/i);
+  assert.match(copy, /distinguishable from the activity's principal task/i);
   assert.match(copy, /### Page learner-resource closure/);
   assert.doesNotMatch(copy, /final_synthesis|next_steps/i);
 
@@ -262,6 +275,7 @@ test("T-041 live GAM V2 Copy / buildWorkflowStepInstructions receives transfer s
   assert.match(dlaLive, /S78-T-041 culminating transfer production/i);
   assert.match(dlaLive, /S78-T-041 \(commissioning\)/);
   assert.match(dlaLive, /transfer_prompt/);
+  assert.match(dlaLive, /distinguishable from the activity's principal task/i);
 });
 
 test("T-041 Design Page remains transport-only for study_tips and does not author transfer", () => {

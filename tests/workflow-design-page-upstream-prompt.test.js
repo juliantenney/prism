@@ -100,3 +100,24 @@ test("LD-DESIGN-PAGE-PARTIAL-CONTRACT: context access via conversation", () => {
   assert.match(text, /PRISM does not embed stored prior step outputs in partial mode/i);
   assert.match(text, /activities\[\] regeneration/i);
 });
+
+test("LD-DESIGN-PAGE-PARTIAL-CONTRACT: Interactive knowledge_summary is a conceptual briefing", () => {
+  const partial = require("../lib/ld-design-page-partial-contract.js");
+  const text = partial.buildDesignPagePartialContractBlock();
+  const shape = partial.buildCanonicalDesignPagePartialShapeSnippet();
+  assert.match(text, /page_synthesis\.knowledge_summary is mandatory/i);
+  assert.match(text, /opening conceptual briefing/i);
+  assert.match(text, /not a recap of completed activity answers/i);
+  assert.match(text, /Conceptual synthesis is required/i);
+  assert.match(text, /Do not reveal completed results, model answers, or interpretations/i);
+  assert.match(text, /activity-specific calculated statistics/i);
+  assert.match(text, /signed differences/i);
+  assert.match(text, /completed graphical interpretations/i);
+  assert.match(text, /different evidence may be appropriate/i);
+  assert.match(text, /Do not prohibit numerical examples categorically/i);
+  assert.match(text, /generic topic list or learning-outcome restatement/i);
+  assert.match(shape, /Substantive conceptual briefing/i);
+  assert.doesNotMatch(shape, /Substantive concept synthesis — not a glossary dump/i);
+  assert.match(text, /visual_affordances\[\]/);
+  assert.match(text, /hide_answers/);
+});

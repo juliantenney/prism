@@ -392,7 +392,8 @@ test("existing assessment-check rendering still checks a closed item", () => {
   assert.match(result.html, /data-assessment-correct="a"/);
   assert.match(result.html, /data-assessment-check/);
   assert.doesNotMatch(result.html, /data-assessment-product="assessment_pack"/);
-  assert.doesNotMatch(result.html, /data-workspace-kind="text_entry"/);
+  const markup = String(result.html || "").split("<script>")[0];
+  assert.doesNotMatch(markup, /data-workspace-kind="text_entry"/);
 });
 
 test("causal-evidence field shapes do not leak objects or design-only prose", () => {
@@ -1023,6 +1024,118 @@ test("structured delivery.stimulus renders scenario, alternatives and evidence b
   assert.match(html, /Self-evaluation: comparison of alternatives/);
   assert.doesNotMatch(html, /data-assessment-correct=/);
   assert.doesNotMatch(html, /\[object Object\]/);
+});
+
+test("C6-style divider-less pipe observations render as an accessible HTML table", () => {
+  // Exact failing Assessment Pack evidence representation from C6 Resource JSON
+  // (multiline pipe rows, no GFM |---| separator).
+  const degree = "\u00B0";
+  const c6Observations =
+    "Trial | Condition A: 20 " +
+    degree +
+    "C (s) | Condition B: 40 " +
+    degree +
+    "C (s)\n1 | 93 | 78\n2 | 89 | 72\n3 | 96 | 81\n4 | 91 | 75\n5 | 94 | 70\n6 | 87 | 77";
+  const qualification =
+    "These are six independent repeated observations in each condition, not paired measurements of the same tablet. They are synthetic educational data rather than verified laboratory results.";
+
+  const result = render(
+    constructedWithDeliveryStimulus({
+      evidence: [
+        {
+          heading: "Original dissolution-time observations",
+          information: c6Observations,
+          qualification: qualification
+        }
+      ]
+    })
+  );
+  assert.equal(result.error, null, result.error);
+  const htmlOut = result.html;
+  assert.match(htmlOut, /Original dissolution-time observations/);
+  assert.match(htmlOut, /<table[\s>]/);
+  assert.match(htmlOut, /<th[^>]*>Trial<\/th>/);
+  assert.match(htmlOut, new RegExp("Condition A: 20 " + degree + "C \\(s\\)"));
+  assert.match(htmlOut, new RegExp("Condition B: 40 " + degree + "C \\(s\\)"));
+  assert.match(htmlOut, /<tbody>[\s\S]*<tr>[\s\S]*<\/tr>[\s\S]*<tr>[\s\S]*<\/tr>[\s\S]*<tr>[\s\S]*<\/tr>[\s\S]*<tr>[\s\S]*<\/tr>[\s\S]*<tr>[\s\S]*<\/tr>[\s\S]*<tr>[\s\S]*<\/tr>[\s\S]*<\/tbody>/);
+  assert.match(htmlOut, /<td[^>]*>93<\/td>/);
+  assert.match(htmlOut, /<td[^>]*>78<\/td>/);
+  assert.match(htmlOut, /<td[^>]*>89<\/td>/);
+  assert.match(htmlOut, /<td[^>]*>72<\/td>/);
+  assert.match(htmlOut, /<td[^>]*>96<\/td>/);
+  assert.match(htmlOut, /<td[^>]*>81<\/td>/);
+  assert.match(htmlOut, /<td[^>]*>91<\/td>/);
+  assert.match(htmlOut, /<td[^>]*>75<\/td>/);
+  assert.match(htmlOut, /<td[^>]*>94<\/td>/);
+  assert.match(htmlOut, /<td[^>]*>70<\/td>/);
+  assert.match(htmlOut, /<td[^>]*>87<\/td>/);
+  assert.match(htmlOut, /<td[^>]*>77<\/td>/);
+  assert.doesNotMatch(
+    htmlOut.replace(/<table[\s\S]*?<\/table>/g, ""),
+    /Trial \| Condition A/
+  );
+  assert.match(htmlOut, /util-table-scroll|util-material-table/);
+  assert.match(htmlOut, new RegExp(qualification.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+
+  const browser = renderViaBrowserBundle(
+    constructedWithDeliveryStimulus({
+      evidence: [
+        {
+          heading: "Original dissolution-time observations",
+          information: c6Observations,
+          qualification: qualification
+        }
+      ]
+    })
+  );
+  assert.equal(browser.error, null, browser.error);
+  assert.match(browser.html, /<table[\s>]/);
+  assert.match(browser.html, /<td[^>]*>93<\/td>/);
+  assert.match(browser.html, /<td[^>]*>77<\/td>/);
+});
+
+test("GFM Markdown pipe table with divider still renders as an HTML table", () => {
+  const degree = "\u00B0";
+  const observationsTable = [
+    "| Trial | Condition A: 20 " + degree + "C (s) | Condition B: 40 " + degree + "C (s) |",
+    "|---|---:|---:|",
+    "| 1 | 93 | 78 |",
+    "| 6 | 87 | 77 |"
+  ].join("\n");
+  const result = render(
+    constructedWithDeliveryStimulus({
+      evidence: [
+        {
+          id: "EV-OBS",
+          heading: "Original dissolution-time observations",
+          information: observationsTable,
+          qualification: "Synthetic educational observations."
+        }
+      ]
+    })
+  );
+  assert.equal(result.error, null, result.error);
+  assert.match(result.html, /<table[\s>]/);
+  assert.match(result.html, /<td[^>]*>93<\/td>/);
+  assert.match(result.html, /<td[^>]*>77<\/td>/);
+});
+
+test("ordinary prose evidence containing a pipe is not forced into a table", () => {
+  const result = render(
+    constructedWithDeliveryStimulus({
+      evidence: [
+        {
+          heading: "Measurement note",
+          information:
+            "Record dissolution times in whole seconds | use a stopwatch and a consistent endpoint judgement.",
+          qualification: "Whole-second resolution remains a measurement limitation."
+        }
+      ]
+    })
+  );
+  assert.equal(result.error, null, result.error);
+  assert.doesNotMatch(result.html, /<table[\s>]/);
+  assert.match(result.html, /Record dissolution times in whole seconds/);
 });
 
 test("elicitation-level prose stimulus still renders for constructed performance", () => {

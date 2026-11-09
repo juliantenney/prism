@@ -267,6 +267,9 @@ test("38S Phase 2C-a: Design Page pack excludes legacy materials compose languag
   }
   assert.match(factory.promptTemplate, /PARTIAL PAGE SYNTHESIS/i);
   assert.match(factory.promptTemplate, /page_synthesis\.knowledge_summary — mandatory/i);
+  assert.match(factory.promptTemplate, /substantive conceptual briefing/i);
+  assert.match(factory.promptTemplate, /do not recap completed activity answers/i);
+  assert.match(factory.promptTemplate, /brief examples on different evidence are allowed/i);
   assert.match(factory.promptTemplate, /activities\[\]\.materials\[\] bodies are already hydrated/i);
   assert.doesNotMatch(factory.promptTemplate, /FORBIDDEN inflation-collapse substitutes/i);
   assert.doesNotMatch(factory.promptTemplate, /Inflation is a sustained increase/i);
@@ -278,6 +281,9 @@ test("38S Phase 2C-a: partial Design Page prompt declares synthesis identity and
   assert.match(augmented, /PARTIAL PAGE SYNTHESIS/i);
   assert.match(augmented, /page_synthesis\.knowledge_summary/i);
   assert.match(augmented, /LD-DESIGN-PAGE-PARTIAL-CONTRACT/i);
+  assert.match(augmented, /substantive conceptual briefing/i);
+  assert.match(augmented, /do not recap completed activity answers/i);
+  assert.match(augmented, /brief examples on different evidence are allowed/i);
   assert.match(augmented, /visual_affordances/i);
   assert.doesNotMatch(augmented, /LD-DESIGN-PAGE-COMPOSE-CONTRACT \(auto-applied\)/i);
 });
@@ -289,7 +295,8 @@ test("Design Page learner page_profile targets page_synthesis wrapper prose", ()
   );
   assert.match(learner.promptInstruction, /page_synthesis wrapper prose only/i);
   assert.match(learner.promptInstruction, /LD-THIN-ASSEMBLY-COHERENCE-CONTRACT/i);
-  assert.match(learner.promptInstruction, /knowledge_summary is mandatory/i);
+  assert.match(learner.promptInstruction, /knowledge_summary is mandatory substantive conceptual briefing/i);
+  assert.match(learner.promptInstruction, /do not recap completed activity answers/i);
   assert.match(learner.promptInstruction, /Do not emit activities\[\] or materials\[\]/i);
 });
 

@@ -229,8 +229,18 @@ function assertActivityReview(html, activitySlug, endMarker, questions, verified
   const lastQuestion = check.lastIndexOf(questions[questions.length - 1]);
   assert.ok(lastQuestion >= 0 && verifiedAt > lastQuestion);
   assert.match(check, new RegExp(">" + verifiedLabel + "<"));
+  assert.match(
+    check,
+    new RegExp(
+      'data-verified-review-label="' +
+        verifiedLabel.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") +
+        '"'
+    )
+  );
+  assert.match(check, /data-verified-review-back="Back to review"/);
   assert.match(check, /data-verified-review-panel/);
   assert.doesNotMatch(check, /data-verified-visible="true"/);
+  assert.doesNotMatch(check, /data-check-view="verified"/);
   return check;
 }
 
@@ -250,8 +260,18 @@ function assertSidebarHtml(html) {
     html,
     /data-check-sidebar-state='open'\]\{position:fixed;z-index:60;top:0;right:0;bottom:0;/
   );
+  assert.match(
+    html,
+    /@media \(min-width:72rem\)\{\.util-learner-renderer-vnext \.util-composition-moment--check\[data-check-sidebar='available'\]:not\(\[data-check-sidebar-mode='inline'\]\):not\(\[data-check-sidebar-state='open'\]\)\{display:none\}/
+  );
+  assert.match(
+    html,
+    /data-check-view='verified'\] \.util-verified-review__panel \.util-composition-reveal>summary\{display:none\}/
+  );
   assert.match(html, /data-check-sidebar-open/);
   assert.match(html, /data-guided-review-presentation"\) === "listed"/);
+  assert.match(html, /data-check-view"\) === "verified"/);
+  assert.match(html, /data-verified-review-back/);
 
   const task = html.indexOf('id="learner-task-a4"');
   const verifiedResults = html.indexOf("A4-M3");

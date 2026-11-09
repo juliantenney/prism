@@ -256,6 +256,8 @@ test("Design Page v2 partial run uses authoritative prompt with knowledge summar
   assert.match(instr, /visual_decision/i);
   assert.match(instr, /visual_affordances/i);
   assert.match(instr, /LD-DESIGN-PAGE-PARTIAL-CONTRACT/i);
+  assert.match(instr, /opening conceptual briefing|substantive conceptual briefing/i);
+  assert.match(instr, /do not recap completed activity answers|not a recap of completed activity answers/i);
   assert.doesNotMatch(instr, /omit visual_affordances/i);
 });
 

@@ -264,7 +264,7 @@ function parseHtmlFragment(html, documentRef) {
   return root;
 }
 
-function mount(html, clipboard) {
+function mount(html, clipboard, options) {
   const documentNode = createElement("document");
   documentNode.defaultView = {
     navigator: {
@@ -278,8 +278,15 @@ function mount(html, clipboard) {
   };
   const parsed = parseHtmlFragment(html, documentNode);
   documentNode.appendChild(parsed);
+  const confirmFn =
+    options && typeof options.confirm === "function"
+      ? options.confirm
+      : function () {
+          return true;
+        };
   const context = vm.createContext({
     document: documentNode,
+    confirm: confirmFn,
     CustomEvent: class CustomEvent {
       constructor(type, init) {
         this.type = type;

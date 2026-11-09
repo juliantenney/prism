@@ -1,5 +1,5 @@
 /**
- * Assessment Pack structured delivery.stimulus requires evidence[].qualification.
+ * Assessment Pack structured delivery.stimulus requires alternatives[] objects and evidence[].qualification.
  * Generation prompt, early capture validation, hydration aliases, and diagnostic formatting.
  */
 "use strict";
@@ -215,6 +215,11 @@ test("generation prompt requires evidence-specific qualification on structured d
     return step.outputName === "assessment_evidence_elicitation";
   }).promptBody;
   assert.match(elicitationPrompt, /structured delivery\.stimulus/i);
+  assert.match(
+    elicitationPrompt,
+    /each alternatives\[\] entry must be an object \{ label, description \} with non-empty string values \(id is optional\)/i
+  );
+  assert.match(elicitationPrompt, /heading, information, qualification/);
   assert.match(elicitationPrompt, /qualification/);
   assert.match(elicitationPrompt, /does and does not establish/i);
   assert.match(elicitationPrompt, /generic filler/i);
@@ -401,6 +406,59 @@ function assessmentPackWorkflowWithSteps(steps) {
   };
 }
 
+test("saved Step 5 override with legacy qualification sentence gets alternatives contract on live Copy", () => {
+  const { api } = loadPrismAppJsTestApi({
+    extraLibs: [
+      "lib/assessment-component-forms.js",
+      "lib/assessment-pack-canonical.js",
+      "lib/first-class-workflow-family.js"
+    ]
+  });
+  const legacySentence =
+    "When a constructed unit uses structured delivery.stimulus case material (scenario, alternatives[], evidence[], optional evidence_boundary), every evidence item must be { heading, information, qualification } with each value a non-empty string. qualification is a genuine limitation, uncertainty, caveat, or constraint on interpreting that particular evidence item. Its pedagogical purpose is to help the learner evaluate what that evidence does and does not establish. Make each qualification specific to its evidence item. Do not use empty strings, generic filler, or invented limitations unsupported by the scenario. Packs that use only prose stimulus, or no stimulus, omit structured delivery.stimulus entirely — do not invent one.";
+  const savedOverride =
+    "You are designing Assessment Pack elicitation and freezing epistemic class.\n" +
+    legacySentence +
+    "\nReturn JSON only with artifact_type \"assessment_evidence_elicitation\".";
+  assert.match(savedOverride, /heading, information, qualification/);
+  assert.doesNotMatch(savedOverride, /each alternatives\[\] entry must be an object/);
+  const workflow = assessmentPackWorkflowWithSteps([
+    {
+      id: "step-elicit",
+      title: "Design Evidence Elicitation",
+      canonical_step_id: "step_design_evidence_elicitation",
+      outputName: "assessment_evidence_elicitation",
+      prompt_source_type: "local_override",
+      override_prompt_body: savedOverride
+    }
+  ]);
+  api.setWorkflowsForTest([workflow]);
+  api.setSelectedWorkflowIdForTest(workflow.id);
+
+  const resolved = api.resolveStepPromptText(workflow.steps[0], workflow);
+  assert.match(
+    String(resolved.text || ""),
+    /each alternatives\[\] entry must be an object \{ label, description \} with non-empty string values \(id is optional\)/i
+  );
+  assert.doesNotMatch(
+    String(resolved.text || ""),
+    /evidence_boundary\), every evidence item must be \{ heading, information, qualification \}/
+  );
+  assert.equal(countMatches(String(resolved.text || ""), "heading, information, qualification"), 1);
+
+  const finalPrompt = api.buildWorkflowStepInstructions(workflow.steps[0], 1, null);
+  assert.match(
+    finalPrompt,
+    /each alternatives\[\] entry must be an object \{ label, description \} with non-empty string values \(id is optional\)/i
+  );
+  assert.doesNotMatch(
+    finalPrompt,
+    /evidence_boundary\), every evidence item must be \{ heading, information, qualification \}/
+  );
+  assert.equal(countMatches(finalPrompt, "heading, information, qualification"), 1);
+  assert.equal(workflow.steps[0].override_prompt_body, savedOverride);
+});
+
 test("stale local_override Design Evidence Elicitation final Copy/Run prompt injects qualification contract", () => {
   const { api } = loadPrismAppJsTestApi({
     extraLibs: [
@@ -427,12 +485,20 @@ test("stale local_override Design Evidence Elicitation final Copy/Run prompt inj
 
   const resolved = api.resolveStepPromptText(workflow.steps[0], workflow);
   assert.equal(resolved.sourceType, "local_override");
+  assert.match(
+    String(resolved.text || ""),
+    /each alternatives\[\] entry must be an object \{ label, description \} with non-empty string values \(id is optional\)/i
+  );
   assert.match(String(resolved.text || ""), /heading, information, qualification/);
   assert.match(String(resolved.text || ""), /does and does not establish/i);
   assert.match(String(resolved.text || ""), /generic filler/i);
   assert.match(String(resolved.text || ""), /key_defence/);
 
   const finalPrompt = api.buildWorkflowStepInstructions(workflow.steps[0], 1, null);
+  assert.match(
+    finalPrompt,
+    /each alternatives\[\] entry must be an object \{ label, description \} with non-empty string values \(id is optional\)/i
+  );
   assert.match(finalPrompt, /heading, information, qualification/);
   assert.match(finalPrompt, /does and does not establish/i);
   assert.match(finalPrompt, /evidence-specific|specific to its evidence item/i);

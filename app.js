@@ -37261,7 +37261,7 @@
   var ASSESSMENT_KEY_DEFENCE_FORMATIVE =
     "Keep explanatory feedback on the same key as the elicitation. Do not name a different option or category as the answer. Do not introduce quantities, events, or assumptions the learner cannot see. If an item was revised, revise the feedback to match.";
   var ASSESSMENT_EVIDENCE_QUALIFICATION_ELICITATION =
-    "When a constructed unit uses structured delivery.stimulus case material (scenario, alternatives[], evidence[], optional evidence_boundary), every evidence item must be { heading, information, qualification } with each value a non-empty string. qualification is a genuine limitation, uncertainty, caveat, or constraint on interpreting that particular evidence item. Its pedagogical purpose is to help the learner evaluate what that evidence does and does not establish. Make each qualification specific to its evidence item. Do not use empty strings, generic filler, or invented limitations unsupported by the scenario. Packs that use only prose stimulus, or no stimulus, omit structured delivery.stimulus entirely — do not invent one.";
+    "When a constructed unit uses structured delivery.stimulus case material (scenario, alternatives[], evidence[], optional evidence_boundary), each alternatives[] entry must be an object { label, description } with non-empty string values (id is optional), and every evidence item must be { heading, information, qualification } with each value a non-empty string. qualification is a genuine limitation, uncertainty, caveat, or constraint on interpreting that particular evidence item. Its pedagogical purpose is to help the learner evaluate what that evidence does and does not establish. Make each qualification specific to its evidence item. Do not use empty strings, generic filler, or invented limitations unsupported by the scenario. Packs that use only prose stimulus, or no stimulus, omit structured delivery.stimulus entirely — do not invent one.";
 
   function assessmentCanonicalApi() {
     if (typeof PRISM_ASSESSMENT_PACK_CANONICAL !== "undefined" && PRISM_ASSESSMENT_PACK_CANONICAL) {
@@ -37338,11 +37338,15 @@
     return body;
   }
 
+  var ASSESSMENT_EVIDENCE_QUALIFICATION_ELICITATION_LEGACY =
+    "When a constructed unit uses structured delivery.stimulus case material (scenario, alternatives[], evidence[], optional evidence_boundary), every evidence item must be { heading, information, qualification } with each value a non-empty string. qualification is a genuine limitation, uncertainty, caveat, or constraint on interpreting that particular evidence item. Its pedagogical purpose is to help the learner evaluate what that evidence does and does not establish. Make each qualification specific to its evidence item. Do not use empty strings, generic filler, or invented limitations unsupported by the scenario. Packs that use only prose stimulus, or no stimulus, omit structured delivery.stimulus entirely — do not invent one.";
+
   function assessmentPackEvidenceQualificationContractPresent(text) {
     var body = String(text || "");
     return (
       body.indexOf("heading, information, qualification") !== -1 &&
-      /does and does not establish/i.test(body)
+      /does and does not establish/i.test(body) &&
+      /each alternatives\[\] entry must be an object \{ label, description \}/i.test(body)
     );
   }
 
@@ -37360,6 +37364,11 @@
       canonicalId !== "step_design_evidence_elicitation"
     ) {
       return body;
+    }
+    if (body.indexOf(ASSESSMENT_EVIDENCE_QUALIFICATION_ELICITATION_LEGACY) !== -1) {
+      body = body
+        .split(ASSESSMENT_EVIDENCE_QUALIFICATION_ELICITATION_LEGACY)
+        .join(ASSESSMENT_EVIDENCE_QUALIFICATION_ELICITATION);
     }
     if (assessmentPackEvidenceQualificationContractPresent(body)) return body;
     return (body + "\n" + ASSESSMENT_EVIDENCE_QUALIFICATION_ELICITATION).trim();
@@ -59739,64 +59748,172 @@
           }
         }
 
-        var assembled = ljPackageMod.assembleLearningJourneyUnifiedShellPackage({
-          page: page,
-          constituents: constituents,
-          artefactContract: artefactContract || { produces: [], references: [] },
-          fflate: fflateLib,
-          runtimeScript: runtimeResolved.runtimeScript,
-          learnerCss: getUtilityVnextProseMeasureCss()
-        });
-        if (!assembled || !assembled.ok || !assembled.bytes) {
-          showToast(
-            (assembled && assembled.error && assembled.error.message) ||
-              "Could not assemble the Learning Journey package.",
-            "error"
-          );
-          return {
-            ok: false,
-            code: (assembled && assembled.error && assembled.error.code) || "assemble_failed",
-            assembled: assembled,
-            artefactProposal: proposal,
-            runtimeSource: runtimeResolved.source || null
-          };
-        }
-
-        var shouldDownload = opts.download === true || opts.skipDownload !== true;
-        if (shouldDownload) {
-          if (Array.isArray(state.utilitiesDownloadTestLog)) {
-            state.utilitiesDownloadTestLog.push("lj-unified-shell-zip");
+        var mathAssetsApi =
+          (typeof globalThis !== "undefined" && globalThis.PRISM_MATH_ENTRY_PACKAGE_ASSETS) ||
+          (typeof window !== "undefined" && window.PRISM_MATH_ENTRY_PACKAGE_ASSETS) ||
+          null;
+        var mathJaxAssetsApi =
+          (typeof globalThis !== "undefined" && globalThis.PRISM_MATHJAX_PACKAGE_ASSETS) ||
+          (typeof window !== "undefined" && window.PRISM_MATHJAX_PACKAGE_ASSETS) ||
+          null;
+        var mathScanHtml = [];
+        (constituents || []).forEach(function (row) {
+          if (!row) return;
+          if (row.learnerPackage && typeof row.learnerPackage.html === "string") {
+            mathScanHtml.push(row.learnerPackage.html);
           }
-          triggerBinaryDownload(
-            assembled.bytes,
-            assembled.zipName || "learning-journey-unified-shell.zip",
-            "application/zip"
-          );
-          showToast("Learning Journey package downloaded.", "success");
+          if (typeof row.fragmentHtml === "string") mathScanHtml.push(row.fragmentHtml);
+        });
+        var needsMathLive = false;
+        var needsMathJax = false;
+        mathScanHtml.forEach(function (htmlPart) {
+          var html = String(htmlPart || "");
+          if (!html) return;
+          if (
+            !needsMathLive &&
+            (html.indexOf('data-input-modality="math"') >= 0 || html.indexOf("lib/mathlive/") >= 0)
+          ) {
+            needsMathLive = true;
+          }
+          if (
+            !needsMathJax &&
+            mathJaxAssetsApi &&
+            typeof mathJaxAssetsApi.pageHtmlNeedsMathJaxDisplay === "function" &&
+            mathJaxAssetsApi.pageHtmlNeedsMathJaxDisplay(html)
+          ) {
+            needsMathJax = true;
+          }
+        });
+
+        var assetBaseUrl = getUtilitiesLearnerPackageAssetBaseUrl();
+        var mathLivePromise = Promise.resolve(null);
+        var mathJaxPromise = Promise.resolve(null);
+        if (needsMathLive) {
+          if (mathAssetsApi && typeof mathAssetsApi.fetchMathLivePackageAssets === "function") {
+            mathLivePromise = mathAssetsApi.fetchMathLivePackageAssets(assetBaseUrl);
+          } else {
+            showToast(
+              "MathLive packaging is unavailable for maths-entry Learning Journey resources.",
+              "error"
+            );
+            return {
+              ok: false,
+              code: "mathlive_unavailable",
+              artefactProposal: proposal,
+              runtimeSource: runtimeResolved.source || null
+            };
+          }
+        }
+        if (needsMathJax) {
+          if (
+            mathJaxAssetsApi &&
+            typeof mathJaxAssetsApi.fetchMathJaxPackageAssets === "function"
+          ) {
+            mathJaxPromise = mathJaxAssetsApi.fetchMathJaxPackageAssets(assetBaseUrl);
+          } else {
+            showToast(
+              "MathJax packaging is unavailable for display-maths Learning Journey resources.",
+              "error"
+            );
+            return {
+              ok: false,
+              code: "mathjax_unavailable",
+              artefactProposal: proposal,
+              runtimeSource: runtimeResolved.source || null
+            };
+          }
         }
 
-        return {
-          ok: true,
-          code: "ok",
-          packageMode: "unified_shell",
-          assembled: assembled,
-          constituents: constituents.map(function (row) {
+        return Promise.all([
+          mathLivePromise,
+          mathJaxPromise,
+          resolveLearningJourneyHomePublicationMedia()
+        ])
+          .then(function (assetRows) {
+            var homeMedia = assetRows[2] || null;
+            var assembled = ljPackageMod.assembleLearningJourneyUnifiedShellPackage({
+              page: page,
+              constituents: constituents,
+              artefactContract: artefactContract || { produces: [], references: [] },
+              fflate: fflateLib,
+              runtimeScript: runtimeResolved.runtimeScript,
+              learnerCss: getUtilityVnextProseMeasureCss(),
+              mathLivePackageAssets: assetRows[0],
+              mathJaxPackageAssets: assetRows[1],
+              visualAssets:
+                homeMedia && homeMedia.visualAssets && typeof homeMedia.visualAssets === "object"
+                  ? homeMedia.visualAssets
+                  : { assets: [] }
+            });
+            if (!assembled || !assembled.ok || !assembled.bytes) {
+              showToast(
+                (assembled && assembled.error && assembled.error.message) ||
+                  "Could not assemble the Learning Journey package.",
+                "error"
+              );
+              return {
+                ok: false,
+                code: (assembled && assembled.error && assembled.error.code) || "assemble_failed",
+                assembled: assembled,
+                artefactProposal: proposal,
+                runtimeSource: runtimeResolved.source || null
+              };
+            }
+
+            var shouldDownload = opts.download === true || opts.skipDownload !== true;
+            if (shouldDownload) {
+              if (Array.isArray(state.utilitiesDownloadTestLog)) {
+                state.utilitiesDownloadTestLog.push("lj-unified-shell-zip");
+              }
+              triggerBinaryDownload(
+                assembled.bytes,
+                assembled.zipName || "learning-journey-unified-shell.zip",
+                "application/zip"
+              );
+              showToast("Learning Journey package downloaded.", "success");
+            }
+
             return {
-              commissionId: row.commissionId,
-              title: row.title,
-              productId: row.productId,
-              hasSourcePage: !!row.sourcePage,
-              hasLearnerPackage: !!row.learnerPackage
+              ok: true,
+              code: "ok",
+              packageMode: "unified_shell",
+              assembled: assembled,
+              constituents: constituents.map(function (row) {
+                return {
+                  commissionId: row.commissionId,
+                  title: row.title,
+                  productId: row.productId,
+                  hasSourcePage: !!row.sourcePage,
+                  hasLearnerPackage: !!row.learnerPackage
+                };
+              }),
+              artefactContract: artefactContract || null,
+              artefactProposal: proposal,
+              preparationDiagnostics: preflight.preparationDiagnostics || null,
+              runtimeSource: runtimeResolved.source || null,
+              runtimeScriptBytes: runtimeResolved.runtimeScript
+                ? runtimeResolved.runtimeScript.length
+                : 0,
+              mathRequirements: assembled.mathRequirements || {
+                needsMathJax: needsMathJax,
+                needsMathLive: needsMathLive
+              }
             };
-          }),
-          artefactContract: artefactContract || null,
-          artefactProposal: proposal,
-          preparationDiagnostics: preflight.preparationDiagnostics || null,
-          runtimeSource: runtimeResolved.source || null,
-          runtimeScriptBytes: runtimeResolved.runtimeScript
-            ? runtimeResolved.runtimeScript.length
-            : 0
-        };
+          })
+          .catch(function (err) {
+            showToast(
+              "Could not load maths runtime assets for Learning Journey package: " +
+                String((err && err.message) || err || "fetch failed"),
+              "error"
+            );
+            return {
+              ok: false,
+              code: "math_assets_unavailable",
+              error: err,
+              artefactProposal: proposal,
+              runtimeSource: runtimeResolved.source || null
+            };
+          });
       });
     });
     }).catch(function (err) {

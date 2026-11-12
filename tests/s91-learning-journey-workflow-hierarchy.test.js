@@ -183,10 +183,6 @@ function bootHierarchyHarness() {
   };
   const elementStore = new Map();
   const workflowList = createElementStub("div");
-  const workflowSourceJourneyNav = createElementStub("div");
-  workflowSourceJourneyNav.classList.add("hidden");
-  const workflowBackToSourceJourneyBtn = createElementStub("button");
-  workflowBackToSourceJourneyBtn.textContent = "← Back to Journey";
   const workflowDetail = createElementStub("section");
   workflowDetail.classList.add("run-mode");
   const workflowModeRunBtn = createElementStub("button");
@@ -196,8 +192,6 @@ function bootHierarchyHarness() {
 
   [
     ["workflowList", workflowList],
-    ["workflowSourceJourneyNav", workflowSourceJourneyNav],
-    ["workflowBackToSourceJourneyBtn", workflowBackToSourceJourneyBtn],
     ["workflowDetail", workflowDetail],
     ["workflowModeRunBtn", workflowModeRunBtn],
     ["workflowModeEditBtn", workflowModeEditBtn],
@@ -256,10 +250,16 @@ function bootHierarchyHarness() {
       formatDate: () => "today"
     },
     localStorage: {
-      getItem() {
-        return null;
+      _data: Object.create(null),
+      getItem(key) {
+        return Object.prototype.hasOwnProperty.call(this._data, key) ? this._data[key] : null;
       },
-      setItem() {}
+      setItem(key, value) {
+        this._data[key] = String(value);
+      },
+      removeItem(key) {
+        delete this._data[key];
+      }
     },
     URL: {
       createObjectURL() {
@@ -293,7 +293,8 @@ function bootHierarchyHarness() {
     repoRoot,
     PEDAGOGICAL_ICON_LIBS.concat([
       "lib/first-class-workflow-family.js",
-      "lib/learning-journey-workflow-hierarchy.js"
+      "lib/learning-journey-workflow-hierarchy.js",
+      "lib/workflow-list-presentation.js"
     ]),
     { skipLearnerRendererVNextInject: true }
   );
@@ -307,8 +308,6 @@ function bootHierarchyHarness() {
   return {
     api,
     workflowList,
-    workflowSourceJourneyNav,
-    workflowBackToSourceJourneyBtn,
     document: documentStub,
     window: windowStub
   };
@@ -398,13 +397,8 @@ test("no parent.children[] relationship is required", () => {
   assert.equal(parent.children, undefined);
 });
 
-test("My Workflows DOM nests children; disclosure toggles; Back to Journey selects parent", () => {
-  const {
-    api,
-    workflowList,
-    workflowSourceJourneyNav,
-    workflowBackToSourceJourneyBtn
-  } = bootHierarchyHarness();
+test("My Workflows DOM nests children; disclosure toggles; parent remains selectable in the tree", () => {
+  const { api, workflowList } = bootHierarchyHarness();
 
   const workflows = [
     lj("wf-lj", "LJTest"),
@@ -448,17 +442,57 @@ test("My Workflows DOM nests children; disclosure toggles; Back to Journey selec
 
   api.selectWorkflowForTest("wf-c2");
   assert.equal(api.getSelectedWorkflowIdForTest(), "wf-c2");
-  assert.equal(workflowSourceJourneyNav.classList.contains("hidden"), false);
-  assert.match(workflowBackToSourceJourneyBtn.textContent, /Back to LJTest/);
 
-  api.setLearningJourneyListExpandedForParentForTest("wf-lj", false);
-  api.renderWorkflowListForTest({ skipDefaultSelection: true });
-  const opened = api.handleBackToSourceLearningJourneyForTest();
-  assert.equal(opened.ok, true);
-  assert.equal(opened.workflowId, "wf-lj");
-  assert.equal(opened.destination, "workflows_run");
+  api.selectWorkflowForTest("wf-lj");
   assert.equal(api.getSelectedWorkflowIdForTest(), "wf-lj");
   assert.equal(api.getLearningJourneyListExpandedByIdForTest()["wf-lj"], true);
+
+  function findByClass(root, className) {
+    const matches = [];
+    function walk(node) {
+      if (node && node.classList && node.classList.contains(className)) {
+        matches.push(node);
+      }
+      (node.children || []).forEach(walk);
+    }
+    walk(root);
+    return matches;
+  }
+
+  api.setWorkflowRunStateStoreForTest({
+    "wf-c1": {},
+    "wf-c2": {
+      capturedOutputs: { c1: '{"artifact_type":"page"}' }
+    }
+  });
+  api.renderWorkflowListForTest({ skipDefaultSelection: true });
+  const parentItem = workflowList.querySelector('[data-workflow-id="wf-lj"]');
+  const childIncomplete = workflowList.querySelector('[data-workflow-id="wf-c1"]');
+  const childComplete = workflowList.querySelector('[data-workflow-id="wf-c2"]');
+  assert.deepEqual(
+    findByClass(parentItem, "workflow-item-product").map((n) => n.textContent),
+    ["Learning Journey"]
+  );
+  assert.deepEqual(
+    findByClass(childIncomplete, "workflow-item-product").map((n) => n.textContent),
+    ["Interactive"]
+  );
+  assert.deepEqual(
+    findByClass(childComplete, "workflow-item-product").map((n) => n.textContent),
+    ["Expository"]
+  );
+  assert.match(
+    String(findByClass(childIncomplete, "workflow-item-status")[0].className),
+    /workflow-item-status--no_data/
+  );
+  assert.match(
+    String(findByClass(childComplete, "workflow-item-status")[0].className),
+    /workflow-item-status--complete/
+  );
+  assert.equal(
+    findByClass(childComplete, "workflow-item-status-text")[0].textContent,
+    "Complete"
+  );
 });
 
 test("Preview Open expands parent and selects ordinary child", () => {

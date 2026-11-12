@@ -92,7 +92,7 @@ test("Slice 7: buildVisualJobPresentation exposes handoff fields", () => {
 test("Slice 7: default card shows simplified handoff layout only", () => {
   const html = workspace.renderVisualJobsWorkspaceHtml(ws);
   assert.match(html, /util-vj-two-pane/);
-  assert.match(html, /Copy Prompt/);
+  assert.match(html, /Generation Prompt/);
   assert.match(html, /Developer and debug details/);
   assert.match(html, /Selected image job/);
   assert.match(html, /util-vj-debug-details/);
@@ -108,13 +108,17 @@ test("Slice 7: canonical prompt and Copy Canonical Prompt live in debug details 
   assert.match(html, new RegExp(brief.generation_instruction.slice(0, 24)));
 });
 
-test("Slice 7: workspace summary is compact and pipeline details are optional", () => {
+test("Slice 7: Graphics jobs UI omits redundant prompt-count summary; pipeline details stay available", () => {
   const html = workspace.renderVisualJobsWorkspaceHtml(ws);
-  assert.match(html, /4<\/strong> image prompts/);
-  assert.match(html, /util-vj-summary-meta/);
-  assert.match(html, /<summary>Pipeline details<\/summary>/);
-  const summaryChunk = html.split("util-vj-summary")[1].split("util-vj-two-pane")[0];
-  assert.doesNotMatch(summaryChunk, /compiler_version/i);
+  assert.doesNotMatch(html, /class="util-vj-summary"/);
+  assert.doesNotMatch(html, /<\/strong> image prompt/);
+  assert.doesNotMatch(html, /<summary>Pipeline details<\/summary>/);
+  assert.match(html, /Images to create/);
+  assert.match(html, /util-vj-two-pane/);
+  const pipelineHtml = workspace.renderPipelineDetailsHtml(ws);
+  assert.match(pipelineHtml, /<summary>Pipeline details<\/summary>/);
+  assert.match(pipelineHtml, /compiler valid/i);
+  assert.doesNotMatch(pipelineHtml, /<details[^>]*\sopen[\s>]/i);
 });
 
 // --- Copy behaviour ---

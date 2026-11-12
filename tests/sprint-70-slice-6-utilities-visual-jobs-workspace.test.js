@@ -580,5 +580,5 @@ test("Slice 6: accessibility hooks on view controls and copy buttons", () => {
   assert.match(html, /aria-selected="true"/);
   assert.match(html, /data-image-dropzone-brief-id=/);
   assert.match(html, /Copy Canonical Prompt/);
-  assert.match(html, /Copy Prompt/);
+  assert.match(html, /Generation Prompt/);
 });

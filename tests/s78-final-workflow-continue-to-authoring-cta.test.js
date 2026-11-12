@@ -111,6 +111,7 @@ test("R3: final step shows Continue to Authoring below result/status area", () =
   const { source } = loadPrismTestApi();
   const markup = html();
   const createBody = createStepFnBody(source);
+  const view = updateRunViewBody(source);
   const buttons = buttonsCluster(markup);
   assert.doesNotMatch(buttons, /id="workflowContinueToAuthoringBtn"/);
   assert.match(markup, /id="workflowRunContinueHost"/);
@@ -122,6 +123,11 @@ test("R3: final step shows Continue to Authoring below result/status area", () =
   assert.ok(statusIdx > 0 && notesIdx > statusIdx, "status lives in paste wrap");
   assert.ok(continueIdx > notesIdx, "Continue host is after paste/status wrap");
   assert.match(source, /continueTarget\.appendChild\(els\.workflowRunContinueHost\)/);
+  assert.match(
+    view,
+    /continueToAuthoringVisible\s*=\s*isFinalStep\s*&&\s*workflowSupportsAuthoringDestination\(/
+  );
+  assert.match(view, /setWorkflowContinueToAuthoringVisible\(continueToAuthoringVisible\)/);
   assert.match(css(), /\.workflow-detail\.run-mode\s+\.workflow-step-run-continue\s*\{[\s\S]*display:\s*block/);
   assert.doesNotMatch(css(), /\.workflow-step-run-continue[\s\S]{0,200}position:\s*absolute/);
 });
@@ -218,6 +224,70 @@ test("R10: DLA/GAM intermediate workflow completion is unaffected", () => {
   assert.match(view, /if \(isFinalStep\) \{/);
   assert.doesNotMatch(view, /isWorkflowRunAuthoringReady\(state\.selectedWorkflowId/);
   assert.match(source, /function isWorkflowRunAuthoringReady\s*\(/);
+});
+
+test("R11: Continue to Authoring visibility follows Design Page destination support", () => {
+  const { api, source } = loadPrismTestApi();
+  const view = updateRunViewBody(source);
+
+  api.setWorkflowsForTest([
+    {
+      id: "wf-with-authoring",
+      name: "Standard Resource",
+      steps: [
+        { id: "s1", title: "Brief", canonical_step_id: "step_brief" },
+        designPageStep("s-final")
+      ]
+    },
+    {
+      id: "wf-custom-no-authoring",
+      name: "Custom Planning Workflow",
+      steps: [
+        { id: "c1", title: "Gather Context", canonical_step_id: "step_custom_context" },
+        { id: "c2", title: "Synthesise Plan", canonical_step_id: "step_custom_plan", outputName: "plan" }
+      ]
+    },
+    {
+      id: "wf-learning-journey",
+      name: "Learning Journey",
+      steps: [
+        { id: "lj1", title: "Orientation", canonical_step_id: "step_lj_orientation" },
+        {
+          id: "lj-dp",
+          title: "Learning Journey Design Page",
+          outputName: "page",
+          canonical_step_id: "step_design_page"
+        }
+      ]
+    },
+    {
+      id: "wf-empty-steps",
+      name: "Empty",
+      steps: []
+    }
+  ]);
+
+  assert.equal(api.workflowSupportsAuthoringDestinationForTest("wf-with-authoring"), true);
+  assert.ok(api.findDesignPageStepForWorkflowForTest("wf-with-authoring"));
+  assert.equal(api.workflowSupportsAuthoringDestinationForTest("wf-custom-no-authoring"), false);
+  assert.equal(api.findDesignPageStepForWorkflowForTest("wf-custom-no-authoring"), null);
+  assert.equal(api.workflowSupportsAuthoringDestinationForTest("wf-learning-journey"), true);
+  assert.equal(api.workflowSupportsAuthoringDestinationForTest("wf-empty-steps"), false);
+  assert.equal(api.workflowSupportsAuthoringDestinationForTest(""), false);
+  assert.equal(api.workflowSupportsAuthoringDestinationForTest("missing-wf"), false);
+
+  assert.match(source, /function workflowSupportsAuthoringDestination\s*\(/);
+  assert.match(source, /findDesignPageStepForWorkflow\(/);
+  assert.match(
+    view,
+    /continueToAuthoringVisible\s*=\s*isFinalStep\s*&&\s*workflowSupportsAuthoringDestination\(/
+  );
+  assert.match(view, /setWorkflowContinueToAuthoringVisible\(continueToAuthoringVisible\)/);
+  assert.doesNotMatch(view, /setWorkflowContinueToAuthoringVisible\(isFinalStep\)/);
+  assert.doesNotMatch(
+    source,
+    /workflowSupportsAuthoringDestination[\s\S]{0,400}(?:Interactive|Expository|Assessment|Situated Task|Learning Journey)/
+  );
 });
 
 test("Continue button remains a named, non-absolutely-positioned control", () => {

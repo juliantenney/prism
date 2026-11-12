@@ -161,11 +161,14 @@ test("A: Learning object is no longer an Authoring output/presentation option", 
   assert.doesNotMatch(indexHtml, /id="utilitiesPresentationMode"/);
 });
 
-test("B: Redundant presentation-mode control is gone (was sole remaining mode after LO removal)", () => {
+test("B: Redundant presentation-mode and output-format controls are gone", () => {
   assert.doesNotMatch(indexHtml, /Presentation mode/i);
   assert.doesNotMatch(indexHtml, /Single page HTML/);
-  assert.match(indexHtml, /id="utilitiesOutputFormat"/);
-  assert.match(indexHtml, /<option value="html" selected>HTML<\/option>/);
+  assert.doesNotMatch(indexHtml, /id="utilitiesOutputFormat"/);
+  assert.doesNotMatch(indexHtml, /for="utilitiesOutputFormat"|label for="utilitiesOutputFormat"/i);
+  assert.doesNotMatch(indexHtml, />Output format</);
+  assert.doesNotMatch(indexHtml, /id="utilitiesFileName"/);
+  assert.doesNotMatch(indexHtml, /utilities-export-filename-row/);
 });
 
 test("C: Learning-object-only state/handler/branch code is removed", () => {
@@ -207,7 +210,8 @@ test("F: normal HTML rendering/export remains available", () => {
 
 test("G: learner-package behaviour remains unchanged", () => {
   assert.match(indexHtml, /id="utilitiesDownloadPackageBtn"/);
-  assert.match(indexHtml, /learner package/i);
+  assert.match(indexHtml, />\s*ZIP\s*</);
+  assert.match(indexHtml, /aria-label="Download ZIP"/);
   assert.match(appSource, /function handleUtilitiesDownloadLearnerPackage/);
   assert.match(appSource, /buildLearnerPackage/);
 });

@@ -103,6 +103,22 @@ test("Phase A: T-033 markers in §4", () => {
   assert.match(s, /redesign production before commissioning materials/);
 });
 
+test("production protects discovery-sequence expected_output and revision observability", () => {
+  const s = dla.assembleDlaCanonicalContract().sections.production;
+  assert.match(s, /Discovery-sequence protection/);
+  assert.match(
+    s,
+    /without disclosing those derived conclusions, numeric results, corrected values, completed intervals/
+  );
+  assert.match(s, /not a blanket ban on stating answers/);
+  assert.match(s, /Evidence-driven revision observability/);
+  assert.match(
+    s,
+    /initial interpretation[\s\S]*challenges or supports it[\s\S]*revised or retained interpretation/
+  );
+  assert.match(s, /Omit this structure where revision is not an intended outcome/);
+});
+
 test("Phase A: P01-R1 markers in §5", () => {
   const s = dla.assembleDlaCanonicalContract().sections.task_inputs;
   assert.match(s, /particular content upon which the learner performs the required operation/);

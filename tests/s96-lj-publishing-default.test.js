@@ -66,12 +66,13 @@ function createElementStub(id) {
   };
   if (id === "utilitiesDownloadPackageBtn") {
     stub.textContent = "ZIP";
-    stub.title = "Download Resource";
-    stub.setAttribute("aria-label", "Download Resource");
+    stub.title = "Download ZIP";
+    stub.setAttribute("aria-label", "Download ZIP");
   }
   if (id === "utilitiesDownloadHtmlBtn") {
     stub.textContent = "HTML";
-    stub.setAttribute("aria-label", "HTML only (.html)");
+    stub.title = "Download HTML";
+    stub.setAttribute("aria-label", "Download HTML");
   }
   return stub;
 }
@@ -137,7 +138,7 @@ test("index.html has one Learning Journey package control and no separate Unifie
   assert.match(indexHtml, /id="utilitiesDownloadPackageBtn"/);
   assert.doesNotMatch(indexHtml, /utilitiesDownloadUnifiedJourneyBtn/);
   assert.doesNotMatch(indexHtml, /Download Unified Learning Journey/);
-  assert.match(indexHtml, /aria-label="Download Resource"/);
+  assert.match(indexHtml, /aria-label="Download ZIP"/);
 });
 
 test("author ZIP path routes Learning Journey preview to unified packaging with no multi-doc fallback", () => {
@@ -154,14 +155,16 @@ test("author ZIP path routes Learning Journey preview to unified packaging with 
   assert.match(appJs, /handleLearningJourneyLearnerPackageDownloadForTest/);
 });
 
-test("LJ preview labels the package button Download Learning Journey; resource preview uses Download Resource", () => {
+test("LJ and resource previews both label the package button ZIP", () => {
   const { api } = loadPrismUi();
   api.setUtilitiesDownloadControlsDisabledForTest(false);
   const resource = api.getUtilitiesDownloadControlsStateForTest();
   assert.equal(resource.unifiedControlPresent, false);
   assert.equal(resource.unifiedHidden, true);
-  assert.match(resource.packageAriaLabel, /Download Resource/i);
+  assert.match(resource.packageAriaLabel, /^Download ZIP$/i);
+  assert.match(resource.packageTitle, /^Download ZIP$/i);
   assert.equal(resource.packageLabel, "ZIP");
+  assert.equal(resource.htmlLabel, "HTML");
 
   const journey = ljDesign.buildLearningJourneyDesignPageFixture({
     title: "S96 publishing journey",
@@ -188,14 +191,14 @@ test("LJ preview labels the package button Download Learning Journey; resource p
   );
   api.setUtilitiesDownloadControlsDisabledForTest(false);
   const shown = api.getUtilitiesDownloadControlsStateForTest();
-  assert.match(shown.packageAriaLabel, /^Download Learning Journey$/i);
-  assert.match(shown.packageTitle, /^Download Learning Journey$/i);
-  assert.equal(shown.packageLabel, "Journey");
+  assert.match(shown.packageAriaLabel, /^Download ZIP$/i);
+  assert.match(shown.packageTitle, /^Download ZIP$/i);
+  assert.equal(shown.packageLabel, "ZIP");
   assert.equal(shown.unifiedHidden, true);
 
   api.activateLearningJourneyCommissioningPreviewForTest(null);
   const restored = api.getUtilitiesDownloadControlsStateForTest();
-  assert.match(restored.packageAriaLabel, /Download Resource/i);
+  assert.match(restored.packageAriaLabel, /^Download ZIP$/i);
   assert.equal(restored.packageLabel, "ZIP");
 });
 

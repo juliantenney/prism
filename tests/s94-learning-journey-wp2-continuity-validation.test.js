@@ -201,7 +201,18 @@ test("learner-owned retrieval and explicit automatic-access prohibitions pass", 
     "Learners consult their retained work from the previous activity.",
     "PRISM does not automatically transfer learner responses.",
     "Do not assume that earlier responses are automatically available.",
-    "Learners retrieve their own earlier responses retrieved from the previous Interactive."
+    "Learners retrieve their own earlier responses retrieved from the previous Interactive.",
+    // Models often restate the no-access limitation using denylist tokens; those
+    // prohibitions must not be treated as capability claims.
+    "PRISM does not automatically transfer stored answers from the previous component.",
+    "This component does not access stored answers from earlier components.",
+    "Do not assume access to stored answers from the previous Interactive.",
+    "Later components must not assume access to previous published outputs.",
+    "Do not inspect previous published outputs or know individual learner responses.",
+    "PRISM has not inspected previous published outputs.",
+    "Stored answers from the previous component are not automatically available.",
+    // Exact live failure wording from commission c5 (2026-11-11).
+    "Do not claim that the product automatically retrieves earlier responses."
   ].forEach(function (text) {
     const page = twoCommissionPage({ laterSpec: text, laterContext: MEANINGFUL_PRECEDING });
     assert.deepEqual(
@@ -212,11 +223,132 @@ test("learner-owned retrieval and explicit automatic-access prohibitions pass", 
   });
 });
 
+test("live c5 prohibition wording passes continuity and UI Design Page capture path", () => {
+  // Exact failing sentence from live Design Page commission c5 (2026-11-11).
+  const LIVE_C5_SPEC =
+    "Commission a self-contained formative Assessment Pack serving Learning Elements 6 and 7. " +
+    "The learner must retrieve their initial explanation and produce a revised explanation. " +
+    "Tell learners to bring their initial explanation from c1 and draw on comparative insights from c4. " +
+    "Do not claim that the product automatically retrieves earlier responses. " +
+    "All substantive research evidence must be available within the experience.";
+  const LIVE_C5_CONTEXT =
+    "In c1, learners were asked to write and retain an independent initial explanation. " +
+    "In c4, they were asked to compare contrasting explanations and make reasoned quality judgements. " +
+    "Learners must retrieve and bring forward their own initial explanation from c1 and relevant evaluative insights from c4.";
+
+  const page = {
+    artifact_type: "page",
+    schema_version: "2.0.0",
+    product_id: "learning_journey",
+    title: "Explaining Research: From First Draft to Better Judgement",
+    shared_authoritative_material: { status: "none", content: "" },
+    activities: [],
+    sections: [
+      {
+        section_id: "journey_intro",
+        title: "Your learning journey",
+        order: 1,
+        exposition: "Research findings can sound straightforward until you try to explain them."
+      },
+      {
+        section_id: "exp_1",
+        title: "1. Your first explanation",
+        order: 2,
+        exposition: "Begin by writing an initial explanation."
+      },
+      {
+        section_id: "exp_5",
+        title: "5. Reconsider, revise and improve",
+        order: 6,
+        exposition: "Return to the explanation you wrote at the beginning."
+      }
+    ],
+    commissions: [
+      {
+        commission_id: "c1",
+        section_id: "exp_1",
+        order: 1,
+        title: "Your first explanation",
+        product_id: "assessment_pack",
+        status: "supported",
+        specification_text:
+          "Elicit an authentic initial explanation before learners receive worked examples.",
+        journey_context_text: "",
+        dependencies: ""
+      },
+      {
+        commission_id: "c5",
+        section_id: "exp_5",
+        order: 5,
+        title: "Reconsider, revise and improve",
+        product_id: "assessment_pack",
+        status: "supported",
+        specification_text: LIVE_C5_SPEC,
+        journey_context_text: LIVE_C5_CONTEXT,
+        dependencies: "c1: Supplies the learner's initial explanation for reconsideration."
+      }
+    ],
+    learning_journey: {
+      design_intent: "Develop accurate research communication through revision.",
+      continuity: "Later commissions require learner-owned bring-forward of earlier work."
+    },
+    assembly_state: {
+      current_stage: "design_page",
+      enriched_by: ["design_page"],
+      calls_model: true
+    }
+  };
+
+  assert.match(
+    page.commissions[1].specification_text,
+    /Do not claim that the product automatically retrieves earlier responses/
+  );
+  assert.deepEqual(design.collectLearningJourneyContinuityErrors(page), []);
+  assert.equal(design.validateLearningJourneyDesignPageForCapture(page).ok, true);
+
+  const shared = require("../lib/learning-journey-shared-source.js");
+  const loaded = loadPrismAppJsTestApi({
+    extraLibs: [
+      "lib/learning-journey-shared-source.js",
+      "lib/learning-journey-design-page.js"
+    ]
+  });
+  const api = loaded.api;
+  const host = loaded.window || loaded.sandbox;
+  if (host) host.PRISM_LEARNING_JOURNEY_SHARED_SOURCE = shared;
+  if (loaded.sandbox && loaded.sandbox.globalThis) {
+    loaded.sandbox.globalThis.PRISM_LEARNING_JOURNEY_SHARED_SOURCE = shared;
+  }
+  const wf = {
+    id: "wf-feedback-changed-the-work",
+    name: "The Feedback That Changed the Work",
+    product: "learning_journey",
+    steps: [
+      {
+        id: "s5",
+        title: "Design Page",
+        canonical_step_id: "step_design_page",
+        outputName: "page"
+      }
+    ]
+  };
+  const raw = JSON.stringify(page);
+  const stored = api.parseLearningJourneyDesignPageCaptureForStorage(raw, wf);
+  const runPath = api.parseWorkflowRunPageStructureCaptureForStorage(raw, wf.steps[0], wf);
+  assert.equal(stored.ok, true, stored.message || (stored.errors || []).join("; "));
+  assert.equal(runPath.ok, true, runPath.message || (runPath.errors || []).join("; "));
+  assert.doesNotMatch(String(stored.message || ""), /automatic_response_access/);
+  assert.doesNotMatch(String(runPath.message || ""), /automatic_response_access/);
+});
+
 test("positive automatic-access and inspection claims still fail", () => {
   [
     "PRISM automatically transfers stored answers from the previous component.",
     "Previous learner responses are automatically available.",
-    "PRISM has already inspected the previous published resource."
+    "PRISM has already inspected the previous published resource.",
+    "The next activity uses stored answers from C1.",
+    "Learners have access to stored answers from the previous Interactive.",
+    "PRISM inspected previous published outputs from earlier components."
   ].forEach(function (text) {
     const page = twoCommissionPage({ laterSpec: text, laterContext: MEANINGFUL_PRECEDING });
     const errors = design.collectLearningJourneyContinuityErrors(page);
@@ -225,6 +357,29 @@ test("positive automatic-access and inspection claims still fail", () => {
       "expected fail for: " + text + " got " + JSON.stringify(errors)
     );
   });
+});
+
+test("automatic_response_access path uses commission_id, not array index", () => {
+  const page = twoCommissionPage({
+    laterSpec: "Previous learner responses are automatically available.",
+    laterContext: MEANINGFUL_PRECEDING
+  });
+  page.commissions[1].commission_id = "c5";
+  page.commissions[1].order = 5;
+  const errors = design.collectLearningJourneyContinuityErrors(page);
+  assert.ok(errors.indexOf("commissions[c5].automatic_response_access") !== -1);
+  assert.equal(errors.indexOf("commissions[5].automatic_response_access"), -1);
+  assert.equal(errors.indexOf("commissions[c2].automatic_response_access"), -1);
+});
+
+test("Design Page prompt forbids automatic-access claims without requiring a JSON field", () => {
+  const prompt = design.buildLearningJourneyDesignPagePrompt();
+  assert.match(prompt, /must not assume access to earlier outputs or individual responses/);
+  assert.match(prompt, /stored answers/);
+  assert.match(prompt, /previous published outputs/);
+  assert.match(prompt, /learner-owned bring-forward/);
+  assert.doesNotMatch(prompt, /\"automatic_response_access\"/);
+  assert.doesNotMatch(prompt, /automatic_response_access:/);
 });
 
 test("first commission generic continuation fails; first no-scenario-only is allowed", () => {
@@ -260,9 +415,19 @@ test("10. existing structural validation continues to accept legacy fixtures", (
 });
 
 test("Run Next storage capture and capture helper reject later empty context consistently", () => {
-  const { api } = loadPrismAppJsTestApi({
-    extraLibs: ["lib/learning-journey-design-page.js"]
+  const shared = require("../lib/learning-journey-shared-source.js");
+  const loaded = loadPrismAppJsTestApi({
+    extraLibs: [
+      "lib/learning-journey-shared-source.js",
+      "lib/learning-journey-design-page.js"
+    ]
   });
+  const api = loaded.api;
+  const host = loaded.window || loaded.sandbox;
+  if (host) host.PRISM_LEARNING_JOURNEY_SHARED_SOURCE = shared;
+  if (loaded.sandbox && loaded.sandbox.globalThis) {
+    loaded.sandbox.globalThis.PRISM_LEARNING_JOURNEY_SHARED_SOURCE = shared;
+  }
   const { wf, designStep } = ljWorkflowAndStep();
   const invalid = twoCommissionPage({ laterContext: "" });
   const raw = JSON.stringify(invalid);

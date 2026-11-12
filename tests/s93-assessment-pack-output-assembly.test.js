@@ -24,12 +24,16 @@ function createElement(tagName) {
     hidden: false,
     disabled: false,
     _html: "",
+    style: {},
     classList: {
       _classes: Object.create(null),
       contains(name) {
         return Boolean(this._classes[name]);
       }
     },
+    focus() {},
+    select() {},
+    setSelectionRange() {},
     get textContent() {
       return node._text + node.children.map((child) => child.textContent || "").join("");
     },
@@ -265,22 +269,48 @@ function parseHtmlFragment(html, documentRef) {
 }
 
 function mount(html, clipboard, options) {
+  const opts = options && typeof options === "object" ? options : {};
   const documentNode = createElement("document");
+  const clipboardApi =
+    opts.clipboard === null
+      ? null
+      : {
+          writeText(text) {
+            if (opts.clipboardReject) {
+              return Promise.reject(new Error("clipboard_denied"));
+            }
+            if (clipboard) clipboard.push(String(text));
+            return Promise.resolve();
+          }
+        };
   documentNode.defaultView = {
-    navigator: {
-      clipboard: {
-        writeText(text) {
-          if (clipboard) clipboard.push(String(text));
-          return Promise.resolve();
-        }
-      }
-    }
+    navigator: clipboardApi ? { clipboard: clipboardApi } : {}
+  };
+  documentNode.createElement = function (tagName) {
+    const node = createElement(tagName);
+    node.ownerDocument = documentNode;
+    return node;
+  };
+  documentNode.execCommand = function (command) {
+    if (typeof opts.execCommand === "function") return opts.execCommand(command, documentNode);
+    // Default: pretend legacy copy works only when a selected textarea exists.
+    if (String(command || "") !== "copy") return false;
+    const areas = [];
+    walk(documentNode, (node) => {
+      if (node && String(node.tagName || "").toLowerCase() === "textarea") areas.push(node);
+    });
+    const selected = areas.find((area) => String(area.value || "").length >= 0 && area.parentNode);
+    if (!selected) return false;
+    if (clipboard) clipboard.push(String(selected.value || ""));
+    return true;
   };
   const parsed = parseHtmlFragment(html, documentNode);
+  documentNode.body = parsed;
+  documentNode.documentElement = parsed;
   documentNode.appendChild(parsed);
   const confirmFn =
-    options && typeof options.confirm === "function"
-      ? options.confirm
+    typeof opts.confirm === "function"
+      ? opts.confirm
       : function () {
           return true;
         };
@@ -782,4 +812,137 @@ test("explanatory feedback stays hidden until a valid check and a response chang
   assert.equal(review.hidden, false);
   assert.match(review.querySelector("[data-assessment-review-status]").textContent, /not marked/);
   assert.equal(doc.querySelector('[data-assessment-mode="constructed"]').getAttribute("data-assessment-last-result"), null);
+});
+
+function simpleDirectCopyPage() {
+  return {
+    artifact_type: "page",
+    schema_version: "2.0.0",
+    product_id: "assessment_pack",
+    page_kind: "assessment",
+    title: "Your first explanation",
+    activities: [],
+    assessment_evidence: {
+      purpose: purposeBody(),
+      learner_context: { depends_on_prior_work: false },
+      elicitations: [
+        {
+          elicitation_id: "initial_explanation",
+          order: 1,
+          evidence_ask: "Write the explanation.",
+          epistemic_class: "non_determinate",
+          delivery: {
+            kind: "constructed_performance",
+            prompt: "Write your explanation.",
+            response_workspace: { intention: "An independent explanation" }
+          },
+          formative_return: {
+            materials: [{ material_id: "ack", body: "Keep your original wording." }],
+            forward_orientation: "Take this explanation into later revision."
+          }
+        }
+      ],
+      pack_forward_orientation: "Keep the original response for later comparison.",
+      output_specification: {
+        specification_id: "initial-explanation",
+        artefact_title: "Your first explanation",
+        audience: "You, for later revision and comparison",
+        purpose: "Retain the learner's original explanation without generating a summary.",
+        action_label: "Copy my first explanation",
+        missing_response_text: "Not yet written.",
+        sections: [
+          {
+            section_id: "initial-explanation",
+            order: 1,
+            heading: "Your first explanation",
+            contributions: [
+              {
+                contribution_id: "initial-explanation-text",
+                label: "Your first explanation",
+                elicitation_id: "initial_explanation",
+                response_part: "response_text"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  };
+}
+
+test("simple one-to-one Copy copies the source response without a second editable area", async () => {
+  const pageHtml = renderLearnerPageHtml(simpleDirectCopyPage(), { compositionMode: "beats" });
+  assert.equal(pageHtml.error, null, String(pageHtml.error || ""));
+  assert.match(pageHtml.html, /data-assessment-output-mode="direct_copy"/);
+  assert.match(pageHtml.html, /data-assessment-output-help="true"/);
+  assert.match(pageHtml.html, /Later activities will not retrieve it automatically/);
+  assert.equal(pageHtml.html.indexOf('data-assessment-assemble="true"'), -1);
+  assert.equal(pageHtml.html.indexOf("Replace with current responses"), -1);
+
+  const copied = [];
+  const doc = mount(pageHtml.html, copied);
+  assert.equal(doc.querySelector("[data-assessment-output]"), null);
+  assert.ok(doc.querySelector("#assessment-constructed-initial_explanation"));
+
+  click(doc.querySelector("[data-assessment-output-copy]"));
+  await new Promise((resolve) => setTimeout(resolve, 0));
+  assert.deepEqual(copied, []);
+  assert.match(
+    doc.querySelector("[data-assessment-output-status]").textContent,
+    /Not yet written\. Write your response before copying\./
+  );
+
+  doc.querySelector("#assessment-constructed-initial_explanation").value =
+    "Breaks were associated with higher reported concentration.";
+  click(doc.querySelector("[data-assessment-output-copy]"));
+  await new Promise((resolve) => setTimeout(resolve, 0));
+  assert.deepEqual(copied, ["Breaks were associated with higher reported concentration."]);
+  assert.equal(doc.querySelector("[data-assessment-output-status]").textContent, "Copied.");
+
+  const sourceState = adapters.serializeWorkspaceState(
+    doc.querySelector('[data-workspace-id="assessment-constructed-initial_explanation"]')
+  ).state;
+  assert.equal(sourceState.value.text, "Breaks were associated with higher reported concentration.");
+  assert.equal(sourceState.value.assembled_snapshot, undefined);
+});
+
+test("direct-copy empty and failed clipboard cases report accurately without false Copied status", async () => {
+  const pageHtml = renderLearnerPageHtml(simpleDirectCopyPage(), { compositionMode: "beats" });
+  assert.equal(pageHtml.error, null, String(pageHtml.error || ""));
+
+  const emptyCopied = [];
+  const emptyDoc = mount(pageHtml.html, emptyCopied);
+  click(emptyDoc.querySelector("[data-assessment-output-copy]"));
+  await new Promise((resolve) => setTimeout(resolve, 0));
+  assert.deepEqual(emptyCopied, []);
+  assert.doesNotMatch(emptyDoc.querySelector("[data-assessment-output-status]").textContent, /^Copied\./);
+  assert.match(emptyDoc.querySelector("[data-assessment-output-status]").textContent, /before copying/);
+
+  const failedCopied = [];
+  const failedDoc = mount(pageHtml.html, failedCopied, {
+    clipboardReject: true,
+    execCommand() {
+      return false;
+    }
+  });
+  failedDoc.querySelector("#assessment-constructed-initial_explanation").value =
+    "An independent first explanation.";
+  click(failedDoc.querySelector("[data-assessment-output-copy]"));
+  await new Promise((resolve) => setTimeout(resolve, 0));
+  assert.deepEqual(failedCopied, []);
+  assert.match(
+    failedDoc.querySelector("[data-assessment-output-status]").textContent,
+    /Copy was not available/
+  );
+  assert.doesNotMatch(failedDoc.querySelector("[data-assessment-output-status]").textContent, /^Copied\./);
+
+  // Legacy path: no clipboard API. Copy must select the intended payload before execCommand.
+  const legacyCopied = [];
+  const legacyDoc = mount(pageHtml.html, legacyCopied, { clipboard: null });
+  legacyDoc.querySelector("#assessment-constructed-initial_explanation").value =
+    "Keep this wording for later comparison.";
+  click(legacyDoc.querySelector("[data-assessment-output-copy]"));
+  await new Promise((resolve) => setTimeout(resolve, 0));
+  assert.deepEqual(legacyCopied, ["Keep this wording for later comparison."]);
+  assert.equal(legacyDoc.querySelector("[data-assessment-output-status]").textContent, "Copied.");
 });

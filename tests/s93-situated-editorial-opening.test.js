@@ -33,11 +33,15 @@ test("Situated Design Page authors a resource-level editorial opening image", ()
   const copy = design.buildSituatedTaskDesignPageCopyInstructions();
   assert.match(prompt, /EDITORIAL OPENING IMAGE/);
   assert.match(prompt, /editorial_opening_image/);
+  assert.match(prompt, /decorative and text-free/i);
+  assert.match(prompt, /text overlays, caption panels, titles, labels, slogans/i);
+  assert.match(prompt, /Set alt_text to "" \(empty\)/);
   assert.match(prompt, /authentic setting or context for learner-owned action/i);
   assert.match(prompt, /findings, model answers, or decisions the learner must make/i);
   assert.match(prompt, /OPTIONAL VISUAL PLANNING/i);
   assert.match(prompt, /section-after-content/);
   assert.match(copy, /editorial_opening_image/);
+  assert.match(copy, /decorative, text-free/);
   assert.match(copy, /do not place it in visual_affordances/i);
 
   const authored = page();
@@ -75,7 +79,11 @@ test("a Situated Task receives one editorial job through the existing attach flo
   assert.equal(briefs[0].subject, "A ward office at the start of a shift");
   const prompt = workspace.buildVisualJobHumanPrompt(briefs[0]);
   assert.match(prompt, /^Generate a finished rendered educational image\./);
+  assert.equal(briefs[0].alt_text, "");
+  assert.equal(briefs[0].decorative, true);
   assert.match(prompt, /Magazine-style editorial opening image for a Situated Task/);
+  assert.match(prompt, /Decorative, text-free visual/);
+  assert.match(prompt, /text overlays, caption panels, titles, labels, slogans/);
   assert.match(prompt, /authentic setting or context/i);
   assert.match(prompt, /findings, model answers, or decisions the learner must make/i);
   assert.doesNotMatch(prompt, /Expository chapter/);
@@ -129,7 +137,7 @@ test("a fulfilled Situated opening image renders after the title and an unfulfil
   const firstSection = fulfilled.indexOf('data-region="exposition"');
   assert.ok(heading !== -1 && opening > heading && firstSection > opening);
   assert.match(fulfilled, /assets\/editorial-opening\.png/);
-  assert.match(fulfilled, /alt="Ward office before a shift handover\."/);
+  assert.match(fulfilled, /alt=""/);
   const openingRegion = fulfilled.slice(opening, firstSection);
   assert.match(openingRegion, /<figcaption/i);
   assert.match(openingRegion, /Figure 1\./);

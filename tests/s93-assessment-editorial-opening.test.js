@@ -125,7 +125,10 @@ test("Design Page permits an optional editorial opening image", () => {
   assert.match(design, /correct answers, answer sequences, classifications, matches/);
   assert.match(design, /R1 reflective assessment/);
   assert.match(design, /R2 assessment/);
-  assert.match(design, /does not need to convey instructional content/);
+  assert.match(design, /decorative and text-free/);
+  assert.match(design, /must not convey instructional content/);
+  assert.match(design, /Set alt_text to "" \(empty\)/);
+  assert.match(design, /text overlays, caption panels, titles, labels, slogans/);
   assert.match(design, /text-based formative assessment is not automatically a reason to skip/);
   assert.match(
     design,
@@ -190,9 +193,17 @@ test("generate attaches through the existing image job and skip commissions noth
   assert.equal(pipeline.plannerResult.jobs.length, 0);
   const prompt = workspace.buildVisualJobHumanPrompt(briefs[0]);
   assert.match(prompt, /^Generate a finished rendered educational image\./);
+  assert.equal(briefs[0].alt_text, "");
+  assert.equal(briefs[0].decorative, true);
   assert.match(prompt, /Magazine-style editorial opening image for an Assessment Pack/);
+  assert.match(prompt, /Decorative, text-free visual/);
+  assert.match(prompt, /text overlays, caption panels, titles, labels, slogans/);
+  assert.match(prompt, /Alt text: \(empty — decorative image/);
   assert.match(prompt, /not an assessment stimulus/);
-  assert.match(prompt, /Quiet clinic corridor; detailed description follows/);
+  assert.match(
+    prompt,
+    /Scene description for production only: An illustration of a quiet clinic corridor/
+  );
   assert.match(prompt, /does not show answers or a level of competence/);
   assert.doesNotMatch(prompt, new RegExp(ANSWER_KEY));
   assert.doesNotMatch(prompt, new RegExp(ORDER_KEY));
@@ -260,7 +271,7 @@ test("a fulfilled image sits under the title; a missing image publishes cleanly"
   const intro = fulfilled.indexOf('data-region="assessment-intro"');
   assert.ok(heading !== -1 && opening > heading && intro > opening);
   assert.match(fulfilled, /assets\/editorial-opening\.png/);
-  assert.match(fulfilled, /alt="Quiet clinic corridor\."/);
+  assert.match(fulfilled, /alt=""/);
   const figure = fulfilled.slice(opening, intro);
   assert.match(figure, /<figcaption/i);
   assert.match(figure, /Figure 1\./);
@@ -439,8 +450,10 @@ test("the live Step 7 prompt judges an editorial image by context, not instructi
   const live = api.buildWorkflowStepInstructions(workflow.steps[0], 6, null);
   assert.match(
     live,
-    /An editorial opening image serves contextual, atmospheric or orienting purposes\. It does not need to convey instructional content\./
+    /An editorial opening image is decorative and text-free: it serves contextual, atmospheric or orienting purposes through scene and composition only and must not convey instructional content\./
   );
+  assert.match(live, /Do not commission text overlays, labels, titles, slogans or banners/);
+  assert.match(live, /Set alt_text to ""/);
   assert.match(
     live,
     /A short, text-based formative assessment is not automatically a reason to skip an editorial image\./
@@ -496,7 +509,7 @@ test("editorial opening captions stay short, numbered and free of production com
   assert.ok(opening !== -1 && intro > opening);
   const banner = html.slice(opening, intro);
   assert.match(banner, /src="assets\/editorial-opening\.png"/);
-  assert.match(banner, /alt="Three colleagues reviewing documents around a laptop\."/);
+  assert.match(banner, /alt=""/);
   assert.match(banner, /<strong>Figure 1\.<\/strong> Colleagues reviewing workplace documents together\./);
   assert.doesNotMatch(banner, /Create a restrained/);
   assert.doesNotMatch(banner, /aria-describedby/);
@@ -517,7 +530,7 @@ test("editorial opening captions stay short, numbered and free of production com
     { slot: "editorial-opening", subject: "A team meeting", affordanceId: "va-editorial-opening" },
     { figureCounter: counter }
   );
-  assert.match(preferred, /alt="Three colleagues reviewing documents around a laptop\."/);
+  assert.match(preferred, /alt=""/);
   assert.match(
     preferred,
     /<strong>Figure 1\.<\/strong> Colleagues reviewing workplace documents together\./
@@ -554,10 +567,11 @@ test("editorial opening captions stay short, numbered and free of production com
     { slot: "editorial-opening", affordanceId: "va-editorial-opening" },
     { figureCounter: counter }
   );
-  assert.match(repeated, /alt="Three colleagues reviewing documents around a laptop\."/);
+  // Decorative img alt stays empty; adjacent caption HTML carries the short phrase.
+  assert.match(repeated, /alt=""/);
   assert.match(
     repeated,
-    /<span aria-hidden="true">Three colleagues reviewing documents around a laptop\.<\/span>/
+    /Three colleagues reviewing documents around a laptop\./
   );
   assert.match(repeated, /<strong>Figure 3\.<\/strong>/);
   assert.doesNotMatch(repeated, /aria-describedby/);
@@ -593,6 +607,7 @@ test("editorial opening captions stay short, numbered and free of production com
     { figureCounter: counter }
   );
   assert.match(instructional, /Figure 4\./);
+  assert.match(instructional, /alt="Catchment diagram; detailed description follows\."/);
   assert.match(instructional, /Rainfall reaches soil storage and then the river channel/);
   assert.match(instructional, /aria-describedby="figure-description-/);
   assert.equal(counter.value, 4);

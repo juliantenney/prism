@@ -521,8 +521,6 @@
     els.workflowHiddenSelectionHint = document.getElementById("workflowHiddenSelectionHint");
     els.workflowHiddenSelectionHintText = document.getElementById("workflowHiddenSelectionHintText");
     els.workflowDetail = document.getElementById("workflowDetail");
-    els.workflowSourceJourneyNav = document.getElementById("workflowSourceJourneyNav");
-    els.workflowBackToSourceJourneyBtn = document.getElementById("workflowBackToSourceJourneyBtn");
     els.workflowName = document.getElementById("workflowName");
     els.workflowLibraryTags = document.getElementById("workflowLibraryTags");
     els.workflowLibraryNotes = document.getElementById("workflowLibraryNotes");
@@ -616,7 +614,7 @@
 
     // Utilities
     els.utilitiesOutputFormat = document.getElementById("utilitiesOutputFormat");
-    els.utilitiesFileName = document.getElementById("utilitiesFileName");
+    els.utilitiesFileName = null; // Filename field removed — downloads derive from resource title.
     els.utilitiesJsonInput = document.getElementById("utilitiesJsonInput");
     els.utilitiesWorkflowContext = document.getElementById("utilitiesWorkflowContext");
     els.utilitiesSelectedWorkflowLabel = document.getElementById(
@@ -657,6 +655,7 @@
     els.utilitiesOutputViewResourcesBtn = document.getElementById("utilitiesOutputViewResourcesBtn");
     els.utilitiesOutputWorkspace = document.getElementById("utilitiesOutputWorkspace");
     els.utilitiesVisualJobsPanel = document.getElementById("utilitiesVisualJobsPanel");
+    els.utilitiesPipelineDetailsHost = document.getElementById("utilitiesPipelineDetailsHost");
     els.utilitiesCopyAnnounce = document.getElementById("utilitiesCopyAnnounce");
 
     els.toastContainer = document.getElementById("toastContainer");
@@ -17895,11 +17894,93 @@
     passedTitle: "Verification passed",
     passedBody: "Generated materials are suitable for the commissioned learner tasks.",
     failedTitle: "Verification found an issue",
-    failedNext: "Regenerate the activity materials from the same DLA prompt.",
+    failedNext:
+      "Copy the revised generation prompt, rerun it, paste the replacement materials, then verify again.",
     unreadableTitle: "Verification result could not be read",
     unreadableBody: "Run the verification prompt again and paste the complete JSON result.",
-    staleStatus: "Materials changed — verification must be run again."
+    staleStatus: "Materials changed — verification must be run again.",
+    generationCopyDefault: "Copy",
+    generationCopyRevised: "Copy revised prompt"
   });
+
+  var GAM_VERIFICATION_REPAIR_MARKERS = Object.freeze({
+    start: "## PRISM VERIFICATION REPAIR",
+    end: "## END PRISM VERIFICATION REPAIR"
+  });
+
+  function stripGamVerificationRepairSectionFromPrompt(promptText) {
+    var text = String(promptText == null ? "" : promptText);
+    var startMarker = GAM_VERIFICATION_REPAIR_MARKERS.start;
+    var endMarker = GAM_VERIFICATION_REPAIR_MARKERS.end;
+    var start = text.indexOf(startMarker);
+    if (start === -1) return text;
+    var end = text.indexOf(endMarker, start);
+    var before = text.slice(0, start).replace(/\s+$/, "");
+    if (end === -1) return before;
+    var after = text.slice(end + endMarker.length).replace(/^\s+/, "");
+    if (!before) return after;
+    if (!after) return before;
+    return before + "\n\n" + after;
+  }
+
+  function formatGamVerificationFailItemsForRepair(failItems) {
+    var rows = Array.isArray(failItems) ? failItems : [];
+    var lines = [];
+    rows.forEach(function (item) {
+      var label = String((item && item.label) || "").trim() || "Material";
+      var reason = String((item && item.reason) || "").trim();
+      if (reason) lines.push("- " + label + ": " + reason);
+      else lines.push("- " + label);
+    });
+    return lines.join("\n");
+  }
+
+  /**
+   * Derive a revised generation prompt for Copy when verification failed.
+   * Keeps the stored original prompt untouched; strips any prior repair block
+   * so successive failures do not accumulate earlier repair instructions.
+   */
+  function appendGamVerificationRepairSectionToGenerationPrompt(basePrompt, failItems) {
+    var base = stripGamVerificationRepairSectionFromPrompt(basePrompt);
+    var findings = formatGamVerificationFailItemsForRepair(failItems);
+    if (!findings) return base;
+    var section = [
+      GAM_VERIFICATION_REPAIR_MARKERS.start,
+      "The previous generation failed verification for this step.",
+      "Regenerate the COMPLETE required output for this step from the original instructions above.",
+      "Correct every listed failure. Preserve all requirements that already satisfied verification.",
+      "Do not weaken source-fidelity or commissioned wording requirements. Where the original instructions require exact commissioned text (including first-person student statements), keep those exact statements rather than substituting summaries or paraphrases.",
+      "",
+      "Failed verification findings:",
+      findings,
+      "",
+      "Return only the complete replacement output for this step.",
+      GAM_VERIFICATION_REPAIR_MARKERS.end
+    ].join("\n");
+    if (!String(base || "").trim()) return section + "\n";
+    return String(base).replace(/\s+$/, "") + "\n\n" + section + "\n";
+  }
+
+  function resolveGamGenerationCopyLabelForStep(stepId) {
+    var sid = String(stepId || "").trim();
+    if (!sid) return GAM_VERIFICATION_COPY.generationCopyDefault;
+    var view = resolveGamMaterialsVerificationView(sid);
+    if (view && view.phase === "review_failed") {
+      return GAM_VERIFICATION_COPY.generationCopyRevised;
+    }
+    return GAM_VERIFICATION_COPY.generationCopyDefault;
+  }
+
+  function applyGamVerificationRepairToGenerationPromptIfNeeded(stepId, promptText) {
+    var sid = String(stepId || "").trim();
+    var base = stripGamVerificationRepairSectionFromPrompt(promptText);
+    if (!sid) return base;
+    var view = resolveGamMaterialsVerificationView(sid);
+    if (!view || view.phase !== "review_failed") return base;
+    var items = Array.isArray(view.failItems) ? view.failItems : [];
+    if (!items.length) return base;
+    return appendGamVerificationRepairSectionToGenerationPrompt(base, items);
+  }
 
   function clearGamOperationalSuitabilityReviewGate(stepId) {
     var sid = String(stepId || "").trim();
@@ -18096,7 +18177,8 @@
         failItems: Array.isArray(stored.failItems) ? stored.failItems.slice() : [],
         copyLabel: copy.copyPrompt,
         checkLabel: copy.checkAction,
-        pasteLabel: copy.pasteLabel
+        pasteLabel: copy.pasteLabel,
+        generationCopyLabel: copy.generationCopyRevised
       };
     }
     return {
@@ -18122,6 +18204,139 @@
   function gamMaterialsVerificationBlocksAdvance(stepId, overridePages) {
     var view = resolveGamMaterialsVerificationView(stepId, overridePages);
     return !!(view && view.applies && view.nextBlocked);
+  }
+
+  /**
+   * Substantive captured body for navigation unlock — not blank, not empty JSON shells.
+   * Step definitions / empty placeholders must not count.
+   */
+  function workflowRunCaptureLooksSubstantive(value) {
+    var text = String(value == null ? "" : value).trim();
+    if (!text) return false;
+    if (/^(\{\s*\}|\[\s*\]|null|undefined)$/i.test(text)) return false;
+    try {
+      var parsed = JSON.parse(text);
+      if (parsed == null) return false;
+      if (Array.isArray(parsed)) return parsed.length > 0;
+      if (typeof parsed === "object") {
+        var keys = Object.keys(parsed);
+        if (!keys.length) return false;
+        var hasTitle = !!String(parsed.title || "").trim();
+        var hasSections = Array.isArray(parsed.sections) && parsed.sections.length > 0;
+        var hasActivities = Array.isArray(parsed.activities) && parsed.activities.length > 0;
+        var hasEvidence =
+          parsed.assessment_evidence && typeof parsed.assessment_evidence === "object";
+        var hasLearningSequence =
+          parsed.learning_sequence && typeof parsed.learning_sequence === "object";
+        if (hasTitle || hasSections || hasActivities || hasEvidence || hasLearningSequence) {
+          return true;
+        }
+        // Non-page structured captures with real keys (e.g. sequence enrichments).
+        return keys.some(function (key) {
+          if (key === "artifact_type" || key === "schema_version" || key === "product_id") {
+            return false;
+          }
+          var child = parsed[key];
+          if (child == null) return false;
+          if (typeof child === "string") return !!String(child).trim();
+          if (Array.isArray(child)) return child.length > 0;
+          if (typeof child === "object") return Object.keys(child).length > 0;
+          return true;
+        });
+      }
+    } catch (_err) {
+      // Non-JSON prose: require more than a token placeholder.
+      return text.length >= 8;
+    }
+    return true;
+  }
+
+  function workflowStepHasSubstantiveRunContent(workflowId, stepId) {
+    var wid = String(workflowId || "").trim();
+    var sid = String(stepId || "").trim();
+    if (!sid) return false;
+    var liveFinal =
+      state.workflowRunCapturedOutputs && state.workflowRunCapturedOutputs[sid] != null
+        ? state.workflowRunCapturedOutputs[sid]
+        : "";
+    var liveRaw =
+      state.workflowRunCapturedOutputsRaw && state.workflowRunCapturedOutputsRaw[sid] != null
+        ? state.workflowRunCapturedOutputsRaw[sid]
+        : "";
+    if (workflowRunCaptureLooksSubstantive(liveFinal) || workflowRunCaptureLooksSubstantive(liveRaw)) {
+      return true;
+    }
+    if (!wid) return false;
+    var store = loadWorkflowRunStateStore();
+    var rec = store && store[wid] && typeof store[wid] === "object" ? store[wid] : null;
+    if (!rec) return false;
+    var captureRefs = rec.captureRefs && typeof rec.captureRefs === "object" ? rec.captureRefs : {};
+    var stepRefs =
+      captureRefs[sid] && typeof captureRefs[sid] === "object" ? captureRefs[sid] : null;
+    if (
+      stepRefs &&
+      ((stepRefs.final && String(stepRefs.final.resource_id || "").trim()) ||
+        (stepRefs.raw && String(stepRefs.raw.resource_id || "").trim()))
+    ) {
+      // Durable capture resources are not created for empty payloads.
+      return true;
+    }
+    var capturedOutputs =
+      rec.capturedOutputs && typeof rec.capturedOutputs === "object" ? rec.capturedOutputs : {};
+    var capturedOutputsRaw =
+      rec.capturedOutputsRaw && typeof rec.capturedOutputsRaw === "object"
+        ? rec.capturedOutputsRaw
+        : {};
+    if (workflowRunCaptureLooksSubstantive(capturedOutputs[sid])) return true;
+    if (workflowRunCaptureLooksSubstantive(capturedOutputsRaw[sid])) return true;
+    return false;
+  }
+
+  function workflowHasSubstantiveDownstreamContentAfterStep(wf, stepId) {
+    if (!wf || !Array.isArray(wf.steps) || !wf.steps.length) return false;
+    var sid = String(stepId || "").trim();
+    if (!sid) return false;
+    var wid = String((wf && wf.id) || state.selectedWorkflowId || "").trim();
+    var passedCurrent = false;
+    var i;
+    for (i = 0; i < wf.steps.length; i += 1) {
+      var row = wf.steps[i];
+      var id = String((row && row.id) || "").trim();
+      if (!passedCurrent) {
+        if (id === sid) passedCurrent = true;
+        continue;
+      }
+      if (workflowStepHasSubstantiveRunContent(wid, id)) return true;
+    }
+    return false;
+  }
+
+  /**
+   * Navigation-only exception: leave GAM to inspect existing downstream captures
+   * without treating verification as passed. Generation/completion gates stay closed.
+   */
+  function canNavigateForwardDespiteGamVerification(stepId, wf) {
+    var sid = String(stepId || "").trim();
+    if (!sid || !gamMaterialsVerificationBlocksAdvance(sid)) return false;
+    if (workflowRunStepHasNonGamBlockingCaptureErrors(sid)) return false;
+    return workflowHasSubstantiveDownstreamContentAfterStep(wf || {}, sid);
+  }
+
+  function workflowRunStepHasNonGamBlockingCaptureErrors(stepId) {
+    var sid = String(stepId || "").trim();
+    if (!sid) return false;
+    return !!(
+      (state.workflowRunStrictJsonValidation && state.workflowRunStrictJsonValidation[sid]) ||
+      (state.workflowRunEpisodePlanValidation && state.workflowRunEpisodePlanValidation[sid]) ||
+      (state.workflowRunPageValidation && state.workflowRunPageValidation[sid]) ||
+      (state.workflowRunPageMaterialsClosureValidation &&
+        state.workflowRunPageMaterialsClosureValidation[sid]) ||
+      (state.workflowRunGamFormatValidation && state.workflowRunGamFormatValidation[sid]) ||
+      (state.workflowRunGamPageValidation && state.workflowRunGamPageValidation[sid]) ||
+      (state.workflowRunLjSharedSourceValidation &&
+        state.workflowRunLjSharedSourceValidation[sid]) ||
+      workflowRunLearnerPageFramingGateMessage(sid)
+    );
   }
 
   function storeGamVerificationCheck(stepId, payload) {
@@ -18180,6 +18395,8 @@
         ? state.workflowRunGamVerificationCheck[sid]
         : null;
     if (stored && stored.fingerprint && fingerprint && stored.fingerprint !== fingerprint) {
+      // Replacement materials invalidate any prior pass/fail. Do not carry
+      // previous findings onto the new output; require a fresh verification.
       state.workflowRunGamVerificationCheck[sid] = {
         checked: false,
         stale: true,
@@ -18187,6 +18404,9 @@
         phase: "gam_valid_review_required",
         failItems: []
       };
+      if (state.workflowRunGamSuitabilityReviewValidation) {
+        state.workflowRunGamSuitabilityReviewValidation[sid] = GAM_VERIFICATION_COPY.staleStatus;
+      }
     }
     if (view.phase === "review_passed") {
       if (state.workflowRunGamSuitabilityReviewValidation) {
@@ -18412,6 +18632,18 @@
         "workflow-run-step-output-status--error",
         view.phase === "review_failed" || view.phase === "review_invalid"
       );
+    }
+    var generationCopyBtn = li.querySelector(".workflow-step-copy-btn");
+    if (generationCopyBtn && generationCopyBtn.textContent !== "✓ Copied") {
+      generationCopyBtn.textContent = resolveGamGenerationCopyLabelForStep(sid);
+    }
+    if (
+      els.workflowRunCopyBtn &&
+      sid &&
+      sid === String(state.workflowRunVisibleStepId || "") &&
+      els.workflowRunCopyBtn.textContent !== "✓ Copied"
+    ) {
+      els.workflowRunCopyBtn.textContent = resolveGamGenerationCopyLabelForStep(sid);
     }
   }
 
@@ -25218,6 +25450,51 @@
     return null;
   }
 
+  function resolveWorkflowListPresentationLib() {
+    if (typeof PRISM_WORKFLOW_LIST_PRESENTATION !== "undefined") {
+      return PRISM_WORKFLOW_LIST_PRESENTATION;
+    }
+    if (typeof window !== "undefined" && window.PRISM_WORKFLOW_LIST_PRESENTATION) {
+      return window.PRISM_WORKFLOW_LIST_PRESENTATION;
+    }
+    if (typeof require === "function") {
+      try {
+        return require("./lib/workflow-list-presentation.js");
+      } catch (_err) {}
+    }
+    return null;
+  }
+
+  function resolveWorkflowListAuthoringStatusForWorkflow(wf) {
+    var presentation = resolveWorkflowListPresentationLib();
+    if (!presentation || typeof presentation.deriveWorkflowListAuthoringStatus !== "function") {
+      return {
+        status: "no_data",
+        label: "No data",
+        icon: "○",
+        title: "No data — no saved step outputs or completed authoring artefact",
+        ariaLabel: "Authoring status: No data"
+      };
+    }
+    var wid = String((wf && wf.id) || "").trim();
+    var store = loadWorkflowRunStateStore();
+    var durable =
+      wid && store && store[wid] && typeof store[wid] === "object" ? store[wid] : null;
+    var liveOverlay = null;
+    if (wid && String(state.selectedWorkflowId || "") === wid) {
+      liveOverlay = {
+        capturedOutputs: state.workflowRunCapturedOutputs || {},
+        capturedOutputsRaw: state.workflowRunCapturedOutputsRaw || {},
+        captureRefs: state.workflowRunCaptureRefs || {}
+      };
+    }
+    var merged =
+      presentation.mergeRunRecordForListStatus
+        ? presentation.mergeRunRecordForListStatus(durable, liveOverlay)
+        : durable || liveOverlay || {};
+    return presentation.deriveWorkflowListAuthoringStatus(wf, merged);
+  }
+
   function resolveFirstClassCommissionIntakeLib() {
     var roots = [];
     if (typeof globalThis !== "undefined") roots.push(globalThis);
@@ -25250,6 +25527,9 @@
     var envelope = intakeResult.envelope || {};
     var focus = String(seed.focus || "").trim();
     if (!focus) return { ok: false, code: "focus_required" };
+    // Optional short display title (e.g. LJ Assessment Pack commission.title).
+    // Authoring focus/grounding may be the full specification_text; naming stays short.
+    var displayName = String(seed.displayName || "").trim() || focus;
 
     state.workflowSelectedDomains = ["general", "learning-design"];
     state.workflowBriefElicitation = null;
@@ -25257,7 +25537,7 @@
     state.workflowBriefInferenceConfirmation = null;
     state.workflowDesignResult = {
       status: "complete",
-      summary: focus,
+      summary: displayName,
       steps: family.steps,
       firstClassLocal: true,
       firstClassIdentity: family.identity,
@@ -25281,9 +25561,9 @@
     ).trim();
     state.workflowBriefResolved = {
       initialBrief: {
-        name: focus,
-        goal: focus,
-        designIntent: focus,
+        name: displayName,
+        goal: displayName,
+        designIntent: displayName,
         audience: String(seed.audience || "").trim(),
         scopeScale: String(seed.scopeScale || "").trim(),
         inputs: String(seed.inputs || "").trim(),
@@ -25531,12 +25811,23 @@
       return { ok: false, code: "commission_intake_unavailable" };
     }
 
-    var focus = String(commission.title || "").trim();
-    if (!focus && pageResolved.page && pageResolved.page.title) {
-      focus = String(pageResolved.page.title || "")
+    var commissionTitle = String(commission.title || "").trim();
+    if (!commissionTitle && pageResolved.page && pageResolved.page.title) {
+      commissionTitle = String(pageResolved.page.title || "")
         .replace(/^Learning Journey:\s*/i, "")
         .trim();
     }
+    var specificationText = String(
+      commission.specification_text || commission.specificationText || ""
+    ).trim();
+    // Assessment Pack bakes focus into Grounding/packNote and outputCommission.
+    // Use the substantive specification so authentic-performance fidelity and
+    // retain/copy detection see the commission — not only the short title.
+    // Other product families keep title-as-focus (unchanged Create behaviour).
+    var focus =
+      authoritativeProductId === "assessment_pack" && specificationText
+        ? specificationText
+        : commissionTitle;
     var parentSourceContext = readLearningJourneyAuthoritativeSourceContext(sourceWorkflowId);
     var envelope = designMod.commissionToIntakeEnvelope(commission, pageResolved.page, {
       sourceJourneyWorkflowId: sourceWorkflowId,
@@ -25566,6 +25857,14 @@
         intake: intakeResult || null
       };
     }
+    if (
+      authoritativeProductId === "assessment_pack" &&
+      commissionTitle &&
+      intakeResult.createSeed &&
+      typeof intakeResult.createSeed === "object"
+    ) {
+      intakeResult.createSeed.displayName = commissionTitle;
+    }
 
     var applied = applyAcceptedCommissionIntake(intakeResult);
     if (!applied || !applied.ok) {
@@ -25576,7 +25875,13 @@
       };
     }
 
-    var workflowName = focus || String(intakeResult.createSeed && intakeResult.createSeed.focus || "").trim();
+    var workflowName =
+      commissionTitle ||
+      String(
+        (intakeResult.createSeed &&
+          (intakeResult.createSeed.displayName || intakeResult.createSeed.focus)) ||
+          ""
+      ).trim();
     if (!workflowName) workflowName = "Commissioned " + authoritativeProductId;
     if (els.wfDesignName) els.wfDesignName.value = workflowName;
     if (els.wfDesignIntent && !String(els.wfDesignIntent.value || "").trim()) {
@@ -28117,6 +28422,10 @@
   function resolveWorkflowRunNextStepDisabledReason(stepRow, stepId, wf, li, idx, total) {
     if (idx >= total - 1) return "This is the final step.";
     if (!isWorkflowRunStepCaptureReadyForAdvance(stepRow, stepId, wf, li)) {
+      // Allow Next to inspect existing downstream content when only GAM verification blocks.
+      if (canNavigateForwardDespiteGamVerification(stepId, wf || {})) {
+        return "";
+      }
       if (isWorkflowStepRunCaptureProducer(stepRow || {}, wf || {})) {
         if (workflowRunStepHasBlockingCaptureErrors(stepId)) {
           return "Fix the validation errors in this step's result before continuing.";
@@ -29027,6 +29336,11 @@
     );
   }
 
+  /** Authoring destination applies only when the workflow has a Design Page step. */
+  function workflowSupportsAuthoringDestination(workflowId) {
+    return !!findDesignPageStepForWorkflow(workflowId);
+  }
+
   function workflowHasLiveDesignPageCapture(workflowId) {
     var wid = String(workflowId || "").trim();
     if (!wid || wid !== String(state.selectedWorkflowId || "").trim()) return false;
@@ -29527,6 +29841,7 @@
       els.utilitiesVisualJobsPanel.innerHTML = "";
       els.utilitiesVisualJobsPanel.classList.add("hidden");
     }
+    refreshUtilitiesPipelineDetailsHost("");
     if (els.utilitiesOutputViewBar) els.utilitiesOutputViewBar.classList.add("hidden");
     if (els.utilitiesPreviewFrame) els.utilitiesPreviewFrame.classList.remove("hidden");
     setUtilitiesDownloadControlsDisabled(true);
@@ -29676,7 +29991,8 @@
         li.classList.remove("hidden");
         var copyBtn = li.querySelector(".workflow-step-copy-btn");
         if (copyBtn) {
-          copyBtn.textContent = "Copy";
+          var idleStepId = String(li.getAttribute("data-step-id") || "").trim();
+          copyBtn.textContent = resolveGamGenerationCopyLabelForStep(idleStepId);
         }
       });
       resetWorkflowRunNavigationState();
@@ -29692,7 +30008,7 @@
       }
       if (els.workflowRunCopyBtn) {
         els.workflowRunCopyBtn.disabled = true;
-        els.workflowRunCopyBtn.textContent = "Copy";
+        els.workflowRunCopyBtn.textContent = GAM_VERIFICATION_COPY.generationCopyDefault;
       }
       setWorkflowContinueToAuthoringVisible(false);
       if (els.workflowContinueToAuthoringBtn) {
@@ -29732,7 +30048,9 @@
         stepId &&
         stepId === state.workflowRunVisibleStepId &&
         stepId === state.workflowRunCopiedStepId;
-      copyBtn.textContent = shouldShowCopied ? "✓ Copied" : "Copy";
+      copyBtn.textContent = shouldShowCopied
+        ? "✓ Copied"
+        : resolveGamGenerationCopyLabelForStep(stepId);
     });
 
     var wfRun = state.selectedWorkflowId ? findWorkflowById(state.selectedWorkflowId) : null;
@@ -29791,7 +30109,9 @@
         !!currentStepId &&
         currentStepId === state.workflowRunVisibleStepId &&
         currentStepId === state.workflowRunCopiedStepId;
-      els.workflowRunCopyBtn.textContent = shouldShowBarCopied ? "✓ Copied" : "Copy";
+      els.workflowRunCopyBtn.textContent = shouldShowBarCopied
+        ? "✓ Copied"
+        : resolveGamGenerationCopyLabelForStep(currentStepId);
     }
     if (els.workflowNextStepBtn) {
       setWorkflowRunNextButtonHidden(isFinalStep);
@@ -29815,18 +30135,22 @@
         }
       }
     }
-    setWorkflowContinueToAuthoringVisible(isFinalStep);
+    var continueToAuthoringVisible =
+      isFinalStep && workflowSupportsAuthoringDestination(state.selectedWorkflowId);
+    setWorkflowContinueToAuthoringVisible(continueToAuthoringVisible);
     if (els.workflowContinueToAuthoringBtn) {
-      var continueEnabled = isWorkflowRunContinueToAuthoringEnabled(
-        stepRowRun,
-        stepIdRun,
-        wfRun,
-        currentStepLi,
-        idx,
-        total
-      );
+      var continueEnabled =
+        continueToAuthoringVisible &&
+        isWorkflowRunContinueToAuthoringEnabled(
+          stepRowRun,
+          stepIdRun,
+          wfRun,
+          currentStepLi,
+          idx,
+          total
+        );
       els.workflowContinueToAuthoringBtn.disabled = !continueEnabled;
-      if (isFinalStep && !continueEnabled) {
+      if (continueToAuthoringVisible && !continueEnabled) {
         els.workflowContinueToAuthoringBtn.setAttribute(
           "title",
           stepIdRun && workflowRunStepHasBlockingCaptureErrors(stepIdRun)
@@ -33899,29 +34223,18 @@
         title.textContent = wf.name || "Untitled workflow";
       }
 
-      if (itemOptions.role === "lj_parent") {
-        var product = document.createElement("div");
-        product.className = "workflow-item-product";
-        product.textContent = "Learning Journey";
-        item.appendChild(title);
-        item.appendChild(product);
-      } else {
-        item.appendChild(title);
-        var childProductId = String(wf.product || "").toLowerCase();
-        if (itemOptions.role === "lj_child" && childProductId) {
-          var childProduct = document.createElement("div");
-          childProduct.className = "workflow-item-product";
-          childProduct.textContent =
-            childProductId === "expository"
-              ? "Expository"
-              : childProductId === "assessment_pack"
-                ? "Assessment Pack"
-                : childProductId === "interactive"
-                  ? "Interactive"
-                  : childProductId;
-          item.appendChild(childProduct);
-        }
-      }
+      item.appendChild(title);
+      var listPresentation = resolveWorkflowListPresentationLib();
+      var productLabel =
+        listPresentation && typeof listPresentation.resolveWorkflowListProductLabel === "function"
+          ? listPresentation.resolveWorkflowListProductLabel(wf, {
+              familyMod: getFirstClassWorkflowFamilyMod()
+            })
+          : String(wf.product || "").trim() || "Type unknown";
+      var product = document.createElement("div");
+      product.className = "workflow-item-product";
+      product.textContent = productLabel;
+      item.appendChild(product);
 
       var meta = document.createElement("div");
       meta.className = "workflow-item-meta";
@@ -33935,9 +34248,34 @@
           ? window.Utils.formatDate(wf.updatedAt)
           : "";
       var metaText = document.createElement("span");
+      metaText.className = "workflow-item-meta-updated";
       metaText.textContent =
         "Updated " + (updated || "—") + " · " + stepsLabel;
       meta.appendChild(metaText);
+
+      var authoringStatus = resolveWorkflowListAuthoringStatusForWorkflow(wf);
+      var statusEl = document.createElement("span");
+      statusEl.className =
+        "workflow-item-status workflow-item-status--" +
+        String((authoringStatus && authoringStatus.status) || "no_data");
+      statusEl.setAttribute(
+        "title",
+        String((authoringStatus && authoringStatus.title) || "No data")
+      );
+      statusEl.setAttribute(
+        "aria-label",
+        String((authoringStatus && authoringStatus.ariaLabel) || "Authoring status: No data")
+      );
+      var statusIcon = document.createElement("span");
+      statusIcon.className = "workflow-item-status-icon";
+      statusIcon.setAttribute("aria-hidden", "true");
+      statusIcon.textContent = String((authoringStatus && authoringStatus.icon) || "○");
+      var statusText = document.createElement("span");
+      statusText.className = "workflow-item-status-text";
+      statusText.textContent = String((authoringStatus && authoringStatus.label) || "No data");
+      statusEl.appendChild(statusIcon);
+      statusEl.appendChild(statusText);
+      meta.appendChild(statusEl);
 
       var tagsWrap = document.createElement("div");
       tagsWrap.className = "library-item-tags";
@@ -34003,65 +34341,6 @@
     setLearningJourneyListExpandedForParent(id, true);
   }
 
-  function refreshWorkflowSourceJourneyNav(wf) {
-    if (!els.workflowSourceJourneyNav || !els.workflowBackToSourceJourneyBtn) return;
-    var hierarchyMod = resolveLearningJourneyWorkflowHierarchyLib();
-    var resolved =
-      hierarchyMod && typeof hierarchyMod.resolveSourceLearningJourneyForWorkflow === "function"
-        ? hierarchyMod.resolveSourceLearningJourneyForWorkflow(wf, state.workflows || [], {
-            isLearningJourney: function (row) {
-              return !!(isLearningJourneyWorkflow(row) || workflowRecordIsLearningJourney(row));
-            }
-          })
-        : { ok: false };
-    if (!resolved || !resolved.ok || !resolved.parent) {
-      els.workflowSourceJourneyNav.classList.add("hidden");
-      els.workflowBackToSourceJourneyBtn.removeAttribute("data-source-journey-id");
-      els.workflowBackToSourceJourneyBtn.textContent = "← Back to Journey";
-      return;
-    }
-    var parentName = String(resolved.parent.name || "Journey").trim() || "Journey";
-    els.workflowBackToSourceJourneyBtn.setAttribute(
-      "data-source-journey-id",
-      String(resolved.parentId || resolved.parent.id || "")
-    );
-    els.workflowBackToSourceJourneyBtn.textContent = "← Back to " + parentName;
-    els.workflowBackToSourceJourneyBtn.setAttribute(
-      "aria-label",
-      "Back to source Learning Journey " + parentName
-    );
-    els.workflowSourceJourneyNav.classList.remove("hidden");
-  }
-
-  function handleBackToSourceLearningJourney() {
-    if (!els.workflowBackToSourceJourneyBtn) return { ok: false, code: "nav_unavailable" };
-    var parentId = String(
-      els.workflowBackToSourceJourneyBtn.getAttribute("data-source-journey-id") || ""
-    ).trim();
-    if (!parentId) return { ok: false, code: "missing_source_journey_id" };
-    var parent = findWorkflowById(parentId);
-    if (!parent) {
-      showToast("Source Learning Journey could not be found.", "error");
-      return { ok: false, code: "source_journey_not_found" };
-    }
-    if (!isLearningJourneyWorkflow(parent) && !workflowRecordIsLearningJourney(parent)) {
-      showToast("Source workflow is not a Learning Journey.", "error");
-      return { ok: false, code: "source_not_learning_journey" };
-    }
-    expandLearningJourneyParentInWorkflowList(parentId);
-    switchTab("workflows");
-    selectWorkflow(parentId);
-    setWorkflowMode("run");
-    // Preview is not auto-opened here: returning to the Journey's ordinary Run view
-    // avoids brittle Utilities/Preview special-casing.
-    return {
-      ok: true,
-      code: "opened_source_journey",
-      workflowId: parentId,
-      destination: "workflows_run"
-    };
-  }
-
   function clearWorkflowDetail() {
     if (!els.workflowDetail) return;
     state.selectedWorkflowId = null;
@@ -34072,7 +34351,6 @@
     state.workflowRunGamFormatValidation = {};
     state.workflowRunGamPageValidation = {};
     state.workflowRunGamFormatWarnings = {};
-    refreshWorkflowSourceJourneyNav(null);
     if (els.workflowName) els.workflowName.value = "";
     if (els.workflowLibraryTags) els.workflowLibraryTags.value = "";
     if (els.workflowLibraryNotes) els.workflowLibraryNotes.value = "";
@@ -34128,7 +34406,6 @@
     populateWorkflowDetail(wf, {
       preserveRunNavigation: state.workflowDetailMode === "run"
     });
-    refreshWorkflowSourceJourneyNav(wf);
     renderWorkflowList({ skipDefaultSelection: true });
     refreshWorkflowModeSettingsTabBadge();
     if (state.workflowDetailMode === "settings") {
@@ -35198,9 +35475,15 @@
     copyBtn.type = "button";
     copyBtn.className = "btn primary small workflow-step-copy-btn";
     copyBtn.textContent = "Copy";
-    var copyBtnDefaultLabel = "Copy";
     var copyBtnCopiedLabel = "✓ Copied";
     var copyBtnResetTimer = null;
+    function resolveStepCopyDefaultLabel() {
+      var sid = String(
+        (step && step.id) || (li && li.getAttribute("data-step-id")) || ""
+      ).trim();
+      return resolveGamGenerationCopyLabelForStep(sid);
+    }
+    copyBtn.textContent = resolveStepCopyDefaultLabel();
     function setCopyBtnCopiedState(persistUntilStepChange) {
       copyBtn.textContent = copyBtnCopiedLabel;
       if (persistUntilStepChange) {
@@ -35214,7 +35497,7 @@
         clearTimeout(copyBtnResetTimer);
       }
       copyBtnResetTimer = setTimeout(function () {
-        copyBtn.textContent = copyBtnDefaultLabel;
+        copyBtn.textContent = resolveStepCopyDefaultLabel();
         copyBtnResetTimer = null;
       }, 1800);
     }
@@ -35426,6 +35709,19 @@
         return;
       }
 
+      var copiedStepIdForRepair = String(
+        effectiveStep.id || li.getAttribute("data-step-id") || ""
+      ).trim();
+      var revisedForVerificationFailure = false;
+      if (inRunMode && copiedStepIdForRepair) {
+        var beforeRepair = String(filled || "");
+        filled = applyGamVerificationRepairToGenerationPromptIfNeeded(
+          copiedStepIdForRepair,
+          filled
+        );
+        revisedForVerificationFailure = filled !== beforeRepair;
+      }
+
       var copyRecognition = buildWorkflowStepRecognitionContext(effectiveStep, {
         li: li,
         index: zeroBasedIndex
@@ -35455,7 +35751,12 @@
             } else {
               setCopyBtnCopiedState(false);
             }
-            showToast("Step instructions copied to clipboard.", "success");
+            showToast(
+              revisedForVerificationFailure
+                ? "Revised step instructions copied to clipboard."
+                : "Step instructions copied to clipboard.",
+              "success"
+            );
           } else {
             showToast("Unable to copy step instructions to clipboard.", "error");
           }
@@ -37256,8 +37557,14 @@
     return text;
   }
 
-  var ASSESSMENT_KEY_DEFENCE_ELICITATION =
+  var ASSESSMENT_KEY_DEFENCE_SUPPORTED_UNSUPPORTED_GUIDANCE =
+    "When categories include Supported and Unsupported, or similar complementary labels, do not key as Supported a statement that uses might, may, likely, or probably. State warranted limitations as unresolved uncontrolled factors or as what the evidence does not establish, without hedge verbs that invite a second reading as soft causation.";
+  var ASSESSMENT_KEY_DEFENCE_ELICITATION_LEGACY =
     "Before returning a determinate item, check the keyed answer against only the scenario, stimulus, stem, options, and statements the learner can see. Consider whether a reasonable informed learner could justify another option, category, order, or pair. For a multiple-answer item, check an omitted option the visible evidence also supports and a selected option the visible evidence does not support. Where that ambiguity is material, revise the stem, the statement, the options, or the category boundaries so one key is defensible, or recast the performance as non-determinate. Do not return a confident key while another answer remains equally defensible. A stem that asks for the most justified or best supported conclusion may keep one key when the other options are less defensible on the visible evidence. Record the check as key_defence on the item with learner_evidence, resolution unambiguous or most_justified, and alternatives whose status is less_defensible. Do not use equally_defensible, omitted_but_defensible, included_without_support, or resolution unresolved. A hedged statement assigned to either side of a nested category boundary, such as claim and overclaim, stays ambiguous until the statement or the categories are revised.";
+  var ASSESSMENT_KEY_DEFENCE_ELICITATION =
+    ASSESSMENT_KEY_DEFENCE_ELICITATION_LEGACY +
+    " " +
+    ASSESSMENT_KEY_DEFENCE_SUPPORTED_UNSUPPORTED_GUIDANCE;
   var ASSESSMENT_KEY_DEFENCE_FORMATIVE =
     "Keep explanatory feedback on the same key as the elicitation. Do not name a different option or category as the answer. Do not introduce quantities, events, or assumptions the learner cannot see. If an item was revised, revise the feedback to match.";
   var ASSESSMENT_EVIDENCE_QUALIFICATION_ELICITATION =
@@ -37312,6 +37619,15 @@
     });
   }
 
+  function assessmentPackKeyDefenceElicitationContractPresent(text) {
+    var body = String(text || "");
+    return (
+      body.indexOf("key_defence") !== -1 &&
+      body.indexOf("Supported and Unsupported") !== -1 &&
+      /unresolved uncontrolled factors/i.test(body)
+    );
+  }
+
   function ensureAssessmentPackKeyDefencePrompt(text, step, wf) {
     var body = String(text || "");
     if (!workflowRecordIsAssessmentPack(wf)) return body;
@@ -37325,7 +37641,18 @@
       outputName === "assessment_evidence_elicitation" ||
       canonicalId === "step_design_evidence_elicitation"
     ) {
-      if (body.indexOf("key_defence") !== -1) return body;
+      // Full upgraded text starts with the legacy paragraph, so only rewrite when
+      // the Supported/Unsupported hedge contract is still missing.
+      if (assessmentPackKeyDefenceElicitationContractPresent(body)) return body;
+      if (body.indexOf(ASSESSMENT_KEY_DEFENCE_ELICITATION_LEGACY) !== -1) {
+        body = body
+          .split(ASSESSMENT_KEY_DEFENCE_ELICITATION_LEGACY)
+          .join(ASSESSMENT_KEY_DEFENCE_ELICITATION);
+      }
+      if (assessmentPackKeyDefenceElicitationContractPresent(body)) return body;
+      if (body.indexOf("key_defence") !== -1) {
+        return (body + "\n" + ASSESSMENT_KEY_DEFENCE_SUPPORTED_UNSUPPORTED_GUIDANCE).trim();
+      }
       return (body + "\n" + ASSESSMENT_KEY_DEFENCE_ELICITATION).trim();
     }
     if (
@@ -37397,21 +37724,26 @@
       /skip_reason/.test(body) &&
       /"generate"/.test(body) &&
       /"skip"/.test(body);
-    var hasCalibration = body.indexOf("does not need to convey instructional content") !== -1;
+    var hasCalibration =
+      body.indexOf("does not need to convey instructional content") !== -1 ||
+      body.indexOf("must not convey instructional content") !== -1 ||
+      body.indexOf("decorative and text-free") !== -1;
     if (hasDecision && hasCalibration) return body.trim();
     if (hasDecision) {
       return (
         body.trim() +
-        "\n\nAn editorial opening image serves contextual, atmospheric or orienting purposes. It does not need to convey instructional content. A short, text-based formative assessment is not automatically a reason to skip an editorial image. Consider whether a restrained, relevant visual could establish the professional setting or subject without revealing answers or directing learner judgements. Choose skip when no meaningful contextual image can be commissioned, not merely because the assessment questions are text-based. generate and skip both remain legitimate decisions. An image is not required for every assessment."
+        "\n\nAn editorial opening image is decorative and text-free: it serves contextual, atmospheric or orienting purposes through scene and composition only and must not convey instructional content. Do not commission text overlays, labels, titles, slogans or banners in the image. Set alt_text to \"\". A short, text-based formative assessment is not automatically a reason to skip an editorial image. Consider whether a restrained, relevant visual could establish the professional setting or subject without revealing answers or directing learner judgements. Choose skip when no meaningful contextual image can be commissioned, not merely because the assessment questions are text-based. generate and skip both remain legitimate decisions. An image is not required for every assessment."
       ).trim();
     }
     var block = [
       "Editorial opening image.",
       "Always emit editorial_opening_image at page root as a decision on every Assessment Pack page.",
       'decision "generate" includes subject, context, caption_intent, alt_text, and detailed_description.',
+      'Set alt_text to "" (empty). detailed_description describes the scene for production only.',
       'decision "skip" includes a short skip_reason when no meaningful contextual image can be commissioned, not merely because the assessment questions are text-based.',
       "Image generation is not mandatory. Making the decision is mandatory. An image is not required for every assessment.",
-      "An editorial opening image serves contextual, atmospheric or orienting purposes. It does not need to convey instructional content.",
+      "An editorial opening image is decorative and text-free: it serves contextual, atmospheric or orienting purposes through scene and composition only and must not convey instructional content.",
+      "Do not commission text overlays, caption panels, titles, labels, slogans, embedded typography, or explanatory banners in the image.",
       "A short, text-based formative assessment is not automatically a reason to skip an editorial image.",
       "Consider whether a restrained, relevant visual could establish the professional setting or subject without revealing answers or directing learner judgements.",
       "This image is editorial presentation. It is not an assessment stimulus, a component representation, or page graphics planning.",
@@ -37729,10 +38061,10 @@
           "Do not add Interactive learning-page sections, knowledge summaries, study tips, or page graphics planning. Page graphics planning means assessment stimuli and learning-page graphics. It does not apply to editorial_opening_image."
         );
         lines.push(
-          "Always emit editorial_opening_image. decision \"generate\" includes subject, context, caption_intent, alt_text, and detailed_description. decision \"skip\" includes a short skip_reason. generate and skip are both legitimate. Image generation is not mandatory. Making the decision is mandatory. An image is not required for every assessment."
+          "Always emit editorial_opening_image. decision \"generate\" includes subject, context, caption_intent, alt_text, and detailed_description. Set alt_text to \"\". decision \"skip\" includes a short skip_reason. generate and skip are both legitimate. Image generation is not mandatory. Making the decision is mandatory. An image is not required for every assessment."
         );
         lines.push(
-          "An editorial opening image serves contextual, atmospheric or orienting purposes. It does not need to convey instructional content. A short, text-based formative assessment is not automatically a reason to skip an editorial image. Consider whether a restrained, relevant visual could establish the professional setting or subject without revealing answers or directing learner judgements. Choose skip when no meaningful contextual image can be commissioned, not merely because the assessment questions are text-based."
+          "An editorial opening image is decorative and text-free: it serves contextual, atmospheric or orienting purposes through scene and composition only and must not convey instructional content. Do not commission text overlays, labels, titles, slogans or banners in the image. A short, text-based formative assessment is not automatically a reason to skip an editorial image. Consider whether a restrained, relevant visual could establish the professional setting or subject without revealing answers or directing learner judgements. Choose skip when no meaningful contextual image can be commissioned, not merely because the assessment questions are text-based."
         );
         lines.push(
           "Do not reproduce assessment components, keys, or representation commissions. Assessment stimuli stay on the assessment components. The editorial opening image is not an assessment stimulus."
@@ -37745,7 +38077,7 @@
       } else if (isPageEnrichmentV2WorkflowEnabled(wfForChain)) {
         if (partialOutputsMode) {
           lines.push(
-            "Sprint 58 Design Page partial output mode: return a partial page artefact containing title, page_synthesis, visual_affordance_schema_version, activities_visual_review[], visual_affordances[], optional sections[], and assembly_state."
+            "Sprint 58 Design Page partial output mode: return a partial page artefact containing title, page_synthesis, visual_affordance_schema_version, activities_visual_review[], visual_affordances[], required editorial_opening_image, optional sections[], and assembly_state."
           );
           lines.push(
             "PRISM does not embed stored prior step outputs in this mode. Use Copilot conversation context for upstream instructional continuity."
@@ -37755,12 +38087,15 @@
             lines.push(dpPartialExecNotes);
           }
           lines.push(
+            "Always emit editorial_opening_image at page root with decision \"generate\" and a suitable editorial brief (subject, context, caption_intent, alt_text, detailed_description). It is required for every newly authored Interactive Design Page. Commission a decorative, text-free opening scene for the resource as a whole (no text overlays, labels, titles, slogans or banners in the image); set alt_text to \"\"; distinguish it from Knowledge Summary diagrams and activity illustrations; do not reveal evidence, clues, interpretations or answers reserved for later activities. Do not use skip and do not omit the field."
+          );
+          lines.push(
             "Copilot output contract: return one complete pretty-printed fenced JSON partial page artefact (triple-backtick json fence, 2-space indentation). Include only Design Page owned fields — do not replay the full upstream page. No prose before the fence. After the closing fence emit exactly one runner footer line: " +
               exactFooterLine +
               ". No other text after the footer line."
           );
           lines.push(
-            "Design Page v2 partial constraints: modify only Design Page owned fields (title, page_synthesis, visual_affordance_schema_version, activities_visual_review, visual_affordances, optional sections[], assembly_state). Author a concise learner-facing title — do not copy the request/brief. Orientation bodies must not repeat renderer-owned headings (Overview, Welcome, Learning purpose, Knowledge summary, Study tips). Every visual_affordances[] row must include non-empty rationale (pedagogically warranted) plus the Sprint 38 required children for that visual_decision. Do not regenerate activities, materials, learning_outcomes, episode_plans, or learning_sequence."
+            "Design Page v2 partial constraints: modify only Design Page owned fields (title, page_synthesis, visual_affordance_schema_version, activities_visual_review, visual_affordances, editorial_opening_image, optional sections[], assembly_state). editorial_opening_image is required with decision \"generate\". Author a concise learner-facing title — do not copy the request/brief. Orientation bodies must not repeat renderer-owned headings (Overview, Welcome, Learning purpose, Knowledge summary, Study tips). Every visual_affordances[] row must include non-empty rationale (pedagogically warranted) plus the Sprint 38 required children for that visual_decision. Do not regenerate activities, materials, learning_outcomes, episode_plans, or learning_sequence."
           );
         } else {
           lines.push(
@@ -56553,44 +56888,72 @@
       els.utilitiesVisualJobsPanel.classList.toggle("hidden", !isAuthoringView);
       if (isAuthoringView) {
         renderUtilitiesVisualJobsView();
+      } else {
+        refreshUtilitiesPipelineDetailsHost("");
       }
+    } else if (!isAuthoringView) {
+      refreshUtilitiesPipelineDetailsHost("");
     }
     if (els.utilitiesOutputViewLearnerBtn) {
       els.utilitiesOutputViewLearnerBtn.setAttribute(
         "aria-selected",
         view === "learner_page" ? "true" : "false"
       );
-      els.utilitiesOutputViewLearnerBtn.classList.toggle("is-active", view === "learner_page");
+      els.utilitiesOutputViewLearnerBtn.classList.toggle("active", view === "learner_page");
     }
     if (els.utilitiesOutputViewVisualJobsBtn) {
       els.utilitiesOutputViewVisualJobsBtn.setAttribute(
         "aria-selected",
         view === "visual_jobs" ? "true" : "false"
       );
-      els.utilitiesOutputViewVisualJobsBtn.classList.toggle("is-active", view === "visual_jobs");
+      els.utilitiesOutputViewVisualJobsBtn.classList.toggle("active", view === "visual_jobs");
     }
     if (els.utilitiesOutputViewVideoBtn) {
       els.utilitiesOutputViewVideoBtn.setAttribute(
         "aria-selected",
         view === "video" ? "true" : "false"
       );
-      els.utilitiesOutputViewVideoBtn.classList.toggle("is-active", view === "video");
+      els.utilitiesOutputViewVideoBtn.classList.toggle("active", view === "video");
     }
     if (els.utilitiesOutputViewResourcesBtn) {
       els.utilitiesOutputViewResourcesBtn.setAttribute(
         "aria-selected",
         view === "resources" ? "true" : "false"
       );
-      els.utilitiesOutputViewResourcesBtn.classList.toggle("is-active", view === "resources");
+      els.utilitiesOutputViewResourcesBtn.classList.toggle("active", view === "resources");
+    }
+  }
+
+  function refreshUtilitiesPipelineDetailsHost(html) {
+    if (!els.utilitiesPipelineDetailsHost) return;
+    var markup = String(html || "");
+    els.utilitiesPipelineDetailsHost.innerHTML = markup;
+    if (markup) {
+      els.utilitiesPipelineDetailsHost.hidden = false;
+      els.utilitiesPipelineDetailsHost.removeAttribute("hidden");
+    } else {
+      els.utilitiesPipelineDetailsHost.hidden = true;
+      els.utilitiesPipelineDetailsHost.setAttribute("hidden", "");
     }
   }
 
   function renderUtilitiesVisualJobsView() {
     var mod = getUtilitiesVisualJobsWorkspaceMod();
     if (!mod || !els.utilitiesVisualJobsPanel) return;
-    els.utilitiesVisualJobsPanel.innerHTML = mod.renderVisualJobsWorkspaceHtml(
-      state.utilitiesOutputWorkspace || emptyUtilitiesOutputWorkspaceState()
-    );
+    var workspaceState = state.utilitiesOutputWorkspace || emptyUtilitiesOutputWorkspaceState();
+    els.utilitiesVisualJobsPanel.innerHTML = mod.renderVisualJobsWorkspaceHtml(workspaceState);
+    var pipelineHtml =
+      typeof mod.renderPipelineDetailsHtml === "function"
+        ? mod.renderPipelineDetailsHtml(workspaceState)
+        : "";
+    var activeView =
+      workspaceState &&
+      (workspaceState.activeView === "visual_jobs" ||
+        workspaceState.activeView === "video" ||
+        workspaceState.activeView === "resources")
+        ? workspaceState.activeView
+        : "learner_page";
+    refreshUtilitiesPipelineDetailsHost(activeView === "visual_jobs" ? pipelineHtml : "");
     bindUtilitiesVisualJobsInteractionHandlers();
   }
 
@@ -56653,13 +57016,6 @@
         this.focus();
       });
     }
-    var viewLearnerButtons = els.utilitiesVisualJobsPanel.querySelectorAll("[data-view-learner-page]");
-    for (i = 0; i < viewLearnerButtons.length; i += 1) {
-      var viewBtn = viewLearnerButtons[i];
-      if (viewBtn.getAttribute("data-view-bound") === "1") continue;
-      viewBtn.setAttribute("data-view-bound", "1");
-      viewBtn.addEventListener("click", handleUtilitiesVisualJobViewLearnerPage);
-    }
     var saveVideoButtons = els.utilitiesVisualJobsPanel.querySelectorAll("[data-save-video-embed]");
     for (i = 0; i < saveVideoButtons.length; i += 1) {
       var saveVideoBtn = saveVideoButtons[i];
@@ -56717,12 +57073,30 @@
     var copyKind = btn.getAttribute("data-copy-kind") || "human";
     var mod = getUtilitiesVisualJobsWorkspaceMod();
     if (!mod) return;
-    var text =
-      copyKind === "canonical" && typeof mod.getBriefGenerationInstruction === "function"
-        ? mod.getBriefGenerationInstruction(state.utilitiesOutputWorkspace, briefId)
-        : typeof mod.getBriefHumanPrompt === "function"
-          ? mod.getBriefHumanPrompt(state.utilitiesOutputWorkspace, briefId)
-          : mod.getBriefGenerationInstruction(state.utilitiesOutputWorkspace, briefId);
+    var text = "";
+    var announceOk = "Human prompt copied to clipboard.";
+    if (copyKind === "validation") {
+      text =
+        typeof mod.getImageValidationPrompt === "function"
+          ? mod.getImageValidationPrompt()
+          : String(mod.IMAGE_VALIDATION_PROMPT || "");
+      announceOk = "Validation prompt copied to clipboard.";
+    } else if (
+      copyKind === "canonical" &&
+      typeof mod.getBriefGenerationInstruction === "function"
+    ) {
+      text = mod.getBriefGenerationInstruction(state.utilitiesOutputWorkspace, briefId);
+      announceOk = "Canonical prompt copied to clipboard.";
+    } else if (typeof mod.getBriefHumanPrompt === "function") {
+      text = mod.getBriefHumanPrompt(state.utilitiesOutputWorkspace, briefId);
+      announceOk = "Human prompt copied to clipboard.";
+    } else {
+      text = mod.getBriefGenerationInstruction(state.utilitiesOutputWorkspace, briefId);
+      announceOk =
+        copyKind === "canonical"
+          ? "Canonical prompt copied to clipboard."
+          : "Human prompt copied to clipboard.";
+    }
     var originalLabel = btn.textContent;
     mod
       .copyVisualJobPrompt(text, navigator.clipboard)
@@ -56730,10 +57104,7 @@
         if (result && result.ok) {
           btn.textContent = "Copied";
           if (els.utilitiesCopyAnnounce) {
-            els.utilitiesCopyAnnounce.textContent =
-              copyKind === "canonical"
-                ? "Canonical prompt copied to clipboard."
-                : "Human prompt copied to clipboard.";
+            els.utilitiesCopyAnnounce.textContent = announceOk;
           }
           setTimeout(function () {
             btn.textContent = originalLabel;
@@ -57611,13 +57982,66 @@
       });
   }
 
-  function getUtilityOutputBaseName(parsed, userProvidedName) {
-    var rawName = String(userProvidedName || "").trim();
-    if (rawName) return slugify(rawName);
+  function sanitizeUtilitiesExportFilenameStem(value) {
+    var api =
+      (typeof globalThis !== "undefined" && globalThis.PRISM_LEARNER_PACKAGE) ||
+      (typeof window !== "undefined" && window.PRISM_LEARNER_PACKAGE) ||
+      null;
+    if (api && typeof api.sanitizeExportFilenameStem === "function") {
+      return api.sanitizeExportFilenameStem(value, 80);
+    }
+    // Fallback mirrors learner-package.sanitizeExportFilenameStem when the module is absent.
+    var stem = String(value || "")
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/-+/g, "-")
+      .replace(/^-+|-+$/g, "");
+    if (!stem) return "";
+    if (stem.length <= 80) return stem;
+    var truncated = stem.slice(0, 80);
+    var lastHyphen = truncated.lastIndexOf("-");
+    if (lastHyphen >= 40) truncated = truncated.slice(0, lastHyphen);
+    truncated = truncated.replace(/-+$/g, "");
+    return truncated || stem.slice(0, 80).replace(/-+$/g, "");
+  }
+
+  function titleForUtilitiesExportFilename(title) {
+    return String(title || "")
+      .replace(/^learning\s+journey:\s*/i, "")
+      .trim();
+  }
+
+  function getUtilityOutputBaseName(parsed, _ignoredUserProvidedName) {
+    var title = titleForUtilitiesExportFilename(
+      parsed && parsed.title != null ? parsed.title : ""
+    );
+    var fromTitle = sanitizeUtilitiesExportFilenameStem(title);
+    if (fromTitle) return fromTitle;
     var artefactType = String(
       parsed && parsed.artifact_type != null ? parsed.artifact_type : "artifact"
     ).trim();
-    return slugify(artefactType || "artifact");
+    return sanitizeUtilitiesExportFilenameStem(artefactType || "artifact") || "rendered-output";
+  }
+
+  /**
+   * Resolve the export basename from the assembled page title / last export.
+   * Authoring no longer offers a user-editable filename field.
+   */
+  function resolveUtilitiesDownloadBaseName() {
+    var snapshot =
+      state.utilitiesOutputWorkspace && state.utilitiesOutputWorkspace.assembledPageSnapshot
+        ? state.utilitiesOutputWorkspace.assembledPageSnapshot
+        : null;
+    if (snapshot) {
+      var fromPage = getUtilityOutputBaseName(snapshot, "");
+      if (fromPage) return fromPage;
+    }
+    var last = String(state.utilitiesLastFileName || "")
+      .trim()
+      .replace(/\.(html|zip|json)$/i, "");
+    var fromLast = sanitizeUtilitiesExportFilenameStem(last);
+    if (fromLast) return fromLast;
+    return "rendered-output";
   }
 
   function runUtilityRendererByPlan(plan, parsed, baseName, renderOptions) {
@@ -57668,23 +58092,24 @@
   }
 
   function getUtilityHtmlDownloadName(baseName) {
-    var safeBase = String(baseName || "").trim() || "rendered-output";
-    return slugify(safeBase) + ".html";
+    var safeBase =
+      sanitizeUtilitiesExportFilenameStem(String(baseName || "").replace(/\.(html|zip|json)$/i, "")) ||
+      "rendered-output";
+    return safeBase + ".html";
   }
 
   function getUtilityLearnerPackageZipName(baseName) {
-    var api =
-      (typeof globalThis !== "undefined" && globalThis.PRISM_LEARNER_PACKAGE) ||
-      (typeof window !== "undefined" && window.PRISM_LEARNER_PACKAGE) ||
-      null;
-    var safeBase = String(baseName || "")
-      .trim()
-      .replace(/\.html$/i, "");
-    if (!safeBase) safeBase = "rendered-output";
-    if (api && typeof api.buildLearnerPackageZipBasename === "function") {
-      return api.buildLearnerPackageZipBasename(safeBase);
-    }
-    return slugify(safeBase) + "-learner-package.zip";
+    var safeBase =
+      sanitizeUtilitiesExportFilenameStem(String(baseName || "").replace(/\.(html|zip|json)$/i, "")) ||
+      "rendered-output";
+    return safeBase + ".zip";
+  }
+
+  function getUtilityJsonDownloadName(baseName) {
+    var safeBase =
+      sanitizeUtilitiesExportFilenameStem(String(baseName || "").replace(/\.(html|zip|json)$/i, "")) ||
+      "rendered-output";
+    return safeBase + ".json";
   }
 
   /**
@@ -57696,15 +58121,15 @@
   function syncUtilitiesUnifiedJourneyDownloadControl() {
     var packageBtn = els.utilitiesDownloadPackageBtn;
     if (packageBtn) {
-      if (isLearningJourneyCommissioningPreviewActive()) {
-        packageBtn.textContent = "Journey";
-        packageBtn.title = "Download Learning Journey";
-        packageBtn.setAttribute("aria-label", "Download Learning Journey");
-      } else {
-        packageBtn.textContent = "ZIP";
-        packageBtn.title = "Download Resource";
-        packageBtn.setAttribute("aria-label", "Download Resource");
-      }
+      // Consistent ZIP label for ordinary resources and Learning Journey parents.
+      packageBtn.textContent = "ZIP";
+      packageBtn.title = "Download ZIP";
+      packageBtn.setAttribute("aria-label", "Download ZIP");
+    }
+    if (els.utilitiesDownloadHtmlBtn) {
+      els.utilitiesDownloadHtmlBtn.textContent = "HTML";
+      els.utilitiesDownloadHtmlBtn.title = "Download HTML";
+      els.utilitiesDownloadHtmlBtn.setAttribute("aria-label", "Download HTML");
     }
     // Gracefully hide any leftover unified control if present in older markup.
     var legacyUnified = els.utilitiesDownloadUnifiedJourneyBtn;
@@ -58736,10 +59161,7 @@
     }
     state.visualAssetPreviewRevision += 1;
     var generateRevision = state.visualAssetPreviewRevision;
-    var baseName = getUtilityOutputBaseName(
-      parsed,
-      els.utilitiesFileName ? els.utilitiesFileName.value : ""
-    );
+    var baseName = getUtilityOutputBaseName(parsed, "");
     if (String(parsed.artifact_type || "").toLowerCase() === "page") {
       refreshUtilitiesOutputWorkspaceFromPage(parsed, { activeView: "learner_page" });
     } else {
@@ -58758,7 +59180,7 @@
     return preRenderPromise
       .then(function () {
         return renderUtilitiesArtefactHtmlAsync(parsed, {
-      selectedFormat: els.utilitiesOutputFormat ? els.utilitiesOutputFormat.value : "html",
+      selectedFormat: "html",
       baseName: baseName,
       applyCompositionValidation: false,
       skipWorkflowAssembly: String(state.utilitiesSourceMode || "") !== "assembled_current_run",
@@ -59051,7 +59473,8 @@
         return;
       }
       var htmlText = String(resolved.html || "").trim();
-      var fileName = String(state.utilitiesLastFileName || "rendered-output.html").trim();
+      var fileName = getUtilityHtmlDownloadName(resolveUtilitiesDownloadBaseName());
+      state.utilitiesLastFileName = fileName;
       if (Array.isArray(state.utilitiesDownloadTestLog)) {
         state.utilitiesDownloadTestLog.push("html");
       }
@@ -60110,13 +60533,14 @@
     mathLiveAssets,
     mathJaxAssets
   ) {
+    var baseName = resolveUtilitiesDownloadBaseName();
     var builtZip = buildLearnerPackageZipBytesFromParts({
       html: exportHtml,
       visualAssetManifest: manifest,
       additionalResourceAssets: additionalResourceAssets,
       mathLivePackageAssets: mathLiveAssets,
       mathJaxPackageAssets: mathJaxAssets,
-      pageSlug: String(state.utilitiesLastFileName || "rendered-output").replace(/\.html$/i, ""),
+      pageSlug: baseName,
       builtAt: new Date().toISOString()
     });
     if (!builtZip || !builtZip.ok || !builtZip.bytes) {
@@ -60128,9 +60552,8 @@
       return builtZip || { ok: false };
     }
 
-    var zipName = getUtilityLearnerPackageZipName(
-      state.utilitiesLastFileName || "rendered-output"
-    );
+    state.utilitiesLastFileName = getUtilityHtmlDownloadName(baseName);
+    var zipName = getUtilityLearnerPackageZipName(baseName);
     if (Array.isArray(state.utilitiesDownloadTestLog)) {
       state.utilitiesDownloadTestLog.push("zip");
     }
@@ -60280,8 +60703,6 @@
   function handleUtilitiesClear() {
     revokeAllVisualAssetObjectUrls();
     if (els.utilitiesJsonInput) els.utilitiesJsonInput.value = "";
-    if (els.utilitiesFileName) els.utilitiesFileName.value = "";
-    if (els.utilitiesOutputFormat) els.utilitiesOutputFormat.value = "html";
     if (els.utilitiesPreviewFrame) els.utilitiesPreviewFrame.srcdoc = "";
     if (els.utilitiesPreviewError) {
       els.utilitiesPreviewError.classList.add("hidden");
@@ -60617,11 +61038,6 @@
     if (els.workflowList) {
       els.workflowList.addEventListener("click", handleWorkflowListClick);
     }
-    if (els.workflowBackToSourceJourneyBtn) {
-      els.workflowBackToSourceJourneyBtn.addEventListener("click", function () {
-        handleBackToSourceLearningJourney();
-      });
-    }
     var debouncedWorkflowListFilter =
       window.Utils && typeof window.Utils.debounce === "function"
         ? window.Utils.debounce(function () {
@@ -60719,15 +61135,21 @@
                 return String(row && row.id ? row.id : "") === sid;
               }) || null;
           }
+          var navigateDespiteGamVerification = false;
           if (!isWorkflowRunStepCaptureReadyForAdvance(stepRow || {}, sid, wf || {}, currentLi)) {
-            updateRunStepOutputStatus(currentLi);
-            showToast(
-              workflowRunStepHasBlockingCaptureErrors(sid)
-                ? "Fix validation errors in this step's output artefact before continuing."
-                : "Paste a valid output artefact for this step before continuing.",
-              "error"
-            );
-            return;
+            if (canNavigateForwardDespiteGamVerification(sid, wf || {})) {
+              // Inspect existing downstream content only — do not mark GAM verified/complete.
+              navigateDespiteGamVerification = true;
+            } else {
+              updateRunStepOutputStatus(currentLi);
+              showToast(
+                workflowRunStepHasBlockingCaptureErrors(sid)
+                  ? "Fix validation errors in this step's output artefact before continuing."
+                  : "Paste a valid output artefact for this step before continuing.",
+                "error"
+              );
+              return;
+            }
           }
           var outArea = currentLi.querySelector('[data-field="runStepOutput"]');
           var body = outArea ? String(outArea.value || "").trim() : "";
@@ -60935,7 +61357,7 @@
             );
             return;
           }
-          if (sid) {
+          if (sid && !navigateDespiteGamVerification) {
             state.workflowRunStepCompleted[sid] = true;
           }
           updateRunStepOutputStatus(currentLi);
@@ -61590,7 +62012,22 @@
     prismTestApi.resolveWorkflowSelectionForCurrentViewForTest =
       resolveWorkflowSelectionForCurrentView;
     prismTestApi.renderWorkflowListForTest = renderWorkflowList;
-    prismTestApi.handleBackToSourceLearningJourneyForTest = handleBackToSourceLearningJourney;
+    prismTestApi.resolveWorkflowListProductLabelForTest = function (workflow) {
+      var presentation = resolveWorkflowListPresentationLib();
+      if (!presentation || typeof presentation.resolveWorkflowListProductLabel !== "function") {
+        return "Type unknown";
+      }
+      return presentation.resolveWorkflowListProductLabel(workflow, {
+        familyMod: getFirstClassWorkflowFamilyMod()
+      });
+    };
+    prismTestApi.resolveWorkflowListAuthoringStatusForTest =
+      resolveWorkflowListAuthoringStatusForWorkflow;
+    prismTestApi.setWorkflowRunStateStoreForTest = function (store) {
+      saveWorkflowRunStateStore(store && typeof store === "object" ? store : {}, {
+        source: "setWorkflowRunStateStoreForTest"
+      });
+    };
     prismTestApi.setLearningJourneyListExpandedForParentForTest =
       setLearningJourneyListExpandedForParent;
     prismTestApi.expandLearningJourneyParentInWorkflowListForTest =
@@ -61601,7 +62038,6 @@
         ? Object.assign({}, state.learningJourneyListExpandedById)
         : {};
     };
-    prismTestApi.refreshWorkflowSourceJourneyNavForTest = refreshWorkflowSourceJourneyNav;
     prismTestApi.syncWorkflowRunStepIdentityPlacementForTest =
       syncWorkflowRunStepIdentityPlacement;
     prismTestApi.normalizeActivityInteractionMetadata = normalizeActivityInteractionMetadata;
@@ -61765,6 +62201,8 @@
     prismTestApi.isWorkflowRunStepCaptureReadyForAdvance = isWorkflowRunStepCaptureReadyForAdvance;
     prismTestApi.isWorkflowRunAtFinalStep = isWorkflowRunAtFinalStep;
     prismTestApi.isWorkflowRunContinueToAuthoringEnabled = isWorkflowRunContinueToAuthoringEnabled;
+    prismTestApi.workflowSupportsAuthoringDestinationForTest = workflowSupportsAuthoringDestination;
+    prismTestApi.findDesignPageStepForWorkflowForTest = findDesignPageStepForWorkflow;
     prismTestApi.workflowHasPersistedDesignPageResultForTest = workflowHasPersistedDesignPageResult;
     prismTestApi.workflowStepHasPersistedRunDataForTest = workflowStepHasPersistedRunData;
     prismTestApi.buildWorkflowRunProgressSegmentsForTest = buildWorkflowRunProgressSegments;
@@ -61900,6 +62338,13 @@
       syncWorkflowFactoryDesignAssistantChrome();
     };
     prismTestApi.resolveWorkflowRunNextStepDisabledReason = resolveWorkflowRunNextStepDisabledReason;
+    prismTestApi.canNavigateForwardDespiteGamVerificationForTest =
+      canNavigateForwardDespiteGamVerification;
+    prismTestApi.workflowHasSubstantiveDownstreamContentAfterStepForTest =
+      workflowHasSubstantiveDownstreamContentAfterStep;
+    prismTestApi.workflowRunCaptureLooksSubstantiveForTest = workflowRunCaptureLooksSubstantive;
+    prismTestApi.workflowStepHasSubstantiveRunContentForTest = workflowStepHasSubstantiveRunContent;
+    prismTestApi.gamMaterialsVerificationBlocksAdvanceForTest = gamMaterialsVerificationBlocksAdvance;
     prismTestApi.workflowRunStepHasBlockingCaptureErrors = workflowRunStepHasBlockingCaptureErrors;
     prismTestApi.sanitizePrismRunCapturedOutput = sanitizePrismRunCapturedOutput;
     prismTestApi.validateStrictJsonWorkflowRunStepCaptureForTest =
@@ -62110,6 +62555,23 @@
       return String(state.utilitiesLastHtml || "");
     };
     prismTestApi.setUtilitiesDownloadControlsDisabledForTest = setUtilitiesDownloadControlsDisabled;
+    prismTestApi.getUtilityOutputBaseNameForTest = getUtilityOutputBaseName;
+    prismTestApi.resolveUtilitiesDownloadBaseNameForTest = resolveUtilitiesDownloadBaseName;
+    prismTestApi.getUtilityHtmlDownloadNameForTest = getUtilityHtmlDownloadName;
+    prismTestApi.getUtilityLearnerPackageZipNameForTest = getUtilityLearnerPackageZipName;
+    prismTestApi.getUtilityJsonDownloadNameForTest = getUtilityJsonDownloadName;
+    prismTestApi.sanitizeUtilitiesExportFilenameStemForTest = sanitizeUtilitiesExportFilenameStem;
+    prismTestApi.setUtilitiesFileNameForTest = function () {
+      // Filename field removed; kept as a no-op for older tests.
+    };
+    prismTestApi.getUtilitiesFileNameForTest = function () {
+      return "";
+    };
+    prismTestApi.setUtilitiesAssembledPageSnapshotForTest = function (page) {
+      state.utilitiesOutputWorkspace = state.utilitiesOutputWorkspace || emptyUtilitiesOutputWorkspaceState();
+      state.utilitiesOutputWorkspace.assembledPageSnapshot =
+        page && typeof page === "object" ? page : null;
+    };
     prismTestApi.getUtilitiesDownloadControlsStateForTest = function () {
       var legacyUnified = els.utilitiesDownloadUnifiedJourneyBtn;
       return {
@@ -62128,7 +62590,10 @@
         unifiedHidden: !legacyUnified
           ? true
           : !!(
-              legacyUnified.classList.contains("hidden") || legacyUnified.hasAttribute("hidden")
+              (legacyUnified.classList && legacyUnified.classList.contains("hidden")) ||
+              (typeof legacyUnified.hasAttribute === "function" &&
+                legacyUnified.hasAttribute("hidden")) ||
+              !!legacyUnified.hidden
             ),
         htmlLabel: els.utilitiesDownloadHtmlBtn
           ? String(els.utilitiesDownloadHtmlBtn.textContent || "").trim()
@@ -62437,6 +62902,15 @@
       var mod = getUtilitiesVisualJobsWorkspaceMod();
       if (!mod) return Promise.resolve({ ok: false, error: "module_unavailable" });
       var text = mod.getBriefGenerationInstruction(state.utilitiesOutputWorkspace, briefId);
+      return mod.copyVisualJobPrompt(text, clipboard);
+    };
+    prismTestApi.copyVisualJobValidationPromptForTest = function (clipboard) {
+      var mod = getUtilitiesVisualJobsWorkspaceMod();
+      if (!mod) return Promise.resolve({ ok: false, error: "module_unavailable" });
+      var text =
+        typeof mod.getImageValidationPrompt === "function"
+          ? mod.getImageValidationPrompt()
+          : String(mod.IMAGE_VALIDATION_PROMPT || "");
       return mod.copyVisualJobPrompt(text, clipboard);
     };
     prismTestApi.getBriefHumanPromptForTest = function (briefId) {
@@ -62847,6 +63321,15 @@
       });
     };
     prismTestApi.GAM_VERIFICATION_COPY = GAM_VERIFICATION_COPY;
+    prismTestApi.GAM_VERIFICATION_REPAIR_MARKERS = GAM_VERIFICATION_REPAIR_MARKERS;
+    prismTestApi.stripGamVerificationRepairSectionFromPromptForTest =
+      stripGamVerificationRepairSectionFromPrompt;
+    prismTestApi.appendGamVerificationRepairSectionToGenerationPromptForTest =
+      appendGamVerificationRepairSectionToGenerationPrompt;
+    prismTestApi.applyGamVerificationRepairToGenerationPromptIfNeededForTest =
+      applyGamVerificationRepairToGenerationPromptIfNeeded;
+    prismTestApi.resolveGamGenerationCopyLabelForStepForTest =
+      resolveGamGenerationCopyLabelForStep;
     prismTestApi.setWorkflowRunGamSuitabilityReviewRawForTest = function (stepId, raw) {
       var sid = String(stepId || "").trim();
       state.workflowRunGamSuitabilityReviewRaw = state.workflowRunGamSuitabilityReviewRaw || {};

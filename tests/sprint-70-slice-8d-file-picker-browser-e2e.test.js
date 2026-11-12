@@ -484,7 +484,7 @@ test("Slice 8D browser E2E: Choose image → learner iframe shows decoded PNG", 
       a1BriefId
     );
 
-    await page.click('[data-view-learner-page="1"]');
+    await page.click("#utilitiesOutputViewLearnerBtn");
     await page.waitForFunction(() => {
       const frame = document.getElementById("utilitiesPreviewFrame");
       return frame && !frame.classList.contains("hidden");

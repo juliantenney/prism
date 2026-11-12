@@ -65,12 +65,13 @@ function createElementStub(id) {
   };
   if (id === "utilitiesDownloadPackageBtn") {
     stub.textContent = "ZIP";
-    stub.title = "Download Resource";
-    stub.setAttribute("aria-label", "Download Resource");
+    stub.title = "Download ZIP";
+    stub.setAttribute("aria-label", "Download ZIP");
   }
   if (id === "utilitiesDownloadHtmlBtn") {
     stub.textContent = "HTML";
-    stub.setAttribute("aria-label", "HTML only (.html)");
+    stub.title = "Download HTML";
+    stub.setAttribute("aria-label", "Download HTML");
   }
   return stub;
 }
@@ -149,12 +150,13 @@ test("M5/S96: Learning Journey ZIP routes to unified packaging without console-o
   assert.match(appJs, /handleLearningJourneyLearnerPackageDownloadForTest/);
 });
 
-test("M5/S96: package control is labelled Download Learning Journey only in LJ preview", () => {
+test("M5/S96: package control stays labelled ZIP for resource and Learning Journey preview", () => {
   const { api } = loadPrismUi();
   const before = api.getUtilitiesDownloadControlsStateForTest();
   assert.equal(before.unifiedHidden, true);
   assert.equal(before.unifiedControlPresent, false);
-  assert.match(before.packageAriaLabel, /Download Resource/i);
+  assert.match(before.packageAriaLabel, /^Download ZIP$/i);
+  assert.equal(before.packageLabel, "ZIP");
 
   const journey = ljDesign.buildLearningJourneyDesignPageFixture({
     title: "M5 publishing journey",
@@ -194,11 +196,11 @@ test("M5/S96: package control is labelled Download Learning Journey only in LJ p
   api.setUtilitiesDownloadControlsDisabledForTest(false);
   const shown = api.getUtilitiesDownloadControlsStateForTest();
   assert.equal(shown.unifiedHidden, true);
-  assert.match(shown.packageAriaLabel, /^Download Learning Journey$/i);
-  assert.equal(shown.packageLabel, "Journey");
+  assert.match(shown.packageAriaLabel, /^Download ZIP$/i);
+  assert.equal(shown.packageLabel, "ZIP");
 
   api.activateLearningJourneyCommissioningPreviewForTest(null);
   const hidden = api.getUtilitiesDownloadControlsStateForTest();
-  assert.match(hidden.packageAriaLabel, /Download Resource/i);
+  assert.match(hidden.packageAriaLabel, /^Download ZIP$/i);
   assert.equal(hidden.packageLabel, "ZIP");
 });

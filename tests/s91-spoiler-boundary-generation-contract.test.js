@@ -205,6 +205,14 @@ test("Sprint 38 Design Page prompt contract requires complete booleans and rejec
 
 test("Interactive and Expository Design Page contracts share the complete spoiler_boundary requirement", () => {
   const interactive = dpPartial.buildDesignPagePartialContractBlock();
+  assert.match(
+    interactive,
+    /detailed_description \/ image parity/i
+  );
+  assert.match(
+    interactive,
+    /same inspectable relationships as must_show/i
+  );
   assert.match(interactive, /hide_answers/);
   assert.match(interactive, /hide_classification_keys/);
   assert.match(interactive, /hide_model_solution/);

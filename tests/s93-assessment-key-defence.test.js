@@ -283,9 +283,111 @@ test("elicitation requires a defence of determinate keys and formative feedback 
   assert.match(elicitationPrompt, /omitted option the visible evidence also supports/);
   assert.match(elicitationPrompt, /nested category boundary/);
   assert.match(elicitationPrompt, /most justified or best supported conclusion/);
+  assert.match(elicitationPrompt, /Supported and Unsupported/);
+  assert.match(elicitationPrompt, /unresolved uncontrolled factors/);
   assert.match(formativePrompt, /Keep explanatory feedback on the same key as the elicitation/);
   assert.match(designPrompt, /Do not rewrite prompts, options, keys/);
   assert.equal(designPrompt.indexOf("key_defence"), -1);
+});
+
+test("C3-style hedged Supported limitation fails capture until the statement is unambiguous", () => {
+  const hedged =
+    "The survey found a difference in reported good concentration between the groups, but factors such as sleep, motivation, workload or study environment might also help explain it.";
+  const clear =
+    "The survey found a difference in reported good concentration between the groups. Sleep, motivation, workload and study environment were not controlled, so alternative explanations remain unresolved.";
+
+  function limitationItem(statement) {
+    return {
+      item_id: "item_04",
+      order: 1,
+      form: "classification",
+      prompt: {
+        stem: "Classify this candidate interpretation of the observational survey.",
+        categories: [
+          { id: "supported", label: "Supported" },
+          { id: "misleading", label: "Misleading" },
+          { id: "unsupported", label: "Unsupported" }
+        ],
+        items: [{ id: "statement_04", text: statement }]
+      },
+      judgement: { assignments: { statement_04: "supported" }, auto_checkable: true },
+      auto_checkable: true,
+      key_defence: {
+        learner_evidence:
+          "The survey reports a group difference and identifies uncontrolled factors. The statement must not invite a soft causal reading.",
+        resolution: "unambiguous",
+        alternatives: [
+          {
+            category_id: "misleading",
+            status: "less_defensible",
+            reason: "The intended reading preserves the observed difference and unresolved limitations."
+          },
+          {
+            category_id: "unsupported",
+            status: "less_defensible",
+            reason: "The study account supports the unresolved-limitation reading."
+          }
+        ]
+      },
+      feedback_note: "The study supports the observed difference and unresolved alternative explanations."
+    };
+  }
+
+  const { api } = loadPrismAppJsTestApi({
+    extraLibs: ["lib/assessment-component-forms.js", "lib/assessment-pack-canonical.js"]
+  });
+  const workflow = {
+    id: "c3-statement-04",
+    name: "C3 statement 04",
+    product: "assessment_pack",
+    ldCreateOutputType: "assessment_pack",
+    steps: [
+      {
+        id: "step-elicit",
+        title: "Design Evidence Elicitation",
+        canonical_step_id: "step_design_evidence_elicitation",
+        outputName: "assessment_evidence_elicitation",
+        prompt_source_type: "local_override",
+        override_prompt_body: "Author the determinate items. Return JSON only."
+      }
+    ]
+  };
+  api.setWorkflowsForTest([workflow]);
+  api.setSelectedWorkflowIdForTest(workflow.id);
+  const step = workflow.steps[0];
+  const live = api.buildWorkflowStepInstructions(step, 1, null);
+  assert.match(live, /Supported and Unsupported/);
+  assert.match(live, /unresolved uncontrolled factors/);
+
+  function elicitationArtefact(statement) {
+    return {
+      artifact_type: "assessment_evidence_elicitation",
+      purpose: purpose(),
+      learner_context: { depends_on_prior_work: false },
+      elicitations: [
+        elicitation("e0", limitationItem(clear)),
+        elicitation("e1", limitationItem(clear)),
+        elicitation("e2", limitationItem(clear)),
+        elicitation("e3", limitationItem(statement))
+      ]
+    };
+  }
+
+  const rejected = api.validateStrictJsonWorkflowRunStepCaptureForTest(
+    JSON.stringify(elicitationArtefact(hedged)),
+    step,
+    workflow
+  );
+  assert.equal(rejected.ok, false);
+  assert.match(String(rejected.message || ""), /statement_04/);
+  assert.match(String(rejected.message || ""), /hedged statement|defensible/);
+
+  const accepted = api.validateStrictJsonWorkflowRunStepCaptureForTest(
+    JSON.stringify(elicitationArtefact(clear)),
+    step,
+    workflow
+  );
+  assert.equal(accepted.ok, true, JSON.stringify(accepted));
 });
 
 test("a hedged classification on a nested category boundary is rejected until the statement is revised", () => {
@@ -547,4 +649,124 @@ test("a stored elicitation prompt and a captured stage output apply the same che
     page([elicitation("e1", correctedClassification())])
   );
   assert.equal(designAccepted.ok, true, designAccepted.errors.join("; "));
+});
+
+function countMatches(text, pattern) {
+  const matches = String(text || "").match(new RegExp(pattern, "g"));
+  return matches ? matches.length : 0;
+}
+
+function assessmentPackElicitationWorkflow(overrideBody) {
+  return {
+    id: "key-defence-copy",
+    name: "Key defence copy",
+    product: "assessment_pack",
+    ldCreateOutputType: "assessment_pack",
+    steps: [
+      {
+        id: "step-elicit",
+        title: "Design Evidence Elicitation",
+        canonical_step_id: "step_design_evidence_elicitation",
+        outputName: "assessment_evidence_elicitation",
+        prompt_source_type: "local_override",
+        override_prompt_body: overrideBody
+      }
+    ]
+  };
+}
+
+const LEGACY_KEY_DEFENCE_ELICITATION =
+  "Before returning a determinate item, check the keyed answer against only the scenario, stimulus, stem, options, and statements the learner can see. Consider whether a reasonable informed learner could justify another option, category, order, or pair. For a multiple-answer item, check an omitted option the visible evidence also supports and a selected option the visible evidence does not support. Where that ambiguity is material, revise the stem, the statement, the options, or the category boundaries so one key is defensible, or recast the performance as non-determinate. Do not return a confident key while another answer remains equally defensible. A stem that asks for the most justified or best supported conclusion may keep one key when the other options are less defensible on the visible evidence. Record the check as key_defence on the item with learner_evidence, resolution unambiguous or most_justified, and alternatives whose status is less_defensible. Do not use equally_defensible, omitted_but_defensible, included_without_support, or resolution unresolved. A hedged statement assigned to either side of a nested category boundary, such as claim and overclaim, stays ambiguous until the statement or the categories are revised.";
+
+test("stale local_override with legacy key_defence receives Supported/Unsupported guidance on Copy", () => {
+  const { api } = loadPrismAppJsTestApi({
+    extraLibs: ["lib/assessment-component-forms.js", "lib/assessment-pack-canonical.js"]
+  });
+  const staleBody =
+    "You are designing Assessment Pack elicitation.\n" +
+    LEGACY_KEY_DEFENCE_ELICITATION +
+    "\nReturn JSON only.";
+  assert.match(staleBody, /key_defence/);
+  assert.doesNotMatch(staleBody, /Supported and Unsupported/);
+  assert.doesNotMatch(staleBody, /unresolved uncontrolled factors/);
+
+  const workflow = assessmentPackElicitationWorkflow(staleBody);
+  api.setWorkflowsForTest([workflow]);
+  api.setSelectedWorkflowIdForTest(workflow.id);
+
+  const resolved = api.resolveStepPromptText(workflow.steps[0], workflow);
+  assert.match(String(resolved.text || ""), /Supported and Unsupported/);
+  assert.match(String(resolved.text || ""), /unresolved uncontrolled factors/);
+  assert.equal(countMatches(resolved.text, "key_defence"), 1);
+  assert.equal(countMatches(resolved.text, "Supported and Unsupported"), 1);
+
+  const finalPrompt = api.buildWorkflowStepInstructions(workflow.steps[0], 1, null);
+  assert.match(finalPrompt, /Supported and Unsupported/);
+  assert.match(finalPrompt, /unresolved uncontrolled factors/);
+  assert.equal(countMatches(finalPrompt, "Supported and Unsupported"), 1);
+  assert.equal(workflow.steps[0].override_prompt_body, staleBody);
+});
+
+test("incomplete key_defence body without exact legacy paragraph still receives hedge guidance once", () => {
+  const { api } = loadPrismAppJsTestApi({
+    extraLibs: ["lib/assessment-component-forms.js", "lib/assessment-pack-canonical.js"]
+  });
+  const incompleteBody =
+    "Author determinate items. Record the check as key_defence on the item. A hedged statement on a nested category boundary stays ambiguous. Return JSON only.";
+  assert.match(incompleteBody, /key_defence/);
+  assert.doesNotMatch(incompleteBody, /Supported and Unsupported/);
+
+  const workflow = assessmentPackElicitationWorkflow(incompleteBody);
+  api.setWorkflowsForTest([workflow]);
+  api.setSelectedWorkflowIdForTest(workflow.id);
+
+  const once = api.resolveStepPromptText(workflow.steps[0], workflow);
+  const twice = api.resolveStepPromptText(workflow.steps[0], workflow);
+  assert.match(String(once.text || ""), /Supported and Unsupported/);
+  assert.match(String(once.text || ""), /unresolved uncontrolled factors/);
+  assert.equal(countMatches(once.text, "Supported and Unsupported"), 1);
+  assert.equal(countMatches(twice.text, "Supported and Unsupported"), 1);
+  assert.equal(String(once.text || ""), String(twice.text || ""));
+
+  const finalOnce = api.buildWorkflowStepInstructions(workflow.steps[0], 1, null);
+  const finalTwice = api.buildWorkflowStepInstructions(workflow.steps[0], 1, null);
+  assert.equal(countMatches(finalOnce, "Supported and Unsupported"), 1);
+  assert.equal(countMatches(finalTwice, "Supported and Unsupported"), 1);
+});
+
+test("seeded elicitation prompt with Supported/Unsupported guidance is not duplicated on Copy", () => {
+  const { api } = loadPrismAppJsTestApi({
+    extraLibs: [
+      "lib/assessment-component-forms.js",
+      "lib/assessment-pack-canonical.js",
+      "lib/first-class-workflow-family.js"
+    ]
+  });
+  const built = family.buildFirstClassWorkflowFamily({
+    product: "assessment_pack",
+    focus: "Workplace claims",
+    startingPoint: "topic"
+  });
+  assert.equal(built.ok, true, built.code || "build failed");
+  const seeded = built.steps.find(function (step) {
+    return step.outputName === "assessment_evidence_elicitation";
+  }).promptBody;
+  assert.match(seeded, /Supported and Unsupported/);
+  assert.match(seeded, /unresolved uncontrolled factors/);
+  assert.equal(countMatches(seeded, "Supported and Unsupported"), 1);
+
+  const workflow = assessmentPackElicitationWorkflow(seeded);
+  api.setWorkflowsForTest([workflow]);
+  api.setSelectedWorkflowIdForTest(workflow.id);
+
+  const once = api.resolveStepPromptText(workflow.steps[0], workflow);
+  const twice = api.resolveStepPromptText(workflow.steps[0], workflow);
+  assert.equal(countMatches(once.text, "Supported and Unsupported"), 1);
+  assert.equal(countMatches(twice.text, "Supported and Unsupported"), 1);
+  assert.equal(countMatches(once.text, "unresolved uncontrolled factors"), 1);
+  assert.equal(String(once.text || ""), String(twice.text || ""));
+
+  const finalPrompt = api.buildWorkflowStepInstructions(workflow.steps[0], 1, null);
+  assert.equal(countMatches(finalPrompt, "Supported and Unsupported"), 1);
+  assert.equal(countMatches(finalPrompt, "unresolved uncontrolled factors"), 1);
 });

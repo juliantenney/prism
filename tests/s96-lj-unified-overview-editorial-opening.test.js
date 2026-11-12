@@ -139,7 +139,7 @@ test("attached parent Editorial Opening appears on unified Overview and resolves
   assert.match(overviewHtml, /data-region="editorial-opening"/);
   assert.match(overviewHtml, /data-visual-slot="editorial-opening"/);
   assert.match(overviewHtml, /src="media\/editorial-opening\.png"/);
-  assert.match(overviewHtml, /alt="A researcher reviewing experimental plots at a desk\.?"/);
+  assert.match(overviewHtml, /alt=""/);
   assert.match(overviewHtml, new RegExp(INTRO_TEXT.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
 
   const titleIdx = overviewHtml.indexOf("lj-shell-overview__title");

@@ -222,7 +222,10 @@ test("R7: any FAIL → issue summary, incomplete, Next disabled", () => {
   assert.equal(view.complete, false);
   assert.equal(view.nextBlocked, true);
   assert.equal(view.resultTitle, "Verification found an issue");
-  assert.match(view.resultBody, /Regenerate the activity materials from the same DLA prompt/);
+  assert.match(view.resultBody, /Copy the revised generation prompt/);
+  assert.match(view.resultBody, /paste the replacement materials/);
+  assert.match(view.resultBody, /verify again/);
+  assert.equal(view.generationCopyLabel, "Copy revised prompt");
   assert.equal(view.failItems[0].label, "A1-M1");
   assert.match(view.failItems[0].reason, /Particulars prevent/);
   assert.equal(api.tryCompleteWorkflowRunStepIfCaptureGatesPassForTest(GAM_STEP), false);
@@ -414,6 +417,165 @@ test("T-018A: GAM review-required behaviour is unchanged after DLA scope fix", (
   assert.equal(view.nextBlocked, true);
 });
 
+const ORIGINAL_GENERATION_PROMPT = [
+  "Execution mode: autonomous.",
+  "Generate activity materials for this step.",
+  "Include these exact commissioned first-person student statements:",
+  '"I thought the pilot looked promising until I checked the sample."',
+  '"The committee needs the raw counts, not a summary."',
+  "Return the complete JSON materials artefact."
+].join("\n");
+
+test("failed verification derives a revised Copy prompt with findings and preserves original instructions", () => {
+  const dla = determinateDla();
+  const gam = determinateGam();
+  capture(dla, gam);
+  const failed = api.submitGamMaterialsVerificationForTest(
+    GAM_STEP,
+    makeReview(dla, gam, {
+      "A1-M1": {
+        suitable: false,
+        failure_class: "contradiction",
+        reason: "Summarised commissioned first-person student statements instead of preserving them exactly."
+      }
+    }),
+    gam,
+    dla
+  );
+  assert.equal(failed.phase, "review_failed");
+  assert.equal(api.resolveGamGenerationCopyLabelForStepForTest(GAM_STEP), "Copy revised prompt");
+  assert.equal(api.resolveGamGenerationCopyLabelForStepForTest(DLA_STEP), "Copy");
+
+  const revised = api.applyGamVerificationRepairToGenerationPromptIfNeededForTest(
+    GAM_STEP,
+    ORIGINAL_GENERATION_PROMPT
+  );
+  assert.match(revised, /Generate activity materials for this step/);
+  assert.match(
+    revised,
+    /I thought the pilot looked promising until I checked the sample/
+  );
+  assert.match(revised, /The committee needs the raw counts, not a summary/);
+  assert.match(revised, /## PRISM VERIFICATION REPAIR/);
+  assert.match(revised, /## END PRISM VERIFICATION REPAIR/);
+  assert.match(revised, /A1-M1: Summarised commissioned first-person student statements/);
+  assert.match(revised, /Regenerate the COMPLETE required output/);
+  assert.match(revised, /exact commissioned text \(including first-person student statements\)/);
+  assert.ok(revised.startsWith(ORIGINAL_GENERATION_PROMPT));
+  assert.ok(
+    revised.indexOf("## PRISM VERIFICATION REPAIR") >
+      revised.indexOf("Return the complete JSON materials artefact.")
+  );
+});
+
+test("replacement materials clear prior failure before re-verification", () => {
+  const dla = determinateDla();
+  const gam = determinateGam();
+  capture(dla, gam);
+  api.submitGamMaterialsVerificationForTest(
+    GAM_STEP,
+    makeReview(dla, gam, {
+      "A1-M1": { suitable: false, failure_class: "contradiction", reason: "Old failure." }
+    }),
+    gam,
+    dla
+  );
+  assert.equal(api.resolveGamGenerationCopyLabelForStepForTest(GAM_STEP), "Copy revised prompt");
+
+  const replacement = determinateGam();
+  replacement.activities[0].materials[0].body += "\nReplacement particulars for re-check.";
+  const afterReplace = api.syncGamMaterialsVerificationAfterCaptureForTest(
+    GAM_STEP,
+    replacement,
+    dla
+  );
+  assert.equal(afterReplace.phase, "gam_valid_review_required");
+  assert.equal(afterReplace.failItems.length, 0);
+  assert.equal(api.resolveGamGenerationCopyLabelForStepForTest(GAM_STEP), "Copy");
+  const unrepaired = api.applyGamVerificationRepairToGenerationPromptIfNeededForTest(
+    GAM_STEP,
+    ORIGINAL_GENERATION_PROMPT
+  );
+  assert.equal(unrepaired, ORIGINAL_GENERATION_PROMPT);
+  assert.doesNotMatch(unrepaired, /PRISM VERIFICATION REPAIR/);
+  assert.equal(api.tryCompleteWorkflowRunStepIfCaptureGatesPassForTest(GAM_STEP), false);
+});
+
+test("repeated failure replaces prior repair section instead of accumulating it", () => {
+  const firstFindings = [
+    { label: "A1-M1", reason: "First failure: missing commissioned statement." }
+  ];
+  const secondFindings = [
+    { label: "A1-M2", reason: "Second failure: incomplete worked solution." }
+  ];
+  const once = api.appendGamVerificationRepairSectionToGenerationPromptForTest(
+    ORIGINAL_GENERATION_PROMPT,
+    firstFindings
+  );
+  const twice = api.appendGamVerificationRepairSectionToGenerationPromptForTest(
+    once,
+    secondFindings
+  );
+  assert.equal((twice.match(/## PRISM VERIFICATION REPAIR/g) || []).length, 1);
+  assert.equal((twice.match(/## END PRISM VERIFICATION REPAIR/g) || []).length, 1);
+  assert.doesNotMatch(twice, /First failure: missing commissioned statement/);
+  assert.match(twice, /Second failure: incomplete worked solution/);
+  assert.match(twice, /I thought the pilot looked promising until I checked the sample/);
+});
+
+test("successful re-verification restores normal Copy behaviour", () => {
+  const dla = determinateDla();
+  const gam = determinateGam();
+  capture(dla, gam);
+  api.submitGamMaterialsVerificationForTest(
+    GAM_STEP,
+    makeReview(dla, gam, {
+      "A1-M1": { suitable: false, failure_class: "contradiction", reason: "Temporary fail." }
+    }),
+    gam,
+    dla
+  );
+  assert.equal(api.resolveGamGenerationCopyLabelForStepForTest(GAM_STEP), "Copy revised prompt");
+
+  const passed = api.submitGamMaterialsVerificationForTest(
+    GAM_STEP,
+    makeReview(dla, gam),
+    gam,
+    dla
+  );
+  assert.equal(passed.phase, "review_passed");
+  assert.equal(passed.complete, true);
+  assert.equal(api.resolveGamGenerationCopyLabelForStepForTest(GAM_STEP), "Copy");
+  const normal = api.applyGamVerificationRepairToGenerationPromptIfNeededForTest(
+    GAM_STEP,
+    ORIGINAL_GENERATION_PROMPT
+  );
+  assert.equal(normal, ORIGINAL_GENERATION_PROMPT);
+  assert.doesNotMatch(normal, /PRISM VERIFICATION REPAIR/);
+});
+
+test("repair findings stay scoped to the failed GAM step", () => {
+  const dla = determinateDla();
+  const gam = determinateGam();
+  capture(dla, gam);
+  api.submitGamMaterialsVerificationForTest(
+    GAM_STEP,
+    makeReview(dla, gam, {
+      "A1-M1": { suitable: false, failure_class: "contradiction", reason: "GAM-only finding." }
+    }),
+    gam,
+    dla
+  );
+  assert.equal(api.resolveGamGenerationCopyLabelForStepForTest(GAM_STEP), "Copy revised prompt");
+  assert.equal(api.resolveGamGenerationCopyLabelForStepForTest(DLA_STEP), "Copy");
+  const dlaCopy = api.applyGamVerificationRepairToGenerationPromptIfNeededForTest(
+    DLA_STEP,
+    ORIGINAL_GENERATION_PROMPT
+  );
+  assert.equal(dlaCopy, ORIGINAL_GENERATION_PROMPT);
+  assert.doesNotMatch(dlaCopy, /GAM-only finding/);
+});
+
 test("T-043: verification wrap is a distinct secondary section under capture", () => {
   const source = fs.readFileSync(path.join(repoRoot, "app.js"), "utf8");
   const css = fs.readFileSync(path.join(repoRoot, "style.css"), "utf8");
@@ -436,5 +598,236 @@ test("T-043: verification wrap is a distinct secondary section under capture", (
   assert.match(source, /data-role", "run-step-suitability-copy"/);
   assert.match(source, /data-role", "run-step-suitability-check"/);
   assert.match(source, /data-field", "runStepSuitabilityReview"/);
+});
+
+const DP_STEP = "dp_step";
+const SUBSTANTIVE_DP = JSON.stringify({
+  artifact_type: "page",
+  schema_version: "2.0.0",
+  product_id: "interactive",
+  title: "Saved Design Page",
+  activities: [
+    {
+      activity_id: "A1",
+      learner_task: "Complete the saved activity.",
+      materials: { scenario: "A substantive saved scenario body." }
+    }
+  ]
+});
+
+function installGamWorkflowWithDesignPage() {
+  api.setWorkflowsForTest([
+    {
+      id: "s78-gam-nav-wf",
+      name: "GAM nav exception",
+      steps: [
+        {
+          id: DLA_STEP,
+          title: "Design Learning Activities",
+          canonical_step_id: "step_design_learning_activities",
+          outputName: "page"
+        },
+        {
+          id: GAM_STEP,
+          title: "Generate Activity Materials",
+          canonical_step_id: "step_generate_activity_materials",
+          outputName: "page"
+        },
+        {
+          id: DP_STEP,
+          title: "Design Page",
+          canonical_step_id: "step_design_page",
+          outputName: "page"
+        }
+      ]
+    }
+  ]);
+  api.setSelectedWorkflowIdForTest("s78-gam-nav-wf");
+}
+
+function gamStepRow() {
+  return {
+    id: GAM_STEP,
+    title: "Generate Activity Materials",
+    canonical_step_id: "step_generate_activity_materials",
+    outputName: "page"
+  };
+}
+
+test("nav: unverified GAM with empty downstream keeps Next gated", () => {
+  const dla = determinateDla();
+  const gam = determinateGam();
+  const pending = capture(dla, gam);
+  installGamWorkflowWithDesignPage();
+  assert.equal(pending.nextBlocked, true);
+  assert.equal(api.gamMaterialsVerificationBlocksAdvanceForTest(GAM_STEP), true);
+  assert.equal(api.canNavigateForwardDespiteGamVerificationForTest(GAM_STEP, api.getWorkflowsForTest()[0]), false);
+  const reason = api.resolveWorkflowRunNextStepDisabledReason(
+    gamStepRow(),
+    GAM_STEP,
+    api.getWorkflowsForTest()[0],
+    null,
+    1,
+    3
+  );
+  assert.match(reason, /Fix the validation errors/);
+  assert.equal(api.tryCompleteWorkflowRunStepIfCaptureGatesPassForTest(GAM_STEP), false);
+});
+
+test("nav: unverified GAM with substantive downstream allows navigation without completing", () => {
+  const dla = determinateDla();
+  const gam = determinateGam();
+  capture(dla, gam);
+  installGamWorkflowWithDesignPage();
+  api.setWorkflowRunCapturedOutputsForTest({
+    [GAM_STEP]: JSON.stringify(gam),
+    [DP_STEP]: SUBSTANTIVE_DP
+  });
+  // Re-sync verification after capture map overwrite.
+  api.syncGamMaterialsVerificationAfterCaptureForTest(GAM_STEP, gam, dla);
+  assert.equal(api.gamMaterialsVerificationBlocksAdvanceForTest(GAM_STEP), true);
+  assert.equal(
+    api.workflowHasSubstantiveDownstreamContentAfterStepForTest(api.getWorkflowsForTest()[0], GAM_STEP),
+    true
+  );
+  assert.equal(api.canNavigateForwardDespiteGamVerificationForTest(GAM_STEP, api.getWorkflowsForTest()[0]), true);
+  assert.equal(
+    api.resolveWorkflowRunNextStepDisabledReason(gamStepRow(), GAM_STEP, api.getWorkflowsForTest()[0], null, 1, 3),
+    ""
+  );
+  assert.equal(api.tryCompleteWorkflowRunStepIfCaptureGatesPassForTest(GAM_STEP), false);
+  assert.equal(api.isWorkflowRunStepCompletedForTest(GAM_STEP), false);
+  assert.equal(api.gamMaterialsVerificationBlocksAdvanceForTest(GAM_STEP), true);
+});
+
+test("nav: failed GAM with substantive downstream allows navigation and preserves failure", () => {
+  const dla = determinateDla();
+  const gam = determinateGam();
+  capture(dla, gam);
+  const failed = api.submitGamMaterialsVerificationForTest(
+    GAM_STEP,
+    makeReview(dla, gam, {
+      "A1-M1": {
+        suitable: false,
+        failure_class: "contradiction",
+        reason: "Particulars prevent the commissioned result."
+      }
+    }),
+    gam,
+    dla
+  );
+  installGamWorkflowWithDesignPage();
+  // Preserve failed verification state; only add downstream capture for unlock.
+  const priorOutputs = {};
+  priorOutputs[GAM_STEP] = JSON.stringify(gam);
+  priorOutputs[DP_STEP] = SUBSTANTIVE_DP;
+  api.setWorkflowRunCapturedOutputsForTest(priorOutputs);
+  // setWorkflowRunCapturedOutputsForTest clears unrelated gates but not verification check;
+  // re-submit failure so phase stays review_failed after capture overwrite side-effects.
+  const failedAgain = api.submitGamMaterialsVerificationForTest(
+    GAM_STEP,
+    makeReview(dla, gam, {
+      "A1-M1": {
+        suitable: false,
+        failure_class: "contradiction",
+        reason: "Particulars prevent the commissioned result."
+      }
+    }),
+    gam,
+    dla
+  );
+  assert.equal(failed.phase, "review_failed");
+  assert.equal(failedAgain.phase, "review_failed");
+  assert.equal(failedAgain.nextBlocked, true);
+  assert.equal(api.canNavigateForwardDespiteGamVerificationForTest(GAM_STEP, api.getWorkflowsForTest()[0]), true);
+  assert.equal(
+    api.resolveWorkflowRunNextStepDisabledReason(gamStepRow(), GAM_STEP, api.getWorkflowsForTest()[0], null, 1, 3),
+    ""
+  );
+  assert.equal(api.resolveGamGenerationCopyLabelForStepForTest(GAM_STEP), "Copy revised prompt");
+  assert.equal(api.tryCompleteWorkflowRunStepIfCaptureGatesPassForTest(GAM_STEP), false);
+  const view = api.resolveGamMaterialsVerificationViewForTest(GAM_STEP, pages(dla, gam));
+  assert.equal(view.phase, "review_failed");
+  assert.equal(view.nextBlocked, true);
+});
+
+test("nav: verified GAM progression remains unchanged", () => {
+  const dla = determinateDla();
+  const gam = determinateGam();
+  capture(dla, gam);
+  const passed = api.submitGamMaterialsVerificationForTest(GAM_STEP, makeReview(dla, gam), gam, dla);
+  installGamWorkflowWithDesignPage();
+  assert.equal(passed.phase, "review_passed");
+  assert.equal(passed.nextBlocked, false);
+  assert.equal(api.gamMaterialsVerificationBlocksAdvanceForTest(GAM_STEP), false);
+  assert.equal(api.canNavigateForwardDespiteGamVerificationForTest(GAM_STEP, api.getWorkflowsForTest()[0]), false);
+  assert.equal(
+    api.resolveWorkflowRunNextStepDisabledReason(gamStepRow(), GAM_STEP, api.getWorkflowsForTest()[0], null, 1, 3),
+    ""
+  );
+  assert.equal(api.tryCompleteWorkflowRunStepIfCaptureGatesPassForTest(GAM_STEP), true);
+});
+
+test("nav: empty or placeholder downstream does not unlock navigation", () => {
+  const dla = determinateDla();
+  const gam = determinateGam();
+  capture(dla, gam);
+  installGamWorkflowWithDesignPage();
+  assert.equal(api.workflowRunCaptureLooksSubstantiveForTest(""), false);
+  assert.equal(api.workflowRunCaptureLooksSubstantiveForTest("{}"), false);
+  assert.equal(api.workflowRunCaptureLooksSubstantiveForTest("[]"), false);
+  assert.equal(
+    api.workflowRunCaptureLooksSubstantiveForTest(
+      JSON.stringify({ artifact_type: "page", schema_version: "2.0.0", activities: [] })
+    ),
+    false
+  );
+  api.setWorkflowRunCapturedOutputsForTest({
+    [GAM_STEP]: JSON.stringify(gam),
+    [DP_STEP]: JSON.stringify({ artifact_type: "page", activities: [] })
+  });
+  api.syncGamMaterialsVerificationAfterCaptureForTest(GAM_STEP, gam, dla);
+  assert.equal(api.canNavigateForwardDespiteGamVerificationForTest(GAM_STEP, api.getWorkflowsForTest()[0]), false);
+  assert.match(
+    api.resolveWorkflowRunNextStepDisabledReason(gamStepRow(), GAM_STEP, api.getWorkflowsForTest()[0], null, 1, 3),
+    /Fix the validation errors/
+  );
+});
+
+test("nav: exception does not clear verification state or repair copy path", () => {
+  const dla = determinateDla();
+  const gam = determinateGam();
+  capture(dla, gam);
+  api.submitGamMaterialsVerificationForTest(
+    GAM_STEP,
+    makeReview(dla, gam, {
+      "A1-M1": { suitable: false, failure_class: "contradiction", reason: "Keep failure visible." }
+    }),
+    gam,
+    dla
+  );
+  installGamWorkflowWithDesignPage();
+  api.setWorkflowRunCapturedOutputsForTest({
+    [GAM_STEP]: JSON.stringify(gam),
+    [DP_STEP]: SUBSTANTIVE_DP
+  });
+  api.submitGamMaterialsVerificationForTest(
+    GAM_STEP,
+    makeReview(dla, gam, {
+      "A1-M1": { suitable: false, failure_class: "contradiction", reason: "Keep failure visible." }
+    }),
+    gam,
+    dla
+  );
+  assert.equal(api.canNavigateForwardDespiteGamVerificationForTest(GAM_STEP, api.getWorkflowsForTest()[0]), true);
+  assert.equal(api.resolveGamGenerationCopyLabelForStepForTest(GAM_STEP), "Copy revised prompt");
+  const repaired = api.applyGamVerificationRepairToGenerationPromptIfNeededForTest(
+    GAM_STEP,
+    ORIGINAL_GENERATION_PROMPT
+  );
+  assert.match(repaired, /PRISM VERIFICATION REPAIR/);
+  assert.match(repaired, /Keep failure visible/);
+  assert.equal(api.getWorkflowRunCaptureGatesBlockReasonForTest(GAM_STEP).length > 0, true);
+  assert.equal(api.tryCompleteWorkflowRunStepIfCaptureGatesPassForTest(GAM_STEP), false);
 });
 

@@ -156,18 +156,19 @@ function loadPrismTestApiForDownloadUi() {
 
 test("E4: both download buttons are always present in the live control state", () => {
   const { api } = loadPrismTestApiForDownloadUi();
-  const state = api.getUtilitiesDownloadControlsStateForTest();
-  assert.match(state.htmlLabel, /HTML only \(\.html\)/);
-  assert.match(state.packageLabel, /Learner package \(\.zip\)/);
   api.setUtilitiesLastHtmlForTest("<html><body>ok</body></html>");
   api.setUtilitiesDownloadControlsDisabledForTest(false);
   const enabled = api.getUtilitiesDownloadControlsStateForTest();
+  assert.equal(enabled.htmlLabel, "HTML");
+  assert.equal(enabled.packageLabel, "ZIP");
+  assert.match(enabled.packageAriaLabel, /^Download ZIP$/i);
   assert.equal(enabled.htmlDisabled, false);
   assert.equal(enabled.packageDisabled, false);
   api.setUtilitiesDownloadControlsDisabledForTest(true);
   const disabled = api.getUtilitiesDownloadControlsStateForTest();
   assert.equal(disabled.htmlDisabled, true);
   assert.equal(disabled.packageDisabled, true);
+  assert.equal(disabled.packageLabel, "ZIP");
 });
 
 test("E4: package path remains available with zero attached assets", () => {

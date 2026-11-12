@@ -34,7 +34,11 @@ test("final Run step still governs visibility; persisted readiness governs enabl
   assert.equal(api.isWorkflowRunAtFinalStep(2, 3), true);
   assert.equal(api.isWorkflowRunAtFinalStep(0, 1), true);
   assert.equal(api.isWorkflowRunAtFinalStep(0, 0), false);
-  assert.match(source, /setWorkflowContinueToAuthoringVisible\(isFinalStep\)/);
+  assert.match(
+    source,
+    /setWorkflowContinueToAuthoringVisible\(continueToAuthoringVisible\)/
+  );
+  assert.match(source, /workflowSupportsAuthoringDestination\(/);
   assert.match(source, /isWorkflowRunAuthoringReady\(/);
   assert.match(source, /function handleContinueToAuthoring\s*\(/);
   assert.match(source, /switchTab\("utilities"\)/);

@@ -66,13 +66,16 @@ function editorialBriefs(pipeline) {
 test("Design Page owns the editorial opening decision separately from pedagogical figures", () => {
   const dp = sibling.resolveTemplate("design_page");
   assert.match(dp, /editorial_opening_image/);
+  assert.match(dp, /decorative and text-free/i);
+  assert.match(dp, /text overlays, caption panels, titles, labels, slogans/i);
+  assert.match(dp, /Set alt_text to "" \(empty\)/);
   assert.match(dp, /does not teach a mechanism/i);
   assert.match(dp, /misleading, inappropriate or unhelpful/i);
   assert.match(dp, /visual_affordances may be \[\] when no figure is warranted/i);
   assert.ok(assemble.EXPOSITORY_DESIGN_PAGE_OWNED_TOP_LEVEL_FIELDS.includes("editorial_opening_image"));
-  assert.equal(
+  assert.ok(
     assemble.DESIGN_PAGE_OWNED_TOP_LEVEL_FIELDS.includes("editorial_opening_image"),
-    false
+    "Interactive Design Page also owns editorial_opening_image"
   );
 });
 
@@ -89,7 +92,12 @@ test("an ordinary Expository chapter receives one editorial opening image job", 
   assert.equal(brief.subject, "When Does Rain Become a Flood?");
   const prompt = workspace.buildVisualJobHumanPrompt(brief);
   assert.match(prompt, /^Generate a finished rendered educational image\./);
+  assert.equal(brief.alt_text, "");
+  assert.equal(brief.decorative, true);
   assert.match(prompt, /Magazine-style editorial opening image/);
+  assert.match(prompt, /Decorative, text-free visual/);
+  assert.match(prompt, /text overlays, caption panels, titles, labels, slogans/);
+  assert.match(prompt, /Alt text: \(empty — decorative image/);
   assert.match(prompt, /does not teach a mechanism/i);
   assert.match(prompt, /Rain on a catchment/);
   assert.match(prompt, /Alt text:/);
@@ -167,8 +175,8 @@ test("a fulfilled editorial image opens the chapter and an unfulfilled one leave
   const firstSection = fulfilled.indexOf('data-region="exposition"');
   assert.ok(heading !== -1 && opening > heading && firstSection > opening);
   assert.match(fulfilled, /assets\/editorial-opening\.png/);
-  assert.match(fulfilled, /alt="Illustration of rain over a catchment\."/);
   const openingRegion = fulfilled.slice(opening, firstSection);
+  assert.match(openingRegion, /alt=""/);
   assert.match(openingRegion, /<figcaption/i);
   assert.match(openingRegion, /Figure 1\./);
   assert.match(openingRegion, /Illustration of rain over a catchment\./);
@@ -243,8 +251,11 @@ test("a section diagram does not replace the editorial opening job", () => {
   assert.match(diagramPrompt, /Rainfall → Soil storage/);
 });
 
-test("Interactive pages do not receive an editorial opening image", () => {
+test("Interactive pages without an explicit opening commission receive no editorial image", () => {
+  // Opening images are optional for Interactive: omit / skip commission nothing.
+  // An attached orphan asset must not appear without a generate decision.
   const interactive = readJson("page-render/roman-roads-page.json");
+  assert.equal(editorial.isInteractivePage(interactive), true);
   const pipeline = workspace.buildVisualJobsPipelineFromPage(interactive);
   assert.equal(editorialBriefs(pipeline).length, 0);
   const model = buildPageModel(interactive);
@@ -257,8 +268,8 @@ test("Interactive pages do not receive an editorial opening image", () => {
           {
             affordance_id: "va-editorial-opening",
             visual_slot: "editorial-opening",
-            alt_text: "Should stay off this product",
-            detailed_description: "Should stay off this product",
+            alt_text: "Should stay off without a generate decision",
+            detailed_description: "Should stay off without a generate decision",
             render_source: { kind: "file", value: "assets/editorial-opening.png" }
           }
         ]

@@ -2,7 +2,8 @@
 
 **Canonical location:** `docs/backlog/PRODUCT-BACKLOG.md`  
 **Status:** Active — **alpha-use period** (Alpha development complete, 2026-09-02)  
-**Last updated:** 2026-11-05 (PB-FA-019 refined — Interactive v2 educational-solution / interaction-surfaces direction; Sprint 96 **CLOSED — ACCEPTED**; no active sprint allocated)  
+**Last updated:** 2026-11-12 (Sprint 97 opened — PB-FA-028 Learning Journal, PB-FA-029 Design Pattern Catalogue)  
+**Open sprint:** [Sprint 97 — Learning Journal and Design Pattern Foundations](../development/sprints/2026-11-12-sprint-97-learning-journal-and-design-pattern-foundations/SPRINT-97-START-HERE.md)  
 **Last closed sprint:** [Sprint 96 — Unified Learning Journey Experience & Compatibility](../development/sprints/2026-11-03-sprint-96-unified-learning-journey-experience/SPRINT-96-CLOSURE.md) — **CLOSED — ACCEPTED**. Prior: [Sprint 95](../development/sprints/2026-11-03-sprint-95-unified-learning-journey-runtime/SPRINT-95-CLOSURE.md).
 
 This file answers: **what might we actually choose to work on next?**
@@ -219,6 +220,91 @@ Author and publish Expository resources with a coherent editorial hierarchy, so 
 
 **Readiness:** Proposed 2026-10-08. Approach not yet chosen — **not sprint-allocated**.
 
+### PB-FA-025 — Duration fidelity: learner workload budgeting
+
+**Status:** Proposed — unassigned. **Not sprint-allocated.**  
+**Priority:** Medium–high (recurring, systemic instructional-design issue).
+
+**Problem:** PRISM frequently generates resources whose actual learner workload substantially exceeds the duration specified during commissioning. The issue is insufficient control of cumulative learner workload, not poor activity quality.
+
+**Evidence:** *The Impossible Alibi: The Blackthorn Notebook Mystery* was commissioned as a 25-minute standalone Interactive resource, but review of the complete experience suggests approximately 60–85 minutes of learner activity (QA benchmark 88/100). The same overshoot pattern has been observed repeatedly across PRISM resources.
+
+**Proposed direction:** Investigate a lightweight, cross-resource approach to duration fidelity using existing workflow stages and generation contracts. Treat commissioned duration as a meaningful design constraint; allocate realistic time budgets across activities; account for reading, evidence examination, cognitive processing, response production and self-review; prevent later material generation from expanding workload beyond the original allocation; check cumulative duration plausibility at Design Page and QA; validate against several existing resources rather than optimising for one example.
+
+**Avoid:** Simplistic word-count calculations; rigid timing formulas; new workflow stages; unnecessary architectural complexity.
+
+**Acceptance criteria (eventual implementation):**
+
+1. Generated activity workloads are plausibly consistent with the commissioned duration.
+2. Time allocations account for learner actions, not just content volume.
+3. Later generation stages preserve the agreed workload budget.
+4. Verification identifies material duration mismatches.
+5. Existing resource types and workflows remain compatible.
+
+**Boundaries:** Backlog investigation / eventual contract and QA improvements only when sprint-allocated. Do not absorb into Interactive V2 ([PB-FA-019](#pb-fa-019--interactive-v2-educational-and-architectural-discovery)) as a substitute for this cross-resource concern.
+
+**Readiness:** Proposed 2026-11-09 from alpha-use / QA evidence. Approach not yet chosen — **not sprint-allocated**.
+
+### PB-FA-026 — Assisted brief development: from teaching intention to learning experience
+
+**Status:** Proposed — unassigned. **Not sprint-allocated.**  
+**Priority:** Medium (strategic enhancement; not an immediate implementation priority).
+
+**Problem:** PRISM’s commissioning form captures structured requirements well, but offers limited support for authors who have a teaching intention without a clear learning experience in mind. Creative briefs that unlock sophisticated generation can emerge through conversation outside PRISM rather than through the commissioning interface — suggesting generation capability may outpace support for formulating imaginative, pedagogically purposeful commissions.
+
+**Evidence:** The *Impossible Alibi* experiment showed PRISM can construct detailed, internally coherent fictional scenarios (characters, events, evidence, contradictions, authentic reasoning opportunities). The enabling creative brief was developed conversationally outside PRISM.
+
+**Proposed direction:** Explore an optional conversational brief-development experience that helps authors move from an initial teaching problem or intention towards a well-defined resource commission. It could help clarify what learners should understand, practise, decide or produce; explore pedagogical approaches and learning experiences; consider scenarios, simulations, investigations, explanations, practice and authentic assessment; identify contexts, evidence, decisions, tensions or uncertainties; develop a promising idea into a structured commission compatible with existing workflows; and review/refine the brief before proceeding. Support different disciplines and resource types, including Learning Journeys. Do not privilege fictional scenarios over other appropriate approaches.
+
+**Design principles:**
+
+- Optional — retain direct access to the existing commissioning form.
+- Conversational and exploratory rather than another lengthy questionnaire.
+- Support author agency and creative choice.
+- Ground suggestions in intended learning, audience and constraints.
+- Produce structured outputs compatible with existing commissioning requirements.
+- Avoid duplicating existing generation stages or introducing unnecessary architectural complexity.
+- Preserve the distinction between developing a brief and generating the resource.
+
+**Potential acceptance criteria:**
+
+1. An author can begin with an incomplete teaching intention and explore plausible learning-design approaches.
+2. The author can compare, select and refine ideas before committing to a resource design.
+3. The resulting brief can populate or inform PRISM’s existing commissioning process.
+4. Authors can inspect and edit the brief before generation.
+5. Existing direct commissioning workflows remain unchanged.
+
+**Boundaries:** Backlog investigation only until sprint-allocated. Do not redesign the commissioning form or change generation contracts under this entry alone. Distinct from Interactive V2 redesign ([PB-FA-019](#pb-fa-019--interactive-v2-educational-and-architectural-discovery)) and from duration/workload fidelity ([PB-FA-025](#pb-fa-025--duration-fidelity-learner-workload-budgeting)).
+
+**Readiness:** Proposed 2026-11-10 from alpha-use / Impossible Alibi commissioning experience. Approach not yet chosen — **not sprint-allocated**.
+
+### PB-FA-027 — Learning Design Extraction: technology-independent designs from completed resources
+
+**Status:** Proposed — unassigned. **Not sprint-allocated.**  
+**Priority:** Medium (future capability / proposed enhancement; not an immediate implementation priority).
+
+**Objective:** Enable PRISM to analyse a completed learning resource or assembled Learning Journey and extract a reusable learning design specification that another educator could implement using different technologies, formats or teaching approaches, including face-to-face delivery.
+
+**Problem:** Completed PRISM resources and Learning Journeys embody substantial pedagogical design (outcomes, sequence, activities, dependencies, assessment, reflection), but that design is currently bound to PRISM’s product forms and delivery mechanisms. Educators who want to reuse the *learning design* elsewhere lack a readable, technology-independent specification that separates pedagogically essential features from implementation-specific choices.
+
+**Proposed scope:**
+
+- Identify intended learning outcomes and the overall pedagogical approach.
+- Extract the learning sequence, learner activities, expected learner outputs, feedback, assessment and reflection.
+- Identify essential dependencies, including activity ordering, staged information disclosure and opportunities for learners to reconsider earlier judgements.
+- Describe the role of case materials, evidence and other supporting resources.
+- Distinguish pedagogically essential features from implementation-specific choices.
+- Distinguish directly observable design features from inferred educational rationale; avoid presenting inferred intentions as established facts.
+- Produce a readable, implementation-independent specification suitable for adaptation by educators.
+
+**Illustrative use case:** Given the completed Learning Journey *The Decision That Went Wrong*, PRISM extracts a design that an educator could implement as a face-to-face seminar, blended workshop, Moodle course, Xerte resource or another suitable format, while preserving the essential progression from initial judgement through evidence appraisal, reconsideration, stakeholder evaluation and independent recommendation.
+
+**Acceptance criterion (eventual implementation):** An educator unfamiliar with PRISM can use the extracted specification to plan an alternative implementation without reproducing the original technology, while retaining the essential learning activities, dependencies, assessment and pedagogical intent evident in the source.
+
+**Boundaries:** Future capability investigation only until sprint-allocated. Do not implement extraction workflows, schemas or generation changes under this entry alone. Distinct from assisted brief development ([PB-FA-026](#pb-fa-026--assisted-brief-development-from-teaching-intention-to-learning-experience)) — that item helps authors *compose* a commission; this item would *abstract* a design from a completed resource or journey. Distinct from Course Home / programme assembly ([PB-FA-016](#pb-fa-016--course-home--course-assembly)) and from Learning Journey continuity/runtime delivery (closed under [PB-FA-022](#pb-fa-022--learning-journey-continuity-contract)–[PB-FA-024](#pb-fa-024--unified-learning-journey-experience--compatibility)).
+
+**Readiness:** Proposed 2026-11-10 from alpha-use / Learning Journey design-reuse interest. Approach not yet chosen — **not sprint-allocated**. Not implemented.
+
 ---
 
 ## 2. Optional engineering / capability follow-ons
@@ -383,6 +469,41 @@ Establish foundations for a unified, accessible, single-document Learning Journe
 **Deferred (not reopen triggers):** comprehensive a11y / AT; MathLive VK residual; stored C5/C6 transfer-prose cleanup; QA v1.2 cross-journey validation — see Sprint 96 [ARCHITECTURAL-DEBT.md](../development/sprints/2026-11-03-sprint-96-unified-learning-journey-experience/ARCHITECTURAL-DEBT.md) and [SPRINT-96-CLOSURE.md](../development/sprints/2026-11-03-sprint-96-unified-learning-journey-experience/SPRINT-96-CLOSURE.md) next-phase priorities.
 
 **Out of scope (unchanged):** regenerating journeys as part of S96; new frameworks; server learner storage; AI marking; Interactive V2; Course Home; accepting MathLive via textarea fallback alone.
+
+### PB-FA-028 — Learning Journal (unified Learning Journeys)
+
+**Status:** **In sprint — Sprint 97 OPEN** (M1 complete; implementation pending authorisation).  
+**Type:** Bounded foundations — unified-shell Learning Journal.  
+**Pack:** [Sprint 97](../development/sprints/2026-11-12-sprint-97-learning-journal-and-design-pattern-foundations/SPRINT-97-START-HERE.md)  
+**Baseline:** `a8c2fd3b6e7dbeaa11bb418c71bf4eb472f150c5`
+
+**Objective:** A permanent read-only **Your Learning Journal** destination in the unified Learning Journey TOC (beneath constituent resources). Ordered entries are designed by the Learning Journey pipeline; each entry has a learner-facing title, authored framing, and a reference to a declared constituent learner artefact. Entries populate from existing same-browser saved drafts. A notification count indicates new/updated entries since last view. Missing artefacts are represented truthfully.
+
+**Pedagogical north star (S97-D04):** PRISM aims at better judgement, better capability, or both. The journal makes intended progression inspectable via learner-produced evidence; it must not claim improvement without evidence.
+
+**Reuse / incremental:** Existing artefact contract, draft storage, and unified shell — no new persistence system. Journal iteration must not force full Learning Journey or unchanged-constituent regeneration (S97-D04 Levels 1–3). Journey data contracts (constituents, artefacts, references, journal) evolve additively and stay separable from shell presentation (S97-D05 compatibility principle).
+
+**Non-goals:** Journal editing, branching, export, journal-specific assessment, AI interpretation, regenerating unchanged constituents for journal work, new caching/regeneration frameworks, conditional/adaptive pathways or rules engines in Sprint 97, changing standalone or carry-forward behaviour.
+
+**Related:** Pattern catalogue [PB-FA-029](#pb-fa-029--pedagogical-design-pattern-catalogue). Assisted brief development remains [PB-FA-026](#pb-fa-026--assisted-brief-development-from-teaching-intention-to-learning-experience).
+
+### PB-FA-029 — Pedagogical design-pattern catalogue
+
+**Status:** **In sprint — Sprint 97 OPEN** (documentation workstream; M4).  
+**Type:** Version-controlled catalogue foundations.  
+**Pack:** [Sprint 97](../development/sprints/2026-11-12-sprint-97-learning-journal-and-design-pattern-foundations/SPRINT-97-START-HERE.md)
+
+**Objective:** A central catalogue of Learning Journey pedagogical design patterns, starting with:
+
+1. Progressive Evidence Disclosure — *The Decision That Went Wrong* / DUU.  
+2. Draft, Judge, Revise — *Explaining Research: From First Draft to Better Judgement*.  
+3. Ten provisional, pedagogically distinct candidate patterns.
+
+Each pattern uses a standard specification (purpose, cognitive mechanism, sequence, artefacts, journal opportunities, constraints, examples). Demonstrators use a standard pack including commissioning fields, rationale, cognitive map, artefact/journal map, adaptation guidance, and a copyable Create Your Own LLM prompt. Pattern specs are informed by PRISM’s pedagogical north star (better judgement and/or capability; inspectable learner evidence — S97-D04).
+
+**Non-goals:** Demonstrator website; in-product AI brief-development service (see [PB-FA-026](#pb-fa-026--assisted-brief-development-from-teaching-intention-to-learning-experience)).
+
+**Related:** Learning Journal [PB-FA-028](#pb-fa-028--learning-journal-unified-learning-journeys).
 
 ### PB-FA-016 — Course Home / course assembly
 

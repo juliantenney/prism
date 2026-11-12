@@ -199,7 +199,7 @@ Likely candidates include:
 
 Do not treat this list as committed scope. Select work deliberately from [PRODUCT-BACKLOG.md](../../backlog/PRODUCT-BACKLOG.md) and/or evidenced alpha-use findings.
 
-**Current bounded work (2026-11-02):** [Sprint 94 — Learning Journey Continuity](../sprints/2026-11-02-sprint-94-learning-journey-continuity/SPRINT-94-START-HERE.md) advances educational coherence of commissioned Learning Journey constituents. It does not redefine Beta.
+**Current bounded work (2026-11-12):** [Sprint 97 — Learning Journal and Design Pattern Foundations](../sprints/2026-11-12-sprint-97-learning-journal-and-design-pattern-foundations/SPRINT-97-START-HERE.md) advances a reusable unified Learning Journal and a pedagogical design-pattern catalogue. It does not redefine Beta. Active pointer: [NEXT-SPRINT.md](../../sprints/NEXT-SPRINT.md).
 
 ---
 

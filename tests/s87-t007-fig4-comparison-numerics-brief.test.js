@@ -111,5 +111,13 @@ test("Non-exact conceptual brief keeps qualitative / anti-answer-key guidance", 
     human,
     /Use qualitative mechanism labels rather than inventing a concrete capacity scenario/i
   );
-  assert.doesNotMatch(human, /Show fidelity:/i);
+  assert.match(human, /Show fidelity:/i);
+  assert.match(
+    human,
+    /same number of observations, contrast panels, or temporal\/interval bounds/i
+  );
+  assert.match(
+    human,
+    /Do not omit a Show relationship merely because surrounding learner text will restate it/i
+  );
 });

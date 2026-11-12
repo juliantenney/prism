@@ -84,6 +84,8 @@ test("Slice 1D: live Copy instructions include Design Page partial mode and synt
   assert.match(instr, /Design Page partial output mode/i);
   assert.match(instr, /page_synthesis/i);
   assert.match(instr, /visual_affordances/i);
+  assert.match(instr, /required editorial_opening_image/);
+  assert.match(instr, /editorial_opening_image is required with decision "generate"/);
   assert.doesNotMatch(instr, /omit visual_affordances/i);
 });
 

@@ -149,7 +149,7 @@ Use existing fields only (`support_note`, `materials.prompt_set`, `materials.che
 | `support_note` | **Check your thinking:** + what a wrong answer signals + link back to concept/procedure | Tutoring steps, full solutions |
 | `prompt_set` | 1–3 self-check bullets (`If X, revisit Y`) | Answer keys, adaptive branches |
 | `checklist` | Optional guard on one item | Long essay prompts in checklist |
-| `expected_output` | Quality signals that expose weak reasoning | Pre-written model answers |
+| `expected_output` | Quality signals that expose weak reasoning; describe evidence use and response characteristics without disclosing case-specific conclusions the learner must derive independently | Pre-written model answers; corrected numerics, completed intervals, classifications, or other discovery results in pre-response “What to produce” copy |
 | Assessment explanation | One-sentence error pattern + correction cue | Worked solutions, long keys |
 | `study_tips` | Brief misconception interrupts | Remediation pathways |
 

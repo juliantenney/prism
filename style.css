@@ -606,6 +606,11 @@ body {
   transform: translateY(-0.5px);
 }
 
+.tab:focus-visible {
+  outline: 2px solid rgba(59, 130, 246, 0.45);
+  outline-offset: 2px;
+}
+
 .refinement-panel,
 .library-panel {
   display: flex;
@@ -751,6 +756,11 @@ textarea:focus {
   cursor: default;
   opacity: 0.55;
   box-shadow: none;
+}
+
+.btn:focus-visible {
+  outline: 2px solid rgba(59, 130, 246, 0.45);
+  outline-offset: 2px;
 }
 
 .btn:not(:disabled):hover {
@@ -1349,7 +1359,9 @@ textarea:focus {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  min-width: 0;
   min-height: 0;
+  max-width: 100%;
 }
 
 .workflow-list-stack .workflow-list {
@@ -1359,12 +1371,51 @@ textarea:focus {
 
 .workflow-list-stack .library-filters {
   flex: 0 0 auto;
+  min-width: 0;
+  max-width: 100%;
+  margin-bottom: 0;
+}
+
+/* Keep Search/Tag filter within the list column; wrap when the column is narrow. */
+.workflow-discovery-filters .form-row {
+  flex-wrap: wrap;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.workflow-discovery-filters .form-group,
+.workflow-discovery-filters .form-group.small {
+  flex: 1 1 10rem;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.workflow-discovery-filters input[type="search"],
+.workflow-discovery-filters input[type="text"],
+.workflow-discovery-filters select {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.workflow-sort-clear-row {
+  align-items: flex-end;
+  gap: 10px;
+  margin-bottom: 0;
+}
+
+.workflow-sort-clear-row .form-group.small {
+  flex: 1 1 45%;
+  max-width: calc(50% - 5px);
 }
 
 .workflow-clear-filters-row {
   display: flex;
-  justify-content: flex-end;
-  margin-top: 2px;
+  justify-content: flex-start;
+  align-items: center;
+  flex: 0 0 auto;
+  margin-top: 0;
+  min-height: 2.1rem;
 }
 
 .workflow-hidden-selection-hint {
@@ -1430,19 +1481,50 @@ textarea:focus {
   margin: 0 0 2px;
 }
 
-.workflow-source-journey-nav {
-  display: flex;
-  align-items: center;
+#workflowsPanel .workflow-item-meta {
+  align-items: flex-end;
   gap: 8px;
-  margin: 0 0 8px;
 }
 
-.workflow-source-journey-nav.hidden {
-  display: none;
+#workflowsPanel .workflow-item-meta-updated {
+  min-width: 0;
+  flex: 1 1 auto;
 }
 
-.workflow-back-to-source-journey-btn {
-  max-width: 100%;
+#workflowsPanel .workflow-item-status {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  max-width: 7.5rem;
+  font-size: 0.7rem;
+  font-weight: 500;
+  line-height: 1.15;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+#workflowsPanel .workflow-item-status-icon {
+  flex: 0 0 auto;
+  font-size: 0.72rem;
+  line-height: 1;
+}
+
+#workflowsPanel .workflow-item-status-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#workflowsPanel .workflow-item-status--complete {
+  color: #166534;
+}
+
+#workflowsPanel .workflow-item-status--in_progress {
+  color: #9a3412;
+}
+
+#workflowsPanel .workflow-item-status--no_data {
+  color: var(--text-muted);
 }
 
 #workflowsPanel .workflow-list .workflow-item .library-item-tags {
@@ -2373,14 +2455,21 @@ textarea:focus {
      as two columns so the list stays on the left and details on the right. */
   .refinement-panel .form-row,
   .library-panel .form-row,
-  #workflowFactoryPanel .form-row {
+  #workflowFactoryPanel .form-row,
+  .workflow-discovery-filters .form-row {
     flex-direction: column;
   }
 
   .refinement-panel .form-group.small,
   .library-panel .form-group.small,
-  #workflowFactoryPanel .form-group.small {
-    flex: 1;
+  #workflowFactoryPanel .form-group.small,
+  .workflow-discovery-filters .form-group.small {
+    flex: 1 1 auto;
+  }
+
+  .workflow-sort-clear-row .form-group.small {
+    flex: 1 1 100%;
+    max-width: 100%;
   }
 
   .workflow-factory-basics-grid,
@@ -2754,6 +2843,26 @@ textarea:focus {
   margin-bottom: 8px;
 }
 
+.utilities-pipeline-details-host {
+  margin-top: 8px;
+  border-top: 1px solid var(--border-subtle);
+  padding-top: 8px;
+}
+
+.utilities-pipeline-details-host[hidden] {
+  display: none;
+}
+
+.utilities-pipeline-details-host .util-vj-pipeline-details {
+  margin-top: 0;
+}
+
+.utilities-pipeline-details-host .util-vj-details {
+  margin-top: 0;
+  border-top: 0;
+  padding-top: 0;
+}
+
 .utilities-secondary-actions .btn {
   font-weight: 500;
 }
@@ -2796,12 +2905,16 @@ textarea:focus {
   background: #fff;
 }
 
-.utilities-output-view-bar {
-  display: flex;
+/* Reuses .app-tabs / .tab segmented pill chrome from the main toolbar. */
+.utilities-output-view-bar.app-tabs {
   flex-wrap: wrap;
-  gap: 8px;
-  align-items: center;
+  max-width: 100%;
   min-width: 0;
+  align-self: center;
+}
+
+.utilities-output-view-bar.hidden {
+  display: none;
 }
 
 .utilities-preview-actions {
@@ -2816,25 +2929,6 @@ textarea:focus {
   .utilities-preview-actions {
     margin-left: 0;
   }
-}
-
-.utilities-output-view-btn {
-  border: 1px solid var(--border-subtle);
-  background: #fff;
-  color: var(--text-primary);
-  border-radius: var(--radius-sm);
-  padding: 6px 12px;
-  font-size: 0.875rem;
-  cursor: pointer;
-  white-space: nowrap;
-}
-
-.utilities-output-view-btn.is-active,
-.utilities-output-view-btn[aria-selected="true"] {
-  background: var(--accent-soft, rgba(37, 99, 235, 0.1));
-  border-color: rgba(37, 99, 235, 0.35);
-  color: #1d4ed8;
-  font-weight: 600;
 }
 
 .utilities-output-workspace {

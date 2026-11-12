@@ -174,19 +174,21 @@ test("journey_intro and experience sections render in intended order with sectio
   assert.match(html, /You will build and defend a credibility judgement/);
 
   const experienceOrder = [
-    "Challenge Your First Impression",
-    "Build a Better Basis for Judgement",
-    "Learn to Investigate Beyond the Source",
-    "Conduct and Weigh a Credibility Investigation",
-    "Make an Independent Credibility Judgement",
-    "Defend Your Judgement"
+    "1. Challenge Your First Impression",
+    "2. Build a Better Basis for Judgement",
+    "3. Learn to Investigate Beyond the Source",
+    "4. Conduct and Weigh a Credibility Investigation",
+    "5. Make an Independent Credibility Judgement",
+    "6. Defend Your Judgement"
   ];
   let cursor = -1;
   experienceOrder.forEach((title) => {
-    const next = html.indexOf(title);
-    assert.ok(next > cursor, "expected ordered title: " + title);
+    const next = html.indexOf("<h2>" + title + "</h2>");
+    assert.ok(next > cursor, "expected ordered numbered title: " + title);
     cursor = next;
   });
+  assert.match(html, /data-section-id="journey_intro"[\s\S]*<h2>About this journey<\/h2>/);
+  assert.doesNotMatch(html, /<h2>\d+\.\s*About this journey<\/h2>/);
 
   assert.match(
     html,
@@ -344,6 +346,207 @@ test("Authoring Preview and Open HTML include an attached editorial image", () =
   assert.match(rendered.html, /Create Interactive/);
   assert.match(rendered.html, /Authoring view/);
   assert.doesNotMatch(rendered.html, /Create a restrained, realistic editorial photograph/);
+});
+
+function numberingPreviewPage(overrides) {
+  const base = {
+    artifact_type: "page",
+    schema_version: "2.0.0",
+    product_id: "learning_journey",
+    title: "Evidence Journey",
+    activities: [],
+    sections: [
+      {
+        section_id: "journey_intro",
+        title: "About this journey",
+        order: 1,
+        exposition: "Intro prose."
+      },
+      {
+        section_id: "exp_1",
+        title: "The Promising Pilot",
+        order: 2,
+        exposition: "First experience."
+      },
+      {
+        section_id: "exp_2",
+        title: "Reading the Evidence Carefully",
+        order: 3,
+        exposition: "Second experience."
+      },
+      {
+        section_id: "exp_3",
+        title: "When the Evidence Changes",
+        order: 4,
+        exposition: "Third experience."
+      }
+    ],
+    commissions: [
+      {
+        commission_id: "c1",
+        section_id: "exp_1",
+        order: 1,
+        title: "The Promising Pilot",
+        product_id: "interactive",
+        status: "supported",
+        specification_text: "SPEC_1"
+      },
+      {
+        commission_id: "c2",
+        section_id: "exp_2",
+        order: 2,
+        title: "Reading the Evidence Carefully",
+        product_id: "interactive",
+        status: "supported",
+        specification_text: "SPEC_2"
+      },
+      {
+        commission_id: "c3",
+        section_id: "exp_3",
+        order: 3,
+        title: "When the Evidence Changes",
+        product_id: "interactive",
+        status: "supported",
+        specification_text: "SPEC_3"
+      }
+    ],
+    learning_journey: { design_intent: "test", continuity: "test" },
+    assembly_state: {
+      current_stage: "design_page",
+      enriched_by: ["design_page"],
+      calls_model: true
+    }
+  };
+  return Object.assign({}, base, overrides || {});
+}
+
+test("Authoring preview numbers unnumbered experience titles from commission.order", () => {
+  const page = numberingPreviewPage();
+  const preview = design.buildLearningJourneyCommissioningPreviewHtml(page);
+  assert.equal(preview.ok, true);
+  assert.match(preview.html, /<h2>1\. The Promising Pilot<\/h2>/);
+  assert.match(preview.html, /<h2>2\. Reading the Evidence Carefully<\/h2>/);
+  assert.match(preview.html, /<h2>3\. When the Evidence Changes<\/h2>/);
+  assert.match(preview.html, /<h2>About this journey<\/h2>/);
+  assert.doesNotMatch(preview.html, /<h2>\d+\.\s*About this journey<\/h2>/);
+  assert.equal(page.sections[1].title, "The Promising Pilot");
+  assert.equal(page.commissions[0].order, 1);
+});
+
+test("Authoring preview strips existing title numbers before applying commission.order", () => {
+  const page = numberingPreviewPage({
+    sections: [
+      {
+        section_id: "journey_intro",
+        title: "About this journey",
+        order: 1,
+        exposition: "Intro prose."
+      },
+      {
+        section_id: "exp_1",
+        title: "1. The Promising Pilot",
+        order: 2,
+        exposition: "First experience."
+      },
+      {
+        section_id: "exp_2",
+        title: "2) Reading the Evidence Carefully",
+        order: 3,
+        exposition: "Second experience."
+      },
+      {
+        section_id: "exp_3",
+        title: "9. When the Evidence Changes",
+        order: 4,
+        exposition: "Third experience."
+      }
+    ]
+  });
+  const preview = design.buildLearningJourneyCommissioningPreviewHtml(page);
+  assert.equal(preview.ok, true);
+  assert.match(preview.html, /<h2>1\. The Promising Pilot<\/h2>/);
+  assert.match(preview.html, /<h2>2\. Reading the Evidence Carefully<\/h2>/);
+  assert.match(preview.html, /<h2>3\. When the Evidence Changes<\/h2>/);
+  assert.doesNotMatch(preview.html, /<h2>1\.\s*1\./);
+  assert.doesNotMatch(preview.html, /<h2>9\.\s*When the Evidence Changes<\/h2>/);
+  assert.equal(page.sections[1].title, "1. The Promising Pilot");
+  assert.equal(page.sections[2].title, "2) Reading the Evidence Carefully");
+  assert.equal(page.sections[3].title, "9. When the Evidence Changes");
+});
+
+test("Authoring preview falls back to sequential experience index when commission.order is missing", () => {
+  const page = numberingPreviewPage({
+    commissions: [
+      {
+        commission_id: "c1",
+        section_id: "exp_1",
+        title: "The Promising Pilot",
+        product_id: "interactive",
+        status: "supported",
+        specification_text: "SPEC_1"
+      },
+      {
+        commission_id: "c2",
+        section_id: "exp_2",
+        title: "Reading the Evidence Carefully",
+        product_id: "interactive",
+        status: "supported",
+        specification_text: "SPEC_2"
+      }
+    ],
+    sections: [
+      {
+        section_id: "journey_intro",
+        title: "About this journey",
+        order: 1,
+        exposition: "Intro prose."
+      },
+      {
+        section_id: "exp_1",
+        title: "The Promising Pilot",
+        order: 2,
+        exposition: "First experience."
+      },
+      {
+        section_id: "exp_2",
+        title: "Reading the Evidence Carefully",
+        order: 3,
+        exposition: "Second experience."
+      },
+      {
+        section_id: "exp_orphan",
+        title: "Unlinked Experience",
+        order: 4,
+        exposition: "No commission linked."
+      }
+    ]
+  });
+  const preview = design.buildLearningJourneyCommissioningPreviewHtml(page);
+  assert.equal(preview.ok, true);
+  assert.match(preview.html, /<h2>1\. The Promising Pilot<\/h2>/);
+  assert.match(preview.html, /<h2>2\. Reading the Evidence Carefully<\/h2>/);
+  assert.match(preview.html, /<h2>3\. Unlinked Experience<\/h2>/);
+  assert.match(
+    preview.html,
+    /data-section-id="exp_orphan"[\s\S]*No structured commission is linked/
+  );
+});
+
+test("Authoring preview numbering is stable across repeat rendering", () => {
+  const page = numberingPreviewPage();
+  const first = design.buildLearningJourneyCommissioningPreviewHtml(page, {
+    sourceWorkflowId: "wf-lj-numbering"
+  });
+  const second = design.buildLearningJourneyCommissioningPreviewHtml(page, {
+    sourceWorkflowId: "wf-lj-numbering"
+  });
+  assert.equal(first.ok, true);
+  assert.equal(second.ok, true);
+  assert.equal(first.html, second.html);
+  assert.match(first.html, /<h2>1\. The Promising Pilot<\/h2>/);
+  assert.match(first.html, /<h2>2\. Reading the Evidence Carefully<\/h2>/);
+  assert.match(first.html, /<h2>3\. When the Evidence Changes<\/h2>/);
+  assert.equal(page.sections[1].title, "The Promising Pilot");
 });
 
 test("ordinary non-Learning-Journey page rendering remains on shared learner path", () => {

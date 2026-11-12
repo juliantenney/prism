@@ -265,7 +265,7 @@ test(
       await control.waitFor({ state: "attached", timeout: 30000 });
       assert.match(
         String((await control.getAttribute("aria-label")) || ""),
-        /Download Resource|Download Learning Journey/i
+        /^Download ZIP$/i
       );
 
       const shellPage = await context.newPage();

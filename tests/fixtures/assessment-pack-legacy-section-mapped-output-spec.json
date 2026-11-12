@@ -1,0 +1,230 @@
+{
+  "artifact_type": "page",
+  "schema_version": "2.0.0",
+  "product_id": "assessment_pack",
+  "page_kind": "assessment",
+  "title": "Reconsider, revise and improve",
+  "activities": [],
+  "framing": "Revisit your earlier explanation, prioritise improvements, and produce a revised explanation for a non-specialist audience.",
+  "attempt_instructions": "Allow about 20 minutes. Keep your prioritised improvements, revised explanation and reasons for significant changes for later reflection.",
+  "assessment_evidence": {
+    "purpose": {
+      "role": "R1_and_R2",
+      "visibility_claim": "The assessment makes visible the learner's ability to prioritise improvements, revise an explanation and justify significant changes.",
+      "stop_rationale": "A formative stop between comparative judgement and later reflection.",
+      "forward_intent": "Retain the revised explanation and reasons for later reflection without grades or pathway gates."
+    },
+    "learner_context": {
+      "depends_on_prior_work": true,
+      "bring_forward": [
+        {
+          "what": "If you completed 'Your first explanation', revisit that explanation.",
+          "how_used": "Use it as the starting point for prioritising improvements and writing a revised explanation."
+        }
+      ],
+      "entry_assumptions": [
+        "The complete fictional study evidence is available in this assessment."
+      ]
+    },
+    "elicitations": [
+      {
+        "elicitation_id": "E1",
+        "order": 1,
+        "evidence_ask": "Prioritise substantive improvements to the initial explanation.",
+        "epistemic_class": "non_determinate",
+        "delivery": {
+          "kind": "constructed_performance",
+          "prompt": {
+            "title": "Learning Element 6: Reconsider your explanation",
+            "context": "You are revisiting your own explanation.",
+            "task": "Identify two or three substantive improvements you would prioritise and explain why each matters.",
+            "response_expectation": "Two or three prioritised improvements with brief justifications.",
+            "suggested_length": "Two or three short entries.",
+            "indicative_time": "Approximately 6 minutes."
+          },
+          "response_workspace": {
+            "intention": "Prioritised self-review workspace.",
+            "guidance": "Focus on substantive improvements rather than proofreading."
+          }
+        },
+        "formative_return": {
+          "materials": [
+            {
+              "material_id": "E1_SELF_EVALUATION",
+              "body": "Check that each priority responds to a real weakness in your own explanation."
+            }
+          ],
+          "forward_orientation": "Use your priorities when writing the revised explanation.",
+          "optional_revision": {
+            "offered": false
+          }
+        }
+      },
+      {
+        "elicitation_id": "E2",
+        "order": 2,
+        "evidence_ask": "Check the strongest conclusion warranted by the observational survey.",
+        "epistemic_class": "determinate",
+        "stimulus": "In the fictional illustrative observational survey, 72 of 100 students who reported taking regular short study breaks also reported good concentration. Among 100 students who did not report taking regular short breaks, 58 reported good concentration. The observed difference was 14 percentage points.",
+        "delivery": {
+          "kind": "auto_checkable_items",
+          "items": [
+            {
+              "item_id": "E2_I1",
+              "order": 1,
+              "form": "single_answer_mcq",
+              "prompt": {
+                "stem": "Which conclusion is best supported by the findings and method of this illustrative survey?",
+                "options": [
+                  {
+                    "key": "A",
+                    "text": "Taking regular short breaks caused a 14-percentage-point improvement in students' concentration."
+                  },
+                  {
+                    "key": "B",
+                    "text": "Students who reported regular short breaks were more likely to report good concentration than those who did not, but the survey does not establish that breaks caused the difference."
+                  },
+                  {
+                    "key": "C",
+                    "text": "Introducing regular short breaks will increase good concentration by 14% among undergraduate students."
+                  },
+                  {
+                    "key": "D",
+                    "text": "The survey demonstrates that students who take regular short breaks achieve better academic performance."
+                  }
+                ]
+              },
+              "judgement": {
+                "correct_answer": "B",
+                "auto_checkable": true
+              },
+              "auto_checkable": true,
+              "key_defence": {
+                "learner_evidence": "The visible evidence establishes self-reported good concentration in 72 of 100 and 58 of 100 students, a difference of 14 percentage points, without random assignment.",
+                "resolution": "unambiguous",
+                "alternatives": [
+                  {
+                    "option_key": "A",
+                    "status": "less_defensible",
+                    "reason": "It converts an association into causation."
+                  },
+                  {
+                    "option_key": "C",
+                    "status": "less_defensible",
+                    "reason": "It predicts an effect and misstates the difference as 14%."
+                  },
+                  {
+                    "option_key": "D",
+                    "status": "less_defensible",
+                    "reason": "Academic performance was not measured."
+                  }
+                ]
+              },
+              "feedback_note": "The best-supported conclusion is an observed association, not an established causal improvement. The observed counts were 72 of 100 and 58 of 100, a difference of 14 percentage points, not an established 14% improvement."
+            }
+          ]
+        },
+        "formative_return": {
+          "materials": [],
+          "forward_orientation": "Apply the association-versus-causation distinction in your revised explanation.",
+          "optional_revision": {
+            "offered": false
+          }
+        }
+      },
+      {
+        "elicitation_id": "E3",
+        "order": 3,
+        "evidence_ask": "Produce an independently revised explanation.",
+        "epistemic_class": "non_determinate",
+        "stimulus": "Study breaks and concentration among undergraduate students is a fictional observational survey of 200 undergraduates. Of 100 students reporting regular short breaks, 72 reported good concentration (72%). Of 100 not reporting regular short breaks, 58 reported good concentration (58%). The difference was 14 percentage points.",
+        "delivery": {
+          "kind": "constructed_performance",
+          "prompt": {
+            "title": "Learning Element 7: Write your revised explanation",
+            "context": "Apply your prioritised improvements to the same communication task.",
+            "task": "Write a revised explanation of the study for a non-specialist audience.",
+            "response_expectation": "A complete independently written revised explanation.",
+            "suggested_length": "One short paragraph or two concise paragraphs.",
+            "indicative_time": "Approximately 10 minutes."
+          },
+          "response_workspace": {
+            "intention": "Unrestricted writing space for the revised explanation.",
+            "guidance": "Write the explanation itself, not a list of edits."
+          }
+        },
+        "formative_return": {
+          "materials": [
+            {
+              "material_id": "E3_SELF_EVALUATION",
+              "body": "Check that numerical comparisons use 72% and 58% as a 14-percentage-point difference and avoid unsupported causal claims."
+            }
+          ],
+          "forward_orientation": "Keep the revised explanation beside your initial version.",
+          "optional_revision": {
+            "offered": false
+          }
+        }
+      },
+      {
+        "elicitation_id": "E4",
+        "order": 4,
+        "evidence_ask": "Explain the most significant changes between the initial and revised explanations.",
+        "epistemic_class": "non_determinate",
+        "delivery": {
+          "kind": "constructed_performance",
+          "prompt": {
+            "title": "Explain your most important changes",
+            "context": "A short account of your decisions supports later reflection.",
+            "task": "Identify the most significant changes you made and explain why they improve the explanation.",
+            "response_expectation": "A brief rationale for the most important revisions.",
+            "suggested_length": "Two or three sentences.",
+            "indicative_time": "Approximately 2 minutes."
+          },
+          "response_workspace": {
+            "intention": "Concise rationale workspace.",
+            "guidance": "Focus on changes that made a meaningful difference."
+          }
+        },
+        "formative_return": {
+          "materials": [
+            {
+              "material_id": "E4_SELF_EVALUATION",
+              "body": "Check that your reasons match visible changes in the revised explanation."
+            }
+          ],
+          "forward_orientation": "Keep the rationale with both explanation versions for later reflection.",
+          "optional_revision": {
+            "offered": false
+          }
+        }
+      }
+    ],
+    "pack_forward_orientation": "Retain your prioritised improvements, revised explanation and reasons for significant changes for later reflection. No automatic judgement has been made about unrestricted writing.",
+    "output_specification": {
+      "specification_id": "revision_record",
+      "artefact_title": "Revision record",
+      "audience": "You, for later revision and comparison",
+      "purpose": "Retain the learner's prioritised improvements, independently revised explanation and reasons for significant changes as reviewable, copyable evidence for later reflection without replacing the learner's wording.",
+      "action_label": "Copy my revision record",
+      "missing_response_text": "Not yet written.",
+      "sections": [
+        {
+          "title": "Prioritised improvements",
+          "source_elicitation_id": "E1",
+          "response_part": "response_text"
+        },
+        {
+          "title": "Revised explanation",
+          "source_elicitation_id": "E3",
+          "response_part": "response_text"
+        },
+        {
+          "title": "Reasons for significant changes",
+          "source_elicitation_id": "E4",
+          "response_part": "response_text"
+        }
+      ]
+    }
+  }
+}

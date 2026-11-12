@@ -228,7 +228,7 @@ test("Slice 6A: Roman roads page produces contract → jobs → briefs → cards
     workspace.buildVisualJobsWorkspaceState(page)
   );
   assert.equal((html.match(/data-brief-select-id=/g) || []).length, 4);
-  assert.match(html, /Copy Prompt/);
+  assert.match(html, /Generation Prompt/);
   assert.deepEqual(page, before);
 });
 

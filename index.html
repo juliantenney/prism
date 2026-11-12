@@ -676,14 +676,14 @@
             <div class="utilities-preview-toolbar">
               <div
                 id="utilitiesOutputViewBar"
-                class="utilities-output-view-bar hidden"
+                class="utilities-output-view-bar app-tabs hidden"
                 role="tablist"
                 aria-label="Utilities output view"
               >
                 <button
                   id="utilitiesOutputViewLearnerBtn"
                   type="button"
-                  class="utilities-output-view-btn is-active"
+                  class="tab active"
                   role="tab"
                   aria-selected="true"
                   aria-controls="utilitiesOutputWorkspace"
@@ -693,7 +693,7 @@
                 <button
                   id="utilitiesOutputViewVisualJobsBtn"
                   type="button"
-                  class="utilities-output-view-btn"
+                  class="tab"
                   role="tab"
                   aria-selected="false"
                   aria-controls="utilitiesVisualJobsPanel"
@@ -703,7 +703,7 @@
                 <button
                   id="utilitiesOutputViewVideoBtn"
                   type="button"
-                  class="utilities-output-view-btn"
+                  class="tab"
                   role="tab"
                   aria-selected="false"
                   aria-controls="utilitiesVisualJobsPanel"
@@ -713,7 +713,7 @@
                 <button
                   id="utilitiesOutputViewResourcesBtn"
                   type="button"
-                  class="utilities-output-view-btn"
+                  class="tab"
                   role="tab"
                   aria-selected="false"
                   aria-controls="utilitiesVisualJobsPanel"
@@ -725,7 +725,7 @@
                 <button
                   id="utilitiesOpenTabBtn"
                   type="button"
-                  class="utilities-output-view-btn"
+                  class="btn small"
                   title="Open in New Tab"
                   aria-label="Open in New Tab"
                   disabled
@@ -735,9 +735,9 @@
                 <button
                   id="utilitiesDownloadHtmlBtn"
                   type="button"
-                  class="utilities-output-view-btn"
-                  title="Download HTML only"
-                  aria-label="HTML only (.html)"
+                  class="btn small"
+                  title="Download HTML"
+                  aria-label="Download HTML"
                   disabled
                 >
                   HTML
@@ -745,9 +745,9 @@
                 <button
                   id="utilitiesDownloadPackageBtn"
                   type="button"
-                  class="utilities-output-view-btn"
-                  title="Download Resource"
-                  aria-label="Download Resource"
+                  class="btn small"
+                  title="Download ZIP"
+                  aria-label="Download ZIP"
                   disabled
                 >
                   ZIP
@@ -771,23 +771,6 @@
           </div>
           <details id="utilitiesAdvancedJson" class="utilities-advanced-json">
             <summary>Advanced: Resource JSON</summary>
-            <div class="form-row compact">
-              <div class="form-group small">
-                <label for="utilitiesOutputFormat">Output format</label>
-                <select id="utilitiesOutputFormat" autocomplete="off">
-                  <option value="html" selected>HTML</option>
-                </select>
-              </div>
-              <div class="form-group small">
-                <label for="utilitiesFileName">File name (optional)</label>
-                <input
-                  type="text"
-                  id="utilitiesFileName"
-                  placeholder="e.g. session-handout"
-                  autocomplete="off"
-                />
-              </div>
-            </div>
             <div class="form-group">
               <label for="utilitiesJsonInput">Structured text (JSON)</label>
               <textarea
@@ -805,6 +788,11 @@
               <button id="utilitiesClearBtn" type="button" class="btn ghost">Clear</button>
             </div>
           </details>
+          <div
+            id="utilitiesPipelineDetailsHost"
+            class="utilities-pipeline-details-host"
+            hidden
+          ></div>
         </div>
       </section>
 
@@ -1157,28 +1145,30 @@
                     />
                   </div>
                 </div>
-                <div class="form-group">
-                  <label for="workflowSortSelect">Sort by</label>
-                  <select id="workflowSortSelect" autocomplete="off">
-                    <option value="updatedDesc">Updated (newest)</option>
-                    <option value="updatedAsc">Updated (oldest)</option>
-                    <option value="createdDesc">Created (newest)</option>
-                    <option value="createdAsc">Created (oldest)</option>
-                    <option value="nameAsc">Name A–Z</option>
-                    <option value="nameDesc">Name Z–A</option>
-                    <option value="stepsDesc">Step count (high–low)</option>
-                    <option value="stepsAsc">Step count (low–high)</option>
-                  </select>
-                </div>
-                <div class="workflow-clear-filters-row">
-                  <button
-                    type="button"
-                    id="workflowClearFiltersBtn"
-                    class="btn small"
-                    aria-label="Clear workflow search and tag filter and reset sort to default"
-                  >
-                    Clear filters
-                  </button>
+                <div class="form-row compact workflow-sort-clear-row">
+                  <div class="form-group small">
+                    <label for="workflowSortSelect">Sort by</label>
+                    <select id="workflowSortSelect" autocomplete="off">
+                      <option value="updatedDesc">Updated (newest)</option>
+                      <option value="updatedAsc">Updated (oldest)</option>
+                      <option value="createdDesc">Created (newest)</option>
+                      <option value="createdAsc">Created (oldest)</option>
+                      <option value="nameAsc">Name A–Z</option>
+                      <option value="nameDesc">Name Z–A</option>
+                      <option value="stepsDesc">Step count (high–low)</option>
+                      <option value="stepsAsc">Step count (low–high)</option>
+                    </select>
+                  </div>
+                  <div class="workflow-clear-filters-row">
+                    <button
+                      type="button"
+                      id="workflowClearFiltersBtn"
+                      class="btn small"
+                      aria-label="Clear workflow search and tag filter and reset sort to default"
+                    >
+                      Clear filters
+                    </button>
+                  </div>
                 </div>
               </div>
               <div
@@ -1192,19 +1182,6 @@
             </div>
 
             <div class="workflow-detail" id="workflowDetail" aria-label="Workflow details">
-              <div
-                id="workflowSourceJourneyNav"
-                class="workflow-source-journey-nav hidden"
-                aria-live="polite"
-              >
-                <button
-                  type="button"
-                  id="workflowBackToSourceJourneyBtn"
-                  class="btn small workflow-back-to-source-journey-btn"
-                >
-                  ← Back to Journey
-                </button>
-              </div>
               <div class="workflow-mode-row">
                 <div class="workflow-mode-tabs" role="tablist" aria-label="Workflow mode">
                   <button
@@ -1455,7 +1432,7 @@
   <script src="lib/prism-workflow-catalogue-store.js?v=20261105-catalogue-overflow"></script>
   <script src="lib/expository-xm-illustration-handoff.js?v=20261105-c2-number-line-handoff"></script>
   <script src="lib/expository-editorial-opening.js?v=20261102-lj-home"></script>
-  <script src="lib/utilities-visual-jobs-workspace.js?v=20261102-lj-home"></script>
+  <script src="lib/utilities-visual-jobs-workspace.js?v=20261111-graphics-prompt-row"></script>
   <script src="node_modules/fflate/umd/index.js"></script>
   <script src="lib/learner-renderer-vnext/math-entry-package-assets.js?v=20260902-1"></script>
   <script src="lib/learner-renderer-vnext/mathjax-package-assets.js?v=20260902-1"></script>
@@ -1501,11 +1478,12 @@
   <script src="lib/page-shell-create.js?v=20260714-1"></script>
   <script src="lib/expository-contracts.js?v=20260923-s87-t007-ejp"></script>
   <script src="lib/expository-sibling-prompts.js?v=20261012-editorial-opening"></script>
-  <script src="lib/learning-journey-design-page.js?v=20261102-s94-wp2-continuity"></script>
+  <script src="lib/learning-journey-design-page.js?v=20261111-s94-auto-access-claim-negation"></script>
   <script src="lib/learning-journey-commission-production-status.js?v=20261006-s91-assembled-graphics"></script>
   <script src="lib/learning-journey-unified-shell.js?v=20261103-s96-viewport-centred-reading"></script>
   <script src="lib/learning-journey-learner-package.js?v=20261102-lj-preview-editorial"></script>
   <script src="lib/learning-journey-workflow-hierarchy.js?v=20261006-s91-lj-hierarchy"></script>
+  <script src="lib/workflow-list-presentation.js?v=20261110-workflow-list-status"></script>
   <script src="lib/learning-journey-sibling-prompts.js?v=20261105-s96-shared-source"></script>
   <script src="lib/learning-journey-shared-source.js?v=20261105-s96-shared-source-v4"></script>
   <script src="lib/situated-task-design-page.js?v=20261013-situated-editorial-opening"></script>

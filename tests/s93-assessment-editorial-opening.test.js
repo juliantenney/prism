@@ -273,9 +273,12 @@ test("a fulfilled image sits under the title; a missing image publishes cleanly"
   assert.match(fulfilled, /assets\/editorial-opening\.png/);
   assert.match(fulfilled, /alt=""/);
   const figure = fulfilled.slice(opening, intro);
-  assert.match(figure, /<figcaption/i);
-  assert.match(figure, /Figure 1\./);
-  assert.match(figure, /A quiet clinic corridor before a study session\./);
+  // Decorative editorial openings omit visible captions and figure numbering
+  // unless an explicit learner_caption was authored.
+  assert.doesNotMatch(figure, /<figcaption/i);
+  assert.doesNotMatch(figure, /Figure 1\./);
+  assert.doesNotMatch(figure, /A quiet clinic corridor before a study session/);
+  assert.doesNotMatch(figure, /The setting in which the learner will attempt the check/);
   assert.doesNotMatch(figure, /aria-describedby/);
   assert.doesNotMatch(figure, /An illustration of a quiet clinic corridor/);
   assert.doesNotMatch(figure, new RegExp(ANSWER_KEY));
@@ -510,8 +513,11 @@ test("editorial opening captions stay short, numbered and free of production com
   const banner = html.slice(opening, intro);
   assert.match(banner, /src="assets\/editorial-opening\.png"/);
   assert.match(banner, /alt=""/);
-  assert.match(banner, /<strong>Figure 1\.<\/strong> Colleagues reviewing workplace documents together\./);
+  // Production caption_intent / subject must not become a visible figure caption.
+  assert.doesNotMatch(banner, /<figcaption/i);
+  assert.doesNotMatch(banner, /Figure 1\./);
   assert.doesNotMatch(banner, /Create a restrained/);
+  assert.doesNotMatch(banner, /Colleagues reviewing workplace documents together/);
   assert.doesNotMatch(banner, /aria-describedby/);
   assert.doesNotMatch(banner, /detailed_description|caption_intent/);
 
@@ -552,7 +558,9 @@ test("editorial opening captions stay short, numbered and free of production com
     { figureCounter: counter }
   );
   assert.match(decorative, /alt=""/);
-  assert.match(decorative, /<strong>Figure 2\.<\/strong> Colleagues reviewing workplace documents together\./);
+  assert.doesNotMatch(decorative, /<figcaption/i);
+  assert.doesNotMatch(decorative, /Figure/);
+  assert.doesNotMatch(decorative, /Colleagues reviewing workplace documents together/);
   assert.doesNotMatch(decorative, /Create a restrained/);
 
   const repeated = renderVisualAffordanceFigure(
@@ -567,13 +575,10 @@ test("editorial opening captions stay short, numbered and free of production com
     { slot: "editorial-opening", affordanceId: "va-editorial-opening" },
     { figureCounter: counter }
   );
-  // Decorative img alt stays empty; adjacent caption HTML carries the short phrase.
+  // Decorative img alt stays empty; without an authored learner_caption there is no figure caption.
   assert.match(repeated, /alt=""/);
-  assert.match(
-    repeated,
-    /Three colleagues reviewing documents around a laptop\./
-  );
-  assert.match(repeated, /<strong>Figure 3\.<\/strong>/);
+  assert.doesNotMatch(repeated, /<figcaption/i);
+  assert.doesNotMatch(repeated, /Three colleagues reviewing documents around a laptop/);
   assert.doesNotMatch(repeated, /aria-describedby/);
   assert.doesNotMatch(repeated, /Create a restrained/);
 
@@ -593,7 +598,7 @@ test("editorial opening captions stay short, numbered and free of production com
   assert.match(unsafe, /alt=""/);
   assert.doesNotMatch(unsafe, /<figcaption/i);
   assert.doesNotMatch(unsafe, /Create a restrained/);
-  assert.equal(counter.value, 3);
+  assert.equal(counter.value, 1);
 
   const instructional = renderVisualAffordanceFigure(
     {
@@ -606,9 +611,9 @@ test("editorial opening captions stay short, numbered and free of production com
     { slot: "section-after-content", affordanceId: "va-s2-diagram" },
     { figureCounter: counter }
   );
-  assert.match(instructional, /Figure 4\./);
+  assert.match(instructional, /Figure 2\./);
   assert.match(instructional, /alt="Catchment diagram; detailed description follows\."/);
   assert.match(instructional, /Rainfall reaches soil storage and then the river channel/);
   assert.match(instructional, /aria-describedby="figure-description-/);
-  assert.equal(counter.value, 4);
+  assert.equal(counter.value, 2);
 });

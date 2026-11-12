@@ -1,0 +1,191 @@
+{
+  "artifact_type": "page",
+  "schema_version": "2.0.0",
+  "product_id": "assessment_pack",
+  "page_kind": "assessment",
+  "title": "Diagnose your explanation",
+  "activities": [],
+  "framing": "Before revising your explanation of the study, examine how effectively it communicates the evidence to a non-specialist reader. This formative assessment asks you to make and justify your own judgements about what works, what needs attention and which improvements matter most. There is no single correct diagnosis, and your writing will not be automatically graded. Allow approximately 10 minutes. No external research is needed.",
+  "attempt_instructions": "Read the illustrative research account and reconsider your original explanation against its findings and limitations.\n\nIdentify meaningful strengths and any consequential weaknesses in your explanation. Explain why they matter for someone unfamiliar with the study.\n\nUse relevant quality dimensions, including accuracy, clarity, relevance, context, qualification and proportionality. Distinguish changes that affect the reader's interpretation from changes that are mainly cosmetic.\n\nChoose and justify your most important improvement priorities. Write a diagnostic self-evaluation rather than a revised explanation.\n\nAfter completing your diagnosis, use the reflective guidance to check your reasoning. You may refine your diagnosis if you wish.",
+  "assessment_evidence": {
+    "purpose": {
+      "role": "R2",
+      "visibility_claim": "This formative assessment makes visible the learner's ability to evaluate their own original explanation against the canonical research evidence, apply previously developed quality dimensions, identify meaningful strengths and consequential weaknesses, and justify priorities for improvement. The principal evidence is a learner-authored diagnostic account rather than a selection of predetermined correct responses. It can reveal whether the learner distinguishes numerical accuracy, observational association, methodological qualification and reader understanding from cosmetic editing. The evidence supports formative reflection but does not establish general mastery, award a grade or automatically determine the quality of unrestricted writing.",
+      "stop_rationale": "This assessment provides a deliberate point of self-evaluation between comparative judgement and revision. Learners have previously had opportunities to produce an independent explanation and consider contrasting explanations using dimensions of accuracy, clarity, relevance, context, qualification and proportionality. Before revising their own work, they need to apply those dimensions independently and determine which improvements would make the greatest difference to a non-specialist reader. The assessment therefore prioritises authentic diagnostic reasoning over additional recall or recognition exercises. Its approximately ten-minute duration allows for independent rereading, evidence checking, reasoned diagnosis and selection of revision priorities without requiring external research.",
+      "forward_intent": "The learner's diagnostic account, produced through the primary constructed-performance elicitation E1 and identified as C04.E1, provides a reasoned basis for subsequent work in 'Revise your explanation'. It records what the learner considers effective, what needs attention, why the identified issues matter and which improvements should take priority. The assessment does not prescribe replacement wording, produce the revised explanation or control the learner's subsequent pathway. Its purpose is to strengthen the learner's capacity to make and justify independent revision decisions.",
+      "assessment_intent": "formative_check",
+      "assessment_depth": "standard",
+      "extent": "short",
+      "epistemic_class": "non_determinate",
+      "primary_evidence": {
+        "elicitation_id": "E1",
+        "artefact_id": "C04.E1",
+        "delivery_kind": "constructed_performance",
+        "evidence_type": "Learner-authored, criteria-informed self-evaluation of an existing explanation.",
+        "required_evidence": [
+          "Identification of at least one meaningful strength in the learner's original explanation, with a reasoned account of its value for a non-specialist reader.",
+          "Identification of consequential weaknesses or limitations where present, grounded in specific claims, omissions or interpretative choices in the original explanation.",
+          "Application of relevant quality dimensions developed through comparative evaluation, including accuracy, clarity, relevance, context, qualification and proportionality.",
+          "Reference to the canonical evidence where relevant, including the distinction between the observed 14-percentage-point difference and unsupported causal interpretations.",
+          "Distinction between substantive improvements affecting accuracy, evidential interpretation or reader understanding and changes that are primarily cosmetic.",
+          "Selection and justification of priority improvements appropriate to the learner's own explanation.",
+          "A brief statement of intended revision focus without producing the revised explanation."
+        ],
+        "interpretation_boundary": "The evidence is contextual and learner-specific. Different diagnoses and improvement priorities may be defensible when supported by the original explanation and canonical evidence. The absence of a particular identified weakness does not demonstrate a deficiency if that weakness is not present in the learner's writing. The response must not be automatically marked, scored or compared against a single prescribed model answer."
+      },
+      "outcome_alignment": [
+        {
+          "outcome_id": "LO1",
+          "learning_outcome": "Evaluate the accuracy and evidential quality of their original explanation by checking its numerical claims, interpretation and qualifications against the canonical research evidence, using relevant quality dimensions developed through comparative judgement.",
+          "evidence_source": "E1",
+          "evidence_focus": "Specific judgements about the original explanation's factual accuracy, numerical interpretation, treatment of observational evidence and methodological qualification.",
+          "visibility": "The learner's written reasoning reveals how they apply evidence and evaluative dimensions to their own claims and omissions."
+        },
+        {
+          "outcome_id": "LO2",
+          "learning_outcome": "Diagnose meaningful strengths and weaknesses in their original explanation, explaining how specific features affect a non-specialist reader's understanding and distinguishing substantive problems from primarily cosmetic editing opportunities.",
+          "evidence_source": "E1",
+          "evidence_focus": "Identification and explanation of actual strengths and weaknesses, including their likely consequences for reader understanding.",
+          "visibility": "The learner demonstrates diagnostic discrimination by connecting features of their own writing with their significance rather than merely listing generic criteria."
+        },
+        {
+          "outcome_id": "LO3",
+          "learning_outcome": "Select and justify priority improvements to their original explanation, explaining why the chosen changes matter for the non-specialist reader and how they will inform subsequent revision.",
+          "evidence_source": "E1",
+          "evidence_focus": "Independent selection and justification of consequential improvement priorities and intended revision focus.",
+          "visibility": "The learner's prioritisation makes visible their ability to translate evaluative judgement into defensible decisions for subsequent revision."
+        }
+      ],
+      "component_plan": {
+        "constructed_performance_count": 1,
+        "constructed_performance_ids": [
+          "E1"
+        ],
+        "determinate_item_count": 0,
+        "determinate_item_forms": [],
+        "planned_component_forms": [],
+        "count_basis": "The commission explicitly requires one primary constructed-performance elicitation with stable identifier E1 and journalable artefact C04.E1. The author fixes this authentic performance requirement but does not prescribe a number of determinate items. No additional determinate items are selected because the central educational requirement is to diagnose the learner's actual explanation, identify its particular strengths and weaknesses, and justify independent improvement priorities. Predetermined selection items would provide indirect evidence of general conceptual recognition rather than additional evidence of the learner's own diagnostic reasoning. A single appropriately structured performance can address all three authoritative learning outcomes within the available ten minutes.",
+        "evidence_rationale": "The constructed performance provides integrated evidence of evidence checking, evaluative analysis and prioritisation. It requires the learner to apply the canonical research account and previously developed quality dimensions to their own writing, rather than demonstrate these capabilities separately through decontextualised questions. Its component requirements provide several meaningful opportunities to reveal reasoning without multiplying tasks or increasing learner burden. The standard depth is achieved through the quality and breadth of the reasoning elicited, not through a fixed number of questions. Formative guidance can help learners inspect their reasoning without converting the unrestricted response into an automatically scored assessment.",
+        "feedback_timing": "Following the learner's independent diagnostic response, reflective guidance supports self-checking and reconsideration. No automatic correctness judgement is applied to E1.",
+        "weighting": "none"
+      },
+      "formative_principles": {
+        "learner_agency": "Learners determine which strengths, weaknesses and priorities are relevant to their own explanation. They are not required to identify predetermined faults or adopt prescribed replacement wording.",
+        "evidence_fidelity": "The canonical study is fictional and illustrative. The survey compared two groups of 100 undergraduate students. Of those reporting regular short breaks, 72% reported good concentration, compared with 58% among those not reporting regular breaks. The observed difference is 14 percentage points. The observational design, self-reporting, lack of random assignment and uncontrolled factors prevent causal conclusions. No additional findings, significance tests, confidence intervals or performance outcomes may be assumed.",
+        "formative_guidance": "Guidance should prompt learners to check whether their diagnosis refers to actual features of their original explanation, respects the evidence, distinguishes observation from inference, considers the non-specialist reader and justifies improvement priorities. Guidance should not supply a complete model diagnosis or automatically evaluate unrestricted writing.",
+        "scaffolding": "Moderate scaffolding initially directs attention to the original explanation, canonical evidence and previously developed quality dimensions. Support then fades as learners identify and justify their own priorities. Reflective checks remain available without replacing independent judgement.",
+        "assessment_boundary": "The assessment is formative and does not award grades, pass or fail outcomes, certification or progression decisions. It does not prescribe subsequent learning routes or remediation loops.",
+        "time_budget_minutes": 10,
+        "external_research_required": false
+      },
+      "output_intent": {
+        "structured_learner_output_required": true,
+        "output_type": "Reasoned diagnostic self-evaluation",
+        "source_elicitation": "E1",
+        "journalable_artefact": "C04.E1",
+        "purpose": "Preserve the learner's own diagnostic reasoning as a coherent account that can be reviewed and used to inform subsequent revision.",
+        "content_structure": [
+          "Meaningful strengths and their significance for the reader.",
+          "Consequential weaknesses or limitations, supported by reference to the original explanation and evidence.",
+          "Prioritised improvements with reasons for their importance.",
+          "Brief intended focus for revision."
+        ],
+        "design_page_requirement": "The downstream Design Page should provide an appropriate response workspace for E1 and an output_specification mapping the learner-authored diagnostic response to C04.E1. It should not automatically generate or substitute the learner's reasoning."
+      }
+    },
+    "learner_context": {
+      "depends_on_prior_work": true,
+      "bring_forward": [
+        {
+          "what": "If you completed 'Write your first explanation', revisit your original explanation of the study. Also consider the judgements you developed in 'Compare explanations and judge their quality', particularly the qualities that made explanations more or less convincing.",
+          "how_used": "Use your original explanation as the work you are evaluating, and apply your comparative insights to identify what it communicates effectively, what could mislead a non-specialist reader and which improvements would matter most before you revise it."
+        }
+      ],
+      "entry_assumptions": [
+        "The learner has been introduced to the fictional illustrative research study and its canonical numerical findings and methodological limitations.",
+        "The learning sequence has provided an opportunity to produce an independent initial explanation in C02, but completion and the content of any individual response are not assumed.",
+        "The learning sequence has provided an opportunity to compare candidate explanations and develop evaluative dimensions in C03, but individual judgements or responses are not assumed to be known.",
+        "The learner can consult their own earlier work when undertaking the diagnostic activity; the assessment does not presume that the content of that work is available to the assessment author.",
+        "The intended audience for the original explanation is non-specialist.",
+        "The learner is expected to make an independent, evidence-grounded judgement rather than reproduce a model answer.",
+        "The activity is designed for approximately ten minutes and requires no external research.",
+        "The diagnosis produced in this assessment is intended to inform C05, but the revised explanation is outside the present assessment's responsibilities."
+      ]
+    },
+    "elicitations": [
+      {
+        "elicitation_id": "E1",
+        "order": 1,
+        "evidence_ask": "Produce an independent, evidence-grounded diagnosis of the learner's own initial explanation, identifying meaningful strengths, consequential weaknesses where present, and justified priorities for improvement. The performance must demonstrate application of relevant evaluative dimensions, distinguish substantive issues from cosmetic edits, explain consequences for a non-specialist reader, and establish an intended focus for subsequent revision without producing a revised explanation.",
+        "epistemic_class": "non_determinate",
+        "mapped_learning_outcome_ids": [
+          "LO1",
+          "LO2",
+          "LO3"
+        ],
+        "journalable_artefact_id": "C04.E1",
+        "stimulus": "Study breaks and concentration among undergraduate students is a fictional, illustrative research study created for educational purposes; its findings are synthetic and are not results of an actual investigation. The research question was whether taking regular short breaks during independent study was associated with students reporting good concentration. In the illustrative study, a university research team conducted an observational survey of 200 undergraduate students. Students reported their own study habits and concentration, and researchers divided respondents into two groups according to whether they reported taking regular short breaks. In the group reporting regular short breaks, 72 of 100 students (72%) reported good concentration. In the group not reporting regular short breaks, 58 of 100 students (58%) reported good concentration. The observed difference was 14 percentage points, not 14%. Students reporting regular short breaks were therefore more likely to report good concentration in this survey. The study was observational, not a randomised experiment, and students were not randomly assigned to take or avoid breaks. Potentially relevant factors such as sleep, motivation, workload and study environment were not controlled. Both study habits and concentration were self-reported; the survey does not establish whether reported concentration corresponds to objectively measured concentration or performance. The sample cannot automatically be assumed to represent all undergraduate students. The findings do not establish that taking breaks causes improved concentration, that introducing breaks would produce a 14-percentage-point improvement, that academic performance improves, or that any particular frequency or duration of breaks is best. No statistical significance, confidence interval or causal effect has been established. Your diagnosis should distinguish what this illustrative evidence shows from claims it cannot support.",
+        "delivery": {
+          "kind": "constructed_performance",
+          "prompt": {
+            "title": "Diagnose your explanation",
+            "context": "You are evaluating your own explanation of the study for a non-specialist reader. Your aim is to decide what already works, what matters most to improve, and why. This is a diagnosis, not a request to rewrite your explanation.",
+            "task": "Reread your original explanation and compare its claims and omissions with the study evidence above. Use whichever of the quality dimensions you explored in 'Compare explanations and judge their quality' are most relevant: accuracy, clarity, relevance, context, qualification and proportionality. Write a reasoned self-evaluation that identifies at least one meaningful strength and explains how it helps the reader. Identify any consequential weaknesses, pointing to specific wording, omissions or implications and explaining why they matter. Consider whether a problem concerns an inaccurate figure, unsupported inference, missing context, inadequate qualification or difficulty understanding the finding, rather than merely a cosmetic wording change. Then select the improvements you would prioritise and justify your choices. If your explanation already handles a particular issue effectively, recognise that strength rather than inventing a weakness.",
+            "response_expectation": "Organise your response around: (1) strengths and why they matter; (2) weaknesses or limitations and their consequences for the reader; (3) your highest-priority improvements and reasons for choosing them; and (4) a brief statement of what you intend to focus on in 'Revise your explanation'. Refer to features of your own writing and to the study evidence where relevant. Make your own judgements; there is no single required diagnosis or prescribed replacement wording. Do not write the revised explanation here.",
+            "suggested_length": "A concise diagnostic account of approximately 150–250 words, or an equivalently focused response organised under the four suggested headings.",
+            "indicative_time": "Allow approximately 10 minutes in total, including rereading your original explanation, checking the evidence, writing your diagnosis and identifying your priorities."
+          },
+          "response_workspace": {
+            "intention": "A sustained, learner-authored diagnostic self-evaluation recording meaningful strengths, consequential weaknesses, justified improvement priorities and intended revision focus.",
+            "guidance": "Use your own explanation as evidence. Be specific about what works or needs attention, and explain why it matters for someone unfamiliar with the study. Choose the priorities you consider most consequential; you do not need to rewrite your explanation."
+          }
+        },
+        "formative_return": {
+          "materials": [
+            {
+              "material_id": "E1_SELF_CHECK",
+              "body": "Review your diagnosis against your original explanation. Have you identified a genuine strength and explained how it helps a non-specialist reader? For each weakness you identified, can you point to something you actually wrote or omitted and explain its consequence? Check any numerical or interpretative judgement against the study evidence: 72% and 58% of the respective groups reported good concentration, a difference of 14 percentage points. The survey shows an association between reported breaks and reported concentration, not a proven causal effect. Its observational design, self-reporting and uncontrolled factors limit what can be concluded. These are checks on your reasoning, not a list of faults you must find in your writing."
+            },
+            {
+              "material_id": "E1_PRIORITY_CHECK",
+              "body": "Look again at your proposed improvements. Which would most change what a non-specialist reader understands or concludes? A correction to an inaccurate figure, an unsupported causal claim or a consequential omission may matter more than polishing a sentence. Equally, a clearer expression can be important when the existing wording obscures the finding. Your priorities should follow from the particular strengths and weaknesses of your own explanation. Can you explain why each chosen improvement deserves attention before a less consequential edit?"
+            },
+            {
+              "material_id": "E1_INDEPENDENT_JUDGEMENT",
+              "body": "There is no single required diagnosis. Different explanations can communicate the finding effectively in different ways, provided their claims remain accurate, evidence-grounded and appropriately qualified. You do not need to manufacture weaknesses or adopt a prescribed replacement sentence. The value of your diagnosis lies in how specifically and convincingly you justify your judgements about your own writing."
+            }
+          ],
+          "forward_orientation": "Use the priorities you have justified to guide your decisions in 'Revise your explanation'. Keep the strengths you want to preserve in mind alongside the changes you consider most consequential. Your diagnosis is a basis for making revision decisions, not a fixed set of required edits.",
+          "optional_revision": {
+            "offered": true,
+            "prompt": "If reviewing these checks changes your judgement, refine your diagnostic account so that each priority is supported by a specific feature of your original explanation and a clear reason for its importance. You can also retain your initial priorities if your reasoning remains defensible. Do not rewrite the explanation at this stage."
+          }
+        }
+      }
+    ],
+    "pack_forward_orientation": "Your diagnostic self-evaluation identifies what is already effective in your explanation and what you have reason to improve. In 'Revise your explanation', use those judgements to make deliberate changes that improve accuracy, clarity and appropriate qualification for a non-specialist reader. You remain responsible for deciding which changes are warranted; this formative assessment does not assign a grade or determine your subsequent pathway.",
+    "output_specification": {
+      "specification_id": "C04.E1",
+      "artefact_title": "My explanation diagnosis",
+      "audience": "Learner",
+      "purpose": "Keep your own reasoned diagnosis available to guide decisions when you revise your explanation.",
+      "action_label": "Review my diagnosis",
+      "missing_response_text": "Complete your diagnosis to review your written response.",
+      "sections": [
+        {
+          "heading": "My diagnosis",
+          "elicitation_id": "E1",
+          "response_part": "response_text"
+        }
+      ]
+    }
+  },
+  "editorial_opening_image": {
+    "decision": "generate",
+    "subject": "A quiet university study setting with a student reviewing their own written work.",
+    "context": "A restrained editorial image introducing a reflective assessment about evaluating an explanation of research evidence.",
+    "caption_intent": "Establish the setting of independent academic reflection without conveying assessment criteria, evidence or suggested answers.",
+    "alt_text": "",
+    "detailed_description": "A naturalistic, contemporary university study space in soft daylight. A single undergraduate student sits at a desk, thoughtfully reviewing a few sheets of their own written work, with a closed notebook and pen nearby. The composition conveys careful reflection and independent judgement rather than correction or examination. Use a calm, understated visual style, believable proportions and a neutral academic environment. Show no legible writing, numerical figures, graphs, research results, highlighted corrections, ticks, crosses, grades, interface elements, labels, banners or text overlays. The image must not imply that the student has reached a correct answer or reveal any part of the assessment's expected reasoning."
+  }
+}

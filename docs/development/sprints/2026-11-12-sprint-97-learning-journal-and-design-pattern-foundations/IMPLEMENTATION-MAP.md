@@ -1,11 +1,12 @@
 # Sprint 97 — Implementation map
 
-**Status:** **OPEN** — M1 complete (S97-D03 + S97-D04); M2+ await authorisation  
+**Status:** **CLOSED — ACCEPTED** (qualified) — [SPRINT-97-CLOSURE.md](SPRINT-97-CLOSURE.md)  
 **Sprint:** 97 — Learning Journal and Design Pattern Foundations  
 **Opening:** [S97-D01](decisions.md#s97-d01--open-sprint-97--learning-journal-and-design-pattern-foundations)  
 **M1 contract lock:** [S97-D03](decisions.md#s97-d03--resolve-q1q7-and-lock-m1-contract)  
 **Incremental workflow:** [S97-D04](decisions.md#s97-d04--incremental-journal-development--pedagogical-north-star)  
 **Data-model compatibility:** [S97-D05](decisions.md#s97-d05--learning-journey-data-model-extensibility-compatibility-principle)  
+**Close:** [S97-D07](decisions.md#s97-d07--close-sprint-97--learning-journal-and-design-pattern-foundations-accepted)  
 **Charter:** [SPRINT-97-CHARTER.md](SPRINT-97-CHARTER.md)  
 **Investigation:** [INITIAL-INVESTIGATION.md](INITIAL-INVESTIGATION.md)  
 **Baseline:** `a8c2fd3b6e7dbeaa11bb418c71bf4eb472f150c5`
@@ -16,12 +17,12 @@
 
 ```text
 Sprint 96                             CLOSED — ACCEPTED — do not reopen
-Sprint 97                             OPEN
-M1 Setup + architectural baseline     COMPLETE (docs; S97-D02–D05)
-M2 Journal runtime / TOC / notify     NOT STARTED — needs explicit authorisation
-M3 Journal spec + Design Page pipeline NOT STARTED
-M4 Design-pattern catalogue           NOT STARTED
-M5 Integration + closure              NOT STARTED
+Sprint 97                             CLOSED — ACCEPTED (qualified)
+M1 Setup + architectural baseline     COMPLETE (S97-D02–D05)
+M2 Journal runtime / TOC / notify     COMPLETE — ACCEPTED
+M3 Journal spec + Design Page pipeline COMPLETE — ACCEPTED (qualified)
+M4 Design-pattern catalogue           DEFERRED (PB-FA-029)
+M5 Level 3 pipeline journals          DEFERRED (not executed as Level 3 evidence)
 ```
 
 ---
@@ -60,10 +61,10 @@ Journal changes must not force full Learning Journey regeneration. Prefer existi
 | ID | Title | Status | Depends on |
 | -- | ----- | ------ | ---------- |
 | M1 | Sprint setup, documentation and architectural baseline | **COMPLETE** | S97-D01; amendments S97-D03–D05 |
-| M2 | Journal runtime, TOC and notifications | Planned | Explicit M2 authorisation |
-| M3 | Journal specification and LJ Design Page commissioning | Planned | M2 preferred for runtime proof |
-| M4 | Central design-pattern catalogue and demonstrator specification | Planned | M1 (can parallel M2/M3) |
-| M5 | Integration testing with both reference journeys, regression verification and sprint closure | Planned | M2–M4; **journey-level** pipeline journal generation + incremental reassembly |
+| M2 | Journal runtime, TOC and notifications | **COMPLETE — ACCEPTED** | T-003–T-006; fixture Level 1 evidence |
+| M3 | Journal specification and LJ Design Page commissioning | **COMPLETE — ACCEPTED** (qualified) | Tasks 1–2 + journal-only producers; presentation hardening |
+| M4 | Central design-pattern catalogue and demonstrator specification | **Deferred** | Carry forward — PB-FA-029 |
+| M5 | Integration testing with both reference journeys, regression verification and sprint closure | **Deferred / partial** | Closure accepted on M1–M3 evidence; Level 3 pipeline journals **not** executed |
 
 ### Milestone structure note
 
@@ -153,18 +154,18 @@ Five milestones retained. Clarifications under S97-D03 / S97-D04:
 | S97-T-002 | Resolve Q1–Q7 + amend M3/M4/M5 criteria | M1 | **COMPLETE** (S97-D03) |
 | S97-T-002b | Incremental journal workflow + pedagogical north star | M1 | **COMPLETE** (S97-D04) |
 | S97-T-002c | Journey data-model extensibility compatibility principle | M1 | **COMPLETE** (S97-D05) |
-| S97-T-003 | Journal TOC destination + read-only view | M2 | Planned |
-| S97-T-004 | Entry population via declared producer resolve | M2 | Planned |
-| S97-T-005 | Content-fingerprint notifications + acknowledgement | M2 | Planned |
-| S97-T-006 | Absent/disabled-spec compatibility | M2 | Planned |
-| S97-T-007 | Journal schema + normaliser/validator | M3 | Planned |
-| S97-T-008 | Package/shell embed of journal spec | M3 | Planned |
-| S97-T-009 | Design Page journal commission/revise without constituent regen | M3 | Planned |
-| S97-T-010 | Catalogue templates + 2 established patterns | M4 | Planned |
-| S97-T-011 | Ten provisional candidates (unvalidated) | M4 | Planned |
-| S97-T-012 | Demonstrator specs (real briefs where available) | M4 | Planned |
-| S97-T-013 | Journey-level journal generation from original LJ briefs + incremental reassembly | M5 | Planned |
-| S97-T-014 | Separate Level 1 fixture vs Level 3 pipeline evidence + regressions + closure | M5 | Planned |
+| S97-T-003 | Journal TOC destination + read-only view | M2 | **COMPLETE** (2026-11-12) |
+| S97-T-004 | Entry population via declared producer resolve | M2 | **COMPLETE** (2026-11-12) |
+| S97-T-005 | Content-fingerprint notifications + acknowledgement | M2 | **COMPLETE** |
+| S97-T-006 | Absent/disabled-spec compatibility | M2 | **COMPLETE** (covered across T-003–T-005 tests) |
+| S97-T-007 | Journal schema + normaliser/validator | M3 | **COMPLETE** (Design Page normalise/validate) |
+| S97-T-008 | Package/shell embed of journal spec | M3 | **COMPLETE** (unified shell consumes `learning_journey.journal`) |
+| S97-T-009 | Design Page journal commission/revise without constituent regen | M3 | **COMPLETE** (qualified) — emit/validate + producer enrichment; Level 3 pipeline proof deferred |
+| S97-T-010 | Catalogue templates + 2 established patterns | M4 | **Deferred** |
+| S97-T-011 | Ten provisional candidates (unvalidated) | M4 | **Deferred** |
+| S97-T-012 | Demonstrator specs (real briefs where available) | M4 | **Deferred** |
+| S97-T-013 | Journey-level journal generation from original LJ briefs + incremental reassembly | M5 | **Deferred** |
+| S97-T-014 | Separate Level 1 fixture vs Level 3 pipeline evidence + regressions + closure | M5 | **PARTIAL** — closure recorded; Level 3 evidence deferred |
 
 ---
 

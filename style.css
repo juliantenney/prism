@@ -1515,16 +1515,29 @@ textarea:focus {
   text-overflow: ellipsis;
 }
 
+#workflowsPanel .workflow-item-status--completed {
+  color: #166534;
+}
+
+#workflowsPanel .workflow-item-status--authoring {
+  color: #1d4ed8;
+}
+
+#workflowsPanel .workflow-item-status--incomplete {
+  color: #9a3412;
+}
+
+#workflowsPanel .workflow-item-status--no_data {
+  color: var(--text-muted);
+}
+
+/* Legacy class names kept for any residual markup during transition. */
 #workflowsPanel .workflow-item-status--complete {
   color: #166534;
 }
 
 #workflowsPanel .workflow-item-status--in_progress {
   color: #9a3412;
-}
-
-#workflowsPanel .workflow-item-status--no_data {
-  color: var(--text-muted);
 }
 
 #workflowsPanel .workflow-list .workflow-item .library-item-tags {

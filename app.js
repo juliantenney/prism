@@ -25465,6 +25465,118 @@
     return null;
   }
 
+  // In-memory Authoring-parity evidence for My Workflows list status.
+  // Durable runstate keeps capture refs only; list status reuses the same hydrate/
+  // assemble path as Authoring Graphics(N) and caches the result for sync reads.
+  var workflowListStatusEvidenceCache = Object.create(null);
+  var workflowListStatusHydrateInFlight = Object.create(null);
+  var workflowListStatusHydrateAttempted = Object.create(null);
+  // When several page_unavailable rows hydrate after refresh, coalesce list rebuilds
+  // until the in-flight wave settles (avoids selection flicker from N full re-renders).
+  var workflowListStatusHydrateRefreshPending = false;
+
+  function countWorkflowListStatusHydratesInFlight() {
+    return Object.keys(workflowListStatusHydrateInFlight).length;
+  }
+
+  /**
+   * Request a My Workflows status refresh after async status-evidence hydrate work.
+   * If other hydrates are still in flight, defer until the wave settles so the list
+   * is rebuilt once instead of once-per-constituent.
+   */
+  function settleWorkflowListStatusEvidenceHydrate(options) {
+    var opts = options && typeof options === "object" ? options : {};
+    if (opts.needsRefresh) {
+      workflowListStatusHydrateRefreshPending = true;
+    }
+    if (countWorkflowListStatusHydratesInFlight() > 0) {
+      return { deferred: true, pending: workflowListStatusHydrateRefreshPending };
+    }
+    if (!workflowListStatusHydrateRefreshPending) {
+      return { deferred: false, refreshed: false };
+    }
+    workflowListStatusHydrateRefreshPending = false;
+    refreshWorkflowListStatuses();
+    return { deferred: false, refreshed: true };
+  }
+
+  function readWorkflowListStatusEvidenceCache(workflowId) {
+    var wid = String(workflowId || "").trim();
+    if (!wid) return null;
+    var row = workflowListStatusEvidenceCache[wid];
+    return row && typeof row === "object" ? row : null;
+  }
+
+  function writeWorkflowListStatusEvidenceCache(workflowId, evidence) {
+    var wid = String(workflowId || "").trim();
+    if (!wid || !evidence || typeof evidence !== "object") return;
+    var page =
+      evidence.authoritativeAssembledPage &&
+      typeof evidence.authoritativeAssembledPage === "object"
+        ? evidence.authoritativeAssembledPage
+        : null;
+    workflowListStatusEvidenceCache[wid] = {
+      authoritativeAssembledPage: page,
+      workflowResourceRefs: Array.isArray(evidence.workflowResourceRefs)
+        ? evidence.workflowResourceRefs.slice()
+        : [],
+      assetsByBriefId:
+        evidence.assetsByBriefId && typeof evidence.assetsByBriefId === "object"
+          ? Object.assign({}, evidence.assetsByBriefId)
+          : {},
+      updatedAt: Date.now()
+    };
+  }
+
+  function clearWorkflowListStatusEvidenceCache(workflowId) {
+    var wid = String(workflowId || "").trim();
+    if (!wid) {
+      workflowListStatusEvidenceCache = Object.create(null);
+      workflowListStatusHydrateInFlight = Object.create(null);
+      workflowListStatusHydrateAttempted = Object.create(null);
+      workflowListStatusHydrateRefreshPending = false;
+      return;
+    }
+    delete workflowListStatusEvidenceCache[wid];
+    delete workflowListStatusHydrateInFlight[wid];
+    delete workflowListStatusHydrateAttempted[wid];
+  }
+
+  function scheduleWorkflowListStatusEvidenceHydrate(workflowId) {
+    var wid = String(workflowId || "").trim();
+    if (
+      !wid ||
+      workflowListStatusHydrateInFlight[wid] ||
+      workflowListStatusHydrateAttempted[wid]
+    ) {
+      return;
+    }
+    workflowListStatusHydrateInFlight[wid] = true;
+    workflowListStatusHydrateAttempted[wid] = true;
+    var store = loadWorkflowRunStateStore();
+    var seed = store && store[wid] && typeof store[wid] === "object" ? store[wid] : {};
+    hydrateConstituentRunRecordForProductionStatus(wid, seed, {
+      workflows: state.workflows || []
+    })
+      .then(function (hydrated) {
+        writeWorkflowListStatusEvidenceCache(wid, hydrated || {});
+        delete workflowListStatusHydrateInFlight[wid];
+        var hasPage = !!(
+          hydrated &&
+          hydrated.authoritativeAssembledPage &&
+          typeof hydrated.authoritativeAssembledPage === "object"
+        );
+        // Only refresh when hydrate produced usable Authoring-parity page evidence.
+        // Coalesce with other in-flight hydrates so a parent LJ with many children
+        // does not rebuild the list once per constituent (selection flicker).
+        settleWorkflowListStatusEvidenceHydrate({ needsRefresh: hasPage });
+      })
+      .catch(function () {
+        delete workflowListStatusHydrateInFlight[wid];
+        settleWorkflowListStatusEvidenceHydrate({ needsRefresh: false });
+      });
+  }
+
   function resolveWorkflowListAuthoringStatusForWorkflow(wf) {
     var presentation = resolveWorkflowListPresentationLib();
     if (!presentation || typeof presentation.deriveWorkflowListAuthoringStatus !== "function") {
@@ -25473,26 +25585,120 @@
         label: "No data",
         icon: "○",
         title: "No data — no saved step outputs or completed authoring artefact",
-        ariaLabel: "Authoring status: No data"
+        ariaLabel: "Workflow status: No data"
       };
     }
     var wid = String((wf && wf.id) || "").trim();
     var store = loadWorkflowRunStateStore();
     var durable =
       wid && store && store[wid] && typeof store[wid] === "object" ? store[wid] : null;
+    var cachedEvidence = readWorkflowListStatusEvidenceCache(wid);
     var liveOverlay = null;
     if (wid && String(state.selectedWorkflowId || "") === wid) {
+      var liveWorkspace =
+        state.utilitiesOutputWorkspace && typeof state.utilitiesOutputWorkspace === "object"
+          ? state.utilitiesOutputWorkspace
+          : null;
       liveOverlay = {
         capturedOutputs: state.workflowRunCapturedOutputs || {},
         capturedOutputsRaw: state.workflowRunCapturedOutputsRaw || {},
-        captureRefs: state.workflowRunCaptureRefs || {}
+        captureRefs: state.workflowRunCaptureRefs || {},
+        workflowResourceRefs: Array.isArray(state.workflowResourceRefs)
+          ? state.workflowResourceRefs
+          : [],
+        assetsByBriefId:
+          liveWorkspace && liveWorkspace.assetsByBriefId
+            ? liveWorkspace.assetsByBriefId
+            : {},
+        // Same page Authoring Graphics(N) is currently inspecting.
+        authoritativeAssembledPage:
+          liveWorkspace &&
+          liveWorkspace.assembledPageSnapshot &&
+          typeof liveWorkspace.assembledPageSnapshot === "object"
+            ? liveWorkspace.assembledPageSnapshot
+            : null
       };
     }
     var merged =
       presentation.mergeRunRecordForListStatus
         ? presentation.mergeRunRecordForListStatus(durable, liveOverlay)
         : durable || liveOverlay || {};
-    return presentation.deriveWorkflowListAuthoringStatus(wf, merged);
+    // Cache supplies Authoring-parity evidence for non-selected (ref-only) rows.
+    // Selected live overlay remains authoritative for attachments so remove/replace
+    // cannot be masked by a stale completed cache entry.
+    if (cachedEvidence && !liveOverlay) {
+      if (
+        !merged.authoritativeAssembledPage &&
+        cachedEvidence.authoritativeAssembledPage &&
+        typeof cachedEvidence.authoritativeAssembledPage === "object"
+      ) {
+        merged.authoritativeAssembledPage = cachedEvidence.authoritativeAssembledPage;
+      }
+      if (
+        !(Array.isArray(merged.workflowResourceRefs) && merged.workflowResourceRefs.length) &&
+        Array.isArray(cachedEvidence.workflowResourceRefs) &&
+        cachedEvidence.workflowResourceRefs.length
+      ) {
+        merged.workflowResourceRefs = cachedEvidence.workflowResourceRefs.slice();
+      }
+      if (
+        !(merged.assetsByBriefId && Object.keys(merged.assetsByBriefId).length) &&
+        cachedEvidence.assetsByBriefId
+      ) {
+        merged.assetsByBriefId = Object.assign({}, cachedEvidence.assetsByBriefId);
+      }
+    } else if (
+      cachedEvidence &&
+      liveOverlay &&
+      !merged.authoritativeAssembledPage &&
+      cachedEvidence.authoritativeAssembledPage &&
+      typeof cachedEvidence.authoritativeAssembledPage === "object"
+    ) {
+      merged.authoritativeAssembledPage = cachedEvidence.authoritativeAssembledPage;
+    }
+    // Sync assemble when capture bodies are already present (selected + hydrated).
+    if (
+      wid &&
+      !(
+        merged.authoritativeAssembledPage &&
+        typeof merged.authoritativeAssembledPage === "object"
+      )
+    ) {
+      merged = attachAuthoritativeAssembledPageForProductionStatus(wid, merged, state.workflows);
+    }
+    var status = presentation.deriveWorkflowListAuthoringStatus(wf, merged, {
+      productionStatusMod: resolveLearningJourneyCommissionProductionStatusLib(),
+      visualJobsWorkspaceMod: getUtilitiesVisualJobsWorkspaceMod()
+    });
+    // Ref-only durable rows cannot prove graphics completion until the page body is
+    // hydrated via the same Authoring assemble path. Schedule once per workflow.
+    if (
+      wid &&
+      status &&
+      status.status === "authoring" &&
+      status.authoringReason === "page_unavailable"
+    ) {
+      scheduleWorkflowListStatusEvidenceHydrate(wid);
+    }
+    return status;
+  }
+
+  var workflowListStatusRefreshTimer = null;
+  function refreshWorkflowListStatuses(options) {
+    var opts = options && typeof options === "object" ? options : {};
+    if (opts.immediate === true) {
+      if (workflowListStatusRefreshTimer) {
+        clearTimeout(workflowListStatusRefreshTimer);
+        workflowListStatusRefreshTimer = null;
+      }
+      renderWorkflowList({ skipDefaultSelection: true });
+      return;
+    }
+    if (workflowListStatusRefreshTimer) clearTimeout(workflowListStatusRefreshTimer);
+    workflowListStatusRefreshTimer = setTimeout(function () {
+      workflowListStatusRefreshTimer = null;
+      renderWorkflowList({ skipDefaultSelection: true });
+    }, 40);
   }
 
   function resolveFirstClassCommissionIntakeLib() {
@@ -28328,6 +28534,7 @@
         });
         resetWorkflowRunNavigationState({ resetIndex: true });
         updateWorkflowRunView();
+        refreshWorkflowListStatuses({ immediate: true });
         showToast("Run data cleared.", "success");
       });
   }
@@ -28958,6 +29165,21 @@
       }
     }
     updateRunStepOutputStatus(li);
+    var liveFinalNow =
+      sid && state.workflowRunCapturedOutputs
+        ? String(state.workflowRunCapturedOutputs[sid] || "")
+        : "";
+    var liveRawNow =
+      sid && state.workflowRunCapturedOutputsRaw
+        ? String(state.workflowRunCapturedOutputsRaw[sid] || "")
+        : "";
+    var hadSavedBefore =
+      !!String(prevStoredFinal || "").trim() || !!String(prevStoredRaw || "").trim();
+    var hasSavedNow = !!String(liveFinalNow || "").trim() || !!String(liveRawNow || "").trim();
+    if (hadSavedBefore !== hasSavedNow) {
+      // First saved output / cleared output: refresh My Workflows status immediately.
+      refreshWorkflowListStatuses();
+    }
     if (
       els.workflowModeRunBtn &&
       els.workflowModeRunBtn.classList.contains("active") &&
@@ -29036,6 +29258,7 @@
             return { ok: false, reason: "persist_failed" };
           }
           queueWorkflowRunAutosaveToast("success");
+          refreshWorkflowListStatuses();
           return { ok: true };
         });
       }
@@ -34100,12 +34323,39 @@
             additionalResourcesIntro: "",
             additionalResources: []
           };
-    // Async hydrate ref-backed payloads into live run maps.
+    // Async hydrate ref-backed payloads into live run maps, then refresh list
+    // status so Completed is not stuck behind page_unavailable Authoring.
     hydrateWorkflowRunCapturePayloadsForWorkflow(wid).then(function () {
       if (String(state.selectedWorkflowId || "").trim() === wid) {
         applyHydratedCaptureToVisibleRunTextareas(wid);
         updateWorkflowRunView();
+        var liveWs =
+          state.utilitiesOutputWorkspace && typeof state.utilitiesOutputWorkspace === "object"
+            ? state.utilitiesOutputWorkspace
+            : null;
+        writeWorkflowListStatusEvidenceCache(wid, {
+          authoritativeAssembledPage:
+            liveWs && liveWs.assembledPageSnapshot
+              ? liveWs.assembledPageSnapshot
+              : attachAuthoritativeAssembledPageForProductionStatus(wid, {
+                  capturedOutputs: state.workflowRunCapturedOutputs || {},
+                  capturedOutputsRaw: state.workflowRunCapturedOutputsRaw || {},
+                  captureRefs: state.workflowRunCaptureRefs || {},
+                  workflowResourceRefs: Array.isArray(state.workflowResourceRefs)
+                    ? state.workflowResourceRefs
+                    : []
+                }).authoritativeAssembledPage,
+          workflowResourceRefs: Array.isArray(state.workflowResourceRefs)
+            ? state.workflowResourceRefs
+            : [],
+          assetsByBriefId: liveWs && liveWs.assetsByBriefId ? liveWs.assetsByBriefId : {}
+        });
+      } else {
+        scheduleWorkflowListStatusEvidenceHydrate(wid);
       }
+      // Coalesce with any sibling status-evidence hydrates kicked off by the list
+      // render (common after refresh for expanded Learning Journey children).
+      settleWorkflowListStatusEvidenceHydrate({ needsRefresh: true });
     });
   }
 
@@ -38061,7 +38311,7 @@
           "Do not add Interactive learning-page sections, knowledge summaries, study tips, or page graphics planning. Page graphics planning means assessment stimuli and learning-page graphics. It does not apply to editorial_opening_image."
         );
         lines.push(
-          "Always emit editorial_opening_image. decision \"generate\" includes subject, context, caption_intent, alt_text, and detailed_description. Set alt_text to \"\". decision \"skip\" includes a short skip_reason. generate and skip are both legitimate. Image generation is not mandatory. Making the decision is mandatory. An image is not required for every assessment."
+          "Always emit editorial_opening_image. decision \"generate\" includes subject, context, caption_intent, alt_text, and detailed_description. Set alt_text to \"\". caption_intent and detailed_description are production-only authoring metadata for image generation and validation; they are not learner-facing captions and must not be written as visible figure text. When no separate learner-facing caption is authored, the published decorative opening has no visible caption and no figure numbering. decision \"skip\" includes a short skip_reason. generate and skip are both legitimate. Image generation is not mandatory. Making the decision is mandatory. An image is not required for every assessment."
         );
         lines.push(
           "An editorial opening image is decorative and text-free: it serves contextual, atmospheric or orienting purposes through scene and composition only and must not convey instructional content. Do not commission text overlays, labels, titles, slogans or banners in the image. A short, text-based formative assessment is not automatically a reason to skip an editorial image. Consider whether a restrained, relevant visual could establish the professional setting or subject without revealing answers or directing learner judgements. Choose skip when no meaningful contextual image can be commissioned, not merely because the assessment questions are text-based."
@@ -56358,6 +56608,17 @@
         if (result.ok && result.refs) {
           state.workflowResourceRefs = result.refs;
           persistWorkflowRunStateForWorkflow(workflowId, { toastType: "" });
+          var liveWs =
+            state.utilitiesOutputWorkspace && typeof state.utilitiesOutputWorkspace === "object"
+              ? state.utilitiesOutputWorkspace
+              : null;
+          writeWorkflowListStatusEvidenceCache(workflowId, {
+            authoritativeAssembledPage:
+              liveWs && liveWs.assembledPageSnapshot ? liveWs.assembledPageSnapshot : null,
+            workflowResourceRefs: result.refs,
+            assetsByBriefId: liveWs && liveWs.assetsByBriefId ? liveWs.assetsByBriefId : {}
+          });
+          refreshWorkflowListStatuses();
         }
         return result;
       });
@@ -57509,8 +57770,21 @@
     mod.removeVisualAssetFromWorkspace(state.utilitiesOutputWorkspace, briefId);
     revokeVisualAssetObjectUrlForBrief(briefId);
     setVisualJobAssetError(briefId, "");
+    var bid = String(briefId || "").trim();
+    var workflowId = String(state.selectedWorkflowId || "").trim();
+    state.workflowResourceRefs = (
+      Array.isArray(state.workflowResourceRefs) ? state.workflowResourceRefs : []
+    ).filter(function (ref) {
+      if (!ref || !bid) return !!ref;
+      return String(ref.brief_id || ref.briefId || "").trim() !== bid;
+    });
+    if (workflowId) {
+      persistWorkflowRunStateForWorkflow(workflowId, { toastType: "" });
+      clearWorkflowListStatusEvidenceCache(workflowId);
+    }
     refreshUtilitiesLearnerPreviewWithVisualAssets("remove");
     renderUtilitiesVisualJobsView();
+    refreshWorkflowListStatuses({ immediate: true });
   }
 
   function handleUtilitiesVisualJobDragOver(event) {
@@ -62023,6 +62297,27 @@
     };
     prismTestApi.resolveWorkflowListAuthoringStatusForTest =
       resolveWorkflowListAuthoringStatusForWorkflow;
+    prismTestApi.writeWorkflowListStatusEvidenceCacheForTest =
+      writeWorkflowListStatusEvidenceCache;
+    prismTestApi.clearWorkflowListStatusEvidenceCacheForTest =
+      clearWorkflowListStatusEvidenceCache;
+    prismTestApi.refreshWorkflowListStatusesForTest = refreshWorkflowListStatuses;
+    prismTestApi.settleWorkflowListStatusEvidenceHydrateForTest =
+      settleWorkflowListStatusEvidenceHydrate;
+    prismTestApi.countWorkflowListStatusHydratesInFlightForTest =
+      countWorkflowListStatusHydratesInFlight;
+    prismTestApi.markWorkflowListStatusHydrateInFlightForTest = function (workflowId, inFlight) {
+      var wid = String(workflowId || "").trim();
+      if (!wid) return;
+      if (inFlight) {
+        workflowListStatusHydrateInFlight[wid] = true;
+      } else {
+        delete workflowListStatusHydrateInFlight[wid];
+      }
+    };
+    prismTestApi.isWorkflowListStatusHydrateRefreshPendingForTest = function () {
+      return !!workflowListStatusHydrateRefreshPending;
+    };
     prismTestApi.setWorkflowRunStateStoreForTest = function (store) {
       saveWorkflowRunStateStore(store && typeof store === "object" ? store : {}, {
         source: "setWorkflowRunStateStoreForTest"

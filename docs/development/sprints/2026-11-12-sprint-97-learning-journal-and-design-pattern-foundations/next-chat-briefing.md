@@ -1,24 +1,15 @@
 # Sprint 97 — Next chat briefing
 
-**Sprint:** 97 — Learning Journal and Design Pattern Foundations  
-**Status:** OPEN — M1 complete (S97-D03–D05); awaiting **explicit M2 authorisation**  
-**Start:** [SPRINT-97-START-HERE.md](SPRINT-97-START-HERE.md)
+**Sprint 97 is CLOSED — ACCEPTED (qualified).** Do not continue Sprint 97 implementation.
 
-## One-screen summary
+## Facts
 
-Learning Journal (unified shell; declared producers; content-fingerprint notifications) + design-pattern catalogue at `docs/design-patterns/`. Q1–Q7 locked. Journal work is **incremental**. Journey data model (constituents ↔ artefacts ↔ references ↔ journal) must stay presentation-separable and additively evolvable ([S97-D05](decisions.md#s97-d05--learning-journey-data-model-extensibility-compatibility-principle)) — **not** a licence for branching/rules in S97. **No journal code yet.**
+- Learning Journal foundations (M1–M3) accepted under S97-D06/D07.  
+- M4 design-pattern catalogue and M5 Level 3 pipeline journals are **deferred** (PB-FA-029 / carry-forward).  
+- Closure record: [SPRINT-97-CLOSURE.md](SPRINT-97-CLOSURE.md).
 
-## Before implementing M2
+## If opening successor work
 
-Require an explicit M2 authorisation message. Implement Level 1 against [IMPLEMENTATION-MAP.md](IMPLEMENTATION-MAP.md).
-
-## Hard stops
-
-No new learner-work persistence; no AI marking/editing/export; no constituent regen for journal iteration; no new caching/regeneration framework; no conditional/branching/rules/extra learner-state; no speculative data abstractions; fixtures ≠ sprint acceptance; preserve standalone + carry-forward.
-
-## Key files
-
-- Shell: `lib/learning-journey-unified-shell.js`  
-- Artefacts: `lib/learner-renderer-vnext/learner-artefact-contract.js`  
-- Design page: `lib/learning-journey-design-page.js`  
-- Catalogue (M4): `docs/design-patterns/`
+1. Read [PRODUCT-BACKLOG.md](../../../backlog/PRODUCT-BACKLOG.md).  
+2. Do not reopen Sprint 96 or Sprint 97 for deferred items.  
+3. Treat Level 1–2 journal tests as foundation evidence only — not Level 3 pipeline proof.

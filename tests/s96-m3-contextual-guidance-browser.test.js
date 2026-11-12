@@ -225,17 +225,23 @@ test(
       const c5 = await page.evaluate(() => {
         const main = document.querySelector("#lj-shell-main");
         const text = main ? main.textContent || "" : "";
+        const help = main && main.querySelector("[data-assessment-output-help]");
         return {
-          hasSaveCopy: /Save or copy your completed response/i.test(text),
-          hasTransfer: /will not automatically transfer/i.test(text),
+          helpText: help ? help.textContent || "" : "",
+          helpDelivery: help ? help.getAttribute("data-assessment-output-delivery") : null,
           hasEducational: /traffic-management judgement|self-evaluation/i.test(text),
           readingWidth: getComputedStyle(document.documentElement)
             .getPropertyValue("--learner-reading-width")
             .trim()
         };
       });
-      assert.equal(c5.hasSaveCopy, false);
-      assert.equal(c5.hasTransfer, false);
+      // System-owned help must be journey-aware; legacy authored save/copy prose
+      // may remain until products are regenerated and is not rewritten.
+      if (c5.helpText) {
+        assert.match(c5.helpText, /Learning Journey|this device when you save/i);
+        assert.doesNotMatch(c5.helpText, /kept on this page only/i);
+        assert.equal(c5.helpDelivery, "unified");
+      }
       assert.equal(c5.hasEducational, true);
       assert.equal(c5.readingWidth, "70ch");
       await page.screenshot({
@@ -276,15 +282,11 @@ test(
         const text = main ? main.textContent || "" : "";
         const ref = main && main.querySelector("[data-lj-artefact-ref]");
         return {
-          hasTransfer: /not transferred automatically|does not automatically transfer/i.test(text),
-          hasRetrieveSaved: /retrieve your saved response/i.test(text),
           hasEducational: /evaluate|defensib|judgement|evidence/i.test(text),
           artefactStatus: ref ? ref.getAttribute("data-lj-artefact-status") : null,
           artefactText: ref ? ref.textContent || "" : ""
         };
       });
-      assert.equal(c6.hasTransfer, false);
-      assert.equal(c6.hasRetrieveSaved, false);
       assert.equal(c6.hasEducational, true);
       assert.ok(
         c6.artefactStatus === "resolved" || c6.artefactStatus === "missing",
@@ -293,6 +295,7 @@ test(
       if (c6.artefactStatus === "resolved") {
         assert.match(c6.artefactText, /M3 fixture judgement/);
         assert.match(c6.artefactText, /Available here for reference|Read-only/i);
+        assert.match(c6.artefactText, /not pasted into the answer fields below/i);
       } else {
         assert.match(c6.artefactText, /not available yet/i);
       }

@@ -1,0 +1,458 @@
+{
+  "artifact_type": "page",
+  "schema_version": "2.0.0",
+  "assembly_state": {
+    "current_stage": "dla",
+    "enriched_by": [
+      "dla"
+    ]
+  },
+  "activities": [
+    {
+      "activity_id": "A1",
+      "title": "Choose the stronger explanation",
+      "activity_preamble": "You have already encountered the fictional survey about study breaks and concentration. If you completed 'Write your first explanation', revisit your initial wording and the communication decisions you made. Keep that explanation available for later diagnosis and revision, but do not change it yet. In this activity, you will compare explanations written by others. Decide which better serves a non-specialist reader and explain your reasoning before receiving detailed guidance.",
+      "intellectual_coherence_bridge": "Your interpretation of the survey in 'Interpret the research evidence' and your experience of writing an independent explanation provide a starting point for judging how effectively other explanations communicate the same findings. Comparing alternatives makes the consequences of different communication decisions visible.",
+      "learner_task": "1. Read each pair of candidate explanations alongside the fictional survey evidence. 2. For each pair, select the explanation you consider more effective for a non-specialist reader. 3. Identify a specific strength and weakness in the alternatives, referring to their wording and the underlying evidence. 4. Explain why the differences matter for the reader and justify your preference. 5. Record any uncertainty or competing strength that makes the decision difficult. Complete your judgements before viewing fuller feedback or detailed quality guidance.",
+      "expected_output": "A completed comparison record containing a clear preference for each pair, evidence-grounded reasons for the choice, identifiable strengths and weaknesses of the alternatives, and an explanation of the consequences for a non-specialist reader. Where both candidates have defensible strengths, the justification should explain the trade-off rather than assume one universally correct wording.",
+      "reasoning_orientation": "Judge what each explanation enables a reader to conclude and whether that conclusion is warranted. Consider the significance of the differences between candidates rather than relying on which one initially sounds more convincing.",
+      "self_explanation_prompt": "Which feature of the explanations most influenced your preference, and what difference would it make to a reader's interpretation?",
+      "task_material_decision": {
+        "separate_inputs_required": true,
+        "task_input_material_ids": [
+          "A1-M1",
+          "A1-M2"
+        ]
+      },
+      "required_materials": [
+        {
+          "material_id": "A1-M1",
+          "material_type": "scenario",
+          "purpose": "Provide the authoritative fictional survey evidence against which learners evaluate candidate explanations.",
+          "specification": "Present a compact, directly inspectable account of the fictional illustrative study 'Study breaks and concentration among undergraduate students'. Include the observational survey of 200 undergraduate students; two groups of 100 based on reported regular short study breaks; 72 of 100 (72%) reporting good concentration in the regular-break group; 58 of 100 (58%) in the no-regular-break group; and the observed difference of 14 percentage points. Include self-reporting, no random assignment, uncontrolled sleep, motivation, workload and study environment, limits concerning objectively measured concentration or performance, and uncertain representativeness. Clearly identify the study as fictional and synthetic. Do not add findings, statistical tests, confidence intervals or methodological details. Present factual evidence without ranking or evaluating the candidate explanations.",
+          "evidence_requirement": {
+            "kind": "learner_evidence",
+            "purpose": "Provide the inspectable numerical findings and methodological particulars needed to substantiate comparative judgements.",
+            "learner_action": "Consult the survey values, outcome definition and research design when evaluating the candidate explanations.",
+            "observable_features": [
+              "Two groups of 100 undergraduate students",
+              "72% and 58% reporting good concentration",
+              "Observed difference of 14 percentage points",
+              "Observational design and self-reported measures",
+              "Absence of random assignment and uncontrolled factors",
+              "Limits on causal inference, performance claims and generalisation"
+            ],
+            "provenance": "system_generated_simulation",
+            "evidence_layout": "separate_provider",
+            "disclosure_constraint": "Fictional educational evidence only; never present as an authentic investigation."
+          }
+        },
+        {
+          "material_id": "A1-M2",
+          "material_type": "task_card",
+          "purpose": "Supply contrasting candidate explanations for independent comparative judgement.",
+          "specification": "Commission three pairs of short candidate explanations of the canonical survey, each candidate approximately 35–75 words. Label all statements explicitly as candidate explanations for evaluation, not authoritative findings. Pair 1 should contrast a numerically faithful, appropriately cautious explanation with one that misleadingly describes the 14-percentage-point difference as 14% or implies causation. Pair 2 should contrast an accessible but less context-rich explanation with a more qualified explanation that remains accurate but is less concise. Pair 3 should contrast two defensible explanations with competing strengths in clarity, relevance, contextual completeness or emphasis. Preserve the canonical figures wherever numbers are used, except where an explicitly identifiable candidate error is deliberately commissioned. Do not invent findings or methodological details. Do not reveal preferred choices, quality-dimension labels, diagnostic criteria or explanatory feedback within the candidate material.",
+          "evidence_requirement": {
+            "kind": "learner_evidence",
+            "purpose": "Provide inspectable differences in wording, claims, emphasis and qualification that learners must evaluate.",
+            "learner_action": "Compare the actual wording of both candidates in each pair and justify preferences using their identifiable features.",
+            "observable_features": [
+              "Differences in numerical representation",
+              "Differences in strength of inference",
+              "Differences in clarity and accessibility",
+              "Differences in contextual qualification",
+              "Competing defensible communication strengths"
+            ],
+            "provenance": "system_generated_simulation",
+            "evidence_layout": "separate_provider",
+            "disclosure_constraint": "All candidate explanations must be visibly distinguished from authoritative research findings."
+          }
+        },
+        {
+          "material_id": "A1-M3",
+          "material_type": "comparison_table",
+          "purpose": "Provide an operational learner workspace for recording preferences and evidence-grounded comparative justifications.",
+          "specification": "Create a blank comparison table with three rows corresponding to the candidate pairs and columns for pair, preferred candidate, strength of preferred candidate, limitation or competing strength of alternative, evidence or wording supporting the decision, and consequence for a non-specialist reader. Learners complete all judgement columns. Do not prepopulate preferences, evaluative reasoning or exemplar answers.",
+          "response_fulfilment": {
+            "kind": "learner_workspace",
+            "response_kind": "table_compare",
+            "binds_production_steps": [
+              2,
+              3,
+              4,
+              5
+            ],
+            "allows_partial_exemplar": false
+          }
+        },
+        {
+          "material_id": "A1-M4",
+          "material_type": "checklist",
+          "purpose": "Support diagnostic review of completed comparative judgements without replacing the learner's reasoning.",
+          "specification": "Provide four concise diagnostic criteria covering explicit comparative preference, reference to inspectable wording or evidence, recognition of meaningful strengths and weaknesses, and justification in relation to the intended reader. Support criterion-specific correction. Do not disclose preferred rankings or detailed quality guidance before initial judgements are completed.",
+          "diagnostic_review": {
+            "covers_response_material_ids": [
+              "A1-M3"
+            ]
+          }
+        }
+      ],
+      "evidence_decision": {
+        "required": true,
+        "reason": "Learners must inspect both the canonical survey particulars and the actual wording of candidate explanations to make and substantiate comparative quality judgements.",
+        "provider_material_ids": [
+          "A1-M1",
+          "A1-M2"
+        ]
+      }
+    },
+    {
+      "activity_id": "A2",
+      "title": "Test claims against the evidence",
+      "activity_preamble": "A convincing explanation is not necessarily an accurate one. Examine how particular claims represent the survey's numerical findings and what they imply about the relationship between study breaks and concentration. Use the evidence to identify consequential differences without relying on a preferred answer being supplied.",
+      "intellectual_coherence_bridge": "Your initial comparisons required you to weigh competing explanations. This activity concentrates on the evidential boundaries underlying those judgements, distinguishing weaknesses that change the meaning of the research from differences that are primarily matters of communication.",
+      "learner_task": "1. Inspect the supplied candidate claims and the survey evidence. 2. For each claim, identify the specific numerical or inferential feature that requires evaluation. 3. Decide whether the claim is supported, misleading or insufficiently qualified within the supplied evidence. 4. Explain your judgement using the relevant values, outcome definition or methodological limitation. 5. Identify the correction or qualification needed where a claim exceeds the evidence. Complete the analysis before consulting fuller explanatory feedback.",
+      "expected_output": "A claim-by-claim analysis that identifies consequential numerical and inferential features, makes defensible evidence-based judgements, and explains the corrections or qualifications required where claims are misleading. Strong responses distinguish observed group differences from claims about causation, objective performance or wider populations, while avoiding unsupported conclusions of their own.",
+      "reasoning_orientation": "Separate what the survey directly reports from what a candidate explanation infers. Check numerical language, the measured outcome and the methodological basis for each conclusion.",
+      "self_explanation_prompt": "What specific part of the evidence supports or limits the claim, and how would changing the wording affect its meaning?",
+      "task_material_decision": {
+        "separate_inputs_required": true,
+        "task_input_material_ids": [
+          "A2-M1",
+          "A2-M2"
+        ]
+      },
+      "required_materials": [
+        {
+          "material_id": "A2-M1",
+          "material_type": "data_table",
+          "purpose": "Provide directly inspectable numerical and methodological evidence for analysing candidate claims.",
+          "specification": "Present a compact evidence table identifying regular short breaks, no regular short breaks, group sizes of 100 each, 72 and 58 students reporting good concentration, corresponding percentages of 72% and 58%, and the observed 14-percentage-point difference. Include clearly distinguished factual notes that the survey was observational, responses were self-reported, assignment was not random, sleep, motivation, workload and study environment were uncontrolled, and objective performance and representativeness were not established. Label the research fictional and illustrative. Do not evaluate the candidate claims in the table.",
+          "evidence_requirement": {
+            "kind": "learner_evidence",
+            "purpose": "Provide the numerical and methodological particulars against which claims can be tested.",
+            "learner_action": "Inspect the values, measurement definitions and design limitations to substantiate each claim judgement.",
+            "observable_features": [
+              "Group sizes and reported outcomes",
+              "72% and 58% group proportions",
+              "14-percentage-point observed difference",
+              "Self-reported concentration",
+              "Observational design and absence of random assignment",
+              "Uncontrolled factors and limits of generalisation"
+            ],
+            "provenance": "system_generated_simulation",
+            "evidence_layout": "separate_provider"
+          }
+        },
+        {
+          "material_id": "A2-M2",
+          "material_type": "task_card",
+          "purpose": "Supply candidate claims containing distinct numerical and inferential issues for evidence-based analysis.",
+          "specification": "Provide four short, explicitly labelled candidate claims about the canonical fictional survey. Include one claim with a percentage-versus-percentage-point confusion, one with an unsupported causal or intervention-effect conclusion, one extending self-reported concentration to academic performance or generalising beyond the surveyed students, and one appropriately bounded statement of association. Use only canonical figures and facts, apart from deliberate candidate errors. Preserve sufficient wording and particulars for learners to identify the precise claim, diagnose its evidential status and formulate an appropriate correction or qualification. Do not include answer labels or explanations in the stimulus.",
+          "evidence_requirement": {
+            "kind": "learner_evidence",
+            "purpose": "Provide actual candidate claims whose numerical and inferential features learners must inspect.",
+            "learner_action": "Examine each claim's wording and compare its implications with the survey evidence.",
+            "observable_features": [
+              "Numerical difference terminology",
+              "Causal or predictive language",
+              "Claims concerning concentration or performance",
+              "Population scope",
+              "Language distinguishing association from causation"
+            ],
+            "provenance": "system_generated_simulation",
+            "evidence_layout": "separate_provider",
+            "disclosure_constraint": "Potentially misleading statements must be visibly labelled as candidate claims for evaluation."
+          }
+        },
+        {
+          "material_id": "A2-M3",
+          "material_type": "analysis_table",
+          "purpose": "Provide an operational workspace for evaluating claims and recording evidence-grounded corrections.",
+          "specification": "Create four blank learner rows corresponding to the candidate claims. Include columns for claim, feature being evaluated, judgement of evidential status, supporting survey evidence, methodological limitation where relevant, and necessary correction or qualification. Learners fill the analytical columns. Do not prepopulate classifications, corrected claims or reasoning.",
+          "response_fulfilment": {
+            "kind": "learner_workspace",
+            "response_kind": "table_complete",
+            "binds_production_steps": [
+              2,
+              3,
+              4,
+              5
+            ],
+            "allows_partial_exemplar": false
+          }
+        },
+        {
+          "material_id": "A2-M4",
+          "material_type": "checklist",
+          "purpose": "Enable criterion-specific review of learners' numerical and evidential analysis.",
+          "specification": "Provide four diagnostic criteria covering numerical meaning, accurate identification of the reported outcome, distinction between association and causation, and evidence-grounded correction or qualification. Support revision of individual analytical entries without supplying a pre-attempt answer key.",
+          "diagnostic_review": {
+            "covers_response_material_ids": [
+              "A2-M3"
+            ]
+          }
+        }
+      ],
+      "evidence_decision": {
+        "required": true,
+        "reason": "The learner must inspect specific candidate claims and compare their numerical and inferential implications with the canonical survey evidence.",
+        "provider_material_ids": [
+          "A2-M1",
+          "A2-M2"
+        ]
+      }
+    },
+    {
+      "activity_id": "A3",
+      "title": "Weigh six dimensions of quality",
+      "activity_preamble": "You have made comparative judgements and examined the limits of the evidence. Now use a more explicit framework to explain why particular communication choices strengthen or weaken an explanation. The framework helps you articulate your reasoning without requiring every reader to prefer the same wording.",
+      "intellectual_coherence_bridge": "The earlier comparisons exposed differences in quality, while the claim analysis clarified the evidential boundaries that explanations must respect. These experiences now provide concrete reference points for applying six connected dimensions and weighing legitimate communication trade-offs.",
+      "learner_task": "1. Study the six dimensions of explanation quality and the explanation of their relationships. 2. Examine the supplied pair of defensible candidate explanations. 3. Identify how the candidates differ across relevant dimensions. 4. Weigh the significance of those differences for a non-specialist reader, distinguishing evidential requirements from legitimate editorial choices. 5. Record and justify an overall preference, acknowledging a competing strength of the alternative.",
+      "expected_output": "A structured evaluation applying the six dimensions accurately to the supplied explanations, identifying meaningful differences, explaining how dimensions interact, and defending a proportionate overall judgement. The response should recognise defensible trade-offs rather than mechanically count favourable features or assume one universally correct ranking.",
+      "reasoning_orientation": "Use the dimensions as connected lenses rather than independent scores. Consider whether a weakness changes the evidential meaning of the explanation or reflects a defensible choice about emphasis and presentation.",
+      "self_explanation_prompt": "Which dimensions matter most in this comparison, how do they interact, and why does your chosen balance serve the intended reader?",
+      "task_material_decision": {
+        "separate_inputs_required": true,
+        "task_input_material_ids": [
+          "A3-M2"
+        ]
+      },
+      "required_materials": [
+        {
+          "material_id": "A3-M1",
+          "material_type": "text",
+          "purpose": "Explain the six interconnected dimensions of explanation quality after learners have completed independent comparative judgements.",
+          "specification": "Provide concise, explicit teaching on numerical accuracy, evidential support, clarity, relevance, context and qualification, and proportionality. Explain how numerical accuracy supports evidential reliability, how qualification helps maintain proportionality, and how clarity and relevance affect the accessibility of necessary context. Clarify that the canonical observational survey supports association rather than causation, and that 72% minus 58% is 14 percentage points. Distinguish serious evidential misrepresentation from defensible differences in brevity, emphasis and contextual completeness. Do not claim that one exact wording or ranking is universally correct.",
+          "instructional_archetype": "mental_model_building",
+          "archetype_plan": {
+            "system": "The interconnected dimensions governing responsible explanation of research evidence.",
+            "key_relationships": [
+              "Numerical accuracy supports evidential reliability.",
+              "Evidential support constrains the strength of conclusions.",
+              "Context and qualification support proportionality.",
+              "Clarity makes relevant context understandable.",
+              "Relevance keeps the principal finding prominent.",
+              "Holistic judgement weighs dimensions according to the consequences of strengths and weaknesses."
+            ],
+            "governing_constraint": "Communication choices must preserve numerical accuracy and remain within the conclusions supported by the research.",
+            "contrast": {
+              "state_a": "An explanation that is accessible and concise but provides limited contextual qualification.",
+              "state_b": "An explanation that provides fuller methodological qualification while requiring more reading effort."
+            }
+          }
+        },
+        {
+          "material_id": "A3-M2",
+          "material_type": "task_card",
+          "purpose": "Provide two defensible candidate explanations for applying explicit quality dimensions and evaluating communication trade-offs.",
+          "specification": "Commission two distinct, numerically accurate candidate explanations of the canonical fictional survey, each approximately 45–85 words. Both must correctly describe the observed association, preserve any included canonical figures, avoid unsupported causal or performance claims, and remain appropriately qualified. One should prioritise accessible and economical communication of the principal finding; the other should provide more methodological context at some cost to brevity. Include sufficient actual wording and survey particulars to permit evaluation and comparison without inventing findings. Label both as candidate explanations. Do not state a preferred candidate or resolve the trade-off.",
+          "evidence_requirement": {
+            "kind": "learner_evidence",
+            "purpose": "Provide inspectable differences in accurate candidate explanations for application of the quality framework.",
+            "learner_action": "Examine the wording of both candidates and identify evidence-based strengths, limitations and trade-offs.",
+            "observable_features": [
+              "Accurate numerical reporting",
+              "Appropriate inference",
+              "Differences in clarity and concision",
+              "Differences in methodological context",
+              "Differences in emphasis and qualification"
+            ],
+            "provenance": "system_generated_simulation",
+            "evidence_layout": "separate_provider"
+          },
+          "instructional_archetype": "evaluation_judgement",
+          "archetype_plan": {
+            "question": "Which defensible explanation better serves a non-specialist reader, and why?",
+            "criteria": [
+              "Numerical accuracy and evidential support",
+              "Clarity and relevance",
+              "Context and qualification",
+              "Proportionality of claims"
+            ],
+            "evidence": [
+              "The actual wording of both candidate explanations",
+              "The canonical survey figures and methodological limitations"
+            ],
+            "tradeoffs": [
+              "Brevity and accessibility versus contextual completeness",
+              "Prominence of the main finding versus visibility of uncertainty"
+            ],
+            "judgement_focus": "A reasoned preference acknowledging legitimate competing strengths rather than imposing a universal ranking."
+          }
+        },
+        {
+          "material_id": "A3-M3",
+          "material_type": "comparison_table",
+          "purpose": "Provide a structured operational workspace for applying quality dimensions and recording a holistic comparative judgement.",
+          "specification": "Create a comparison table with six rows, one for each quality dimension, and columns for dimension, evidence from candidate one, evidence from candidate two, and significance of the difference. Learners fill the comparison cells. Include a final learner-completed row for overall preference, decisive reasons and competing strength acknowledged. Do not prepopulate candidate evaluations or a preferred ranking.",
+          "response_fulfilment": {
+            "kind": "learner_workspace",
+            "response_kind": "table_compare",
+            "binds_production_steps": [
+              3,
+              4,
+              5
+            ],
+            "allows_partial_exemplar": false
+          }
+        },
+        {
+          "material_id": "A3-M4",
+          "material_type": "checklist",
+          "purpose": "Support diagnostic review of the application of the six dimensions and the resulting judgement.",
+          "specification": "Provide four diagnostic criteria covering accurate use of dimensions, reference to candidate wording, recognition of interactions and trade-offs, and a justified overall preference that respects evidential boundaries. Support criterion-specific reconsideration without prescribing one ranking.",
+          "diagnostic_review": {
+            "covers_response_material_ids": [
+              "A3-M3"
+            ]
+          }
+        }
+      ],
+      "evidence_decision": {
+        "required": true,
+        "reason": "Learners must inspect the actual wording of two defensible explanations to apply explicit quality dimensions and justify a contextual preference.",
+        "provider_material_ids": [
+          "A3-M2"
+        ]
+      }
+    },
+    {
+      "activity_id": "A4",
+      "title": "Reconsider and transfer your judgement",
+      "activity_preamble": "Return to a comparison you judged earlier. Use the feedback and quality dimensions to decide whether your original preference remains defensible or whether your reasoning should change. Then apply the same evaluative approach to a different communication decision involving the fictional survey. Your purpose is to strengthen your judgement, not to reproduce a prescribed answer.",
+      "intellectual_coherence_bridge": "You have moved from independent preferences to checking evidential claims and applying explicit quality dimensions. This final activity brings those capabilities together: first by making the development of your own reasoning visible, and then by applying that reasoning to a changed communication purpose.",
+      "learner_task": "1. Select one of your earlier comparative judgements and record your original preference and justification. 2. Consult the formative feedback and six quality dimensions, identifying specific evidence or guidance that supports or challenges your reasoning. 3. State whether you retain or revise your preference and explain why. 4. Apply the same evaluative approach to a short, newly presented communication claim intended for a university study-skills information page. 5. Identify whether the new claim is suitable for that purpose and formulate a brief evidence-grounded editorial recommendation. Do not rewrite your own initial explanation from 'Write your first explanation'; that work belongs in 'Diagnose your explanation' and 'Revise your explanation'.",
+      "expected_output": "A visible record of an original judgement, the specific feedback or evidence reconsidered, and a retained or revised judgement supported by stronger reasoning. The response also includes a compact editorial recommendation for the changed communication context, identifying relevant strengths or weaknesses of the supplied claim and explaining what should be retained, qualified or changed. Both productions should remain grounded in the fictional survey and avoid unsupported conclusions.",
+      "reasoning_orientation": "Reconsideration is not synonymous with changing your answer. A defensible retained judgement supported by improved reasoning can demonstrate progress. In the transfer task, distinguish communication choices appropriate for a study-skills audience from claims the research cannot establish.",
+      "self_explanation_prompt": "What has become more precise in your reasoning, and how does that change the way you evaluate a claim intended to inform students?",
+      "task_material_decision": {
+        "separate_inputs_required": true,
+        "task_input_material_ids": [
+          "A4-M1",
+          "A4-M2"
+        ]
+      },
+      "required_materials": [
+        {
+          "material_id": "A4-M1",
+          "material_type": "text",
+          "purpose": "Provide evidence-grounded formative feedback on the earlier candidate comparisons and claim analyses.",
+          "specification": "Commission feedback released after learners have completed the independent comparative and claim-analysis activities. Address the canonical numerical difference, observational association versus causation, self-reporting, methodological limitations, and legitimate trade-offs between accessible and context-rich explanations. Refer to the actual earlier candidate explanations and identify specific strengths and weaknesses without claiming one universally correct wording or ranking where both candidates are defensible. Explain why materially inaccurate or unsupported conclusions are different from legitimate differences in emphasis. Do not rewrite the learner's own initial explanation."
+        },
+        {
+          "material_id": "A4-M2",
+          "material_type": "scenario",
+          "purpose": "Provide a changed communication context and inspectable claim for applying evaluative judgement beyond the original pairwise comparisons.",
+          "specification": "Present a short fictional editorial situation in which a university study-skills information page proposes a claim about regular short breaks and concentration. Include the proposed claim verbatim, its intended student audience and the purpose of the information page. The claim should contain at least one meaningful issue concerning evidential support, qualification or proportionality while remaining assessable solely from the canonical survey. Provide sufficient recoverable wording and particulars for a learner to identify, evaluate and recommend a bounded editorial change without inventing new research evidence. Label the proposed wording as a candidate communication claim, not an authoritative finding. Do not supply the editorial judgement or revised wording.",
+          "evidence_requirement": {
+            "kind": "learner_evidence",
+            "purpose": "Provide a specific claim and communication context that serve as grounds for a new editorial judgement.",
+            "learner_action": "Inspect the proposed wording and intended audience, evaluate the claim against the survey, and formulate a justified editorial recommendation.",
+            "observable_features": [
+              "Actual proposed claim wording",
+              "University study-skills information context",
+              "Intended student audience",
+              "Claim strength and qualification",
+              "Relationship between proposed wording and canonical survey evidence"
+            ],
+            "provenance": "system_generated_simulation",
+            "evidence_layout": "separate_provider"
+          }
+        },
+        {
+          "material_id": "A4-M3",
+          "material_type": "template",
+          "purpose": "Provide an operational response surface recording the learner's original judgement, reconsidered evidence and final reasoning.",
+          "specification": "Create a structured learner-response template with successive bold-labelled sections using the exact form **Label:**. Require the sections Original preference and justification, Feedback or evidence reconsidered, Retained or revised preference, and Reasons for the final judgement. Each section must provide a blank learner-completion location. Do not supply an exemplar response or infer what the learner previously chose.",
+          "response_fields": [
+            {
+              "label": "Original preference and justification",
+              "input_modality": "text"
+            },
+            {
+              "label": "Feedback or evidence reconsidered",
+              "input_modality": "text"
+            },
+            {
+              "label": "Retained or revised preference",
+              "input_modality": "text"
+            },
+            {
+              "label": "Reasons for the final judgement",
+              "input_modality": "text"
+            }
+          ],
+          "response_fulfilment": {
+            "kind": "learner_workspace",
+            "response_kind": "text_compose",
+            "binds_production_steps": [
+              1,
+              2,
+              3
+            ],
+            "allows_partial_exemplar": false
+          }
+        },
+        {
+          "material_id": "A4-M4",
+          "material_type": "transfer_prompt",
+          "purpose": "Commission a compact editorial application of evaluative judgement to a changed communication purpose.",
+          "specification": "Prompt learners to decide whether the proposed claim in A4-M2 is suitable for a university study-skills information page and to recommend a concise, evidence-grounded editorial action. Require identification of a consequential feature, explanation of its significance for the student audience, and a recommendation to retain, qualify or change the claim. Do not provide the claim particulars, which belong in A4-M2, or a worked answer. Keep the task within the canonical survey and the six previously taught quality dimensions."
+        },
+        {
+          "material_id": "A4-M5",
+          "material_type": "template",
+          "purpose": "Provide a structured learner-response surface for the distinct editorial transfer production.",
+          "specification": "Create successive bold-labelled learner-completion sections using **Label:** for Suitability judgement, Evidence or wording supporting the judgement, Recommended editorial action, and Reason for the recommendation. Leave all learner responses blank. Require a compact recommendation rather than a complete rewritten study explanation.",
+          "response_fields": [
+            {
+              "label": "Suitability judgement",
+              "input_modality": "text"
+            },
+            {
+              "label": "Evidence or wording supporting the judgement",
+              "input_modality": "text"
+            },
+            {
+              "label": "Recommended editorial action",
+              "input_modality": "text"
+            },
+            {
+              "label": "Reason for the recommendation",
+              "input_modality": "text"
+            }
+          ],
+          "response_fulfilment": {
+            "kind": "learner_workspace",
+            "response_kind": "text_compose",
+            "binds_production_steps": [
+              4,
+              5
+            ],
+            "allows_partial_exemplar": false
+          }
+        },
+        {
+          "material_id": "A4-M6",
+          "material_type": "checklist",
+          "purpose": "Support diagnostic review of both the reconsidered judgement and the editorial transfer recommendation.",
+          "specification": "Provide four diagnostic criteria covering visibility of the original judgement, specific feedback or evidence reconsidered, defensible reasoning for retaining or revising the preference, and evidence-grounded transfer to the study-skills communication context. Support criterion-specific improvement without requiring a changed preference or prescribing a single editorial wording.",
+          "diagnostic_review": {
+            "covers_response_material_ids": [
+              "A4-M3",
+              "A4-M5"
+            ]
+          }
+        }
+      ],
+      "evidence_decision": {
+        "required": true,
+        "reason": "The reconsideration requires explicit engagement with feedback and earlier evidence, while the distinct transfer production requires inspection of a newly supplied claim and communication context. A local provider supplies the inspectable particulars for the new judgement.",
+        "provider_material_ids": [
+          "A4-M2"
+        ]
+      }
+    }
+  ]
+}

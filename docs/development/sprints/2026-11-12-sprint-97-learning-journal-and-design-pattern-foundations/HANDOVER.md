@@ -1,40 +1,34 @@
 # Sprint 97 — Handover
 
-**From:** M1 compatibility principle (S97-D05, 2026-11-12)  
-**To:** Explicit **M2 authorisation** chat  
-**Status:** OPEN — documentation only; do not implement M2 yet
+**From:** Sprint 97 close (2026-11-12)  
+**To:** Successor work selected from PRODUCT-BACKLOG  
+**Status:** **CLOSED — ACCEPTED** (qualified)
 
 ## Load first
 
-1. [SPRINT-97-START-HERE.md](SPRINT-97-START-HERE.md)  
+1. [SPRINT-97-CLOSURE.md](SPRINT-97-CLOSURE.md)  
 2. [STATUS.md](STATUS.md)  
-3. [S97-D03](decisions.md#s97-d03--resolve-q1q7-and-lock-m1-contract) — Q1–Q7  
-4. [S97-D04](decisions.md#s97-d04--incremental-journal-development--pedagogical-north-star) — Levels 1–3 + north star  
-5. [S97-D05](decisions.md#s97-d05--learning-journey-data-model-extensibility-compatibility-principle) — data-model compatibility  
-6. [IMPLEMENTATION-MAP.md](IMPLEMENTATION-MAP.md)
+3. [ARCHITECTURAL-DEBT.md](ARCHITECTURAL-DEBT.md)  
+4. [VALIDATION.md](VALIDATION.md)
 
-## Locked for M2 planning
+## Delivered
 
-- Spec: `learning_journey.journal`  
-- TOC: Overview → resources → journal  
-- Notifications: content fingerprints; journey-scoped acknowledgement  
-- **Level 1 (M2):** fixtures OK for runtime  
-- **Level 2 (M3):** Design Page journal commission/revise **without** constituent regen  
-- **Level 3 (M5):** journey-level pipeline journals from original briefs + incremental reassembly  
-- Catalogue: `docs/design-patterns/`  
-- Producer artefacts eligible even without a later consumer  
-- Pedagogical north star informs M3/M4 docs only (not new runtime)  
-- Extend existing journey/artefact/journal contracts additively; keep data separate from shell presentation; no speculative abstractions
+- Learning Journal runtime (TOC, population, notifications)  
+- Design Page / pipeline journal commissioning + journal-only producers  
+- Journal presentation (reading column; no production-metadata headings)  
+- Related LJ/authoring hardening in the same tree (retention guidance; caption/framework guards; hydrate coalesce)
+
+## Carry forward
+
+- **PB-FA-029 / M4** — `docs/design-patterns/` catalogue not created  
+- **M5 Level 3** — pipeline journals from original LJ briefs + incremental reassembly not executed as Level 3 evidence  
+- **S97-AD-010** — verify incremental journal embed/reassembly at successor work  
 
 ## Do not
 
-- Implement journal code until **M2 is explicitly authorised**.  
-- Treat fixture journals as sufficient for sprint acceptance.  
-- Regenerate entire Learning Journeys or unchanged constituents for journal iteration.  
-- Introduce a new caching/regeneration framework.  
-- Implement conditional logic, branching, rules engines, or extra learner-state in Sprint 97.  
-- Reopen Sprint 96.  
-- Absorb PB-FA-026.
+- Reopen Sprint 97 for deferred M4/M5  
+- Reopen Sprint 96 for deferred a11y / maths / QA  
+- Claim Level 3 pipeline proof from Level 1–2 fixtures  
 
 ## Predecessor
 

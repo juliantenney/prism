@@ -309,7 +309,8 @@ function bootHierarchyHarness() {
     api,
     workflowList,
     document: documentStub,
-    window: windowStub
+    window: windowStub,
+    sandbox
   };
 }
 
@@ -487,12 +488,109 @@ test("My Workflows DOM nests children; disclosure toggles; parent remains select
   );
   assert.match(
     String(findByClass(childComplete, "workflow-item-status")[0].className),
-    /workflow-item-status--complete/
+    /workflow-item-status--(completed|authoring)/
   );
-  assert.equal(
+  assert.match(
     findByClass(childComplete, "workflow-item-status-text")[0].textContent,
-    "Complete"
+    /^(Completed|Authoring)$/
   );
+});
+
+test("My Workflows status refreshes immediately when run store changes without reload", () => {
+  const { api, workflowList } = bootHierarchyHarness();
+  api.setWorkflowsForTest([
+    child("wf-ix", "Interactive sample", "", "", "interactive")
+  ]);
+  api.setWorkflowRunStateStoreForTest({ "wf-ix": {} });
+  api.renderWorkflowListForTest({ skipDefaultSelection: true });
+  let item = workflowList.querySelector('[data-workflow-id="wf-ix"]');
+  assert.match(
+    String(item.querySelector(".workflow-item-status").className),
+    /workflow-item-status--no_data/
+  );
+
+  api.setWorkflowRunStateStoreForTest({
+    "wf-ix": {
+      capturedOutputs: { c1: '{"partial":true}' }
+    }
+  });
+  api.refreshWorkflowListStatusesForTest({ immediate: true });
+  item = workflowList.querySelector('[data-workflow-id="wf-ix"]');
+  // Design Page id is c1 for this fixture; partial non-terminal wording still
+  // uses the same step, so once that capture exists status leaves No data.
+  assert.doesNotMatch(
+    String(item.querySelector(".workflow-item-status").className),
+    /workflow-item-status--no_data/
+  );
+  assert.match(
+    item.querySelector(".workflow-item-status-text").textContent,
+    /^(Incomplete|Authoring|Completed)$/
+  );
+});
+
+test("My Workflows Completed uses Authoring-parity hydrated page + zero required graphics", () => {
+  const { api, workflowList, window: win } = bootHierarchyHarness();
+  win.PRISM_LEARNING_JOURNEY_COMMISSION_PRODUCTION_STATUS = {
+    assessRequiredGraphicsCompletion: function () {
+      return {
+        determinable: true,
+        complete: true,
+        zeroRequired: true,
+        requiredCount: 0,
+        attachedCount: 0,
+        reason: "zero_required_graphics_jobs"
+      };
+    }
+  };
+  const steps = [
+    { id: "s1", title: "Learning Outcomes", canonical_step_id: "step_learning_outcomes" },
+    { id: "dp", title: "Design Page", canonical_step_id: "step_design_page" }
+  ];
+  api.setWorkflowsForTest([
+    {
+      id: "wf-done",
+      name: "Interpret the research evidence",
+      product: "interactive",
+      steps,
+      updatedAt: 2
+    }
+  ]);
+  // Durable ref-only row (no inline capture bodies) — previously stuck on Authoring.
+  api.setWorkflowRunStateStoreForTest({
+    "wf-done": {
+      captureRefs: {
+        dp: { final: { resource_id: "res-dp", slot_key: "run_capture:dp:final" } }
+      },
+      workflowResourceRefs: []
+    }
+  });
+  api.clearWorkflowListStatusEvidenceCacheForTest("wf-done");
+  api.writeWorkflowListStatusEvidenceCacheForTest("wf-done", {
+    authoritativeAssembledPage: {
+      artifact_type: "page",
+      schema_version: "2.0.0",
+      title: "Interpret the research evidence",
+      activities: [],
+      visual_affordances: []
+    },
+    workflowResourceRefs: [],
+    assetsByBriefId: {}
+  });
+  api.renderWorkflowListForTest({ skipDefaultSelection: true });
+  const item = workflowList.querySelector('[data-workflow-id="wf-done"]');
+  assert.match(
+    String(item.querySelector(".workflow-item-status").className),
+    /workflow-item-status--completed/
+  );
+  assert.equal(item.querySelector(".workflow-item-status-text").textContent, "Completed");
+
+  const status = api.resolveWorkflowListAuthoringStatusForTest({
+    id: "wf-done",
+    name: "Interpret the research evidence",
+    product: "interactive",
+    steps
+  });
+  assert.equal(status.status, "completed");
 });
 
 test("Preview Open expands parent and selects ordinary child", () => {

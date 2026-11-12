@@ -81,34 +81,40 @@ test("generation prompts are delivery-neutral for bring-forward", () => {
   assert.doesNotMatch(step4, /Do not imply that PRISM automatically transfers learner responses/);
 });
 
-test("rewriteHandoffMechanicsText removes transfer claims and rewrites retrieve when resolved", () => {
-  const raw =
-    "If you completed the earlier independent traffic-management judgement activity (c5), retrieve your saved response and keep it available. PRISM does not automatically transfer your earlier response into this resource. Keep it available throughout.";
-  const out = artefact.rewriteHandoffMechanicsText(raw, {
-    resolutions: [{ ok: true, status: "resolved", text: "My earlier judgement" }]
+test("rewriteHandoffMechanicsText maps only the known standalone system help sentence", () => {
+  const assessmentOutput = require("../lib/learner-renderer-vnext/assessment-output.js");
+  const standalone = assessmentOutput.buildAssessmentOutputRetentionHelp({
+    deliveryContext: "standalone"
   });
-  assert.match(out, /Use your earlier response shown above/i);
-  assert.doesNotMatch(out, /automatically transfer/i);
-  assert.doesNotMatch(out, /PRISM does not/i);
-});
+  const out = artefact.rewriteHandoffMechanicsText(standalone, {
+    isProducer: true,
+    journalListed: false
+  });
+  assert.match(out, /Learning Journey/i);
+  assert.match(out, /do not paste it into later answer fields/i);
+  assert.doesNotMatch(out, /kept on this page only/i);
 
-test("rewriteHandoffMechanicsText strips producer save/copy transfer sentences", () => {
-  const raw =
-    "5. Save or copy your completed response somewhere you can retrieve it. You will need your own traffic-management judgement for self-evaluation in c6. Your response will not automatically transfer between learning products.";
-  const out = artefact.rewriteHandoffMechanicsText(raw, { resolutions: [] });
-  assert.doesNotMatch(out, /Save or copy your completed response/i);
-  assert.doesNotMatch(out, /will not automatically transfer/i);
-  assert.match(out, /traffic-management judgement for self-evaluation in c6/i);
-});
-
-test("journeys without artefact relationships leave prose untouched", () => {
-  const root = createElement("main");
-  const p = createElement("p");
-  const text = createTextNode(
-    "Your response will not automatically transfer between learning products."
+  const authored =
+    "Save or copy your completed response somewhere you can retrieve it. Evaluate your judgement carefully.";
+  assert.equal(
+    artefact.rewriteHandoffMechanicsText(authored, { isProducer: true }),
+    authored
   );
-  p.appendChild(text);
-  root.appendChild(p);
+});
+
+test("journeys without artefact relationships leave system help untouched", () => {
+  const assessmentOutput = require("../lib/learner-renderer-vnext/assessment-output.js");
+  const helpNode = {
+    textContent: assessmentOutput.buildAssessmentOutputRetentionHelp({
+      deliveryContext: "standalone"
+    }),
+    setAttribute() {}
+  };
+  const root = {
+    querySelectorAll(selector) {
+      return selector === "[data-assessment-output-help]" ? [helpNode] : [];
+    }
+  };
   const result = artefact.applyContextualHandoffGuidance(root, {
     contract: { produces: [], references: [] },
     commissionId: "c2",
@@ -116,17 +122,25 @@ test("journeys without artefact relationships leave prose untouched", () => {
     resolutions: []
   });
   assert.equal(result.skipped, "no-artefact-relationship");
-  assert.match(text.nodeValue, /will not automatically transfer/);
+  assert.match(helpNode.textContent, /kept on this page only/i);
 });
 
-test("unified guidance rewrites text nodes when artefact relationship exists", () => {
-  const root = createElement("main");
-  const p = createElement("p");
-  const text = createTextNode(
-    "PRISM does not automatically transfer your earlier response into this resource. Evaluate your judgement carefully."
-  );
-  p.appendChild(text);
-  root.appendChild(p);
+test("unified guidance updates system-owned assessment-output help only", () => {
+  const assessmentOutput = require("../lib/learner-renderer-vnext/assessment-output.js");
+  const helpNode = {
+    textContent: assessmentOutput.buildAssessmentOutputRetentionHelp({
+      deliveryContext: "standalone"
+    }),
+    attrs: Object.create(null),
+    setAttribute(name, value) {
+      this.attrs[name] = String(value);
+    }
+  };
+  const root = {
+    querySelectorAll(selector) {
+      return selector === "[data-assessment-output-help]" ? [helpNode] : [];
+    }
+  };
   const result = artefact.applyContextualHandoffGuidance(root, {
     contract: {
       produces: [
@@ -136,21 +150,21 @@ test("unified guidance rewrites text nodes when artefact relationship exists", (
           workspaceId: "assessment-constructed-E1"
         }
       ],
-      references: [
-        { artefactId: "c5.E1", commissionId: "c6", usage: "reference" }
-      ]
+      references: [{ artefactId: "c5.E1", commissionId: "c6", usage: "reference" }]
     },
-    commissionId: "c6",
+    commissionId: "c5",
     deliveryContext: "unified",
-    resolutions: [{ ok: true, status: "resolved", text: "Draft" }]
+    resolutions: []
   });
   assert.equal(result.ok, true);
+  assert.equal(result.systemOwnedOnly, true);
   assert.ok(result.rewritten >= 1);
-  assert.doesNotMatch(text.nodeValue, /automatically transfer/i);
-  assert.match(text.nodeValue, /Evaluate your judgement carefully/i);
+  assert.match(helpNode.textContent, /Learning Journey/i);
+  assert.match(helpNode.textContent, /do not paste/i);
+  assert.equal(helpNode.attrs["data-assessment-output-delivery"], "unified");
 });
 
-test("resolved artefact note states availability without copy/paste instruction", () => {
+test("resolved artefact note states availability without implying prepopulation", () => {
   const html = artefact.renderArtefactReferenceHtml(
     {
       ok: true,
@@ -162,11 +176,13 @@ test("resolved artefact note states availability without copy/paste instruction"
     { artefactId: "c5.E1", label: "Your earlier response" }
   );
   assert.match(html, /Available here for reference/);
-  assert.doesNotMatch(html, /copy|paste|transfer/i);
+  assert.match(html, /not pasted into the answer fields below/i);
   assert.match(html, /My judgement/);
 });
 
-test("standalone C5/C6 fixtures still contain manual-reference prose in source HTML", () => {
+test("standalone C5/C6 fixtures may still contain legacy authored transfer prose", () => {
+  // Legacy packages can retain authored save/copy sentences until regenerated.
+  // Delivery-owned guidance must not silently rewrite that educational prose.
   if (!hasFixture(STANDALONE_C5) || !hasFixture(STANDALONE_C6)) return;
   const c5 = fs.readFileSync(STANDALONE_C5, "utf8");
   const c6 = fs.readFileSync(STANDALONE_C6, "utf8");

@@ -137,6 +137,7 @@ test("Design Page retain/explanation commission emits closed output_specificatio
   assert.match(design.promptBody, /Emit assessment_evidence\.output_specification/);
   assert.match(design.promptBody, /specification_id, artefact_title, audience, purpose, action_label, missing_response_text, sections/);
   assert.match(design.promptBody, /Do not emit output_id, title, source_elicitation_ids/);
+  assert.match(design.promptBody, /Do not place elicitation_id or response_part on the section object itself/);
   assert.match(design.promptBody, /You, for later revision and comparison/);
   assert.equal(design.promptBody.indexOf("journey-commissioning-brief"), -1);
 });

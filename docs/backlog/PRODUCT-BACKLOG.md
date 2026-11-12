@@ -2,8 +2,8 @@
 
 **Canonical location:** `docs/backlog/PRODUCT-BACKLOG.md`  
 **Status:** Active — **alpha-use period** (Alpha development complete, 2026-09-02)  
-**Last updated:** 2026-11-12 (Sprint 97 opened — PB-FA-028 Learning Journal, PB-FA-029 Design Pattern Catalogue)  
-**Open sprint:** [Sprint 97 — Learning Journal and Design Pattern Foundations](../development/sprints/2026-11-12-sprint-97-learning-journal-and-design-pattern-foundations/SPRINT-97-START-HERE.md)  
+**Last updated:** 2026-11-12 (Sprint 97 CLOSED — ACCEPTED, qualified — PB-FA-028 delivered; PB-FA-029 deferred)
+**Open sprint:** None — last closed [Sprint 97](../development/sprints/2026-11-12-sprint-97-learning-journal-and-design-pattern-foundations/SPRINT-97-CLOSURE.md)
 **Last closed sprint:** [Sprint 96 — Unified Learning Journey Experience & Compatibility](../development/sprints/2026-11-03-sprint-96-unified-learning-journey-experience/SPRINT-96-CLOSURE.md) — **CLOSED — ACCEPTED**. Prior: [Sprint 95](../development/sprints/2026-11-03-sprint-95-unified-learning-journey-runtime/SPRINT-95-CLOSURE.md).
 
 This file answers: **what might we actually choose to work on next?**
@@ -472,9 +472,9 @@ Establish foundations for a unified, accessible, single-document Learning Journe
 
 ### PB-FA-028 — Learning Journal (unified Learning Journeys)
 
-**Status:** **In sprint — Sprint 97 OPEN** (M1 complete; implementation pending authorisation).  
+**Status:** **Delivered — Sprint 97 CLOSED — ACCEPTED** (qualified; Level 3 pipeline journals deferred).  
 **Type:** Bounded foundations — unified-shell Learning Journal.  
-**Pack:** [Sprint 97](../development/sprints/2026-11-12-sprint-97-learning-journal-and-design-pattern-foundations/SPRINT-97-START-HERE.md)  
+**Pack:** [Sprint 97 closure](../development/sprints/2026-11-12-sprint-97-learning-journal-and-design-pattern-foundations/SPRINT-97-CLOSURE.md)  
 **Baseline:** `a8c2fd3b6e7dbeaa11bb418c71bf4eb472f150c5`
 
 **Objective:** A permanent read-only **Your Learning Journal** destination in the unified Learning Journey TOC (beneath constituent resources). Ordered entries are designed by the Learning Journey pipeline; each entry has a learner-facing title, authored framing, and a reference to a declared constituent learner artefact. Entries populate from existing same-browser saved drafts. A notification count indicates new/updated entries since last view. Missing artefacts are represented truthfully.
@@ -489,9 +489,9 @@ Establish foundations for a unified, accessible, single-document Learning Journe
 
 ### PB-FA-029 — Pedagogical design-pattern catalogue
 
-**Status:** **In sprint — Sprint 97 OPEN** (documentation workstream; M4).  
+**Status:** **Open — carry forward** (Sprint 97 M4 deferred; catalogue not created).  
 **Type:** Version-controlled catalogue foundations.  
-**Pack:** [Sprint 97](../development/sprints/2026-11-12-sprint-97-learning-journal-and-design-pattern-foundations/SPRINT-97-START-HERE.md)
+**Pack:** [Sprint 97 closure](../development/sprints/2026-11-12-sprint-97-learning-journal-and-design-pattern-foundations/SPRINT-97-CLOSURE.md) (deferred from Sprint 97)
 
 **Objective:** A central catalogue of Learning Journey pedagogical design patterns, starting with:
 

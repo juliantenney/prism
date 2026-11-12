@@ -215,3 +215,39 @@ Q1–Q7 from the M1 investigation are **resolved** by [S97-D03](#s97-d03--resolv
 Incremental development / M5 “rerun” ambiguity is **resolved** by [S97-D04](#s97-d04--incremental-journal-development--pedagogical-north-star).
 
 Data-model extensibility as a compatibility principle (not Sprint 97 feature scope) is **recorded** by [S97-D05](#s97-d05--learning-journey-data-model-extensibility-compatibility-principle).
+
+## S97-D06 — Accept M2–M3 Learning Journal foundations (qualified)
+
+**Date:** 2026-11-12  
+**Status:** **Accepted** (qualified)  
+**Depends on:** S97-D03, S97-D04, S97-D05
+
+**Decision:** Accept Sprint 97 **M2** (journal runtime / TOC / notifications) and **M3** (Design Page journal commissioning + journal-only producer declaration), with qualifications. Supporting presentation and LJ authoring hardening in the same tree (journal reading-column / metadata presentation; delivery-context retention guidance; caption/framework terminology guards; coalesced workflow-list status hydrate) are accepted as part of this close.
+
+**Qualifications:**
+
+1. **M4** design-pattern catalogue (`docs/design-patterns/`) was **not** delivered.  
+2. **M5 Level 3** journey-level pipeline journal generation from original LJ briefs for both established patterns was **not** executed as integration evidence.  
+3. Fixture Level 1 evidence and Design Page Level 2 tests must not be described as Level 3 pipeline proof.
+
+**Not authorised by this acceptance alone:** Sprint 97 closure (see S97-D07); claiming M4/M5 complete; PB-FA-026.
+
+**Evidence:** [VALIDATION.md](VALIDATION.md); focused `tests/s97-*.test.js` and related suites listed in [SPRINT-97-CLOSURE.md](SPRINT-97-CLOSURE.md).
+
+---
+
+## S97-D07 — Close Sprint 97 — Learning Journal and Design Pattern Foundations (Accepted)
+
+**Date:** 2026-11-12  
+**Status:** **Accepted**  
+**Depends on:** [S97-D06](#s97-d06--accept-m2m3-learning-journal-foundations-qualified)
+
+**Decision:** Close **Sprint 97 — Learning Journal and Design Pattern Foundations** as **CLOSED — ACCEPTED** (qualified).
+
+**Completed:** M1–M3 (journal foundations). Related presentation and LJ runtime hardening listed under S97-D06.
+
+**Deferred / carry-forward:** M4 catalogue (PB-FA-029); M5 Level 3 pipeline journals + incremental reassembly evidence; S97-AD-010 verification at successor work. Sprint 96 residual a11y / maths / QA items remain on the Sprint 96 ledger.
+
+Do **not** reopen Sprint 97 for deferred catalogue or Level 3 integration. Select next work from [PRODUCT-BACKLOG.md](../../../backlog/PRODUCT-BACKLOG.md).
+
+**Evidence:** [SPRINT-97-CLOSURE.md](SPRINT-97-CLOSURE.md); [VALIDATION.md](VALIDATION.md).

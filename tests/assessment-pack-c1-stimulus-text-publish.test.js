@@ -108,5 +108,8 @@ test("elicitation stage forbids placing required findings only in stimulus_text"
     elicitation.promptBody,
     /Do not place required findings, methods, or figures only in delivery\.stimulus_text/
   );
-  assert.match(elicitation.promptBody, /elicitation\.stimulus \(prose\) or delivery\.stimulus/);
+  assert.match(
+    elicitation.promptBody,
+    /elicitation\.stimulus \(prose string\) or delivery\.stimulus/
+  );
 });

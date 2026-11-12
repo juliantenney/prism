@@ -1,19 +1,19 @@
 # Next sprint — active programme
 
-**Status:** **Sprint 97 OPEN.** Sprint 96 **CLOSED — ACCEPTED**. Sprint 95–82 **CLOSED**. Alpha development **complete**.  
+**Status:** **No open sprint.** Sprint 97 **CLOSED — ACCEPTED** (qualified). Sprint 96 **CLOSED — ACCEPTED**. Sprint 95–82 **CLOSED**. Alpha development **complete**.  
 **Updated:** 2026-11-12
 
 ---
 
 ## Current programme
 
-**Open sprint:** [Sprint 97 — Learning Journal and Design Pattern Foundations](../development/sprints/2026-11-12-sprint-97-learning-journal-and-design-pattern-foundations/SPRINT-97-START-HERE.md) — **OPEN** (M1 complete; S97-D03–D05 locked; M2 awaits **explicit** authorisation)
+**Open sprint:** None. Select next work deliberately from [PRODUCT-BACKLOG.md](../backlog/PRODUCT-BACKLOG.md).
 
-**Last closed sprint:** [Sprint 96 — Unified Learning Journey Experience & Compatibility](../development/sprints/2026-11-03-sprint-96-unified-learning-journey-experience/SPRINT-96-CLOSURE.md) — **CLOSED — ACCEPTED** ([programme stub](sprint-96-unified-learning-journey-experience.md))
+**Last closed sprint:** [Sprint 97 — Learning Journal and Design Pattern Foundations](../development/sprints/2026-11-12-sprint-97-learning-journal-and-design-pattern-foundations/SPRINT-97-CLOSURE.md) — **CLOSED — ACCEPTED** (qualified) ([programme stub](sprint-97-learning-journal-and-design-pattern-foundations.md))
 
-**Opening:** [S97-D01](../development/sprints/2026-11-12-sprint-97-learning-journal-and-design-pattern-foundations/decisions.md#s97-d01--open-sprint-97--learning-journal-and-design-pattern-foundations)
+**Prior closed:** [Sprint 96 — Unified Learning Journey Experience & Compatibility](../development/sprints/2026-11-03-sprint-96-unified-learning-journey-experience/SPRINT-96-CLOSURE.md) — **CLOSED — ACCEPTED**
 
-**Hard invariants:** Assessment Pack remains **NON-SUMMATIVE**. Constituent Learning Journey products remain standalone-publishable. No implicit sharing of all learner responses. No AI marking of shared artefacts. Author Learning Journey download is **unified-only** (S96-D14); legacy multi-document packager is internal. No new learner-work persistence system under Sprint 97.
+**Hard invariants:** Assessment Pack remains **NON-SUMMATIVE**. Constituent Learning Journey products remain standalone-publishable. No implicit sharing of all learner responses. No AI marking of shared artefacts. Author Learning Journey download is **unified-only** (S96-D14); legacy multi-document packager is internal.
 
 ### Alpha milestone (still authoritative)
 
@@ -23,12 +23,12 @@
 
 | Item | State |
 | ---- | ----- |
-| Sprint 82–96 | **CLOSED** (96 CLOSED — ACCEPTED) |
-| Open sprint | **Sprint 97** |
+| Sprint 82–97 | **CLOSED** (97 CLOSED — ACCEPTED, qualified) |
+| Open sprint | **None** |
 | Unified LJ runtime | **Sprint 95 CLOSED — ACCEPTED** |
 | Unified LJ experience / maths | **Sprint 96 CLOSED — ACCEPTED** (qualified a11y / maths residual debt) |
+| Learning Journal foundations | **Sprint 97 CLOSED — ACCEPTED** (M1–M3); M4 catalogue + M5 Level 3 deferred |
 | Learning Journey continuity | **Sprint 94 CLOSED — ACCEPTED** |
-| Learning Journal + pattern catalogue | **Sprint 97 OPEN** (M1 docs) |
 | Situated Task | **Implemented** — `situated_task` |
 | Assessment Pack | **CLOSED — ACCEPTED** first-class product |
 | LJ author download | **Unified package** (S96-D14); legacy multi-doc internal |
@@ -38,16 +38,14 @@
 
 ## Immediate next
 
-1. Authorise **M2** journal runtime (Level 1) explicitly when ready ([IMPLEMENTATION-MAP.md](../development/sprints/2026-11-12-sprint-97-learning-journal-and-design-pattern-foundations/IMPLEMENTATION-MAP.md)). Contracts: [S97-D03](../development/sprints/2026-11-12-sprint-97-learning-journal-and-design-pattern-foundations/decisions.md#s97-d03--resolve-q1q7-and-lock-m1-contract), [S97-D04](../development/sprints/2026-11-12-sprint-97-learning-journal-and-design-pattern-foundations/decisions.md#s97-d04--incremental-journal-development--pedagogical-north-star), [S97-D05](../development/sprints/2026-11-12-sprint-97-learning-journal-and-design-pattern-foundations/decisions.md#s97-d05--learning-journey-data-model-extensibility-compatibility-principle).  
-2. Do **not** reopen Sprint 96 for deferred assurance.
-
-Start here: [SPRINT-97-START-HERE.md](../development/sprints/2026-11-12-sprint-97-learning-journal-and-design-pattern-foundations/SPRINT-97-START-HERE.md).
+1. Choose the next sprint deliberately from [PRODUCT-BACKLOG.md](../backlog/PRODUCT-BACKLOG.md). Leading carry-forwards from Sprint 97: **PB-FA-029** design-pattern catalogue; optional Level 3 pipeline journal generation evidence.  
+2. Do **not** reopen Sprint 96 or Sprint 97 for deferred assurance.
 
 ---
 
 ## Previous sprints
 
-- [Sprint 97](sprint-97-learning-journal-and-design-pattern-foundations.md) — **OPEN**
+- [Sprint 97](sprint-97-learning-journal-and-design-pattern-foundations.md) — **CLOSED — ACCEPTED** (qualified)
 - [Sprint 96](sprint-96-unified-learning-journey-experience.md) — **CLOSED — ACCEPTED**
 - [Sprint 95](sprint-95-unified-learning-journey-runtime.md) — **CLOSED — ACCEPTED**
 - [Sprint 94](sprint-94-learning-journey-continuity.md) — **CLOSED — ACCEPTED**

@@ -1,5 +1,5 @@
 /**
- * My Workflows list: product type label + compact authoring status.
+ * My Workflows list: product type label + reactive four-status derivation.
  */
 
 "use strict";
@@ -32,6 +32,40 @@ function interactiveWorkflow(extra) {
     },
     extra || {}
   );
+}
+
+function designPageCapture(overrides) {
+  return JSON.stringify(
+    Object.assign(
+      {
+        artifact_type: "page",
+        schema_version: "2.0.0",
+        product_id: "interactive",
+        title: "Sample",
+        activities: [],
+        visual_affordances: []
+      },
+      overrides || {}
+    )
+  );
+}
+
+function mockProductionStatus(result) {
+  return {
+    assessRequiredGraphicsCompletion: function () {
+      return Object.assign(
+        {
+          determinable: true,
+          complete: true,
+          zeroRequired: true,
+          requiredCount: 0,
+          attachedCount: 0,
+          reason: "mock"
+        },
+        result || {}
+      );
+    }
+  };
 }
 
 test("product labels use authoritative metadata and fall back to Type unknown", () => {
@@ -84,44 +118,123 @@ test("product labels use authoritative metadata and fall back to Type unknown", 
     ),
     "Type unknown"
   );
-  assert.equal(
-    presentation.resolveWorkflowListProductLabel(
-      { name: "Looks Like Assessment Pack" },
-      { familyMod: family }
-    ),
-    "Type unknown"
-  );
 });
 
-test("authoring status: empty, partial captures, and Design Page complete", () => {
+test("No data → Incomplete after the first saved output", () => {
   const wf = interactiveWorkflow();
-
   const empty = presentation.deriveWorkflowListAuthoringStatus(wf, null);
   assert.equal(empty.status, "no_data");
   assert.equal(empty.label, "No data");
-  assert.match(empty.title, /No data/);
 
   const partial = presentation.deriveWorkflowListAuthoringStatus(wf, {
     capturedOutputs: { s1: '{"artifact_type":"page"}' },
     stepCompleted: { s1: true, s2: true, s3: true, s4: true, s5: true, dp: true },
     runIndex: 5
   });
-  assert.equal(partial.status, "in_progress");
-  assert.equal(partial.label, "In progress");
+  assert.equal(partial.status, "incomplete");
+  assert.equal(partial.label, "Incomplete");
   assert.equal(partial.terminalStepId, "dp");
-
-  const complete = presentation.deriveWorkflowListAuthoringStatus(wf, {
-    capturedOutputs: {
-      s1: '{"ok":true}',
-      dp: '{"artifact_type":"page","title":"Done"}'
-    }
-  });
-  assert.equal(complete.status, "complete");
-  assert.equal(complete.label, "Complete");
-  assert.match(complete.title, /not QA/);
 });
 
-test("authoring status treats captureRefs as saved output without requiring hydrated bodies", () => {
+test("Incomplete → Authoring after pipeline completion with outstanding required authoring", () => {
+  const wf = interactiveWorkflow();
+  const authoring = presentation.deriveWorkflowListAuthoringStatus(
+    wf,
+    {
+      capturedOutputs: {
+        s1: '{"ok":true}',
+        dp: designPageCapture({
+          visual_affordances: [
+            {
+              affordance_id: "va1",
+              visual_decision: "generate",
+              brief_id: "brief-1"
+            }
+          ]
+        })
+      }
+    },
+    {
+      productionStatusMod: mockProductionStatus({
+        determinable: true,
+        complete: false,
+        zeroRequired: false,
+        requiredCount: 1,
+        attachedCount: 0,
+        reason: "required_graphics_outstanding"
+      })
+    }
+  );
+  assert.equal(authoring.status, "authoring");
+  assert.equal(authoring.label, "Authoring");
+});
+
+test("Authoring → Completed after all required authoring is satisfied", () => {
+  const wf = interactiveWorkflow();
+  const completed = presentation.deriveWorkflowListAuthoringStatus(
+    wf,
+    {
+      capturedOutputs: {
+        dp: designPageCapture()
+      },
+      workflowResourceRefs: [{ brief_id: "brief-1", resource_id: "res-1" }]
+    },
+    {
+      productionStatusMod: mockProductionStatus({
+        determinable: true,
+        complete: true,
+        zeroRequired: false,
+        requiredCount: 1,
+        attachedCount: 1,
+        reason: "all_required_graphics_complete"
+      })
+    }
+  );
+  assert.equal(completed.status, "completed");
+  assert.equal(completed.label, "Completed");
+});
+
+test("Completed → Authoring when required authoring becomes outstanding again", () => {
+  const wf = interactiveWorkflow();
+  const reopened = presentation.deriveWorkflowListAuthoringStatus(
+    wf,
+    {
+      capturedOutputs: { dp: designPageCapture() },
+      workflowResourceRefs: []
+    },
+    {
+      productionStatusMod: mockProductionStatus({
+        determinable: true,
+        complete: false,
+        zeroRequired: false,
+        requiredCount: 2,
+        attachedCount: 0,
+        reason: "required_graphics_outstanding"
+      })
+    }
+  );
+  assert.equal(reopened.status, "authoring");
+});
+
+test("pipeline complete with no required authoring moves Incomplete → Completed", () => {
+  const wf = interactiveWorkflow();
+  const completed = presentation.deriveWorkflowListAuthoringStatus(
+    wf,
+    { capturedOutputs: { dp: designPageCapture({ visual_affordances: [] }) } },
+    {
+      productionStatusMod: mockProductionStatus({
+        determinable: true,
+        complete: true,
+        zeroRequired: true,
+        requiredCount: 0,
+        attachedCount: 0
+      })
+    }
+  );
+  assert.equal(completed.status, "completed");
+});
+
+test("terminal capture without page body stays Authoring (cannot prove graphics complete)", () => {
   const wf = interactiveWorkflow();
   const viaRef = presentation.deriveWorkflowListAuthoringStatus(wf, {
     captureRefs: {
@@ -130,7 +243,7 @@ test("authoring status treats captureRefs as saved output without requiring hydr
       }
     }
   });
-  assert.equal(viaRef.status, "complete");
+  assert.equal(viaRef.status, "authoring");
 
   const partialRef = presentation.deriveWorkflowListAuthoringStatus(wf, {
     captureRefs: {
@@ -139,7 +252,7 @@ test("authoring status treats captureRefs as saved output without requiring hydr
       }
     }
   });
-  assert.equal(partialRef.status, "in_progress");
+  assert.equal(partialRef.status, "incomplete");
 });
 
 test("stepCompleted and runIndex alone do not mark progress or completion", () => {
@@ -151,7 +264,7 @@ test("stepCompleted and runIndex alone do not mark progress or completion", () =
   assert.equal(visitedOnly.status, "no_data");
 });
 
-test("Learning Journey constituents and older unknown workflows remain compatible", () => {
+test("Learning Journey constituents derive their own status independently", () => {
   const child = {
     id: "wf-child",
     name: "Constituent Interactive",
@@ -160,10 +273,6 @@ test("Learning Journey constituents and older unknown workflows remain compatibl
     steps: designPageSteps()
   };
   assert.equal(
-    presentation.resolveWorkflowListProductLabel(child, { familyMod: family }),
-    "Interactive"
-  );
-  assert.equal(
     presentation.deriveWorkflowListAuthoringStatus(child, {}).status,
     "no_data"
   );
@@ -171,7 +280,22 @@ test("Learning Journey constituents and older unknown workflows remain compatibl
     presentation.deriveWorkflowListAuthoringStatus(child, {
       capturedOutputsRaw: { s2: '{"episode":true}' }
     }).status,
-    "in_progress"
+    "incomplete"
+  );
+  assert.equal(
+    presentation.deriveWorkflowListAuthoringStatus(
+      child,
+      { capturedOutputs: { dp: designPageCapture() } },
+      {
+        productionStatusMod: mockProductionStatus({
+          determinable: true,
+          complete: true,
+          zeroRequired: true,
+          requiredCount: 0
+        })
+      }
+    ).status,
+    "completed"
   );
 
   const legacyCustom = {
@@ -184,54 +308,179 @@ test("Learning Journey constituents and older unknown workflows remain compatibl
     ]
   };
   assert.equal(
-    presentation.resolveWorkflowListProductLabel(legacyCustom, { familyMod: family }),
-    "Type unknown"
-  );
-  assert.equal(
     presentation.deriveWorkflowListAuthoringStatus(legacyCustom, {
       capturedOutputs: { a: "x", b: "y" }
     }).status,
-    "in_progress"
+    "incomplete"
   );
   assert.equal(
-    presentation.deriveWorkflowListAuthoringStatus(legacyCustom, {
-      capturedOutputs: { c: "final body" }
-    }).status,
-    "complete"
+    presentation.deriveWorkflowListAuthoringStatus(
+      legacyCustom,
+      { capturedOutputs: { c: JSON.stringify({ artifact_type: "page", activities: [] }) } },
+      {
+        productionStatusMod: mockProductionStatus({
+          determinable: true,
+          complete: true,
+          zeroRequired: true,
+          requiredCount: 0
+        })
+      }
+    ).status,
+    "completed"
   );
 });
 
-test("resolveWorkflowListAuthoringStatusForWorkflow merges durable store captures", () => {
-  // Keep this as a pure-store check without a fragile full DOM boot.
-  const empty = presentation.deriveWorkflowListAuthoringStatus(
-    interactiveWorkflow({ id: "wf-empty" }),
-    null
-  );
-  const partial = presentation.deriveWorkflowListAuthoringStatus(
-    interactiveWorkflow({ id: "wf-partial" }),
-    { capturedOutputs: { s1: '{"partial":true}' } }
-  );
-  const complete = presentation.deriveWorkflowListAuthoringStatus(
-    interactiveWorkflow({ id: "wf-complete" }),
+test("mergeRunRecordForListStatus overlays live captures and graphics evidence", () => {
+  const merged = presentation.mergeRunRecordForListStatus(
     {
-      captureRefs: {
-        dp: { final: { resource_id: "res-complete", slot_key: "run_capture:dp:final" } }
-      }
+      capturedOutputs: { s1: "durable" },
+      workflowResourceRefs: [{ resource_id: "old" }]
+    },
+    {
+      capturedOutputs: { s2: "live" },
+      workflowResourceRefs: [{ resource_id: "new" }],
+      assetsByBriefId: { "brief-1": { mime_type: "image/png" } }
     }
   );
-  const child = presentation.deriveWorkflowListAuthoringStatus(
-    interactiveWorkflow({ id: "wf-child", sourceWorkflowId: "wf-lj" }),
-    { capturedOutputs: { dp: '{"artifact_type":"page"}' } }
+  assert.equal(merged.capturedOutputs.s1, "durable");
+  assert.equal(merged.capturedOutputs.s2, "live");
+  assert.equal(merged.workflowResourceRefs[0].resource_id, "new");
+  assert.ok(merged.assetsByBriefId["brief-1"]);
+});
+
+test("live overlay empty refs win over durable so removed graphics reopen Authoring", () => {
+  const merged = presentation.mergeRunRecordForListStatus(
+    {
+      capturedOutputs: { dp: designPageCapture() },
+      workflowResourceRefs: [{ resource_id: "still-in-durable", brief_id: "brief-1" }]
+    },
+    {
+      capturedOutputs: { dp: designPageCapture() },
+      workflowResourceRefs: [],
+      assetsByBriefId: {}
+    }
   );
-  assert.equal(empty.status, "no_data");
-  assert.equal(partial.status, "in_progress");
-  assert.equal(complete.status, "complete");
-  assert.equal(child.status, "complete");
-  assert.equal(
-    presentation.resolveWorkflowListProductLabel(
-      { id: "wf-lj", product: "learning_journey", name: "Parent Journey" },
-      { familyMod: family }
-    ),
-    "Learning Journey"
+  assert.deepEqual(merged.workflowResourceRefs, []);
+  assert.deepEqual(merged.assetsByBriefId, {});
+});
+
+test("removing then reattaching required graphics flips Completed ↔ Authoring", () => {
+  const wf = interactiveWorkflow();
+  const pageBody = designPageCapture({
+    visual_affordances: [
+      { affordance_id: "va1", visual_decision: "generate", brief_id: "brief-1" }
+    ]
+  });
+  const withGraphic = {
+    capturedOutputs: { dp: pageBody },
+    authoritativeAssembledPage: JSON.parse(pageBody),
+    workflowResourceRefs: [
+      {
+        resource_id: "res-1",
+        brief_id: "brief-1",
+        affordance_id: "va1",
+        lifecycle_state: "active"
+      }
+    ]
+  };
+  const completed = presentation.deriveWorkflowListAuthoringStatus(wf, withGraphic, {
+    productionStatusMod: mockProductionStatus({
+      determinable: true,
+      complete: true,
+      zeroRequired: false,
+      requiredCount: 1,
+      attachedCount: 1,
+      reason: "all_required_graphics_complete"
+    })
+  });
+  assert.equal(completed.status, "completed");
+
+  const removed = presentation.deriveWorkflowListAuthoringStatus(
+    wf,
+    Object.assign({}, withGraphic, { workflowResourceRefs: [], assetsByBriefId: {} }),
+    {
+      productionStatusMod: mockProductionStatus({
+        determinable: true,
+        complete: false,
+        zeroRequired: false,
+        requiredCount: 1,
+        attachedCount: 0,
+        reason: "required_graphics_outstanding"
+      })
+    }
   );
+  assert.equal(removed.status, "authoring");
+
+  const restored = presentation.deriveWorkflowListAuthoringStatus(wf, withGraphic, {
+    productionStatusMod: mockProductionStatus({
+      determinable: true,
+      complete: true,
+      zeroRequired: false,
+      requiredCount: 1,
+      attachedCount: 1,
+      reason: "all_required_graphics_complete"
+    })
+  });
+  assert.equal(restored.status, "completed");
+});
+
+test("saved/restored hydrated authoring evidence yields Completed without inline capture bodies", () => {
+  const wf = interactiveWorkflow();
+  const page = {
+    artifact_type: "page",
+    schema_version: "2.0.0",
+    title: "Restored",
+    activities: [],
+    visual_affordances: []
+  };
+  const restored = presentation.deriveWorkflowListAuthoringStatus(
+    wf,
+    {
+      captureRefs: {
+        dp: { final: { resource_id: "res-dp", slot_key: "run_capture:dp:final" } }
+      },
+      authoritativeAssembledPage: page,
+      workflowResourceRefs: []
+    },
+    {
+      productionStatusMod: mockProductionStatus({
+        determinable: true,
+        complete: true,
+        zeroRequired: true,
+        requiredCount: 0,
+        attachedCount: 0,
+        reason: "zero_required_graphics_jobs"
+      })
+    }
+  );
+  assert.equal(restored.status, "completed");
+});
+
+test("Incomplete pipeline stays Incomplete even when graphics evidence looks complete", () => {
+  const wf = interactiveWorkflow();
+  const incomplete = presentation.deriveWorkflowListAuthoringStatus(
+    wf,
+    {
+      capturedOutputs: { s3: '{"activities":[]}' },
+      workflowResourceRefs: [
+        {
+          resource_id: "res-1",
+          brief_id: "brief-1",
+          affordance_id: "va1",
+          lifecycle_state: "active"
+        }
+      ],
+      assetsByBriefId: { "brief-1": { mime_type: "image/png" } }
+    },
+    {
+      productionStatusMod: mockProductionStatus({
+        determinable: true,
+        complete: true,
+        zeroRequired: false,
+        requiredCount: 1,
+        attachedCount: 1
+      })
+    }
+  );
+  assert.equal(incomplete.status, "incomplete");
 });

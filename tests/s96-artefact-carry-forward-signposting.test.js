@@ -132,9 +132,186 @@ test("resources with no artefact relationship receive no producer signpost", () 
   assert.equal(html, "");
 });
 
-test("unified rewrite replaces standalone page-only retrieval claim for producers", () => {
-  const raw =
-    "A draft of your response is kept on this page only. Later activities will not retrieve it automatically — copy the wording you want to keep for later use.";
+function fakeEl(attrs) {
+  const src = attrs && typeof attrs === "object" ? attrs : {};
+  const el = {
+    attrs: Object.assign({}, src.attrs || {}),
+    children: [],
+    parentNode: null,
+    nextSibling: null,
+    firstChild: null,
+    className: src.className || "",
+    innerHTML: "",
+    getAttribute(name) {
+      return Object.prototype.hasOwnProperty.call(this.attrs, name)
+        ? this.attrs[name]
+        : null;
+    },
+    setAttribute(name, value) {
+      this.attrs[name] = String(value);
+    },
+    appendChild(child) {
+      if (child.parentNode && typeof child.parentNode.removeChild === "function") {
+        child.parentNode.removeChild(child);
+      }
+      if (this.children.length) {
+        this.children[this.children.length - 1].nextSibling = child;
+      }
+      child.parentNode = this;
+      child.nextSibling = null;
+      this.children.push(child);
+      this.firstChild = this.children[0] || null;
+      return child;
+    },
+    insertBefore(child, before) {
+      if (!before) return this.appendChild(child);
+      if (child.parentNode && typeof child.parentNode.removeChild === "function") {
+        child.parentNode.removeChild(child);
+      }
+      const idx = this.children.indexOf(before);
+      if (idx < 0) return this.appendChild(child);
+      if (idx > 0) this.children[idx - 1].nextSibling = child;
+      child.parentNode = this;
+      child.nextSibling = before;
+      this.children.splice(idx, 0, child);
+      this.firstChild = this.children[0] || null;
+      return child;
+    },
+    removeChild(child) {
+      const idx = this.children.indexOf(child);
+      if (idx < 0) return child;
+      if (idx > 0) {
+        this.children[idx - 1].nextSibling = child.nextSibling;
+      }
+      this.children.splice(idx, 1);
+      child.parentNode = null;
+      child.nextSibling = null;
+      this.firstChild = this.children[0] || null;
+      return child;
+    },
+    querySelector(selector) {
+      const match = (node) => {
+        if (!node || !node.attrs) return false;
+        if (selector === '[data-orientation-type="knowledge_summary"]') {
+          return node.attrs["data-orientation-type"] === "knowledge_summary";
+        }
+        if (selector === '[data-region="assessment-orientation"]') {
+          return node.attrs["data-region"] === "assessment-orientation";
+        }
+        if (selector === "#journey-assessment-briefing") {
+          return node.attrs.id === "journey-assessment-briefing";
+        }
+        if (selector === ".util-page-header") {
+          return /\butil-page-header\b/.test(node.className || "");
+        }
+        if (selector === '[data-region="activities"]') {
+          return node.attrs["data-region"] === "activities";
+        }
+        if (selector === ".util-learner-draft-controls") {
+          return /\butil-learner-draft-controls\b/.test(node.className || "");
+        }
+        if (selector === "[data-lj-artefact-ref-host]") {
+          return !!node.attrs["data-lj-artefact-ref-host"];
+        }
+        return false;
+      };
+      const walk = (node) => {
+        if (match(node)) return node;
+        for (let i = 0; i < (node.children || []).length; i += 1) {
+          const found = walk(node.children[i]);
+          if (found) return found;
+        }
+        return null;
+      };
+      return walk(this);
+    },
+    querySelectorAll(selector) {
+      const out = [];
+      const walk = (node) => {
+        if (!node) return;
+        if (selector === "[data-lj-artefact-ref-host]" && node.attrs) {
+          if (node.attrs["data-lj-artefact-ref-host"]) out.push(node);
+        }
+        (node.children || []).forEach(walk);
+      };
+      walk(this);
+      return out;
+    }
+  };
+  return el;
+}
+
+function attachOwnerDocument(root) {
+  root.ownerDocument = {
+    createElement() {
+      return fakeEl();
+    }
+  };
+  return root;
+}
+
+test("artefact host inserts immediately after knowledge summary when present", () => {
+  const root = attachOwnerDocument(fakeEl());
+  const header = fakeEl({ className: "util-page-header" });
+  const ks = fakeEl({
+    attrs: { "data-orientation-type": "knowledge_summary" }
+  });
+  const activities = fakeEl({ attrs: { "data-region": "activities" } });
+  root.appendChild(header);
+  root.appendChild(ks);
+  root.appendChild(activities);
+
+  const point = artefact.resolveArtefactHostInsertion(root);
+  assert.equal(point.reason, "knowledge_summary");
+  assert.equal(point.mode, "after");
+  assert.equal(point.anchor, ks);
+
+  const result = artefact.injectArtefactReferences(root, {
+    commissionId: "c1",
+    contract: lj2Contract(),
+    resources: lj2Resources()
+  });
+  assert.equal(result.ok, true);
+  assert.equal(result.signposted, true);
+  assert.equal(result.insertionReason, "knowledge_summary");
+  assert.equal(ks.nextSibling && ks.nextSibling.className, "lj-artefact-ref-host");
+  assert.equal(root.children.indexOf(ks.nextSibling), root.children.indexOf(ks) + 1);
+});
+
+test("assessment packs without knowledge summary use assessment orientation fallback", () => {
+  const root = attachOwnerDocument(fakeEl());
+  const header = fakeEl({ className: "util-page-header" });
+  const briefing = fakeEl({
+    attrs: {
+      "data-region": "assessment-orientation",
+      id: "journey-assessment-briefing"
+    }
+  });
+  const checks = fakeEl({ attrs: { "data-region": "assessment-checks" } });
+  root.appendChild(header);
+  root.appendChild(briefing);
+  root.appendChild(checks);
+
+  const point = artefact.resolveArtefactHostInsertion(root);
+  assert.equal(point.reason, "assessment_orientation");
+  assert.equal(point.anchor, briefing);
+
+  const result = artefact.injectArtefactReferences(root, {
+    commissionId: "c1",
+    contract: lj2Contract(),
+    resources: lj2Resources()
+  });
+  assert.equal(result.ok, true);
+  assert.equal(result.insertionReason, "assessment_orientation");
+  assert.equal(briefing.nextSibling && briefing.nextSibling.className, "lj-artefact-ref-host");
+  assert.notEqual(root.children[0] && root.children[0].className, "lj-artefact-ref-host");
+});
+
+test("unified rewrite maps system-owned standalone help for producers", () => {
+  const assessmentOutput = require("../lib/learner-renderer-vnext/assessment-output.js");
+  const raw = assessmentOutput.buildAssessmentOutputRetentionHelp({
+    deliveryContext: "standalone"
+  });
   const out = artefact.rewriteHandoffMechanicsText(raw, {
     isProducer: true,
     resolutions: []
@@ -143,6 +320,7 @@ test("unified rewrite replaces standalone page-only retrieval claim for producer
   assert.doesNotMatch(out, /kept on this page only/i);
   assert.match(out, /kept on this device when you save it/i);
   assert.match(out, /Learning Journey/i);
+  assert.match(out, /do not paste it into later answer fields/i);
 });
 
 test("standalone assessment-output help remains page-only / copy guidance", () => {

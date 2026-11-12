@@ -34,7 +34,7 @@ test("Learning Journey Design Page prompt is constrained same-chat synthesis of 
   assert.match(prompt, /page_synthesis/);
   assert.match(prompt, /artifact_type learning_journey_page/);
   assert.match(prompt, /editorial_opening_image/);
-  assert.match(prompt, /does not need to convey instructional content/);
+  assert.match(prompt, /must not convey instructional content/);
   assert.match(prompt, /Do not place it in visual_affordances/);
   assert.match(prompt, /journey-wide introductory video is optional/);
   assert.doesNotMatch(prompt, /visual_affordances\s*:/);

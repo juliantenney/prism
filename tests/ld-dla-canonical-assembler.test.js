@@ -111,12 +111,16 @@ test("production protects discovery-sequence expected_output and revision observ
     /without disclosing those derived conclusions, numeric results, corrected values, completed intervals/
   );
   assert.match(s, /not a blanket ban on stating answers/);
+  assert.match(s, /Conditional attempt-before-complete-explanation/);
   assert.match(s, /Evidence-driven revision observability/);
   assert.match(
     s,
-    /initial interpretation[\s\S]*challenges or supports it[\s\S]*revised or retained interpretation/
+    /what they initially thought[\s\S]*challenged or confirmed[\s\S]*what they now conclude and why/
   );
-  assert.match(s, /Omit this structure where revision is not an intended outcome/);
+  assert.match(
+    s,
+    /Omit this structure where revision of an initial judgement is not an intended outcome/
+  );
 });
 
 test("Phase A: P01-R1 markers in §5", () => {

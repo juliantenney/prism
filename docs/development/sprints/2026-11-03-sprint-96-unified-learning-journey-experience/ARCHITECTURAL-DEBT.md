@@ -67,6 +67,7 @@ Residual debt at close. Do **not** mark comprehensive accessibility as resolved.
 | S96-AD-015 | Optional C5/C6 source-prose cleanup after M3 | **Deferred** | Author: do not regen in S96; candidate wording retained |
 | S96-AD-016 | LJ QA v1.2 cross-journey validation | **Deferred** | DUU provisionally calibrated/frozen (author summary); second journey still required |
 | S96-AD-017 | Learner-facing `cN` identifiers in stored DUU prose | **Open — content still uncorrected** | Generation prevention shipped (title directory + commissioning constraint); stored DUU C3–C6 still needs author edit/targeted regen — [EDITORIAL-CORRECTION.md](evidence/duu-cross-resource-title-refs/EDITORIAL-CORRECTION.md) |
+| S96-AD-018 | C6 formative pack uses “Submit your solution” / “submitted solution” wording | **Accepted Minor editorial debt** | Assessment is formative and learner-reviewed; wording is authored C6 prose (not a renderer constant). No narrow reusable presentation rule without regenerating C6; no formal submission/marking added. |
 
 ---
 

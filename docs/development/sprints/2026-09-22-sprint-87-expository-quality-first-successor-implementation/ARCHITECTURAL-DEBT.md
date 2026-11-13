@@ -54,6 +54,7 @@ Debt / observations relevant to Sprint 87 scope. **Implementation + validation.*
 | **S87-AD-004** | Exact `elements[]`+`relationships[]` still caption-only beside VAs | By design (materials ≠ figures); full commission↔visual binding remains Option B / later |
 | **S87-AD-005** | Dedicated reading face / serif exploration deferred | T-010 SHOULD; not implemented (no webfont programme) |
 | **S87-AD-006** | Semantic H3 still absent unless upstream emits subsections | Correct — renderer must not invent H3 |
+| **S87-AD-014** | Generated mathematical figures may still paint incorrect on-image slogans (e.g. “three equations, two unknowns and λ”) even when `detailed_description` / surrounding prose correctly count three unknowns | **Local visual-production limitation** — DP brief guidance now requires consistent equation/unknown counts; pixel text inside generated PNGs is not fully controllable by HTML-side contracts. Re-export / regenerate figure when observed. |
 
 ## Explicitly out of sprint
 

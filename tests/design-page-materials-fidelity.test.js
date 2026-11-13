@@ -269,6 +269,10 @@ test("38S Phase 2C-a: Design Page pack excludes legacy materials compose languag
   assert.match(factory.promptTemplate, /page_synthesis\.knowledge_summary — mandatory/i);
   assert.match(factory.promptTemplate, /substantive conceptual briefing/i);
   assert.match(factory.promptTemplate, /do not recap completed activity answers/i);
+  assert.match(
+    factory.promptTemplate,
+    /do not deliver the complete conceptual destination or formal derivation upfront/i
+  );
   assert.match(factory.promptTemplate, /brief examples on different evidence are allowed/i);
   assert.match(factory.promptTemplate, /activities\[\]\.materials\[\] bodies are already hydrated/i);
   assert.doesNotMatch(factory.promptTemplate, /FORBIDDEN inflation-collapse substitutes/i);
@@ -296,6 +300,10 @@ test("Design Page learner page_profile targets page_synthesis wrapper prose", ()
   assert.match(learner.promptInstruction, /page_synthesis wrapper prose only/i);
   assert.match(learner.promptInstruction, /LD-THIN-ASSEMBLY-COHERENCE-CONTRACT/i);
   assert.match(learner.promptInstruction, /knowledge_summary is mandatory substantive conceptual briefing/i);
+  assert.match(
+    learner.promptInstruction,
+    /do not deliver the complete destination explanation upfront/i
+  );
   assert.match(learner.promptInstruction, /do not recap completed activity answers/i);
   assert.match(learner.promptInstruction, /Do not emit activities\[\] or materials\[\]/i);
 });

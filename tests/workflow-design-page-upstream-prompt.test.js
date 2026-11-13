@@ -109,6 +109,8 @@ test("LD-DESIGN-PAGE-PARTIAL-CONTRACT: Interactive knowledge_summary is a concep
   assert.match(text, /opening conceptual briefing/i);
   assert.match(text, /not a recap of completed activity answers/i);
   assert.match(text, /Conceptual synthesis is required/i);
+  assert.match(text, /Conditional attempt-before-complete-explanation/i);
+  assert.match(text, /not a universal ban on direct instruction/i);
   assert.match(text, /Do not reveal completed results, model answers, or interpretations/i);
   assert.match(text, /activity-specific calculated statistics/i);
   assert.match(text, /signed differences/i);

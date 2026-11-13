@@ -84,6 +84,8 @@ test("EQ8: XD prompt notes final section owns form-appropriate consolidation", (
   assert.match(xd, /Final section consolidation \(EQ8\)/i);
   assert.match(xd, /final substantive section owns/i);
   assert.match(xd, /legitimate plurality/i);
+  assert.match(xd, /Recurrence should serve a new explanatory purpose/i);
+  assert.match(xd, /one purposeful synthesis and a clear endpoint/i);
 });
 
 test("EQ7/EQ8: normal assembled Expository page has no prospectus furniture or page-level close", () => {

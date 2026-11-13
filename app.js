@@ -14216,6 +14216,7 @@
       "Output contract: return a partial page artefact only (not a full-page replay).",
       'Required envelope: artifact_type "page", schema_version "2.0.0", assembly_state.current_stage "learning_sequence", and assembly_state.enriched_by including "learning_sequence".',
       "Required payload: learning_sequence object (ordered_activity_ids/timeline and sequence-owned navigation fields as needed).",
+      "When activities rely on prediction, investigation, construction or revision, order learner_study_flow so an independent attempt precedes complete formal explanation/feedback, then revision where intended. Preserve direct-instruction flows when that is the upstream pedagogy.",
       "Use Copilot conversation context for upstream instructional content; PRISM does not embed stored prior step outputs in this mode.",
       "Forbidden: activities[], materials[], shell fields (title/audience/page_profile/learning_outcomes/episode_plans), page_synthesis, and full-page replay.",
       "Do not reconstruct or preserve non-owned stage fields."
@@ -38233,6 +38234,9 @@
         );
         lines.push(
           "Learning Sequence v2 constraints: modify only learning_sequence and assembly_state. Do not rewrite, merge, omit, compact, summarise, or reorder activities. Preserve activities.length and activity_id order exactly."
+        );
+        lines.push(
+          "Instructional sequencing: when activities rely on prediction, investigation, construction or revision, order learner_study_flow so an independent attempt precedes complete formal explanation/feedback, then revision where intended. Do not flatten prediction-led designs into explanation-first study flow. Preserve direct-instruction sequences when that is the upstream pedagogy."
         );
         var gamPageEmbedForLs = buildUpstreamGamPageEmbedSectionForLearningSequenceCopy(wfForChain);
         if (gamPageEmbedForLs) {

@@ -140,6 +140,28 @@ test("namespaceResourceIds rewrites ids and matching references", () => {
   assert.equal(unifiedShell.namespaceResourceIds(out, "c1"), out);
 });
 
+test("namespaceResourceIds rewrites bare nav refs to already-namespaced targets", () => {
+  const prefix = unifiedShell.resourceIdNamespacePrefix("c1");
+  const html = [
+    '<section id="' + prefix + 'journey-orient">Orient</section>',
+    '<section id="' + prefix + 'exposition-S1">Section</section>',
+    '<button aria-controls="util-journey-all-panel">All</button>',
+    '<div id="util-journey-all-panel" class="util-journey-all-panel">',
+    '<a class="util-journey-all-link" href="#journey-orient">Orient</a>',
+    '<a class="util-journey-all-link" href="#exposition-S1">Section</a>',
+    "</div>"
+  ].join("");
+
+  const out = unifiedShell.namespaceResourceIds(html, "c1");
+  assert.match(out, new RegExp('id="' + prefix + 'util-journey-all-panel"'));
+  assert.match(out, new RegExp('aria-controls="' + prefix + 'util-journey-all-panel"'));
+  assert.match(out, new RegExp('href="#' + prefix + 'journey-orient"'));
+  assert.match(out, new RegExp('href="#' + prefix + 'exposition-S1"'));
+  assert.equal(out.includes('id="util-journey-all-panel"'), false);
+  assert.equal(out.includes('href="#journey-orient"'), false);
+  assert.equal(out.includes('href="#exposition-S1"'), false);
+});
+
 test("prepareUnifiedShellResources namespaces overlapping resource ids", () => {
   const prepared = unifiedShell.prepareUnifiedShellResources(
     [

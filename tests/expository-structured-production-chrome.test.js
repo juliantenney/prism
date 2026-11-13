@@ -90,8 +90,14 @@ test("production chrome keys are classified without suppressing educational labe
   assert.equal(structured.isRepresentationOmissionKey("format"), true);
   assert.equal(structured.isUnlabeledStructureKey("representations"), true);
   assert.equal(structured.isUnlabeledProseKey("interpretive_statement"), true);
+  assert.equal(structured.isUnlabeledProseKey("introduction"), true);
+  assert.equal(structured.isUnlabeledProseKey("closing"), true);
+  assert.equal(structured.isUnlabeledProseKey("conceptual_distinction"), true);
+  assert.equal(structured.isUnlabeledProseKey("relationship"), true);
+  assert.equal(structured.isPromotedHeadingKey("heading"), true);
   assert.equal(structured.isRepresentationOmissionKey("constraint_function"), false);
   assert.equal(structured.isUnlabeledProseKey("constraint_function"), false);
+  assert.equal(structured.isUnlabeledProseKey("theory_of_truth"), false);
   assert.equal(structured.humanizeKey("constraint_function"), "Constraint function");
 });
 
@@ -193,8 +199,21 @@ test("XD EQ8 consolidation guidance discourages restating completed materials", 
 
 test("XM and DP guidance cover structured chrome and equation\/unknown counts", () => {
   const xm = sibling.resolveTemplate("expository_materials");
+  const xd = sibling.resolveTemplate("expository_development");
   const dp = sibling.resolveTemplate("design_page");
   assert.match(xm, /Do not use production descriptors such as format, representations, or interpretive_statement/i);
+  assert.match(
+    xm,
+    /Structured supporting fields around a table[\s\S]*significance, limits or implications/i
+  );
+  assert.match(
+    xm,
+    /introduction, closing, conceptual_distinction, heading or relationship/i
+  );
+  assert.match(
+    xd,
+    /Structured supporting fields around a table[\s\S]*significance, limits or implications/i
+  );
   assert.match(dp, /three equations in the three unknowns/i);
   assert.match(dp, /Do not treat λ as outside the unknown count/i);
 });

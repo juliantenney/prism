@@ -1398,24 +1398,70 @@ textarea:focus {
   max-width: 100%;
 }
 
-.workflow-sort-clear-row {
+.workflow-filter-input-wrap {
+  position: relative;
+  display: block;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.workflow-filter-input-wrap input[type="search"],
+.workflow-filter-input-wrap input[type="text"] {
+  padding-right: 2rem;
+}
+
+/* Prefer the accessible clear control over the native search cancel affordance. */
+.workflow-filter-input-wrap input[type="search"]::-webkit-search-cancel-button,
+.workflow-filter-input-wrap input[type="search"]::-webkit-search-decoration {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.workflow-filter-clear-btn {
+  position: absolute;
+  top: 50%;
+  right: 0.28rem;
+  transform: translateY(-50%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  margin: 0;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 1.05rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.workflow-filter-clear-btn:hover {
+  color: var(--text);
+  background: rgba(15, 23, 42, 0.06);
+}
+
+.workflow-filter-clear-btn:focus-visible {
+  outline: 2px solid var(--accent, #2563eb);
+  outline-offset: 1px;
+}
+
+.workflow-filter-clear-btn[hidden] {
+  display: none !important;
+}
+
+.workflow-sort-row {
   align-items: flex-end;
   gap: 10px;
   margin-bottom: 0;
 }
 
-.workflow-sort-clear-row .form-group.small {
-  flex: 1 1 45%;
-  max-width: calc(50% - 5px);
-}
-
-.workflow-clear-filters-row {
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  flex: 0 0 auto;
-  margin-top: 0;
-  min-height: 2.1rem;
+.workflow-sort-row .form-group.small {
+  flex: 1 1 100%;
+  max-width: 100%;
 }
 
 .workflow-hidden-selection-hint {
@@ -2480,7 +2526,7 @@ textarea:focus {
     flex: 1 1 auto;
   }
 
-  .workflow-sort-clear-row .form-group.small {
+  .workflow-sort-row .form-group.small {
     flex: 1 1 100%;
     max-width: 100%;
   }

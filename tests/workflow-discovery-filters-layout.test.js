@@ -1,5 +1,5 @@
 /**
- * My Workflows discovery filters — responsive column containment.
+ * My Workflows discovery filters — responsive column containment + contextual clears.
  * Search/Tag filter must shrink within the list column and wrap when narrow.
  */
 "use strict";
@@ -29,20 +29,44 @@ test("My Workflows Search and Tag filter sit in the list-stack discovery row", (
   assert.match(markup, /for="workflowTagFilter">Tag filter</);
 });
 
-test("Sort by and Clear filters share one half-width row under Search/Tag", () => {
+test("Search and Tag filter use contextual clear controls; Sort by stays alone", () => {
   const markup = discoveryFiltersMarkup();
-  assert.match(markup, /class="form-row compact workflow-sort-clear-row"/);
-  const sortRowStart = markup.indexOf("workflow-sort-clear-row");
-  const sortRow = markup.slice(sortRowStart, markup.indexOf("</div>", markup.indexOf("workflowClearFiltersBtn", sortRowStart)) + 6);
+  assert.match(markup, /class="workflow-filter-input-wrap"/);
+  assert.match(
+    markup,
+    /id="workflowListSearchClear"[^>]*class="workflow-filter-clear-btn"[^>]*aria-label="Clear search"[^>]*hidden/s
+  );
+  assert.match(
+    markup,
+    /id="workflowTagFilterClear"[^>]*class="workflow-filter-clear-btn"[^>]*aria-label="Clear tag filter"[^>]*hidden/s
+  );
+  assert.match(markup, /type="button"[\s\S]*id="workflowListSearchClear"|id="workflowListSearchClear"[\s\S]*type="button"/);
+  assert.doesNotMatch(markup, /id="workflowClearFiltersBtn"/);
+  assert.doesNotMatch(markup, /Clear filters/);
+  assert.match(markup, /class="form-row compact workflow-sort-row"/);
+  const sortRowStart = markup.indexOf("workflow-sort-row");
+  const sortRow = markup.slice(sortRowStart, markup.indexOf("</div>", markup.indexOf("workflowSortSelect", sortRowStart)) + 6);
   assert.match(sortRow, /id="workflowSortSelect"/);
-  assert.match(sortRow, /id="workflowClearFiltersBtn"/);
+  assert.doesNotMatch(sortRow, /workflow-filter-clear-btn|Clear filters/);
   assert.match(
     styleCss,
-    /\.workflow-sort-clear-row\s+\.form-group\.small\s*\{[^}]*max-width:\s*calc\(50%\s*-\s*5px\)/s
+    /\.workflow-sort-row\s+\.form-group\.small\s*\{[^}]*max-width:\s*100%/s
   );
   assert.match(
     styleCss,
     /\.workflow-list-stack\s+\.library-filters\s*\{[^}]*margin-bottom:\s*0/s
+  );
+  assert.match(
+    styleCss,
+    /\.workflow-filter-input-wrap\s+input\[type="(?:search|text)"\][^}]*padding-right:\s*2rem/s
+  );
+  assert.match(
+    styleCss,
+    /\.workflow-filter-clear-btn:focus-visible\s*\{[^}]*outline:\s*2px\s+solid/s
+  );
+  assert.match(
+    styleCss,
+    /\.workflow-filter-clear-btn\[hidden\]\s*\{[^}]*display:\s*none\s*!important/s
   );
 });
 
@@ -81,4 +105,5 @@ test("narrow viewports stack discovery filter controls", () => {
   assert.match(narrow, /\.workflow-discovery-filters\s+\.form-row/);
   assert.match(narrow, /flex-direction:\s*column/);
   assert.match(narrow, /\.workflow-discovery-filters\s+\.form-group\.small/);
+  assert.match(narrow, /\.workflow-sort-row\s+\.form-group\.small/);
 });

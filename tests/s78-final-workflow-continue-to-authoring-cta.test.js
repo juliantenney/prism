@@ -89,7 +89,7 @@ test("R1: non-final step retains Previous/Next behaviour", () => {
   assert.match(buttons, /id="workflowPrevStepBtn"/);
   assert.match(buttons, /id="workflowNextStepBtn"/);
   assert.match(view, /els\.workflowPrevStepBtn\.disabled\s*=\s*idx\s*===\s*0/);
-  assert.match(view, /setWorkflowRunNextButtonHidden\(isFinalStep\)/);
+  assert.match(view, /setWorkflowRunNextButtonHidden\(false\)/);
   assert.match(view, /resolveWorkflowRunNextStepDisabledReason\(/);
   assert.equal(api.isWorkflowRunAtFinalStep(0, 8), false);
   assert.equal(api.resolveWorkflowRunNextStepDisabledReason({}, "s1", {}, null, 0, 8), "");
@@ -99,12 +99,21 @@ test("R1: non-final step retains Previous/Next behaviour", () => {
   );
 });
 
-test("R2: final step does not show normal Next", () => {
-  const { source } = loadPrismTestApi();
+test("R2: final step keeps Next visible and safely non-advancing", () => {
+  const { api, source } = loadPrismTestApi();
   const view = updateRunViewBody(source);
-  assert.match(view, /setWorkflowRunNextButtonHidden\(isFinalStep\)/);
-  assert.match(view, /if \(isFinalStep\) \{\s*els\.workflowNextStepBtn\.disabled = true;/);
+  assert.match(view, /setWorkflowRunNextButtonHidden\(false\)/);
+  assert.doesNotMatch(view, /setWorkflowRunNextButtonHidden\(isFinalStep\)/);
   assert.match(css(), /\.hidden\s*\{\s*display:\s*none;/);
+  assert.equal(
+    api.resolveWorkflowRunNextStepDisabledReason({}, "last", {}, null, 1, 2),
+    "This is the final step."
+  );
+  assert.equal(
+    api.resolveWorkflowRunNextStepDisabledReason({}, "only", {}, null, 0, 1),
+    "This is the final step."
+  );
+  assert.match(source, /isWorkflowRunAtFinalStep\(idx,\s*liSteps\.length\)/);
 });
 
 test("R3: final step shows Continue to Authoring below result/status area", () => {
@@ -221,7 +230,8 @@ test("R10: DLA/GAM intermediate workflow completion is unaffected", () => {
   assert.equal(api.isWorkflowRunStepCaptureReadyForAdvance(dla, "dla_step", {}, null), true);
   assert.equal(api.resolveWorkflowRunNextStepDisabledReason(dla, "dla_step", {}, null, 4, 8), "");
   assert.equal(api.resolveWorkflowRunNextStepDisabledReason(dla, "dla_step", {}, null, 7, 8), "This is the final step.");
-  assert.match(view, /if \(isFinalStep\) \{/);
+  assert.match(view, /continueToAuthoringVisible\s*=\s*isFinalStep\s*&&/);
+  assert.match(view, /setWorkflowRunNextButtonHidden\(false\)/);
   assert.doesNotMatch(view, /isWorkflowRunAuthoringReady\(state\.selectedWorkflowId/);
   assert.match(source, /function isWorkflowRunAuthoringReady\s*\(/);
 });

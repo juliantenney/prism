@@ -106,7 +106,7 @@ test("LD-DESIGN-PAGE-PARTIAL-CONTRACT: Interactive knowledge_summary is a concep
   const text = partial.buildDesignPagePartialContractBlock();
   const shape = partial.buildCanonicalDesignPagePartialShapeSnippet();
   assert.match(text, /page_synthesis\.knowledge_summary is mandatory/i);
-  assert.match(text, /opening conceptual briefing/i);
+  assert.match(text, /Interactive opening orientation|opening conceptual briefing/i);
   assert.match(text, /not a recap of completed activity answers/i);
   assert.match(text, /Conceptual synthesis is required/i);
   assert.match(text, /Conditional attempt-before-complete-explanation/i);

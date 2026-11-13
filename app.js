@@ -515,9 +515,10 @@
     // Workflows
     els.workflowList = document.getElementById("workflowList");
     els.workflowListSearch = document.getElementById("workflowListSearch");
+    els.workflowListSearchClear = document.getElementById("workflowListSearchClear");
     els.workflowTagFilter = document.getElementById("workflowTagFilter");
+    els.workflowTagFilterClear = document.getElementById("workflowTagFilterClear");
     els.workflowSortSelect = document.getElementById("workflowSortSelect");
-    els.workflowClearFiltersBtn = document.getElementById("workflowClearFiltersBtn");
     els.workflowHiddenSelectionHint = document.getElementById("workflowHiddenSelectionHint");
     els.workflowHiddenSelectionHintText = document.getElementById("workflowHiddenSelectionHintText");
     els.workflowDetail = document.getElementById("workflowDetail");
@@ -5598,6 +5599,11 @@
         initial.commissionPublishedTitleDirectory ||
         ""
     ).trim();
+    var requiredLearnerArtefacts = Array.isArray(seed.required_learner_artefacts)
+      ? seed.required_learner_artefacts.slice()
+      : Array.isArray(initial.requiredLearnerArtefacts)
+        ? initial.requiredLearnerArtefacts.slice()
+        : [];
     return {
       seed: seed,
       initial: initial,
@@ -5605,11 +5611,13 @@
       journeyContext: journeyContext,
       commissionDependencies: commissionDependencies,
       publishedTitleDirectory: publishedTitleDirectory,
+      requiredLearnerArtefacts: requiredLearnerArtefacts,
       hasCommissionContext: !!(
         commissionSpec ||
         journeyContext ||
         commissionDependencies ||
-        publishedTitleDirectory
+        publishedTitleDirectory ||
+        requiredLearnerArtefacts.length
       )
     };
   }
@@ -5910,6 +5918,60 @@
 
   function commissionedContextHonourAlreadyPresent(body) {
     return /^AUTHORITATIVE COMMISSION CONTEXT$/m.test(String(body || ""));
+  }
+
+  /**
+   * When a Learning Journey Journal (or equivalent) requires this Interactive
+   * commission to produce constructed-text artefacts, instruct DLA to bind
+   * response_fulfilment.artefact_elicitation_id exactly. Empty when not required.
+   */
+  function composeCommissionedLearnerArtefactProducerInstruction(wf) {
+    var ctx = readWorkflowCommissionContext(wf);
+    var rows = Array.isArray(ctx.requiredLearnerArtefacts)
+      ? ctx.requiredLearnerArtefacts
+      : [];
+    if (!rows.length) return "";
+    var product = String(
+      (wf && wf.product) ||
+        (ctx.seed && ctx.seed.commission_product_id) ||
+        (ctx.initial && ctx.initial.product) ||
+        ""
+    )
+      .trim()
+      .toLowerCase();
+    var isInteractive =
+      firstClassPromptRoute(wf) === "interactive" || product === "interactive";
+    if (!isInteractive) return "";
+    var lines = [
+      "SHARED LEARNER ARTEFACT PRODUCER REQUIREMENT (authoritative)",
+      "",
+      "This Learning Journey commission requires constructed-text learner artefact(s) for later reuse (Learning Journal and/or cross-resource handoff).",
+      "For EACH required elicitation_id below, author a genuine learner-authored text production surface and bind it:",
+      '- Use response_fulfilment.kind \"learner_text_production\" (or \"learner_workspace\") with response_kind \"text_compose\".',
+      "- Set response_fulfilment.artefact_elicitation_id to the elicitation_id EXACTLY as listed (preserve spelling and case).",
+      "- The surface must collect authentic learner wording; do not summarise, invent, or auto-improve the contribution.",
+      "- Do not invent additional artefact ids. Do not mark unrelated interactions as artefacts.",
+      "",
+      "Required producers:"
+    ];
+    var i;
+    for (i = 0; i < rows.length; i += 1) {
+      var row = rows[i];
+      if (!row || typeof row !== "object") continue;
+      var elicitationId = String(row.elicitationId || row.elicitation_id || "").trim();
+      if (!elicitationId) continue;
+      var artefactId = String(row.artefactId || row.artefact_id || "").trim();
+      var title = String(row.title || "").trim();
+      lines.push(
+        '- elicitation_id "' +
+          elicitationId +
+          '"' +
+          (artefactId ? " (artefact " + artefactId + ")" : "") +
+          (title ? " — " + title : "")
+      );
+    }
+    if (lines[lines.length - 1] === "Required producers:") return "";
+    return lines.join("\n");
   }
 
   function composeCommissionedLearnerFacingBringForwardInstruction(wf) {
@@ -13434,6 +13496,15 @@
       context,
       wf
     );
+    if (
+      isCommissionLearnerFacingCopyStep(resolveDlaCanonicalSlotCopyStep(context), wf)
+    ) {
+      var artefactProducerInstruction =
+        composeCommissionedLearnerArtefactProducerInstruction(wf);
+      if (artefactProducerInstruction) {
+        commissioningParts.push(artefactProducerInstruction);
+      }
+    }
     var overlayOn = shouldApplyLearnerPagePedagogicFramingScaffold(context, resolved, base);
     var contractMod = resolveLdDlaPageEnrichContractLib();
     // S80-S6 §4/§7: the workbook overlay used to assert a hardcoded ~60-minute
@@ -17813,6 +17884,7 @@
     if (!root) return;
     var MARKER = "EDUCATIONAL-QUALITY-FRAMEWORK (auto-applied)";
     var TARGET = {
+      step_define_learning_outcomes: true,
       step_construct_learning_sequence: true,
       step_design_learning_activities: true,
       step_generate_activity_materials: true,
@@ -25793,7 +25865,12 @@
         publishedTitleDirectory: String(envelope.publishedTitleDirectory || "").trim(),
         commissionPublishedTitles: Array.isArray(envelope.commissionPublishedTitles)
           ? envelope.commissionPublishedTitles.slice()
-          : []
+          : [],
+        requiredLearnerArtefacts: Array.isArray(envelope.requiredLearnerArtefacts)
+          ? envelope.requiredLearnerArtefacts.slice()
+          : Array.isArray(seed.requiredLearnerArtefacts)
+            ? seed.requiredLearnerArtefacts.slice()
+            : []
       },
       askedFactors: [],
       inferredFactors: {},
@@ -30338,25 +30415,23 @@
         : resolveGamGenerationCopyLabelForStep(currentStepId);
     }
     if (els.workflowNextStepBtn) {
-      setWorkflowRunNextButtonHidden(isFinalStep);
-      if (isFinalStep) {
-        els.workflowNextStepBtn.disabled = true;
-        els.workflowNextStepBtn.removeAttribute("title");
+      // Keep Next visible on every stage, including the final one. On the final
+      // stage it stays disabled via resolveWorkflowRunNextStepDisabledReason
+      // ("This is the final step.") so clicking cannot advance past the workflow.
+      setWorkflowRunNextButtonHidden(false);
+      var nextDisabledReason = resolveWorkflowRunNextStepDisabledReason(
+        stepRowRun,
+        stepIdRun,
+        wfRun,
+        currentStepLi,
+        idx,
+        total
+      );
+      els.workflowNextStepBtn.disabled = !!nextDisabledReason;
+      if (nextDisabledReason) {
+        els.workflowNextStepBtn.setAttribute("title", nextDisabledReason);
       } else {
-        var nextDisabledReason = resolveWorkflowRunNextStepDisabledReason(
-          stepRowRun,
-          stepIdRun,
-          wfRun,
-          currentStepLi,
-          idx,
-          total
-        );
-        els.workflowNextStepBtn.disabled = !!nextDisabledReason;
-        if (nextDisabledReason) {
-          els.workflowNextStepBtn.setAttribute("title", nextDisabledReason);
-        } else {
-          els.workflowNextStepBtn.removeAttribute("title");
-        }
+        els.workflowNextStepBtn.removeAttribute("title");
       }
     }
     var continueToAuthoringVisible =
@@ -32565,11 +32640,28 @@
     };
   }
 
-  function clearWorkflowDiscoveryFilters() {
-    if (els.workflowListSearch) els.workflowListSearch.value = "";
-    if (els.workflowTagFilter) els.workflowTagFilter.value = "";
-    if (els.workflowSortSelect) els.workflowSortSelect.value = "updatedDesc";
+  function syncWorkflowFilterClearButton(inputEl, clearBtn) {
+    if (!clearBtn) return;
+    var hasText = !!(inputEl && String(inputEl.value || ""));
+    if (hasText) clearBtn.removeAttribute("hidden");
+    else clearBtn.setAttribute("hidden", "hidden");
+  }
+
+  function syncWorkflowDiscoveryClearButtons() {
+    syncWorkflowFilterClearButton(els.workflowListSearch, els.workflowListSearchClear);
+    syncWorkflowFilterClearButton(els.workflowTagFilter, els.workflowTagFilterClear);
+  }
+
+  function clearWorkflowDiscoveryFilterField(inputEl, clearBtn) {
+    if (!inputEl) return;
+    inputEl.value = "";
+    syncWorkflowFilterClearButton(inputEl, clearBtn);
     renderWorkflowList();
+    if (typeof inputEl.focus === "function") {
+      try {
+        inputEl.focus();
+      } catch (_e) {}
+    }
   }
 
   function updateWorkflowDiscoveryHelperState(all, visible) {
@@ -32590,7 +32682,7 @@
       hintText.textContent =
         'Editing "' +
         (selWf.name || "Untitled workflow") +
-        '" — it is hidden by the current filters. Use Clear filters to show it in the list.';
+        '" — it is hidden by the current filters. Clear Search or Tag filter to show it in the list.';
     } else {
       hint.classList.add("hidden");
       hintText.textContent = "";
@@ -61325,19 +61417,31 @@
             renderWorkflowList();
           };
     if (els.workflowListSearch) {
-      els.workflowListSearch.addEventListener("input", debouncedWorkflowListFilter);
+      els.workflowListSearch.addEventListener("input", function () {
+        syncWorkflowFilterClearButton(els.workflowListSearch, els.workflowListSearchClear);
+        debouncedWorkflowListFilter();
+      });
     }
     if (els.workflowTagFilter) {
-      els.workflowTagFilter.addEventListener("input", debouncedWorkflowListFilter);
+      els.workflowTagFilter.addEventListener("input", function () {
+        syncWorkflowFilterClearButton(els.workflowTagFilter, els.workflowTagFilterClear);
+        debouncedWorkflowListFilter();
+      });
+    }
+    if (els.workflowListSearchClear) {
+      els.workflowListSearchClear.addEventListener("click", function () {
+        clearWorkflowDiscoveryFilterField(els.workflowListSearch, els.workflowListSearchClear);
+      });
+    }
+    if (els.workflowTagFilterClear) {
+      els.workflowTagFilterClear.addEventListener("click", function () {
+        clearWorkflowDiscoveryFilterField(els.workflowTagFilter, els.workflowTagFilterClear);
+      });
     }
     if (els.workflowSortSelect) {
       els.workflowSortSelect.addEventListener("change", renderWorkflowList);
     }
-    if (els.workflowClearFiltersBtn) {
-      els.workflowClearFiltersBtn.addEventListener("click", function () {
-        clearWorkflowDiscoveryFilters();
-      });
-    }
+    syncWorkflowDiscoveryClearButtons();
     if (els.newWorkflowBtn) {
       els.newWorkflowBtn.addEventListener("click", handleNewWorkflow);
     }
@@ -61642,6 +61746,13 @@
           if (String(state.selectedWorkflowId || "").trim()) {
             persistWorkflowRunStateForWorkflow(state.selectedWorkflowId);
           }
+        }
+        // Final stage: keep the learner on this step (Next remains visible but
+        // does not advance beyond the workflow). Completion uses Continue to
+        // Authoring when that destination applies.
+        if (isWorkflowRunAtFinalStep(idx, liSteps.length)) {
+          updateWorkflowRunView();
+          return;
         }
         state.currentWorkflowRunIndex += 1;
         if (String(state.selectedWorkflowId || "").trim()) {
@@ -62287,6 +62398,9 @@
     };
     prismTestApi.buildWorkflowSearchHaystack = buildWorkflowSearchHaystack;
     prismTestApi.applyWorkflowListFilters = applyWorkflowListFilters;
+    prismTestApi.getActiveWorkflowListFiltersForTest = getActiveWorkflowListFilters;
+    prismTestApi.syncWorkflowFilterClearButtonForTest = syncWorkflowFilterClearButton;
+    prismTestApi.clearWorkflowDiscoveryFilterFieldForTest = clearWorkflowDiscoveryFilterField;
     prismTestApi.resolveWorkflowSelectionForCurrentViewForTest =
       resolveWorkflowSelectionForCurrentView;
     prismTestApi.renderWorkflowListForTest = renderWorkflowList;
@@ -63030,6 +63144,8 @@
       composeCommissionedContextHonourInstruction;
     prismTestApi.composeCommissionedLearnerFacingBringForwardInstruction =
       composeCommissionedLearnerFacingBringForwardInstruction;
+    prismTestApi.composeCommissionedLearnerArtefactProducerInstruction =
+      composeCommissionedLearnerArtefactProducerInstruction;
     prismTestApi.composeLearnerFacingCrossResourceReferenceConstraint =
       composeLearnerFacingCrossResourceReferenceConstraint;
     prismTestApi.isCommissionLearnerFacingCopyStep = isCommissionLearnerFacingCopyStep;

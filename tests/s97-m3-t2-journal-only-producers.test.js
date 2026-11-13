@@ -53,14 +53,18 @@ function assessmentPage(elicitationId, title) {
   };
 }
 
-function interactivePage(title) {
-  return {
-    artifact_type: "page",
-    schema_version: "2.0.0",
-    product_id: "interactive",
-    title: title || "Interactive",
-    activities: []
-  };
+function interactivePage(title, extras) {
+  const src = extras && typeof extras === "object" ? extras : {};
+  return Object.assign(
+    {
+      artifact_type: "page",
+      schema_version: "2.0.0",
+      product_id: "interactive",
+      title: title || "Interactive",
+      activities: []
+    },
+    src
+  );
 }
 
 function journeyPage(overrides) {
@@ -249,6 +253,122 @@ test("invalid journal reference does not invent a producer declaration", () => {
     }),
     JSON.stringify(missingCommission.gaps)
   );
+});
+
+test("undeclared Interactive journal producer is surfaced without inventing a produce declaration", () => {
+  const proposal = proposeArtefactContractFromLearningJourney({
+    page: journeyPage({
+      journal: {
+        enabled: true,
+        title: "My Learning Journal",
+        entries: [
+          {
+            entry_id: "j1",
+            order: 1,
+            title: "Initial interactive judgement",
+            framing: "Revisit your first written judgement.",
+            artefact_id: "c1.E1"
+          },
+          {
+            entry_id: "j2",
+            order: 2,
+            title: "Assessment judgement",
+            framing: "Revisit the Assessment Pack judgement.",
+            artefact_id: "c5.E1"
+          }
+        ]
+      }
+    }),
+    constituents: [
+      {
+        commissionId: "c1",
+        productId: "interactive",
+        title: "Initial judgement",
+        sourcePage: interactivePage("Initial judgement")
+      },
+      {
+        commissionId: "c5",
+        productId: "assessment_pack",
+        title: "Independent Judgement",
+        sourcePage: assessmentPage("E1", "Independent Judgement")
+      }
+    ]
+  });
+
+  assert.ok(
+    proposal.gaps.some(function (gap) {
+      return (
+        gap.code === "journal_producer_elicitation_missing" &&
+        gap.artefactId === "c1.E1" &&
+        /learner_artefacts\.produces/i.test(gap.message)
+      );
+    }),
+    JSON.stringify(proposal.gaps)
+  );
+  assert.equal(proposal.ok, true, JSON.stringify(proposal.gaps));
+  assert.equal(proposal.journalDeclaredProduceCount, 1);
+  assert.equal(proposal.contract.produces.length, 1);
+  assert.equal(proposal.contract.produces[0].artefactId, "c5.E1");
+});
+
+test("declared Interactive journal producer hydrates through the shared constructed-text contract", () => {
+  const proposal = proposeArtefactContractFromLearningJourney({
+    page: journeyPage({
+      journal: {
+        enabled: true,
+        title: "My Learning Journal",
+        entries: [
+          {
+            entry_id: "j1",
+            order: 1,
+            title: "Initial interactive judgement",
+            framing: "Revisit your first written judgement.",
+            artefact_id: "c1.E1"
+          },
+          {
+            entry_id: "j2",
+            order: 2,
+            title: "Assessment judgement",
+            framing: "Revisit the Assessment Pack judgement.",
+            artefact_id: "c5.E1"
+          }
+        ]
+      }
+    }),
+    constituents: [
+      {
+        commissionId: "c1",
+        productId: "interactive",
+        title: "Initial judgement",
+        sourcePage: interactivePage("Initial judgement", {
+          learner_artefacts: {
+            produces: [
+              {
+                elicitation_id: "E1",
+                response_kind: "constructed_text",
+                label: "Initial judgement",
+                prompt: "Write your initial judgement."
+              }
+            ]
+          }
+        })
+      },
+      {
+        commissionId: "c5",
+        productId: "assessment_pack",
+        title: "Independent Judgement",
+        sourcePage: assessmentPage("E1", "Independent Judgement")
+      }
+    ]
+  });
+
+  assert.equal(proposal.ok, true, JSON.stringify(proposal.gaps));
+  assert.equal(proposal.journalDeclaredProduceCount, 2);
+  assert.equal(proposal.contract.produces.length, 2);
+  assert.equal(proposal.contract.produces[0].artefactId, "c1.E1");
+  assert.equal(proposal.contract.produces[0].workspaceId, "learner-constructed-E1");
+  assert.equal(proposal.contract.produces[1].artefactId, "c5.E1");
+  assert.equal(proposal.contract.produces[1].workspaceId, "assessment-constructed-E1");
 });
 
 test("journey without journal (or disabled journal) acquires no journal-only produces", () => {

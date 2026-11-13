@@ -22,7 +22,7 @@ const {
 test("Design Page knowledge_summary protects prediction-led destination explanations", () => {
   const text = designPagePartial.buildDesignPagePartialContractBlock();
   const shape = designPagePartial.buildCanonicalDesignPagePartialShapeSnippet();
-  assert.match(text, /opening conceptual briefing/i);
+  assert.match(text, /Interactive opening orientation/i);
   assert.match(text, /Conditional attempt-before-complete-explanation/i);
   assert.match(
     text,
@@ -156,6 +156,7 @@ test("Design Page domain prompt template carries the same knowledge_summary boun
   assert.match(md, /do not deliver the complete conceptual destination or formal derivation upfront/i);
   assert.match(
     md,
-    /when activities rely on prediction or construction, do not deliver the complete destination explanation upfront/i
+    /when activities rely on prediction, investigation or construction, do not deliver the complete destination explanation upfront/i
   );
+  assert.match(md, /keep restated outcomes as capabilities not completed answers/i);
 });

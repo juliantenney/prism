@@ -1128,24 +1128,46 @@
                 <div class="form-row compact">
                   <div class="form-group small">
                     <label for="workflowListSearch">Search</label>
-                    <input
-                      type="search"
-                      id="workflowListSearch"
-                      placeholder="Name, goal, steps, tags, notes…"
-                      autocomplete="off"
-                    />
+                    <div class="workflow-filter-input-wrap">
+                      <input
+                        type="search"
+                        id="workflowListSearch"
+                        placeholder="Name, goal, steps, tags, notes…"
+                        autocomplete="off"
+                      />
+                      <button
+                        type="button"
+                        id="workflowListSearchClear"
+                        class="workflow-filter-clear-btn"
+                        aria-label="Clear search"
+                        hidden
+                      >
+                        <span aria-hidden="true">×</span>
+                      </button>
+                    </div>
                   </div>
                   <div class="form-group small">
                     <label for="workflowTagFilter">Tag filter</label>
-                    <input
-                      type="text"
-                      id="workflowTagFilter"
-                      placeholder="tag1, tag2 (all must match)"
-                      autocomplete="off"
-                    />
+                    <div class="workflow-filter-input-wrap">
+                      <input
+                        type="text"
+                        id="workflowTagFilter"
+                        placeholder="tag1, tag2 (all must match)"
+                        autocomplete="off"
+                      />
+                      <button
+                        type="button"
+                        id="workflowTagFilterClear"
+                        class="workflow-filter-clear-btn"
+                        aria-label="Clear tag filter"
+                        hidden
+                      >
+                        <span aria-hidden="true">×</span>
+                      </button>
+                    </div>
                   </div>
                 </div>
-                <div class="form-row compact workflow-sort-clear-row">
+                <div class="form-row compact workflow-sort-row">
                   <div class="form-group small">
                     <label for="workflowSortSelect">Sort by</label>
                     <select id="workflowSortSelect" autocomplete="off">
@@ -1158,16 +1180,6 @@
                       <option value="stepsDesc">Step count (high–low)</option>
                       <option value="stepsAsc">Step count (low–high)</option>
                     </select>
-                  </div>
-                  <div class="workflow-clear-filters-row">
-                    <button
-                      type="button"
-                      id="workflowClearFiltersBtn"
-                      class="btn small"
-                      aria-label="Clear workflow search and tag filter and reset sort to default"
-                    >
-                      Clear filters
-                    </button>
                   </div>
                 </div>
               </div>

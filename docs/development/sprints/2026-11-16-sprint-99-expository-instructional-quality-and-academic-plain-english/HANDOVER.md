@@ -1,34 +1,44 @@
 # Sprint 99 — Handover / continuity
 
-**From:** Sprint 99 open + M0 investigation (2026-11-16)  
-**Status:** **OPEN** — awaiting user-led Expository generation  
-**Predecessor close:** [Sprint 98 CLOSURE](../2026-11-16-sprint-98-interactive-instructional-coherence-and-academic-plain-english/SPRINT-98-CLOSURE.md)
+**From:** Sprint 99 qualified close (2026-11-16)  
+**Status:** Sprint 99 **CLOSED — ACCEPTED WITH QUALIFICATIONS**  
+**To:** Post–Sprint 99 programme — **Interactive and Expository corpus regeneration** (no sprint opened by this handover)  
+**Predecessor close:** [Sprint 98 CLOSURE](../2026-11-16-sprint-98-interactive-instructional-coherence-and-academic-plain-english/SPRINT-98-CLOSURE.md)  
+**Programme:** [NEXT-SPRINT.md](../../../sprints/NEXT-SPRINT.md)
 
-## Load first
+## Load first (next programme step)
 
-1. [SPRINT-99-START-HERE.md](SPRINT-99-START-HERE.md)  
-2. [INITIAL-INVESTIGATION.md](INITIAL-INVESTIGATION.md)  
-3. [STATUS.md](STATUS.md)  
-4. Programme: [NEXT-SPRINT.md](../../../sprints/NEXT-SPRINT.md)
+1. Programme: [NEXT-SPRINT.md](../../../sprints/NEXT-SPRINT.md)  
+2. [SPRINT-99-CLOSURE.md](SPRINT-99-CLOSURE.md) (qualifications — **unchanged**)  
+3. Governance: [D-015 Interactive LS study-flow fidelity](../../../governance/ARCHITECTURAL-DEBT.md#d-015--interactive-learning-sequence-study-flow-fidelity)  
+4. Superseded Assessment Pack stub: [sprint-100-assessment-pack-instructional-quality.md](../../../sprints/sprint-100-assessment-pack-instructional-quality.md)
 
 ## Preserve
 
-- Sprint 98 qualified conclusions (no controlled A/B; M5 unreproducible original case; no full study-flow engine; S98-D08 generation validation pending).  
-- Sprint 97 deferred items stay on Sprint 97 ledger.  
-- Expository independence from Interactive attempt-before-scaffold.  
-- Knowledge Summary before exposition.  
-- S98-D08 global discretionary-emphasis ban (guidance-level).
+- M3-1 coercion fix; M3-2 Expository Academic Plain English; S98-D08 typography.  
+- Qualified close conclusions (object-shape verification limit; effort under-representation; monitored duplication).  
+- M3-3 / M3-4 remain **deferred** (unchanged).  
+- Interactive LS fidelity is **D-015** (S98 M5 Option C; S98-AD-004; S99-AD-012) — not a reason to reopen Sprint 98. Do not renumber or duplicate D-015.  
+- Sprint 97 deferred items stay on the Sprint 97 ledger.
+
+## Programme decisions after Sprint 99 close
+
+- **Assessment Pack** four-case quality review: **accepted without substantive implementation**; Sprint 100 stub **superseded**. Optional non-blocking follow-ups: Academic Plain English alignment; manual answer-disclosure checking.  
+- **Situated Task:** **not separately evaluated** in this phase — do not claim independently validated or passed.  
+- **Next activity:** Interactive and Expository corpus regeneration, using existing inventory / evidence mechanisms (see NEXT-SPRINT). No duplicate corpus governance.
 
 ## Do not
 
-- Implement Sprint 99 code before M1 evaluation authorises M2.  
-- Modify Assessment Pack or Situated Task under this sprint.  
-- Reopen Sprint 97 or 98.  
+- Reopen Sprint 97, 98 or 99 for polish.  
+- Open Sprint 100 for Assessment Pack implementation on the superseded stub.  
+- Treat Situated Task as independently validated in this phase.  
 - Commit / push without separate authorisation.
 
 ## Programme outlook
 
-| Later | Intent |
-| ----- | ------ |
-| Sprint 100 — Assessment Pack | Review first; improve only if justified |
-| Sprint 101 — Situated Task | Review first; improve only if justified |
+| Activity | Intent |
+| -------- | ------ |
+| **Interactive + Expository corpus regeneration** | Next programme activity (not opened as a sprint here) |
+| Assessment Pack optional APE / answer-disclosure | Non-blocking follow-ups only |
+| Situated Task separate evaluation | Not done this phase |
+| D-015 / S99 M3-3 / M3-4 | Unchanged |

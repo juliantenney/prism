@@ -348,7 +348,7 @@ test("mergeRunRecordForListStatus overlays live captures and graphics evidence",
   assert.ok(merged.assetsByBriefId["brief-1"]);
 });
 
-test("live overlay empty refs win over durable so removed graphics reopen Authoring", () => {
+test("Authoring-authoritative empty refs win over durable so removed graphics reopen Authoring", () => {
   const merged = presentation.mergeRunRecordForListStatus(
     {
       capturedOutputs: { dp: designPageCapture() },
@@ -357,11 +357,30 @@ test("live overlay empty refs win over durable so removed graphics reopen Author
     {
       capturedOutputs: { dp: designPageCapture() },
       workflowResourceRefs: [],
-      assetsByBriefId: {}
+      assetsByBriefId: {},
+      attachmentsAuthoritative: true
     }
   );
   assert.deepEqual(merged.workflowResourceRefs, []);
   assert.deepEqual(merged.assetsByBriefId, {});
+});
+
+test("selection/restore empty live refs preserve durable attachments", () => {
+  const merged = presentation.mergeRunRecordForListStatus(
+    {
+      capturedOutputs: { dp: designPageCapture() },
+      workflowResourceRefs: [{ resource_id: "still-in-durable", brief_id: "brief-1" }],
+      assetsByBriefId: { "brief-1": { mime_type: "image/png" } }
+    },
+    {
+      capturedOutputs: {},
+      workflowResourceRefs: [],
+      assetsByBriefId: {},
+      attachmentsAuthoritative: false
+    }
+  );
+  assert.equal(merged.workflowResourceRefs[0].resource_id, "still-in-durable");
+  assert.ok(merged.assetsByBriefId["brief-1"]);
 });
 
 test("removing then reattaching required graphics flips Completed ↔ Authoring", () => {

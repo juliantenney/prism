@@ -263,14 +263,21 @@ function boot(options) {
   sandbox.document = documentStub;
   sandbox.window = windowStub;
   windowStub.window = windowStub;
+  sandbox.globalThis = windowStub;
   workflowResources.resetStorageBackendForTests();
   if (typeof opts.overrideDeleteResourcesForWorkflow === "function") {
     workflowResources.deleteResourcesForWorkflow = opts.overrideDeleteResourcesForWorkflow;
   }
   sandbox.PRISM_WORKFLOW_RESOURCES = workflowResources;
   windowStub.PRISM_WORKFLOW_RESOURCES = workflowResources;
+  const catalogueStore = require("../lib/prism-workflow-catalogue-store.js");
+  catalogueStore.resetStorageBackendForTests();
+  sandbox.PRISM_WORKFLOW_CATALOGUE_STORE = catalogueStore;
+  windowStub.PRISM_WORKFLOW_CATALOGUE_STORE = catalogueStore;
   vm.createContext(sandbox);
   runPrismLibScriptsInSandbox(sandbox, repoRoot, PEDAGOGICAL_ICON_LIBS);
+  sandbox.PRISM_WORKFLOW_CATALOGUE_STORE = catalogueStore;
+  windowStub.PRISM_WORKFLOW_CATALOGUE_STORE = catalogueStore;
   vm.runInContext(source, sandbox, { filename: "app.js" });
   return {
     api: sandbox.window.__PRISM_TEST_API,

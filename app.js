@@ -12389,7 +12389,11 @@
           state.workflowRunCapturedOutputsRaw = Object.assign({}, migratedCapturesRaw);
         }
         if (state.selectedWorkflowId) {
-          persistWorkflowRunStateForWorkflow(state.selectedWorkflowId, { toastType: "" });
+          persistWorkflowRunStateForWorkflow(state.selectedWorkflowId, {
+            toastType: "",
+            touchUpdatedAt: false,
+            source: "episode_plan_vocabulary_migration"
+          });
         }
       }
     }
@@ -18059,7 +18063,6 @@
       "These materials include generated information that learners must rely on to complete their tasks. Run a short verification before continuing.",
     copyPrompt: "Copy verification prompt",
     pasteLabel: "Paste verification result",
-    checkAction: "Check verification",
     pendingStatus: "Materials generated — verification required",
     passedTitle: "Verification passed",
     passedBody: "Generated materials are suitable for the commissioned learner tasks.",
@@ -18245,7 +18248,7 @@
       resultBody: "",
       failItems: [],
       copyLabel: copy.copyPrompt,
-      checkLabel: copy.checkAction,
+      checkLabel: "",
       pasteLabel: copy.pasteLabel
     };
     if (!sid) return empty;
@@ -18296,7 +18299,7 @@
       nextBlocked: true,
       showVerificationUi: true,
       showCopyPrompt: true,
-      showCheckAction: true,
+      showCheckAction: false,
       stepStatusText: stale ? copy.staleStatus : copy.pendingStatus,
       heading: copy.heading,
       intro: copy.intro,
@@ -18304,7 +18307,7 @@
       resultBody: stale ? copy.intro : "",
       failItems: [],
       copyLabel: copy.copyPrompt,
-      checkLabel: copy.checkAction,
+      checkLabel: "",
       pasteLabel: copy.pasteLabel
     };
     if (!stored || !stored.checked || stale) {
@@ -18318,7 +18321,7 @@
         nextBlocked: false,
         showVerificationUi: true,
         showCopyPrompt: true,
-        showCheckAction: true,
+        showCheckAction: false,
         stepStatusText: "Step complete",
         heading: copy.heading,
         intro: copy.intro,
@@ -18326,7 +18329,7 @@
         resultBody: copy.passedBody,
         failItems: [],
         copyLabel: copy.copyPrompt,
-        checkLabel: copy.checkAction,
+        checkLabel: "",
         pasteLabel: copy.pasteLabel
       };
     }
@@ -18338,7 +18341,7 @@
         nextBlocked: true,
         showVerificationUi: true,
         showCopyPrompt: true,
-        showCheckAction: true,
+        showCheckAction: false,
         stepStatusText: copy.pendingStatus,
         heading: copy.heading,
         intro: copy.intro,
@@ -18346,7 +18349,7 @@
         resultBody: copy.failedNext,
         failItems: Array.isArray(stored.failItems) ? stored.failItems.slice() : [],
         copyLabel: copy.copyPrompt,
-        checkLabel: copy.checkAction,
+        checkLabel: "",
         pasteLabel: copy.pasteLabel,
         generationCopyLabel: copy.generationCopyRevised
       };
@@ -18358,7 +18361,7 @@
       nextBlocked: true,
       showVerificationUi: true,
       showCopyPrompt: true,
-      showCheckAction: true,
+      showCheckAction: false,
       stepStatusText: copy.pendingStatus,
       heading: copy.heading,
       intro: copy.intro,
@@ -18366,7 +18369,7 @@
       resultBody: copy.unreadableBody,
       failItems: [],
       copyLabel: copy.copyPrompt,
-      checkLabel: copy.checkAction,
+      checkLabel: "",
       pasteLabel: copy.pasteLabel
     };
   }
@@ -18665,33 +18668,164 @@
     submitGamMaterialsVerification(sid, gamPage, dlaPage, reviewRaw);
   }
 
+  /**
+   * True when review text is a finished attempt worth validating.
+   * Parseable JSON always qualifies. Unparseable text only qualifies when braces
+   * balance (complete-but-malformed paste), so typing incomplete JSON does not
+   * flash premature unreadable errors.
+   */
+  function gamSuitabilityReviewJsonBraceBalance(text) {
+    var s = String(text || "");
+    var fenced = s.match(/```(?:json)?\s*\r?\n([\s\S]*?)\r?\n```/i);
+    if (fenced) {
+      s = String(fenced[1] || "");
+    } else {
+      var openFence = s.match(/```(?:json)?\s*\r?\n([\s\S]*)$/i);
+      if (openFence) s = String(openFence[1] || "");
+    }
+    s = String(s || "").trim();
+    if (!s || s.charAt(0) !== "{") return false;
+    var depth = 0;
+    var inString = false;
+    var escape = false;
+    var sawOpen = false;
+    for (var i = 0; i < s.length; i++) {
+      var ch = s.charAt(i);
+      if (inString) {
+        if (escape) {
+          escape = false;
+          continue;
+        }
+        if (ch === "\\") {
+          escape = true;
+          continue;
+        }
+        if (ch === '"') inString = false;
+        continue;
+      }
+      if (ch === '"') {
+        inString = true;
+        continue;
+      }
+      if (ch === "{") {
+        depth++;
+        sawOpen = true;
+      } else if (ch === "}") {
+        depth--;
+        if (depth < 0) return false;
+      }
+    }
+    return sawOpen && depth === 0;
+  }
+
+  function gamSuitabilityReviewRawIsReadyToValidate(raw) {
+    var text = String(raw || "").trim();
+    if (!text) return false;
+    var reviewLib = resolveGamOperationalSuitabilityReviewLib();
+    if (reviewLib && typeof reviewLib.parseReviewJson === "function") {
+      var wrap = reviewLib.parseReviewJson(text);
+      if (wrap && wrap.ok) return true;
+    }
+    return gamSuitabilityReviewJsonBraceBalance(text);
+  }
+
+  function invalidateGamMaterialsVerificationCheck(stepId) {
+    var sid = String(stepId || "").trim();
+    if (!sid) return;
+    var stored =
+      state.workflowRunGamVerificationCheck && state.workflowRunGamVerificationCheck[sid]
+        ? state.workflowRunGamVerificationCheck[sid]
+        : null;
+    if (!stored) return;
+    stored.checked = false;
+    stored.stale = false;
+    stored.phase = "gam_valid_review_required";
+    stored.failItems = [];
+    state.workflowRunGamSuitabilityReviewValidation =
+      state.workflowRunGamSuitabilityReviewValidation || {};
+    state.workflowRunGamSuitabilityReviewValidation[sid] = GAM_VERIFICATION_COPY.pendingStatus;
+    if (state.workflowRunStepCompleted && state.workflowRunStepCompleted[sid]) {
+      delete state.workflowRunStepCompleted[sid];
+    }
+  }
+
+  /**
+   * Shared paste/input path for GAM verification: store raw, invalidate prior
+   * acceptance on change, and auto-run the existing gate when the text is a
+   * finished verification attempt. Returns { processed, skippedDuplicate, autoChecked }.
+   */
+  function processGamSuitabilityReviewRawInput(stepId, reviewRaw, gamPage, dlaPage) {
+    var sid = String(stepId || "").trim();
+    var result = { processed: false, skippedDuplicate: false, autoChecked: false, view: null };
+    if (!sid || !isGamMaterialGenerationStep(sid)) return result;
+    state.workflowRunGamSuitabilityReviewRaw = state.workflowRunGamSuitabilityReviewRaw || {};
+    var nextRaw = String(reviewRaw == null ? "" : reviewRaw);
+    var prevRaw = String(state.workflowRunGamSuitabilityReviewRaw[sid] || "");
+    var unchanged = nextRaw === prevRaw;
+    state.workflowRunGamSuitabilityReviewRaw[sid] = nextRaw;
+    var stored =
+      state.workflowRunGamVerificationCheck && state.workflowRunGamVerificationCheck[sid]
+        ? state.workflowRunGamVerificationCheck[sid]
+        : null;
+    if (unchanged && stored && stored.checked) {
+      result.processed = true;
+      result.skippedDuplicate = true;
+      result.view = resolveGamMaterialsVerificationView(sid, {
+        gamPage: gamPage,
+        dlaPage: dlaPage,
+        gamStructurallyOk: true
+      });
+      return result;
+    }
+    if (!unchanged && stored && stored.checked) {
+      invalidateGamMaterialsVerificationCheck(sid);
+    }
+    result.processed = true;
+    if (!String(nextRaw || "").trim()) {
+      result.view = resolveGamMaterialsVerificationView(sid, {
+        gamPage: gamPage,
+        dlaPage: dlaPage,
+        gamStructurallyOk: true
+      });
+      return result;
+    }
+    if (gamSuitabilityReviewRawIsReadyToValidate(nextRaw) && gamPage && dlaPage) {
+      result.autoChecked = true;
+      result.view = submitGamMaterialsVerification(sid, gamPage, dlaPage, nextRaw);
+      return result;
+    }
+    result.view = resolveGamMaterialsVerificationView(sid, {
+      gamPage: gamPage,
+      dlaPage: dlaPage,
+      gamStructurallyOk: true
+    });
+    return result;
+  }
+
   function syncGamSuitabilityReviewFromDom(li) {
     if (!li) return;
     var sid = String(li.getAttribute("data-step-id") || "").trim();
     if (!isGamMaterialGenerationStep(sid)) return;
     var ta = li.querySelector('[data-field="runStepSuitabilityReview"]');
     if (!sid || !ta) return;
-    state.workflowRunGamSuitabilityReviewRaw = state.workflowRunGamSuitabilityReviewRaw || {};
-    var nextRaw = String(ta.value || "");
-    var prevRaw = String(state.workflowRunGamSuitabilityReviewRaw[sid] || "");
-    state.workflowRunGamSuitabilityReviewRaw[sid] = nextRaw;
-    var stored =
-      state.workflowRunGamVerificationCheck && state.workflowRunGamVerificationCheck[sid]
-        ? state.workflowRunGamVerificationCheck[sid]
-        : null;
-    if (stored && stored.checked && nextRaw !== prevRaw) {
-      stored.checked = false;
-      stored.phase = "gam_valid_review_required";
-      stored.failItems = [];
-      state.workflowRunGamSuitabilityReviewValidation =
-        state.workflowRunGamSuitabilityReviewValidation || {};
-      state.workflowRunGamSuitabilityReviewValidation[sid] = GAM_VERIFICATION_COPY.pendingStatus;
-      if (state.workflowRunStepCompleted && state.workflowRunStepCompleted[sid]) {
-        delete state.workflowRunStepCompleted[sid];
-      }
-    }
+    var wf = state.selectedWorkflowId ? findWorkflowById(state.selectedWorkflowId) : null;
+    var gamJson =
+      (state.workflowRunCapturedOutputs && state.workflowRunCapturedOutputs[sid]) ||
+      (state.workflowRunCapturedOutputsRaw && state.workflowRunCapturedOutputsRaw[sid]) ||
+      "";
+    var gamPage = tryParseWorkflowArtefactJson(gamJson);
+    var dlaPage = tryParseWorkflowArtefactJson(resolveDlaEnrichedPageJsonForGamCopy(wf) || "");
+    processGamSuitabilityReviewRawInput(sid, ta.value, gamPage, dlaPage);
     updateRunStepOutputStatus(li);
     refreshGamSuitabilityReviewUi(li);
+    if (
+      els.workflowModeRunBtn &&
+      els.workflowModeRunBtn.classList.contains("active") &&
+      els.workflowDetail &&
+      els.workflowDetail.classList.contains("run-mode")
+    ) {
+      updateWorkflowRunView();
+    }
   }
 
   function copyGamOperationalSuitabilityReviewPrompt(li) {
@@ -18729,37 +18863,6 @@
     }
   }
 
-  function checkGamMaterialsVerificationFromDom(li) {
-    if (!li) return;
-    var sid = String(li.getAttribute("data-step-id") || "").trim();
-    if (!isGamMaterialGenerationStep(sid)) return;
-    var ta = li.querySelector('[data-field="runStepSuitabilityReview"]');
-    if (!sid) return;
-    var reviewRaw = ta ? String(ta.value || "") : "";
-    state.workflowRunGamSuitabilityReviewRaw = state.workflowRunGamSuitabilityReviewRaw || {};
-    state.workflowRunGamSuitabilityReviewRaw[sid] = reviewRaw;
-    var wf = state.selectedWorkflowId ? findWorkflowById(state.selectedWorkflowId) : null;
-    var gamJson =
-      (state.workflowRunCapturedOutputs && state.workflowRunCapturedOutputs[sid]) ||
-      (state.workflowRunCapturedOutputsRaw && state.workflowRunCapturedOutputsRaw[sid]) ||
-      "";
-    var gamPage = tryParseWorkflowArtefactJson(gamJson);
-    var dlaPage = tryParseWorkflowArtefactJson(resolveDlaEnrichedPageJsonForGamCopy(wf) || "");
-    if (gamPage && dlaPage) {
-      submitGamMaterialsVerification(sid, gamPage, dlaPage, reviewRaw);
-    }
-    updateRunStepOutputStatus(li);
-    refreshGamSuitabilityReviewUi(li);
-    if (
-      els.workflowModeRunBtn &&
-      els.workflowModeRunBtn.classList.contains("active") &&
-      els.workflowDetail &&
-      els.workflowDetail.classList.contains("run-mode")
-    ) {
-      updateWorkflowRunView();
-    }
-  }
-
   function refreshGamSuitabilityReviewUi(li) {
     if (!li) return;
     var wrap = li.querySelector('[data-role="run-step-suitability-review-wrap"]');
@@ -18775,11 +18878,6 @@
     if (copyBtn) {
       copyBtn.classList.toggle("hidden", !view.showCopyPrompt);
       if (copyBtn.textContent !== "✓ Copied") copyBtn.textContent = view.copyLabel;
-    }
-    var checkBtn = li.querySelector('[data-role="run-step-suitability-check"]');
-    if (checkBtn) {
-      checkBtn.classList.toggle("hidden", !view.showCheckAction);
-      checkBtn.textContent = view.checkLabel;
     }
     var pasteLabel = li.querySelector('[data-role="run-step-suitability-paste-label"]');
     if (pasteLabel) pasteLabel.textContent = view.pasteLabel;
@@ -25779,11 +25877,16 @@
       wid && store && store[wid] && typeof store[wid] === "object" ? store[wid] : null;
     var cachedEvidence = readWorkflowListStatusEvidenceCache(wid);
     var liveOverlay = null;
+    var attachmentsAuthoritative = false;
     if (wid && String(state.selectedWorkflowId || "") === wid) {
       var liveWorkspace =
         state.utilitiesOutputWorkspace && typeof state.utilitiesOutputWorkspace === "object"
           ? state.utilitiesOutputWorkspace
           : null;
+      // Only Authoring (utilities) may treat empty live attachments as a genuine
+      // removal. Selecting a workflow on My Workflows must not erase hydrate-cache
+      // / durable Completed evidence just because the utilities workspace is empty.
+      attachmentsAuthoritative = String(state.activeMainTab || "") === "utilities";
       liveOverlay = {
         capturedOutputs: state.workflowRunCapturedOutputs || {},
         capturedOutputsRaw: state.workflowRunCapturedOutputsRaw || {},
@@ -25795,6 +25898,7 @@
           liveWorkspace && liveWorkspace.assetsByBriefId
             ? liveWorkspace.assetsByBriefId
             : {},
+        attachmentsAuthoritative: attachmentsAuthoritative,
         // Same page Authoring Graphics(N) is currently inspecting.
         authoritativeAssembledPage:
           liveWorkspace &&
@@ -25808,10 +25912,10 @@
       presentation.mergeRunRecordForListStatus
         ? presentation.mergeRunRecordForListStatus(durable, liveOverlay)
         : durable || liveOverlay || {};
-    // Cache supplies Authoring-parity evidence for non-selected (ref-only) rows.
-    // Selected live overlay remains authoritative for attachments so remove/replace
-    // cannot be masked by a stale completed cache entry.
-    if (cachedEvidence && !liveOverlay) {
+    // Cache supplies Authoring-parity evidence for ref-only rows. Selected Run/Edit
+    // inspection still accepts cached page/attachments unless Authoring has asserted
+    // an authoritative (possibly empty) attachment set.
+    if (cachedEvidence) {
       if (
         !merged.authoritativeAssembledPage &&
         cachedEvidence.authoritativeAssembledPage &&
@@ -25820,6 +25924,7 @@
         merged.authoritativeAssembledPage = cachedEvidence.authoritativeAssembledPage;
       }
       if (
+        !attachmentsAuthoritative &&
         !(Array.isArray(merged.workflowResourceRefs) && merged.workflowResourceRefs.length) &&
         Array.isArray(cachedEvidence.workflowResourceRefs) &&
         cachedEvidence.workflowResourceRefs.length
@@ -25827,19 +25932,12 @@
         merged.workflowResourceRefs = cachedEvidence.workflowResourceRefs.slice();
       }
       if (
+        !attachmentsAuthoritative &&
         !(merged.assetsByBriefId && Object.keys(merged.assetsByBriefId).length) &&
         cachedEvidence.assetsByBriefId
       ) {
         merged.assetsByBriefId = Object.assign({}, cachedEvidence.assetsByBriefId);
       }
-    } else if (
-      cachedEvidence &&
-      liveOverlay &&
-      !merged.authoritativeAssembledPage &&
-      cachedEvidence.authoritativeAssembledPage &&
-      typeof cachedEvidence.authoritativeAssembledPage === "object"
-    ) {
-      merged.authoritativeAssembledPage = cachedEvidence.authoritativeAssembledPage;
     }
     // Sync assemble when capture bodies are already present (selected + hydrated).
     if (
@@ -28631,10 +28729,16 @@
     var store = loadWorkflowRunStateStore();
     if (!store || typeof store !== "object" || !store[wid]) return;
     delete store[wid];
-    saveWorkflowRunStateStore(store, {
+    var cleared = saveWorkflowRunStateStore(store, {
       source: "clearPersistedWorkflowRunStateForWorkflow",
       workflowId: wid
     });
+    if (cleared) {
+      touchWorkflowUpdatedAt(wid, {
+        source: "clearPersistedWorkflowRunStateForWorkflow",
+        renderList: true
+      });
+    }
   }
 
   function resetWorkflowRunValidationState() {
@@ -29440,7 +29544,8 @@
             state.workflowRunCaptureRefs[sid] = payloadPersist.refs || {};
             persistResult = persistWorkflowRunStateForWorkflow(state.selectedWorkflowId, {
               source: "syncWorkflowRunCapturedOutputToState",
-              observedStepId: sid
+              observedStepId: sid,
+              renderList: true
             });
           }
           if (!payloadPersist || !payloadPersist.ok || !(persistResult && persistResult.ok)) {
@@ -29452,7 +29557,7 @@
           }
           queueWorkflowRunAutosaveToast("success");
           refreshWorkflowListStatuses();
-          return { ok: true };
+          return { ok: true, touchedUpdatedAt: !!(persistResult && persistResult.touchedUpdatedAt) };
         });
       }
     }
@@ -32625,8 +32730,26 @@
     return parts.join(" ").toLowerCase();
   }
 
+  function resolveWorkflowListEffectiveUpdatedAt(workflow, allWorkflows) {
+    var hierarchy = resolveLearningJourneyWorkflowHierarchyLib();
+    var catalogue = Array.isArray(allWorkflows)
+      ? allWorkflows
+      : Array.isArray(state.workflows)
+      ? state.workflows
+      : [];
+    if (
+      hierarchy &&
+      typeof hierarchy.resolveWorkflowEffectiveUpdatedAt === "function"
+    ) {
+      return hierarchy.resolveWorkflowEffectiveUpdatedAt(workflow, catalogue);
+    }
+    var n = Number(workflow && workflow.updatedAt);
+    return typeof n === "number" && isFinite(n) && n > 0 ? n : 0;
+  }
+
   function applyWorkflowListFilters(sourceWorkflows, filters) {
-    var items = (Array.isArray(sourceWorkflows) ? sourceWorkflows : []).slice();
+    var catalogue = Array.isArray(sourceWorkflows) ? sourceWorkflows : [];
+    var items = catalogue.slice();
     var fi = filters || {};
     var query = String(fi.query || "").trim().toLowerCase();
     var tagFilters = Array.isArray(fi.tag) ? fi.tag : [];
@@ -32654,7 +32777,10 @@
 
     if (sort === "updatedAsc") {
       items.sort(function (a, b) {
-        return (a.updatedAt || 0) - (b.updatedAt || 0);
+        return (
+          resolveWorkflowListEffectiveUpdatedAt(a, catalogue) -
+          resolveWorkflowListEffectiveUpdatedAt(b, catalogue)
+        );
       });
     } else if (sort === "createdDesc") {
       items.sort(function (a, b) {
@@ -32687,7 +32813,10 @@
     } else {
       // updatedDesc (default) and any unknown sort value
       items.sort(function (a, b) {
-        return (b.updatedAt || 0) - (a.updatedAt || 0);
+        return (
+          resolveWorkflowListEffectiveUpdatedAt(b, catalogue) -
+          resolveWorkflowListEffectiveUpdatedAt(a, catalogue)
+        );
       });
     }
 
@@ -33555,6 +33684,81 @@
     };
   }
 
+  /**
+   * Activity fingerprint for run-state records (excludes runIndex / navigation-only fields).
+   * Used so selection and Prev/Next index moves do not bump workflow.updatedAt.
+   * Empty page-ref shells (defaults written on ordinary persist) collapse to {} so they
+   * do not look like a meaningful change versus a missing page-ref object.
+   */
+  function buildWorkflowRunStateActivityFingerprint(record) {
+    var rec = record && typeof record === "object" ? record : {};
+    function pageRefsActivity(refs) {
+      var r = refs && typeof refs === "object" ? refs : {};
+      var videoId = String(r.videoResourceId || "").trim();
+      var videoIntro = String(r.videoIntroText || "");
+      var additionalIntro = String(r.additionalResourcesIntro || "");
+      var additional = Array.isArray(r.additionalResources) ? r.additionalResources : [];
+      var hasAdditional = additional.some(function (row) {
+        if (!row || typeof row !== "object") return false;
+        return !!(
+          String(row.resource_id || "").trim() ||
+          String(row.link_text || "").trim() ||
+          String(row.external_url || "").trim()
+        );
+      });
+      if (!videoId && !videoIntro && !additionalIntro && !hasAdditional) {
+        return {};
+      }
+      return {
+        videoResourceId: videoId,
+        videoSectionTitle: String(r.videoSectionTitle || "").trim() || "Video",
+        videoIntroText: videoIntro,
+        additionalResourcesIntro: additionalIntro,
+        additionalResources: additional
+      };
+    }
+    try {
+      return JSON.stringify({
+        captureRefs: rec.captureRefs || {},
+        capturedOutputs: rec.capturedOutputs || {},
+        capturedOutputsRaw: rec.capturedOutputsRaw || {},
+        stepCompleted: rec.stepCompleted || {},
+        workflowResourceRefs: Array.isArray(rec.workflowResourceRefs)
+          ? rec.workflowResourceRefs
+          : [],
+        workflowPageResourceRefs: pageRefsActivity(rec.workflowPageResourceRefs)
+      });
+    } catch (_e) {
+      return "";
+    }
+  }
+
+  /**
+   * Bump one workflow's updatedAt after a successful persisted change.
+   * Does not rewrite createdAt and does not touch other workflows' timestamps.
+   */
+  function touchWorkflowUpdatedAt(workflowId, options) {
+    var opts = options && typeof options === "object" ? options : {};
+    var wid = String(workflowId || "").trim();
+    if (!wid) return { ok: false, touched: false, reason: "missing_workflow_id" };
+    var wf = findWorkflowById(wid);
+    if (!wf) return { ok: false, touched: false, reason: "workflow_not_found" };
+    var now =
+      typeof opts.now === "number" && isFinite(opts.now) ? Number(opts.now) : Date.now();
+    wf.updatedAt = now;
+    if (opts.persist !== false) {
+      try {
+        saveWorkflows();
+      } catch (_saveErr) {}
+    }
+    if (opts.renderList === true && typeof renderWorkflowList === "function") {
+      try {
+        renderWorkflowList({ skipDefaultSelection: true });
+      } catch (_renderErr) {}
+    }
+    return { ok: true, touched: true, updatedAt: now, workflowId: wid };
+  }
+
   function persistWorkflowRunStateForWorkflow(workflowId, options) {
     var opts = options && typeof options === "object" ? options : {};
     var wid = String(workflowId || "").trim();
@@ -33564,16 +33768,31 @@
     var store = loadWorkflowRunStateStore();
     var existing =
       store && store[wid] && typeof store[wid] === "object" ? store[wid] : null;
+    var beforeFp = buildWorkflowRunStateActivityFingerprint(existing);
     var liveSnapshot = buildWorkflowRunStateSnapshotForCurrentSelection();
     state.workflowRunSessionIndexByWorkflow[wid] = liveSnapshot.runIndex;
     var mergedRecord = mergeWorkflowRunStateRecordWithLiveSnapshot(existing, liveSnapshot);
-    store[wid] = pruneBlankWorkflowRunStateRecordEntries(mergedRecord);
+    var pruned = pruneBlankWorkflowRunStateRecordEntries(mergedRecord);
+    store[wid] = pruned;
+    var afterFp = buildWorkflowRunStateActivityFingerprint(pruned);
     var ok = saveWorkflowRunStateStore(store, {
       source: String(opts.source || "persistWorkflowRunStateForWorkflow"),
       workflowId: wid,
       observedStepId: String(opts.observedStepId || "")
     });
-    return ok ? { ok: true } : { ok: false, reason: "storage_write_failed" };
+    if (!ok) {
+      return { ok: false, reason: "storage_write_failed" };
+    }
+    var shouldTouch =
+      opts.touchUpdatedAt === true ||
+      (opts.touchUpdatedAt !== false && beforeFp !== afterFp);
+    if (shouldTouch) {
+      touchWorkflowUpdatedAt(wid, {
+        source: String(opts.source || "persistWorkflowRunStateForWorkflow"),
+        renderList: opts.renderList !== false
+      });
+    }
+    return { ok: true, touchedUpdatedAt: !!shouldTouch };
   }
 
   function persistWorkflowRunCapturePayloadForStep(workflowId, stepId, rawValue, finalValue) {
@@ -34468,8 +34687,9 @@
     if (!wid) return;
     // Flush same-workflow live overlay into durable state before replace/restore so
     // newer unsaved captures are not discarded and truncated live cannot erase durable keys.
+    // Selection/restore itself is not an edit — do not bump Updated.
     if (String(state.selectedWorkflowId || "").trim() === wid) {
-      persistWorkflowRunStateForWorkflow(wid, { toastType: "" });
+      persistWorkflowRunStateForWorkflow(wid, { toastType: "", touchUpdatedAt: false });
     }
     var store = loadWorkflowRunStateStore();
     var rec = store && store[wid] && typeof store[wid] === "object" ? store[wid] : null;
@@ -34541,22 +34761,40 @@
           state.utilitiesOutputWorkspace && typeof state.utilitiesOutputWorkspace === "object"
             ? state.utilitiesOutputWorkspace
             : null;
+        var prevEvidence = readWorkflowListStatusEvidenceCache(wid) || {};
+        var assembledPage =
+          liveWs && liveWs.assembledPageSnapshot
+            ? liveWs.assembledPageSnapshot
+            : attachAuthoritativeAssembledPageForProductionStatus(wid, {
+                capturedOutputs: state.workflowRunCapturedOutputs || {},
+                capturedOutputsRaw: state.workflowRunCapturedOutputsRaw || {},
+                captureRefs: state.workflowRunCaptureRefs || {},
+                workflowResourceRefs: Array.isArray(state.workflowResourceRefs)
+                  ? state.workflowResourceRefs
+                  : []
+              }).authoritativeAssembledPage;
+        var liveRefs = Array.isArray(state.workflowResourceRefs)
+          ? state.workflowResourceRefs
+          : [];
+        var liveAssets =
+          liveWs && liveWs.assetsByBriefId && typeof liveWs.assetsByBriefId === "object"
+            ? liveWs.assetsByBriefId
+            : {};
+        // Selection hydrate must not wipe Completed evidence when assemble/assets
+        // are still unavailable (empty utilities workspace on Run/Edit inspection).
         writeWorkflowListStatusEvidenceCache(wid, {
           authoritativeAssembledPage:
-            liveWs && liveWs.assembledPageSnapshot
-              ? liveWs.assembledPageSnapshot
-              : attachAuthoritativeAssembledPageForProductionStatus(wid, {
-                  capturedOutputs: state.workflowRunCapturedOutputs || {},
-                  capturedOutputsRaw: state.workflowRunCapturedOutputsRaw || {},
-                  captureRefs: state.workflowRunCaptureRefs || {},
-                  workflowResourceRefs: Array.isArray(state.workflowResourceRefs)
-                    ? state.workflowResourceRefs
-                    : []
-                }).authoritativeAssembledPage,
-          workflowResourceRefs: Array.isArray(state.workflowResourceRefs)
-            ? state.workflowResourceRefs
-            : [],
-          assetsByBriefId: liveWs && liveWs.assetsByBriefId ? liveWs.assetsByBriefId : {}
+            assembledPage || prevEvidence.authoritativeAssembledPage || null,
+          workflowResourceRefs: liveRefs.length
+            ? liveRefs
+            : Array.isArray(prevEvidence.workflowResourceRefs)
+              ? prevEvidence.workflowResourceRefs
+              : [],
+          assetsByBriefId: Object.keys(liveAssets).length
+            ? liveAssets
+            : prevEvidence.assetsByBriefId && typeof prevEvidence.assetsByBriefId === "object"
+              ? prevEvidence.assetsByBriefId
+              : {}
         });
       } else {
         scheduleWorkflowListStatusEvidenceHydrate(wid);
@@ -34698,15 +34936,14 @@
       meta.className = "workflow-item-meta";
       var stepCount = wf.steps && wf.steps.length ? wf.steps.length : 0;
       var stepsLabel = stepCount + " step" + (stepCount === 1 ? "" : "s");
+      var effectiveUpdatedMs = resolveWorkflowListEffectiveUpdatedAt(wf, all);
       var updated =
-        typeof wf.updatedAt === "number" &&
-        isFinite(wf.updatedAt) &&
-        window.Utils &&
-        window.Utils.formatDate
-          ? window.Utils.formatDate(wf.updatedAt)
+        effectiveUpdatedMs > 0 && window.Utils && window.Utils.formatDate
+          ? window.Utils.formatDate(effectiveUpdatedMs)
           : "";
       var metaText = document.createElement("span");
       metaText.className = "workflow-item-meta-updated";
+      metaText.setAttribute("data-effective-updated-at", String(effectiveUpdatedMs || ""));
       metaText.textContent =
         "Updated " + (updated || "—") + " · " + stepsLabel;
       meta.appendChild(metaText);
@@ -34857,7 +35094,11 @@
       String(prevSelected || "").trim() &&
       String(prevSelected || "") !== String(wf.id || "")
     ) {
-      persistWorkflowRunStateForWorkflow(prevSelected, { toastType: "" });
+      // Flush unsaved live run overlay only — never bump Updated merely for navigation.
+      persistWorkflowRunStateForWorkflow(prevSelected, {
+        toastType: "",
+        touchUpdatedAt: false
+      });
     }
     restoreWorkflowRunStateForWorkflow(wf.id);
     state.selectedWorkflowId = wf.id;
@@ -36696,14 +36937,6 @@
     suitabilityTextarea.addEventListener("input", function () {
       syncGamSuitabilityReviewFromDom(li);
     });
-    var suitabilityCheckBtn = document.createElement("button");
-    suitabilityCheckBtn.type = "button";
-    suitabilityCheckBtn.className = "btn small workflow-step-suitability-review__check";
-    suitabilityCheckBtn.setAttribute("data-role", "run-step-suitability-check");
-    suitabilityCheckBtn.textContent = "Check verification";
-    suitabilityCheckBtn.addEventListener("click", function () {
-      checkGamMaterialsVerificationFromDom(li);
-    });
     var suitabilityStatus = document.createElement("div");
     suitabilityStatus.setAttribute("data-role", "run-step-suitability-review-status");
     suitabilityStatus.className = "workflow-step-run-output-status helper-text hidden";
@@ -36712,7 +36945,6 @@
     suitabilityWrap.appendChild(suitabilityCopyBtn);
     suitabilityWrap.appendChild(suitabilityLabel);
     suitabilityWrap.appendChild(suitabilityTextarea);
-    suitabilityWrap.appendChild(suitabilityCheckBtn);
     suitabilityWrap.appendChild(suitabilityStatus);
 
     li.appendChild(hiddenStepIdInput);
@@ -37215,46 +37447,84 @@
     var selectedId = String(state.selectedWorkflowId || "").trim();
     if (!selectedId) return;
     var wf = findWorkflowById(selectedId);
-    var title = wf ? wf.name || "this workflow" : "this workflow";
-    var confirmed = await requestDeleteWorkflowConfirmation(title);
+    if (!wf) return;
+    var title = wf.name || "this workflow";
+    var cascadePlan = planDeleteWorkflowCascade(wf);
+    var deleteIds = Array.isArray(cascadePlan.deleteIds)
+      ? cascadePlan.deleteIds
+          .map(function (id) {
+            return String(id || "").trim();
+          })
+          .filter(Boolean)
+      : [selectedId];
+    if (deleteIds.indexOf(selectedId) < 0) {
+      deleteIds = [selectedId].concat(deleteIds);
+    }
+    var confirmed = await requestDeleteWorkflowConfirmation(title, cascadePlan);
     if (!confirmed) return;
+
     var resourcesMod = getWorkflowResourcesMod();
-    var purgeResult;
-    try {
-      purgeResult =
-        resourcesMod && typeof resourcesMod.deleteResourcesForWorkflow === "function"
-          ? await resourcesMod.deleteResourcesForWorkflow(selectedId)
-          : {
-              ok: false,
-              code: "resource_cleanup_unavailable",
-              message: "Workflow resource cleanup is unavailable."
-            };
-    } catch (err) {
-      showToast(
-        (err && err.message) || "Workflow resource cleanup failed. Delete was cancelled.",
-        "error"
-      );
-      return;
+    var i;
+    for (i = 0; i < deleteIds.length; i += 1) {
+      var purgeId = deleteIds[i];
+      var purgeResult;
+      try {
+        purgeResult =
+          resourcesMod && typeof resourcesMod.deleteResourcesForWorkflow === "function"
+            ? await resourcesMod.deleteResourcesForWorkflow(purgeId)
+            : {
+                ok: false,
+                code: "resource_cleanup_unavailable",
+                message: "Workflow resource cleanup is unavailable."
+              };
+      } catch (err) {
+        showToast(
+          (err && err.message) || "Workflow resource cleanup failed. Delete was cancelled.",
+          "error"
+        );
+        return;
+      }
+      if (!purgeResult || purgeResult.ok !== true) {
+        showToast(
+          (purgeResult && purgeResult.message) ||
+            "Workflow resource cleanup failed. Delete was cancelled.",
+          "error"
+        );
+        return;
+      }
     }
-    if (!purgeResult || purgeResult.ok !== true) {
-      showToast(
-        (purgeResult && purgeResult.message) ||
-          "Workflow resource cleanup failed. Delete was cancelled.",
-        "error"
-      );
-      return;
-    }
-    clearPersistedWorkflowRunStateForWorkflow(selectedId);
-    pruneWorkflowSessionStateForDeletedWorkflow(selectedId);
+
+    var deleteIdSet = {};
+    deleteIds.forEach(function (id) {
+      deleteIdSet[id] = true;
+    });
+    deleteIds.forEach(function (id) {
+      clearPersistedWorkflowRunStateForWorkflow(id);
+      pruneWorkflowSessionStateForDeletedWorkflow(id);
+    });
     state.workflows = state.workflows.filter(function (w) {
-      return String((w && w.id) || "") !== selectedId;
+      return !deleteIdSet[String((w && w.id) || "")];
     });
     state.selectedWorkflowId = null;
-    saveWorkflows();
+    try {
+      var saveOutcome = saveWorkflows();
+      if (saveOutcome && typeof saveOutcome.then === "function") {
+        await saveOutcome;
+      }
+    } catch (_saveErr) {}
     renderWorkflowList({ skipDefaultSelection: true });
     clearWorkflowDetail();
     renderLibraryList();
-    showToast("Workflow deleted.", "success");
+    showToast(
+      cascadePlan.cascade
+        ? "Learning Journey and " +
+            cascadePlan.constituents.length +
+            " constituent workflow" +
+            (cascadePlan.constituents.length === 1 ? "" : "s") +
+            " deleted."
+        : "Workflow deleted.",
+      "success"
+    );
     if (els.exportWorkflowBtn) {
       els.exportWorkflowBtn.disabled = true;
     }
@@ -40682,17 +40952,82 @@
     });
   }
 
-  function buildDeleteWorkflowConfirmCopy(workflowName) {
+  function planDeleteWorkflowCascade(workflow) {
+    var hierarchy = resolveLearningJourneyWorkflowHierarchyLib();
+    if (!hierarchy || typeof hierarchy.planLearningJourneyCascadeDeletion !== "function") {
+      try {
+        if (typeof require === "function") {
+          hierarchy = require("./lib/learning-journey-workflow-hierarchy.js");
+        }
+      } catch (_errRequire) {
+        try {
+          if (typeof require === "function") {
+            hierarchy = require("../lib/learning-journey-workflow-hierarchy.js");
+          }
+        } catch (_errRequire2) {}
+      }
+    }
+    if (
+      !hierarchy ||
+      typeof hierarchy.planLearningJourneyCascadeDeletion !== "function" ||
+      !workflow
+    ) {
+      return {
+        cascade: false,
+        parent: workflow || null,
+        constituents: [],
+        deleteIds: workflow && workflow.id ? [String(workflow.id)] : [],
+        deleteWorkflows: workflow ? [workflow] : []
+      };
+    }
+    // Ownership: child.sourceWorkflowId === Learning Journey id (hierarchy module).
+    var plan = hierarchy.planLearningJourneyCascadeDeletion(workflow, state.workflows || []);
+    if (!plan || !Array.isArray(plan.deleteIds) || !plan.deleteIds.length) {
+      return {
+        cascade: false,
+        parent: workflow,
+        constituents: [],
+        deleteIds: workflow && workflow.id ? [String(workflow.id)] : [],
+        deleteWorkflows: workflow ? [workflow] : []
+      };
+    }
+    return plan;
+  }
+
+  function buildDeleteWorkflowConfirmCopy(workflowName, cascadePlan) {
     var name = String(workflowName || "this workflow").trim() || "this workflow";
+    var plan = cascadePlan && typeof cascadePlan === "object" ? cascadePlan : null;
+    var constituents =
+      plan && Array.isArray(plan.constituents) ? plan.constituents.filter(Boolean) : [];
+    if (!constituents.length) {
+      return {
+        title: 'Delete "' + name + '"?',
+        body:
+          "This will permanently delete the workflow, its Run data and its generated assets. This cannot be undone.",
+        submitLabel: "Delete workflow"
+      };
+    }
+    var lines = constituents.map(function (wf) {
+      var childName = String((wf && wf.name) || "").trim() || "Untitled workflow";
+      return "• " + childName;
+    });
+    var count = constituents.length;
     return {
-      title: 'Delete "' + name + '"?',
+      title: 'Delete Learning Journey "' + name + '"?',
       body:
-        "This will permanently delete the workflow, its Run data and its generated assets. This cannot be undone."
+        "This will permanently delete the Learning Journey, its Run data and its generated assets, together with " +
+        count +
+        " owned constituent workflow" +
+        (count === 1 ? "" : "s") +
+        ":\n\n" +
+        lines.join("\n") +
+        "\n\nThis cannot be undone.",
+      submitLabel: "Delete Learning Journey"
     };
   }
 
-  function requestDeleteWorkflowConfirmation(workflowName) {
-    var copy = buildDeleteWorkflowConfirmCopy(workflowName);
+  function requestDeleteWorkflowConfirmation(workflowName, cascadePlan) {
+    var copy = buildDeleteWorkflowConfirmCopy(workflowName, cascadePlan);
     var dialog = els.deleteWorkflowConfirmDialog;
     if (!dialog || typeof dialog.showModal !== "function") {
       var fallback = window.confirm(copy.title + "\n\n" + copy.body);
@@ -40703,6 +41038,9 @@
     }
     if (els.deleteWorkflowConfirmBody) {
       els.deleteWorkflowConfirmBody.textContent = copy.body;
+    }
+    if (els.deleteWorkflowConfirmSubmit) {
+      els.deleteWorkflowConfirmSubmit.textContent = copy.submitLabel || "Delete workflow";
     }
     return new Promise(function (resolve) {
       var onClose = function () {
@@ -62541,6 +62879,12 @@
     };
     prismTestApi.resolveWorkflowListAuthoringStatusForTest =
       resolveWorkflowListAuthoringStatusForWorkflow;
+    prismTestApi.setActiveMainTabForTest = function (tabName) {
+      state.activeMainTab = String(tabName || "").trim();
+    };
+    prismTestApi.getActiveMainTabForTest = function () {
+      return String(state.activeMainTab || "");
+    };
     prismTestApi.writeWorkflowListStatusEvidenceCacheForTest =
       writeWorkflowListStatusEvidenceCache;
     prismTestApi.clearWorkflowListStatusEvidenceCacheForTest =
@@ -62735,6 +63079,7 @@
       shouldSuppressWorkflowImportWarning;
     prismTestApi.buildDeleteWorkflowConfirmCopyForTest = buildDeleteWorkflowConfirmCopy;
     prismTestApi.requestDeleteWorkflowConfirmationForTest = requestDeleteWorkflowConfirmation;
+    prismTestApi.planDeleteWorkflowCascadeForTest = planDeleteWorkflowCascade;
     prismTestApi.pruneWorkflowSessionStateForDeletedWorkflowForTest =
       pruneWorkflowSessionStateForDeletedWorkflow;
     prismTestApi.isWorkflowRunStepCaptureReadyForAdvance = isWorkflowRunStepCaptureReadyForAdvance;
@@ -63645,6 +63990,12 @@
     prismTestApi.rehydrateWorkflowPageResourcesIntoWorkspaceForTest =
       rehydrateWorkflowPageResourcesIntoWorkspace;
     prismTestApi.persistWorkflowRunStateForWorkflowForTest = persistWorkflowRunStateForWorkflow;
+    prismTestApi.touchWorkflowUpdatedAtForTest = touchWorkflowUpdatedAt;
+    prismTestApi.buildWorkflowRunStateActivityFingerprintForTest =
+      buildWorkflowRunStateActivityFingerprint;
+    prismTestApi.applyWorkflowListFiltersForTest = applyWorkflowListFilters;
+    prismTestApi.resolveWorkflowListEffectiveUpdatedAtForTest =
+      resolveWorkflowListEffectiveUpdatedAt;
     prismTestApi.persistWorkflowRunCapturePayloadForStepForTest = persistWorkflowRunCapturePayloadForStep;
     prismTestApi.isWorkflowRunCapturePayloadEmptyForTest = isWorkflowRunCapturePayloadEmpty;
     prismTestApi.buildWorkflowRunCapturePersistFailureToastMessageForTest =
@@ -63852,6 +64203,22 @@
     };
     prismTestApi.submitGamMaterialsVerificationForTest = function (stepId, reviewRaw, gamPage, dlaPage) {
       return submitGamMaterialsVerification(stepId, gamPage, dlaPage, reviewRaw);
+    };
+    prismTestApi.processGamSuitabilityReviewRawInputForTest = function (
+      stepId,
+      reviewRaw,
+      gamPage,
+      dlaPage
+    ) {
+      return processGamSuitabilityReviewRawInput(stepId, reviewRaw, gamPage, dlaPage);
+    };
+    prismTestApi.gamSuitabilityReviewRawIsReadyToValidateForTest =
+      gamSuitabilityReviewRawIsReadyToValidate;
+    prismTestApi.getWorkflowRunGamVerificationCheckForTest = function (stepId) {
+      var sid = String(stepId || "").trim();
+      if (!sid || !state.workflowRunGamVerificationCheck) return null;
+      var row = state.workflowRunGamVerificationCheck[sid];
+      return row && typeof row === "object" ? Object.assign({}, row) : null;
     };
     prismTestApi.syncGamMaterialsVerificationAfterCaptureForTest = function (stepId, gamPage, dlaPage) {
       syncGamMaterialsVerificationAfterCapture(stepId, gamPage, dlaPage);

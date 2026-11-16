@@ -15,6 +15,7 @@
 - Qualified close conclusions in [SPRINT-98-CLOSURE.md](SPRINT-98-CLOSURE.md)  
 - M5 Option C behaviour; S98-D08 typography contract  
 - Qualifications: no controlled A/B claim; M5 case unreproducible; no full study-flow engine; S98-D08 generation validation pending  
+- Full LS study-flow residual now has durable programme home [D-015](../../../governance/ARCHITECTURAL-DEBT.md#d-015--interactive-learning-sequence-study-flow-fidelity) (S98-AD-004 / S99-AD-012)  
 - Sprint 97 deferred items stay on Sprint 97 ledger  
 - Baseline failures S98-E07 / A5 compose remain distinguished
 

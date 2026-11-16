@@ -174,6 +174,7 @@ Potential applications include:
 - No routine stochastic JavaScript generation.
 - Preserve standalone Interactive capability.
 - No weakening of deterministic execution or learner-facing reliability.
+- Interactive Learning Sequence study-flow fidelity residual ([D-015](../development/governance/ARCHITECTURAL-DEBT.md#d-015--interactive-learning-sequence-study-flow-fidelity); S98 M5 Option C; S98-AD-004; S99-AD-012) is **not** automatically absorbed into this item — allocate explicitly if a fuller study-flow engine is pursued.
 
 **Success criterion (discovery):** We understand what Interactive must become educationally — including the interaction-surface repertoire and LJ/shared-material contract — before deciding how to build it.
 
@@ -345,6 +346,8 @@ Sprint 88 closed with the Assessment Pack architecture in place. Further real us
 Record: [Sprint 88 closure](../development/sprints/2026-09-28-sprint-88-default-product-workflows-and-assessment-architecture/SPRINT-88-CLOSURE.md). Sprint 89 did not reopen Assessment architecture.
 
 This calibration remains about exercising depth, count, and form-selection defaults. Sprint 93 closed the evidence-led product revisit as [PB-FA-017](#pb-fa-017--assessment-pack-first-class-product-revisit). That acceptance does not complete this calibration.
+
+**Distinct (2026-11-16 post–Sprint 99):** a four-case Assessment Pack *instructional quality* review was **accepted without substantive implementation**; the planned Sprint 100 stub is **superseded** ([sprint-100](../sprints/sprint-100-assessment-pack-instructional-quality.md) · [NEXT-SPRINT](../sprints/NEXT-SPRINT.md)). That acceptance does **not** complete this depth/count/form calibration. Optional non-blocking follow-ups (APE alignment; manual answer-disclosure checking) are recorded on the superseded stub only.
 
 ### PB-S-007 — Broad-suite renderer/page-render failure reconciliation
 

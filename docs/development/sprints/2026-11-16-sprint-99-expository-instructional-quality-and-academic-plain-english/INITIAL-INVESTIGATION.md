@@ -112,13 +112,8 @@ No learner-facing defect is declared without case evidence.
 
 ---
 
-## 8. Precise next user action
+## 8. Status note (post-M1 / M2)
 
-**Generate a representative standalone Expository resource in PRISM** (normal authoring run), then supply:
+M1 educational evaluation of three Expository resources and M2 focused investigation are recorded in [M2-INVESTIGATION.md](M2-INVESTIGATION.md) · [S99-D02](decisions.md#s99-d02--accept-m1--provisional-educational-evaluation-of-three-expository-resources) · [S99-D03](decisions.md#s99-d03--accept-m2-investigation-findings-and-propose-m3-scope).
 
-1. Assembled page JSON (or Design Page + assembled), and  
-2. Learner export ZIP (HTML + assets),
-
-for educational evaluation against the charter question — **not** mere prompt-marker compliance.
-
-Until then: **no Sprint 99 code changes**.
+This M0 document remains the pipeline baseline. **No Sprint 99 code changes** until M3 is authorised.

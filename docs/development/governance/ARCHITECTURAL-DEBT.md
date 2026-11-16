@@ -240,6 +240,28 @@ Investigations should remain context-driven rather than forced into a rigid univ
 
 ---
 
+## D-015 — Interactive Learning Sequence study-flow fidelity
+
+**Priority:** Medium (post-alpha architectural residual)  
+**State:** **Open — accepted residual**; not sprint-allocated  
+**Milestone relevance:** Post-Sprint 98 / 99  
+**Do not reopen** Sprint 98 to pursue this item.
+
+**Summary:** The Interactive learner renderer does **not** execute the complete authored Learning Sequence (`timeline[].learner_study_flow`) as an authoritative study-flow / step-control engine. Sprint 98 **M5 Option C** ([S98-D07](../sprints/2026-11-16-sprint-98-interactive-instructional-coherence-and-academic-plain-english/decisions.md#s98-d07--authorise-and-implement-m5-option-c-bounded-scaffold-sequencing)) delivered only a **narrow** attempt-before-scaffold disclosure presentation for Interactive composition. Moment order remains Orient→Learn→Do→Check→Transfer; no global Learn/Do swap; no attempt gates.
+
+**Sprint ledger references:**
+
+- [S98-AD-004](../sprints/2026-11-16-sprint-98-interactive-instructional-coherence-and-academic-plain-english/ARCHITECTURAL-DEBT.md) — Full LS study-flow execution engine (out of scope / residual at Sprint 98 close)  
+- [S99-AD-012](../sprints/2026-11-16-sprint-99-expository-instructional-quality-and-academic-plain-english/ARCHITECTURAL-DEBT.md) — Sprint 99 carry of the same Interactive limitation (Expository is unaffected)  
+- Related: S98-AD-010 (top-level `study_flow` often absent); S98-AD-011 (A2/A3 addressed narrowly by Option C)  
+- **Not this item:** [S99-AD-008](../sprints/2026-11-16-sprint-99-expository-instructional-quality-and-academic-plain-english/ARCHITECTURAL-DEBT.md) remains deferred XD/XM duplication monitoring (M3-3), not study-flow fidelity
+
+**Relationship to backlog:** Distinct from Interactive V2 redesign ([PB-FA-019](../../backlog/PRODUCT-BACKLOG.md#pb-fa-019--interactive-v2-educational-solution-design-and-interaction-surfaces)). Do not absorb into PB-FA-019 without an explicit allocation decision. Do not treat Option C as delivery of a full study-flow engine.
+
+**Disposition:** Retain as programme debt until a future evidence-led allocation decides whether a fuller study-flow execution surface is warranted.
+
+---
+
 # C. Superseded / retired directions
 
 These are retained as negative programme knowledge.

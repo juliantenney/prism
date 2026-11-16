@@ -7,7 +7,7 @@
 | S98-AD-001 | Uncommitted Interactive guidance tree (DP roles, APE, title preservation, tests, typography, M5) | **Open / coordinate** — commit only with separate authorisation |
 | S98-AD-002 | `s96-interactive-editorial-opening` figcaption vs decorative caption policy | **Open / independent** — S98-E07 baseline |
 | S98-AD-003 | Residual Overview / Learning purpose overlap | **Qualified residual** — improved; not fully eliminated |
-| S98-AD-004 | Full LS study-flow execution engine | **Out of scope / residual** — M5 Option C is narrow disclosure presentation only |
+| S98-AD-004 | Full LS study-flow execution engine | **Out of scope / residual** — M5 Option C is narrow disclosure presentation only; durable programme home [D-015](../../../governance/ARCHITECTURAL-DEBT.md#d-015--interactive-learning-sequence-study-flow-fidelity) (do not reopen Sprint 98) |
 | S98-AD-005 | HTML word extraction as study-time signal | **Monitoring only** |
 | S98-AD-006 | No PB-FA id for this sprint | **Accepted** — do not conflate with PB-FA-019 |
 | S98-AD-007 | Sprint 97 deferred catalogue / Level 3 journals | **Out of scope** — remain on Sprint 97 ledger |

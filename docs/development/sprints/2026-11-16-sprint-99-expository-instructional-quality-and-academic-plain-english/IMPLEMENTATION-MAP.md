@@ -1,9 +1,12 @@
 # Sprint 99 — Implementation map
 
-**Status:** **OPEN** — [S99-D01](decisions.md#s99-d01--open-sprint-99--expository-instructional-quality-and-academic-plain-english)  
-**Sprint:** 99 — Expository Instructional Quality and Academic Plain English  
+**Status:** **CLOSED — ACCEPTED WITH QUALIFICATIONS** — [S99-D05](decisions.md#s99-d05--close-sprint-99--accepted-with-qualifications) · [SPRINT-99-CLOSURE.md](SPRINT-99-CLOSURE.md)  
+**Opening:** [S99-D01](decisions.md#s99-d01--open-sprint-99--expository-instructional-quality-and-academic-plain-english)  
+**M1:** [S99-D02](decisions.md#s99-d02--accept-m1--provisional-educational-evaluation-of-three-expository-resources)  
+**M2:** [S99-D03](decisions.md#s99-d03--accept-m2-investigation-findings-and-propose-m3-scope) · [M2-INVESTIGATION.md](M2-INVESTIGATION.md)  
+**M3:** [S99-D04](decisions.md#s99-d04--implement-m3-1-and-m3-2-only)  
+**Close:** [S99-D05](decisions.md#s99-d05--close-sprint-99--accepted-with-qualifications)  
 **Charter:** [SPRINT-99-CHARTER.md](SPRINT-99-CHARTER.md)  
-**Investigation:** [INITIAL-INVESTIGATION.md](INITIAL-INVESTIGATION.md)  
 **Evidence:** [EVIDENCE-REGISTER.md](EVIDENCE-REGISTER.md) · [VALIDATION.md](VALIDATION.md)
 
 ---
@@ -12,11 +15,15 @@
 
 ```text
 Sprint 98                             CLOSED — ACCEPTED WITH QUALIFICATIONS
-Sprint 99                             OPEN
-M0 Open + read-only investigation     COMPLETE
-M1 User-led Expository generation     AWAITING USER
-M2 Targeted improvements              NOT AUTHORISED (evidence-gated)
-Code / regen / commit / push          NOT AUTHORISED
+Sprint 99                             CLOSED — ACCEPTED WITH QUALIFICATIONS (S99-D05)
+Sprint 100 stub                       SUPERSEDED — AP four-case review accepted; no substantive impl
+Next programme activity               Interactive + Expository corpus regeneration (no sprint opened)
+Situated Task (this phase)            Not separately evaluated
+M0–M2                                 COMPLETE
+M3-1 / M3-2                           IMPLEMENTED
+M3-3 / M3-4                           DEFERRED — not implemented
+M4 Regeneration review                COMPLETE
+Interactive LS fidelity               Programme D-015 (do not reopen Sprint 98)
 ```
 
 ---
@@ -25,9 +32,25 @@ Code / regen / commit / push          NOT AUTHORISED
 
 | ID | Milestone | Acceptance (bounded) | Authorisation |
 | -- | --------- | -------------------- | ------------- |
-| **M0** | Open sprint; map Expository pipeline; record Sprint 98 reach; list evidence gaps | Pack complete; [INITIAL-INVESTIGATION.md](INITIAL-INVESTIGATION.md) | **Complete** — S99-D01 |
-| **M1** | User-led normal Expository generation + educational evaluation | Assembled JSON + ZIP evaluated for understanding quality; findings classified | **Awaiting user generation** |
-| **M2** | Targeted improvements only if evidence justifies | Smallest coherent changes; focused tests; no over-claim | **Not authorised** |
+| **M0** | Open sprint; map Expository pipeline | Pack + [INITIAL-INVESTIGATION.md](INITIAL-INVESTIGATION.md) | **Complete** — S99-D01 |
+| **M1** | User-led Expository generation + educational evaluation | Three representative resources reviewed; provisional positive judgement; no broad redesign | **Complete** — S99-D02 |
+| **M2** | Focused investigation (APE, coercion, effort, duplication) | Findings classified; M3 proposed | **Complete** — S99-D03 |
+| **M3** | Narrow implementation | M3-1 + M3-2 only; focused tests green; M3-3/M3-4 deferred | **Partial** — S99-D04 |
+| **M4** | Normal regeneration review | Assembled JSON + learner export evaluated | **Complete** — S99-D05 |
+| **Close** | Qualified close | Qualifications recorded; programme → Sprint 100 planned | **Complete** — S99-D05 |
+
+---
+
+## M3 work packages
+
+| Order | Package | Primary boundary | State |
+| ----- | ------- | ---------------- | ----- |
+| **M3-1** | String-list coercion fix | `lib/expository-contracts.js` | **Implemented** |
+| **M3-2** | Expository Academic Plain English guidance | `lib/expository-sibling-prompts.js` | **Implemented** |
+| **M3-3** | Optional XD/XM complementarity reinforcement | Sibling prompts only | **Deferred (S99-AD-008)** |
+| **M3-4** | Optional extent/effort clarification | EJP/XD extent bullets | **Deferred (S99-AD-007)** |
+
+Detail: [M2-INVESTIGATION.md](M2-INVESTIGATION.md) §F · [S99-D04](decisions.md#s99-d04--implement-m3-1-and-m3-2-only).
 
 ---
 
@@ -47,27 +70,25 @@ Interactive EP / DLA / GAM / M5 Option C are **out of scope** as Expository cont
 
 ---
 
-## Primary code surfaces (investigation; no edit authorised)
+## Primary code surfaces
 
 | Path | Role |
 | ---- | ---- |
-| `lib/expository-sibling-prompts.js` | EJP / XD / XM / sibling bodies |
-| `lib/page-vnext-assemble.js` | Expository assembly |
-| `lib/expository-structured-materials.js` | XM structured artefacts |
-| `lib/first-class-workflow-family.js` | Expository family profile (`activities_required: false`) |
-| `lib/ld-learner-facing-prose-typography.js` | S98-D08 (reaches Expository via pre-branch inject) |
-| `app.js` `applyWorkflowStepRuntimePromptAugmentations` | Expository: typography → domain → EQF → math → JSON |
-| `lib/learner-renderer-vnext/build-page-model.js` | `isExpositoryLearnerPage` / exposition sections |
-| `lib/learner-renderer-vnext/render-page.js` | Expository render path |
+| `lib/expository-sibling-prompts.js` | EJP / XD / XM / sibling bodies — APE / complementarity candidates |
+| `lib/expository-contracts.js` | XD/EJP normalize — coercion defect (M3-1) |
+| `lib/page-vnext-assemble.js` | Expository assembly (preserves captured arrays) |
+| `lib/ld-learner-facing-prose-typography.js` | S98-D08 (already reaches Expository) |
+| `lib/ld-gam-instructional-depth.js` | Interactive APE — must **not** be forced onto Expository |
+| `app.js` `applyWorkflowStepRuntimePromptAugmentations` | Expository augment chain |
+| `lib/learner-renderer-vnext/build-page-model.js` | Exposition sections; ignores invitations/hooks |
 
 ---
 
-## Explicit non-actions
+## Explicit non-actions (at close)
 
+- Do not reopen Sprint 99 or 98 for polish.  
+- Do not treat deferred M3-3 / M3-4 as delivered.  
 - Do not impose Interactive attempt-before-scaffold on Expository.  
-- Do not treat explanation-before-activity as a defect.  
-- Do not move Knowledge Summary after exposition.  
-- Do not introduce arbitrary word limits or unnecessary schemas/renderer mechanisms.  
-- Do not modify Assessment Pack or Situated Task.  
-- Do not implement M2 without evidence from M1.  
-- Do not commit or push without separate authorisation.
+- Do not conflate programme [D-015](../../../governance/ARCHITECTURAL-DEBT.md#d-015--interactive-learning-sequence-study-flow-fidelity) with Expository work or PB-FA-019 without allocation.  
+- Commit / push requires separate authorisation.  
+- Continue with Interactive + Expository corpus regeneration per [NEXT-SPRINT.md](../../../sprints/NEXT-SPRINT.md); do not open superseded Sprint 100.

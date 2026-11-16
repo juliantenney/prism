@@ -179,14 +179,15 @@ test("R4: verification paste area appears only when review is required", () => {
   assert.equal(capture(determinateDla(), determinateGam()).pasteLabel, "Paste verification result");
 });
 
-test("R5: explicit Check verification action exists", () => {
+test("R5: verification auto-processes on paste; no Check verification button", () => {
   const source = fs.readFileSync(path.join(repoRoot, "app.js"), "utf8");
-  assert.match(source, /Check verification/);
-  assert.match(source, /data-role", "run-step-suitability-check"/);
-  assert.match(source, /function checkGamMaterialsVerificationFromDom/);
+  assert.doesNotMatch(source, /Check verification/);
+  assert.doesNotMatch(source, /data-role", "run-step-suitability-check"/);
+  assert.match(source, /function processGamSuitabilityReviewRawInput/);
+  assert.match(source, /gamSuitabilityReviewRawIsReadyToValidate/);
   const view = capture(determinateDla(), determinateGam());
-  assert.equal(view.showCheckAction, true);
-  assert.equal(view.checkLabel, "Check verification");
+  assert.equal(view.showCheckAction, false);
+  assert.equal(view.checkLabel, "");
 });
 
 test("R6: all-PASS review → Verification passed, complete, Next enabled", () => {
@@ -297,7 +298,6 @@ test("R11: primary UI language hides schema/fingerprint internals", () => {
     pending.intro,
     pending.stepStatusText,
     pending.copyLabel,
-    pending.checkLabel,
     pending.pasteLabel,
     failed.resultTitle,
     failed.resultBody,
@@ -339,14 +339,20 @@ test("Case A — zero obligations is one-phase completion", () => {
   assert.equal(view.complete, true);
 });
 
-test("Case B — obligations + PASS completes only after Check", () => {
+test("Case B — obligations + PASS completes only after verification paste", () => {
   const dla = determinateDla();
   const gam = determinateGam();
   const pending = capture(dla, gam);
   assert.equal(pending.complete, false);
-  const passed = api.submitGamMaterialsVerificationForTest(GAM_STEP, makeReview(dla, gam), gam, dla);
-  assert.equal(passed.phase, "review_passed");
-  assert.equal(passed.complete, true);
+  const passed = api.processGamSuitabilityReviewRawInputForTest(
+    GAM_STEP,
+    makeReview(dla, gam),
+    gam,
+    dla
+  );
+  assert.equal(passed.autoChecked, true);
+  assert.equal(passed.view.phase, "review_passed");
+  assert.equal(passed.view.complete, true);
 });
 
 test("Case C — obligations + FAIL keeps Next disabled", () => {
@@ -584,7 +590,7 @@ test("T-043: verification wrap is a distinct secondary section under capture", (
   assert.match(source, /workflow-step-suitability-review__intro/);
   assert.match(source, /workflow-step-suitability-review__copy/);
   assert.match(source, /workflow-step-suitability-review__paste-label/);
-  assert.match(source, /workflow-step-suitability-review__check/);
+  assert.doesNotMatch(source, /workflow-step-suitability-review__check/);
   // Capture → verification → continue (verification grouped under materials, not after continue)
   assert.match(
     source,
@@ -594,9 +600,9 @@ test("T-043: verification wrap is a distinct secondary section under capture", (
   assert.match(css, /border-top:\s*1px solid var\(--border-subtle\)/);
   assert.match(css, /\.workflow-step-suitability-review__title\s*\{/);
   assert.match(css, /\.workflow-step-suitability-review__copy\s*\{/);
-  // Behaviour roles unchanged
+  // Behaviour roles: copy + paste remain; check button removed (auto-validate on paste)
   assert.match(source, /data-role", "run-step-suitability-copy"/);
-  assert.match(source, /data-role", "run-step-suitability-check"/);
+  assert.doesNotMatch(source, /data-role", "run-step-suitability-check"/);
   assert.match(source, /data-field", "runStepSuitabilityReview"/);
 });
 
@@ -829,5 +835,226 @@ test("nav: exception does not clear verification state or repair copy path", () 
   assert.match(repaired, /Keep failure visible/);
   assert.equal(api.getWorkflowRunCaptureGatesBlockReasonForTest(GAM_STEP).length > 0, true);
   assert.equal(api.tryCompleteWorkflowRunStepIfCaptureGatesPassForTest(GAM_STEP), false);
+});
+
+test("auto-verify: complete passing paste validates without a check click", () => {
+  const dla = determinateDla();
+  const gam = determinateGam();
+  capture(dla, gam);
+  assert.equal(api.tryCompleteWorkflowRunStepIfCaptureGatesPassForTest(GAM_STEP), false);
+  const result = api.processGamSuitabilityReviewRawInputForTest(
+    GAM_STEP,
+    makeReview(dla, gam),
+    gam,
+    dla
+  );
+  assert.equal(result.autoChecked, true);
+  assert.equal(result.skippedDuplicate, false);
+  assert.equal(result.view.phase, "review_passed");
+  assert.equal(result.view.complete, true);
+  assert.equal(result.view.nextBlocked, false);
+  assert.equal(result.view.resultTitle, "Verification passed");
+  assert.equal(api.tryCompleteWorkflowRunStepIfCaptureGatesPassForTest(GAM_STEP), true);
+});
+
+test("auto-verify: complete failing paste shows issue and keeps Next disabled", () => {
+  const dla = determinateDla();
+  const gam = determinateGam();
+  capture(dla, gam);
+  const result = api.processGamSuitabilityReviewRawInputForTest(
+    GAM_STEP,
+    makeReview(dla, gam, {
+      "A1-M1": {
+        suitable: false,
+        failure_class: "contradiction",
+        reason: "Particulars prevent the commissioned result."
+      }
+    }),
+    gam,
+    dla
+  );
+  assert.equal(result.autoChecked, true);
+  assert.equal(result.view.phase, "review_failed");
+  assert.equal(result.view.nextBlocked, true);
+  assert.equal(result.view.resultTitle, "Verification found an issue");
+  assert.equal(api.tryCompleteWorkflowRunStepIfCaptureGatesPassForTest(GAM_STEP), false);
+});
+
+test("auto-verify: incomplete JSON does not validate or show unreadable errors", () => {
+  const dla = determinateDla();
+  const gam = determinateGam();
+  capture(dla, gam);
+  assert.equal(api.gamSuitabilityReviewRawIsReadyToValidateForTest('{"artifact_type":'), false);
+  const result = api.processGamSuitabilityReviewRawInputForTest(
+    GAM_STEP,
+    '{"artifact_type": "gam_operational_suitability_review"',
+    gam,
+    dla
+  );
+  assert.equal(result.autoChecked, false);
+  assert.equal(result.view.phase, "gam_valid_review_required");
+  assert.equal(result.view.resultTitle, "");
+  assert.notEqual(result.view.resultTitle, "Verification result could not be read");
+  assert.equal(api.tryCompleteWorkflowRunStepIfCaptureGatesPassForTest(GAM_STEP), false);
+});
+
+test("auto-verify: complete malformed JSON is rejected as unreadable", () => {
+  const dla = determinateDla();
+  const gam = determinateGam();
+  capture(dla, gam);
+  assert.equal(api.gamSuitabilityReviewRawIsReadyToValidateForTest("{not-json}"), true);
+  const result = api.processGamSuitabilityReviewRawInputForTest(GAM_STEP, "{not-json}", gam, dla);
+  assert.equal(result.autoChecked, true);
+  assert.equal(result.view.phase, "review_invalid");
+  assert.equal(result.view.resultTitle, "Verification result could not be read");
+  assert.equal(result.view.nextBlocked, true);
+});
+
+test("auto-verify: parseable non-review JSON is not treated as a pass", () => {
+  const dla = determinateDla();
+  const gam = determinateGam();
+  capture(dla, gam);
+  const result = api.processGamSuitabilityReviewRawInputForTest(
+    GAM_STEP,
+    JSON.stringify({ ok: true, suitable: true }),
+    gam,
+    dla
+  );
+  assert.equal(result.autoChecked, true);
+  assert.notEqual(result.view.phase, "review_passed");
+  assert.equal(result.view.complete, false);
+  assert.equal(result.view.nextBlocked, true);
+});
+
+test("auto-verify: replacing an accepted result with a failing result invalidates pass", () => {
+  const dla = determinateDla();
+  const gam = determinateGam();
+  capture(dla, gam);
+  const passed = api.processGamSuitabilityReviewRawInputForTest(
+    GAM_STEP,
+    makeReview(dla, gam),
+    gam,
+    dla
+  );
+  assert.equal(passed.view.phase, "review_passed");
+  const replaced = api.processGamSuitabilityReviewRawInputForTest(
+    GAM_STEP,
+    makeReview(dla, gam, {
+      "A1-M2": {
+        suitable: false,
+        failure_class: "incomplete_model",
+        reason: "Stops before the promised result."
+      }
+    }),
+    gam,
+    dla
+  );
+  assert.equal(replaced.autoChecked, true);
+  assert.equal(replaced.view.phase, "review_failed");
+  assert.equal(replaced.view.complete, false);
+  assert.equal(replaced.view.nextBlocked, true);
+  assert.equal(api.tryCompleteWorkflowRunStepIfCaptureGatesPassForTest(GAM_STEP), false);
+});
+
+test("auto-verify: clearing an accepted result immediately invalidates approval", () => {
+  const dla = determinateDla();
+  const gam = determinateGam();
+  capture(dla, gam);
+  api.processGamSuitabilityReviewRawInputForTest(GAM_STEP, makeReview(dla, gam), gam, dla);
+  assert.equal(api.tryCompleteWorkflowRunStepIfCaptureGatesPassForTest(GAM_STEP), true);
+  const cleared = api.processGamSuitabilityReviewRawInputForTest(GAM_STEP, "", gam, dla);
+  assert.equal(cleared.autoChecked, false);
+  assert.equal(cleared.view.phase, "gam_valid_review_required");
+  assert.equal(cleared.view.complete, false);
+  assert.equal(cleared.view.nextBlocked, true);
+  assert.equal(api.tryCompleteWorkflowRunStepIfCaptureGatesPassForTest(GAM_STEP), false);
+});
+
+test("auto-verify: regenerating GAM materials after verification requires a fresh check", () => {
+  const dla = determinateDla();
+  const gam = determinateGam();
+  capture(dla, gam);
+  api.processGamSuitabilityReviewRawInputForTest(GAM_STEP, makeReview(dla, gam), gam, dla);
+  assert.equal(api.tryCompleteWorkflowRunStepIfCaptureGatesPassForTest(GAM_STEP), true);
+  const changed = determinateGam();
+  changed.activities[0].materials[0].body += "\nModified particulars.";
+  const stale = api.syncGamMaterialsVerificationAfterCaptureForTest(GAM_STEP, changed, dla);
+  assert.equal(stale.complete, false);
+  assert.equal(stale.nextBlocked, true);
+  assert.match(stale.stepStatusText, /Materials changed — verification must be run again/);
+  assert.equal(api.tryCompleteWorkflowRunStepIfCaptureGatesPassForTest(GAM_STEP), false);
+  const oldReview = makeReview(dla, gam);
+  const reused = api.processGamSuitabilityReviewRawInputForTest(GAM_STEP, oldReview, changed, dla);
+  assert.equal(reused.autoChecked, true);
+  assert.notEqual(reused.view.phase, "review_passed");
+  assert.equal(reused.view.nextBlocked, true);
+});
+
+test("auto-verify: persistence via raw + gate restore after reload-like reset", () => {
+  const dla = determinateDla();
+  const gam = determinateGam();
+  capture(dla, gam);
+  const review = makeReview(dla, gam);
+  api.processGamSuitabilityReviewRawInputForTest(GAM_STEP, review, gam, dla);
+  assert.equal(api.tryCompleteWorkflowRunStepIfCaptureGatesPassForTest(GAM_STEP), true);
+  const checkBefore = api.getWorkflowRunGamVerificationCheckForTest(GAM_STEP);
+  assert.equal(checkBefore.phase, "review_passed");
+  // Simulate session restore: keep raw, drop check, re-apply gate from stored raw.
+  api.resetGamOperationalSuitabilityReviewStateForTest();
+  api.installGamVerificationScopeWorkflowForTest();
+  api.syncGamMaterialsVerificationAfterCaptureForTest(GAM_STEP, gam, dla);
+  api.setWorkflowRunGamSuitabilityReviewRawForTest(GAM_STEP, review);
+  api.applyGamOperationalSuitabilityReviewGate(GAM_STEP, gam, dla);
+  const restored = api.resolveGamMaterialsVerificationViewForTest(GAM_STEP, pages(dla, gam));
+  assert.equal(restored.phase, "review_passed");
+  assert.equal(restored.complete, true);
+  assert.equal(restored.nextBlocked, false);
+  assert.equal(api.tryCompleteWorkflowRunStepIfCaptureGatesPassForTest(GAM_STEP), true);
+});
+
+test("auto-verify: repeated identical input does not re-run the gate", () => {
+  const dla = determinateDla();
+  const gam = determinateGam();
+  capture(dla, gam);
+  const review = makeReview(dla, gam);
+  const first = api.processGamSuitabilityReviewRawInputForTest(GAM_STEP, review, gam, dla);
+  assert.equal(first.autoChecked, true);
+  assert.equal(first.skippedDuplicate, false);
+  const fingerprint = api.getWorkflowRunGamVerificationCheckForTest(GAM_STEP).fingerprint;
+  const second = api.processGamSuitabilityReviewRawInputForTest(GAM_STEP, review, gam, dla);
+  assert.equal(second.skippedDuplicate, true);
+  assert.equal(second.autoChecked, false);
+  assert.equal(second.view.phase, "review_passed");
+  assert.equal(api.getWorkflowRunGamVerificationCheckForTest(GAM_STEP).fingerprint, fingerprint);
+});
+
+test("auto-verify: existing explicit submit + repair path remains intact", () => {
+  const dla = determinateDla();
+  const gam = determinateGam();
+  capture(dla, gam);
+  const failed = api.submitGamMaterialsVerificationForTest(
+    GAM_STEP,
+    makeReview(dla, gam, {
+      "A1-M1": { suitable: false, failure_class: "contradiction", reason: "Repair still required." }
+    }),
+    gam,
+    dla
+  );
+  assert.equal(failed.phase, "review_failed");
+  assert.equal(api.resolveGamGenerationCopyLabelForStepForTest(GAM_STEP), "Copy revised prompt");
+  const repaired = api.applyGamVerificationRepairToGenerationPromptIfNeededForTest(
+    GAM_STEP,
+    ORIGINAL_GENERATION_PROMPT
+  );
+  assert.match(repaired, /PRISM VERIFICATION REPAIR/);
+  assert.match(repaired, /Repair still required/);
+  const passed = api.processGamSuitabilityReviewRawInputForTest(
+    GAM_STEP,
+    makeReview(dla, gam),
+    gam,
+    dla
+  );
+  assert.equal(passed.view.phase, "review_passed");
+  assert.equal(api.resolveGamGenerationCopyLabelForStepForTest(GAM_STEP), "Copy");
 });
 

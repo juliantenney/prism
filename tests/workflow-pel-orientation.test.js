@@ -309,6 +309,12 @@ test("30-1c: GAM scaffold for self-directed learner page forbids facilitator-fac
   assert.match(prompt, /Before moving on/i);
   assert.match(prompt, /GAM-PRES-08/i);
   assert.match(prompt, /Prefer instructional completeness over brevity/i);
+  assert.match(prompt, /Academic Plain English/i);
+  assert.match(
+    prompt,
+    /Give orientation, teaching, activity instructions, hints\/scaffolding, and feedback\/review each a distinct educational purpose/i
+  );
+  assert.match(prompt, /Avoid unproductive repetition/i);
   assert.doesNotMatch(prompt, /add artefacts \(tables, excerpts, worked rows\) only/i);
 });
 

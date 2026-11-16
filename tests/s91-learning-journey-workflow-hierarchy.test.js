@@ -326,7 +326,7 @@ test("commissioned constituents nest beneath Learning Journey and are not top-le
   assert.equal(built.rows[0].type, "lj_parent");
   assert.equal(built.rows[0].workflow.id, "wf-lj");
   assert.equal(built.rows[0].hasChildren, true);
-  assert.equal(built.rows[0].expanded, true);
+  assert.equal(built.rows[0].expanded, false);
   assert.equal(built.rows[0].children.length, 2);
   assert.equal(built.rows[0].children[0].id, "wf-c1");
   assert.equal(built.rows[0].children[1].id, "wf-c2");
@@ -361,6 +361,19 @@ test("disclosure collapsed hides children in presentation model", () => {
   assert.equal(hierarchy.isLearningJourneyListExpanded({ "wf-lj": false }, "wf-lj"), false);
   const next = hierarchy.setLearningJourneyListExpanded({}, "wf-lj", true);
   assert.equal(next["wf-lj"], true);
+});
+
+test("LJ entries default collapsed; expand only when explicitly true", () => {
+  const workflows = [lj("wf-lj", "LJTest"), child("wf-c1", "Child", "wf-lj", "c1")];
+  const defaultBuilt = hierarchy.buildLearningJourneyWorkflowListRows(workflows, workflows, {});
+  assert.equal(defaultBuilt.rows[0].expanded, false);
+  assert.equal(hierarchy.isLearningJourneyListExpanded({}, "wf-lj"), false);
+  assert.equal(hierarchy.isLearningJourneyListExpanded({ "wf-lj": true }, "wf-lj"), true);
+
+  const expandedBuilt = hierarchy.buildLearningJourneyWorkflowListRows(workflows, workflows, {
+    expandedById: { "wf-lj": true }
+  });
+  assert.equal(expandedBuilt.rows[0].expanded, true);
 });
 
 test("missing sourceWorkflowId and invalid/non-LJ parents stay top-level", () => {
@@ -410,6 +423,23 @@ test("My Workflows DOM nests children; disclosure toggles; parent remains select
   api.setWorkflowsForTest(workflows);
   api.renderWorkflowListForTest({ skipDefaultSelection: true });
 
+  // LJ parents start collapsed; non-LJ entries remain visible top-level.
+  assert.deepEqual(collectWorkflowListIds(workflowList), ["wf-lj", "wf-other"]);
+  assert.equal(
+    workflowList
+      .querySelector('[data-workflow-id="wf-other"]')
+      .getAttribute("data-workflow-list-role"),
+    "standalone"
+  );
+  assert.equal(workflowList.querySelector('[data-workflow-id="wf-c1"]'), null);
+
+  const disclosure = workflowList.querySelector('[data-lj-disclosure-id="wf-lj"]');
+  assert.ok(disclosure);
+  assert.equal(disclosure.getAttribute("aria-expanded"), "false");
+
+  // Expand via the same path My Workflows uses.
+  api.setLearningJourneyListExpandedForParentForTest("wf-lj", true);
+  api.renderWorkflowListForTest({ skipDefaultSelection: true });
   assert.deepEqual(collectWorkflowListIds(workflowList), [
     "wf-lj",
     "wf-c1",
@@ -421,17 +451,11 @@ test("My Workflows DOM nests children; disclosure toggles; parent remains select
     "lj_child"
   );
   assert.equal(
-    workflowList
-      .querySelector('[data-workflow-id="wf-other"]')
-      .getAttribute("data-workflow-list-role"),
-    "standalone"
+    workflowList.querySelector('[data-lj-disclosure-id="wf-lj"]').getAttribute("aria-expanded"),
+    "true"
   );
 
-  const disclosure = workflowList.querySelector('[data-lj-disclosure-id="wf-lj"]');
-  assert.ok(disclosure);
-  assert.equal(disclosure.getAttribute("aria-expanded"), "true");
-
-  // Toggle via the same click path My Workflows uses.
+  // Collapse again; user-controlled state is preserved across re-render.
   api.setLearningJourneyListExpandedForParentForTest("wf-lj", false);
   api.renderWorkflowListForTest({ skipDefaultSelection: true });
   assert.deepEqual(collectWorkflowListIds(workflowList), ["wf-lj", "wf-other"]);

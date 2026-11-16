@@ -44,6 +44,29 @@ test("LD-GAM-INSTRUCTIONAL-DEPTH: subject-matter-first guidance present", () => 
   assert.match(text, /not commentary about how the content was generated/i);
 });
 
+test("LD-GAM-INSTRUCTIONAL-DEPTH: Academic Plain English and layer-purpose economy", () => {
+  const text = depth.buildGamInstructionalDepthPromptBlock();
+  assert.match(text, /ACADEMIC PLAIN ENGLISH \(Interactive materials generation\)/i);
+  assert.match(
+    text,
+    /clearest language appropriate to the learner's level, while preserving conceptual precision/i
+  );
+  assert.match(text, /Do not impose arbitrary word limits, readability scores/i);
+  assert.match(text, /INSTRUCTIONAL LAYER PURPOSES/i);
+  assert.match(text, /Orientation: explain what learners are about to do and why it matters/i);
+  assert.match(text, /Teaching: introduce the ideas, distinctions and explanations/i);
+  assert.match(text, /Activity instructions: state clearly what the learner must do/i);
+  assert.match(text, /Hints and scaffolding: help learners make progress when needed/i);
+  assert.match(text, /Feedback and review: help learners diagnose, evaluate or improve/i);
+  assert.match(text, /PRODUCTIVE VS UNPRODUCTIVE REPETITION/i);
+  assert.match(text, /retrieval, application in a new context, comparison/i);
+  assert.match(
+    text,
+    /duplicating the same explanation across teaching, instructions and feedback/i
+  );
+  assert.match(text, /Preserve necessary scaffolding/i);
+});
+
 test("LD-GAM-INSTRUCTIONAL-DEPTH: comparative reasoning guidance remains", () => {
   const text = depth.buildGamInstructionalDepthPromptBlock();
   assert.match(text, /DOMAIN COMPARISON REMAINS DESIRABLE/i);

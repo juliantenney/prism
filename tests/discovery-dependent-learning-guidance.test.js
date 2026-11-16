@@ -92,6 +92,12 @@ test("Design Page assembled orientation guidance protects outcomes and opening p
   );
   assert.match(prompt, /post-attempt \/ Reveal-after disclosure mechanisms/i);
   assert.match(prompt, /keep outcomes as capabilities not completed answers/i);
+  assert.match(prompt, /NEWLY AUTHORED page_synthesis responsibilities/i);
+  assert.match(prompt, /substantive, accessible advance organiser/i);
+  assert.match(
+    prompt,
+    /Avoid reproducing complete activity explanations, worked solutions or case-specific conclusions/i
+  );
 });
 
 test("existing attempt-before / discovery-sequence guidance remains complementary, not conflicting", () => {

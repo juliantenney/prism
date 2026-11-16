@@ -108,7 +108,7 @@ test("LD-DESIGN-PAGE-PARTIAL-CONTRACT: Interactive knowledge_summary is a concep
   assert.match(text, /page_synthesis\.knowledge_summary is mandatory/i);
   assert.match(text, /Interactive opening orientation|opening conceptual briefing/i);
   assert.match(text, /not a recap of completed activity answers/i);
-  assert.match(text, /Conceptual synthesis is required/i);
+  assert.match(text, /substantive, accessible advance organiser/i);
   assert.match(text, /Conditional attempt-before-complete-explanation/i);
   assert.match(text, /not a universal ban on direct instruction/i);
   assert.match(text, /Do not reveal completed results, model answers, or interpretations/i);
@@ -118,8 +118,59 @@ test("LD-DESIGN-PAGE-PARTIAL-CONTRACT: Interactive knowledge_summary is a concep
   assert.match(text, /different evidence may be appropriate/i);
   assert.match(text, /Do not prohibit numerical examples categorically/i);
   assert.match(text, /generic topic list or learning-outcome restatement/i);
-  assert.match(shape, /Substantive conceptual briefing/i);
+  assert.match(shape, /Substantive advance organiser/i);
   assert.doesNotMatch(shape, /Substantive concept synthesis — not a glossary dump/i);
   assert.match(text, /visual_affordances\[\]/);
   assert.match(text, /hide_answers/);
+});
+
+test("LD-DESIGN-PAGE-PARTIAL-CONTRACT: newly authored page_synthesis roles are distinct", () => {
+  const partial = require("../lib/ld-design-page-partial-contract.js");
+  const text = partial.buildDesignPagePartialContractBlock();
+  assert.match(text, /NEWLY AUTHORED page_synthesis responsibilities/i);
+  assert.match(
+    text,
+    /overview — orient the learner to the context, overall investigation and how to begin/i
+  );
+  assert.match(
+    text,
+    /without narrating every activity in detail/i
+  );
+  assert.match(
+    text,
+    /learning_purpose — explain why the work matters intellectually/i
+  );
+  assert.match(
+    text,
+    /rather than repeating the Overview's activity itinerary/i
+  );
+  assert.match(
+    text,
+    /knowledge_summary — substantive, accessible advance organiser/i
+  );
+  assert.match(
+    text,
+    /Subsequent activity teaching may revisit these concepts when applying, extending or testing them/i
+  );
+  assert.match(
+    text,
+    /TRANSPORT AUTHORITY: when an upstream overview, learning_purpose, knowledge_summary or study_tips body is present/i
+  );
+  assert.match(
+    text,
+    /do not rewrite, shorten or paraphrase transported bodies/i
+  );
+  assert.match(
+    text,
+    /page_synthesis\.overview and page_synthesis\.learning_purpose — transport upstream bodies from conversation when present/i
+  );
+  assert.match(
+    text,
+    /treat repetition as unnecessary only when it performs substantially the same instructional function/i
+  );
+  assert.match(
+    text,
+    /do not describe the same activity-by-activity progression in both overview and learning_purpose/i
+  );
+  assert.doesNotMatch(text, /\b\d+\s*words?\b/i);
 });

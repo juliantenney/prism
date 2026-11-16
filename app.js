@@ -11882,6 +11882,8 @@
         } else if (role === "gam") {
           lines = lines.concat([
             "- Scope (GAM authoring): realise closure, debrief, misconception checks, and concept/procedure integration in material bodies — full learner-facing prose, not outline labels.",
+            "- Pattern and depth: INSTRUCTIONAL-PATTERN-SP blocks for type shape; pack GAM-PRES-08/09 for depth floors.",
+            "- Instructional economy: obey LD-GAM-INSTRUCTIONAL-DEPTH Academic Plain English, distinct layer purposes (orientation / teaching / instructions / hints / feedback), and productive-vs-unproductive repetition guidance when realising material bodies.",
             "- Worked example / fading: sequence modelled reasoning → faded partial completion → independent transfer when the brief allows; label ### Worked example or model rows; do not pre-fill entire tables outside the modelled material.",
             "- Misconception: Check your thinking: in support_note (reactive); prompt_set self-check bullets; no adaptive feedback or answer keys in independent activities.",
             "- Concept/procedure: step → meaning lines and Use this when… cues in materials.",
@@ -12563,6 +12565,7 @@
         throw incompleteErr;
       }
     }
+    assembledPage = applyAuthoritativeResourceTitleToPage(assembledPage, workflow);
     return attachLearnerPageIdentityFromWorkflow(assembledPage, workflow);
   }
 
@@ -12731,6 +12734,31 @@
       return lib.applyLdGamInstructionalDepthContractToDraft(draftText, {
         isGenerateActivityMaterialsStep: isWorkflowStepGenerateActivityMaterials(context)
       });
+    }
+    return String(draftText || "").trim();
+  }
+
+  function resolveLdLearnerFacingProseTypographyLib() {
+    var roots = [];
+    var w = ldTableFidelityGlobalRoot();
+    if (w) roots.push(w);
+    if (typeof globalThis !== "undefined" && globalThis !== w) roots.push(globalThis);
+    var i;
+    for (i = 0; i < roots.length; i += 1) {
+      if (roots[i] && roots[i].PRISM_LD_LEARNER_FACING_PROSE_TYPOGRAPHY) {
+        return roots[i].PRISM_LD_LEARNER_FACING_PROSE_TYPOGRAPHY;
+      }
+    }
+    return null;
+  }
+
+  function applyLearnerFacingProseTypographyContractToDraft(draftText, context) {
+    var lib = resolveLdLearnerFacingProseTypographyLib();
+    if (
+      lib &&
+      typeof lib.applyLearnerFacingProseTypographyContractToDraft === "function"
+    ) {
+      return lib.applyLearnerFacingProseTypographyContractToDraft(draftText, context);
     }
     return String(draftText || "").trim();
   }
@@ -15062,6 +15090,73 @@
     return String(value == null ? "" : value).trim();
   }
 
+  function isScaffoldingResourceTitle(title) {
+    var text = String(title == null ? "" : title).trim();
+    if (!text) return true;
+    if (/^(create|design|build|generate|write|produce)\s+(a|an)\b/i.test(text)) return true;
+    if (
+      /\b(create|design|build)\b/i.test(text) &&
+      /\b(self-study|resource|workshop|page|session)\b/i.test(text) &&
+      /\b\d+\s*(minute|hour|min)\b/i.test(text)
+    ) {
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * Authoritative learner-facing resource title for Interactive (and other page
+   * products that share shell title precedence). Rejects request/brief scaffolding
+   * and over-long focus/specification strings that are not titles.
+   */
+  function resolveAuthoritativeResourceTitle(wf) {
+    var workflow = resolveActiveWorkflowForEpisodePlanDerive(wf);
+    if (!workflow || typeof workflow !== "object") return "";
+    var briefCtx = resolveWorkflowBriefContextForPageComposition({
+      workflowId: workflow && workflow.id ? workflow.id : ""
+    });
+    var resolved =
+      briefCtx && briefCtx.resolved && typeof briefCtx.resolved === "object"
+        ? briefCtx.resolved
+        : {};
+    var candidates = [
+      resolved.page_title,
+      resolved.title,
+      resolveEffectiveWorkflowTopicForTitle(workflow),
+      workflow.name
+    ];
+    var i;
+    for (i = 0; i < candidates.length; i += 1) {
+      var title = String(candidates[i] == null ? "" : candidates[i]).trim();
+      if (!title || title === "Learning page") continue;
+      if (isScaffoldingResourceTitle(title)) continue;
+      // Specification-length focus strings are not resource titles.
+      if (title.length > 100) continue;
+      return title;
+    }
+    return "";
+  }
+
+  function buildAuthoritativeResourceTitlePromptBlock(title) {
+    var authoritative = String(title == null ? "" : title).trim();
+    if (!authoritative) return "";
+    return [
+      "",
+      "AUTHORITATIVE RESOURCE TITLE (auto-applied):",
+      '- Emit page.title exactly as: "' + authoritative.replace(/\\/g, "\\\\").replace(/"/g, '\\"') + '"',
+      "- Do not invent an alternative resource title.",
+      "- Do not replace this title with a thematic paraphrase of the activities, materials, or subject."
+    ].join("\n");
+  }
+
+  function applyAuthoritativeResourceTitleToPage(page, wf) {
+    if (!page || typeof page !== "object" || Array.isArray(page)) return page;
+    var authoritative = resolveAuthoritativeResourceTitle(wf);
+    if (!authoritative) return page;
+    page.title = authoritative;
+    return page;
+  }
+
   function buildPageShellOptionsFromWorkflow(wf, learningOutcomes) {
     var workflow = resolveActiveWorkflowForEpisodePlanDerive(wf);
     var briefCtx = resolveWorkflowBriefContextForPageComposition({
@@ -15088,6 +15183,8 @@
     //   5. "Learning page"
     // Topic is a concise subject label by contract, so it is title-capable;
     // nothing here derives a Topic from Goal prose (see D7).
+    // When an authoritative title exists, Design Page must retain it rather than
+    // inventing an alternative (see applyAuthoritativeResourceTitleToPage).
     return {
       title: utilityFirstPresent([
         resolved.page_title,
@@ -18817,21 +18914,31 @@
       return draftBody;
     }
     var lib = resolveLdDesignPagePartialContractLib();
+    var withContract = draftBody;
     if (
-      lib &&
-      typeof lib.partialContractAlreadyPresent === "function" &&
-      lib.partialContractAlreadyPresent(draftBody)
+      !(
+        lib &&
+        typeof lib.partialContractAlreadyPresent === "function" &&
+        lib.partialContractAlreadyPresent(draftBody)
+      )
     ) {
-      return draftBody;
+      var block =
+        lib && typeof lib.buildDesignPagePartialContractBlock === "function"
+          ? lib.buildDesignPagePartialContractBlock()
+          : "";
+      if (block && String(block).trim()) {
+        withContract = (draftBody + "\n" + block).trim();
+      }
     }
-    var block =
-      lib && typeof lib.buildDesignPagePartialContractBlock === "function"
-        ? lib.buildDesignPagePartialContractBlock()
-        : "";
-    if (!block || !String(block).trim()) {
-      return draftBody;
+    var authoritativeTitle = resolveAuthoritativeResourceTitle(workflow);
+    var titleBlock = buildAuthoritativeResourceTitlePromptBlock(authoritativeTitle);
+    if (
+      titleBlock &&
+      !/AUTHORITATIVE RESOURCE TITLE \(auto-applied\)/i.test(withContract)
+    ) {
+      return (withContract + "\n" + titleBlock).trim();
     }
-    return (draftBody + "\n" + block).trim();
+    return withContract;
   }
 
   function buildLdThinAssemblyCoherencePromptBlock(options) {
@@ -18992,8 +19099,10 @@
       "- Do not include live classroom timing or choreography (e.g. \"minutes 5–15\", \"at minute 20\", \"circulate during discussion\", \"encourage them to\", \"help learners\").",
       "- Use learner-facing guidance instead, for example: \"Use this to…\", \"Check your notes against…\", \"Before moving on…\", \"If you get stuck…\", \"How to use this resource:\".",
       "- Material purpose lines should describe what the learner does with the resource — not how a teacher should run the activity.",
+      "- Academic Plain English: use the clearest language appropriate to the learner's level while preserving conceptual precision, disciplinary terminology and intellectual challenge — do not trade difficulty for vague or elaborate phrasing.",
+      "- Give orientation, teaching, activity instructions, hints/scaffolding, and feedback/review each a distinct educational purpose; do not restate the same explanation or activity overview across those layers unless the new occurrence advances learning (retrieval, new context, comparison, misconception repair, or deliberate reinforcement).",
       "- Do not duplicate content unnecessarily. However, anti-redundancy must never reduce a material below the minimum instructional richness required by GAM-PRES-08. When explanatory context, reasoning steps, interpretation, modelling, judgement rationale, misconception handling, or learner guidance improve instructional quality, include them even if related information exists elsewhere.",
-      "- Prefer instructional completeness over brevity. Avoid unnecessary repetition, but do not shorten, compress, or omit reasoning that supports learning."
+      "- Prefer instructional completeness over brevity. Avoid unproductive repetition, but do not shorten, compress, or omit reasoning that supports learning."
     ].join("\n");
   }
 
@@ -19931,6 +20040,9 @@
     var ctx = enrichDlaLearnerPageAugmentContext(
       buildWorkflowStepPromptAugmentContextFromStep(step, wf)
     );
+    // Global editorial standard — apply before route branching so Interactive,
+    // Learning Journey, Expository, Assessment Pack and Situated Task all receive it.
+    draft = applyLearnerFacingProseTypographyContractToDraft(draft, ctx);
     var promptRoute = firstClassPromptRoute(wf);
     if (promptRoute === "expository") {
       draft = applyExpositoryDomainGuidanceToDraft(draft, step, wf);
@@ -25855,6 +25967,7 @@
         variant: family.identity.variant,
         startingPoint: family.identity.startingPoint,
         topic: focus,
+        page_title: displayName,
         commissionSpecification: String(envelope.specificationText || "").trim(),
         journeyContextText: String(envelope.journeyContextText || "").trim(),
         dependencies: String(envelope.dependencies || "").trim(),
@@ -25876,6 +25989,8 @@
       inferredFactors: {},
       resolvedFactors: Object.assign({}, family.deliverySeed || {}, {
         topic: focus,
+        // Short published resource title — outranks Topic and survives Design Page.
+        page_title: displayName,
         source_context:
           sharedSourceContext ||
           String((family.deliverySeed && family.deliverySeed.source_context) || "").trim()
@@ -62077,6 +62192,15 @@
     prismTestApi.resolveCommissionedWorkflowAudience = resolveCommissionedWorkflowAudience;
     prismTestApi.resolveEffectiveWorkflowAudience = resolveEffectiveWorkflowAudience;
     prismTestApi.buildPageShellOptionsFromWorkflow = buildPageShellOptionsFromWorkflow;
+    prismTestApi.resolveAuthoritativeResourceTitleForTest = resolveAuthoritativeResourceTitle;
+    prismTestApi.applyAuthoritativeResourceTitleToPageForTest =
+      applyAuthoritativeResourceTitleToPage;
+    prismTestApi.isScaffoldingResourceTitleForTest = isScaffoldingResourceTitle;
+    prismTestApi.buildAuthoritativeResourceTitlePromptBlockForTest =
+      buildAuthoritativeResourceTitlePromptBlock;
+    prismTestApi.sanitizeUtilitiesExportFilenameStemForTest =
+      sanitizeUtilitiesExportFilenameStem;
+    prismTestApi.getUtilityOutputBaseNameForTest = getUtilityOutputBaseName;
     // Sprint 80 S8 — Assessment Adjustments (Quantity + Difficulty).
     prismTestApi.resolveCommissionedAssessmentItemCount =
       resolveCommissionedAssessmentItemCount;
@@ -62198,6 +62322,8 @@
     prismTestApi.applyLdMaterialsCopyContractToDraft = applyLdMaterialsCopyContractToDraft;
     prismTestApi.applyLdGamInstructionalDepthContractToDraft =
       applyLdGamInstructionalDepthContractToDraft;
+    prismTestApi.applyLearnerFacingProseTypographyContractToDraft =
+      applyLearnerFacingProseTypographyContractToDraft;
     prismTestApi.applyLdInstructionalArchetypeRoutingToDraft =
       applyLdInstructionalArchetypeRoutingToDraft;
     prismTestApi.resolveLdInstructionalArchetypeLib =
@@ -63787,6 +63913,15 @@
     prismTestApi.ensureDesignPageV2PageInputBindingsForSteps =
       ensureDesignPageV2PageInputBindingsForSteps;
     prismTestApi.buildPageShellOptionsFromWorkflow = buildPageShellOptionsFromWorkflow;
+    prismTestApi.resolveAuthoritativeResourceTitleForTest = resolveAuthoritativeResourceTitle;
+    prismTestApi.applyAuthoritativeResourceTitleToPageForTest =
+      applyAuthoritativeResourceTitleToPage;
+    prismTestApi.isScaffoldingResourceTitleForTest = isScaffoldingResourceTitle;
+    prismTestApi.buildAuthoritativeResourceTitlePromptBlockForTest =
+      buildAuthoritativeResourceTitlePromptBlock;
+    prismTestApi.sanitizeUtilitiesExportFilenameStemForTest =
+      sanitizeUtilitiesExportFilenameStem;
+    prismTestApi.getUtilityOutputBaseNameForTest = getUtilityOutputBaseName;
     prismTestApi.resolvePageShellCreateLib = resolvePageShellCreateLib;
     prismTestApi.buildEpisodePlanUpstreamPromptSection = buildEpisodePlanUpstreamPromptSection;
     prismTestApi.buildPf11DlaUpstreamDiagnosticTrace = buildPf11DlaUpstreamDiagnosticTrace;

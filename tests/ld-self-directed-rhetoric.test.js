@@ -51,6 +51,14 @@ test("49-C3b: DLA rhetoric retains field authoring guidance", () => {
   assert.match(text, /intellectual_coherence_bridge \(mandatory every activity including A1/i);
 });
 
+test("GAM rhetoric points to Academic Plain English layer economy", () => {
+  const text = rhetoric.buildLdSelfDirectedRhetoricPromptBlock({ role: "gam" });
+  assert.match(text, /Scope \(GAM authoring\)/i);
+  assert.match(text, /Academic Plain English/i);
+  assert.match(text, /productive-vs-unproductive repetition/i);
+  assert.doesNotMatch(text, /ACADEMIC PLAIN ENGLISH \(Interactive materials generation\)/i);
+});
+
 test("56C: lib design_page rhetoric rider retained for evaluators but not DP runtime injection", () => {
   const libText = rhetoric.buildLdSelfDirectedRhetoricPromptBlock({ role: "design_page" });
   assert.match(libText, /Design Page rider/i);

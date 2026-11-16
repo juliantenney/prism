@@ -145,8 +145,16 @@ test("feedback containing a genuinely new quantity continues to fail", () => {
 });
 
 test("original unmodified C5 formative return passes Author Formative Return capture", () => {
-  const originalPath = path.join(__dirname, "..", "tmp-c5-formative-original.json");
-  assert.equal(fs.existsSync(originalPath), true, "expected tmp-c5-formative-original.json");
+  const originalPath = path.join(
+    __dirname,
+    "fixtures",
+    "assessment-pack-c5-formative-return-original.json"
+  );
+  assert.equal(
+    fs.existsSync(originalPath),
+    true,
+    "expected assessment-pack-c5-formative-return-original.json"
+  );
   const original = JSON.parse(fs.readFileSync(originalPath, "utf8"));
   const feedback = original.elicitations[1].delivery.items[0].feedback_note;
   assert.match(feedback, /72%/);

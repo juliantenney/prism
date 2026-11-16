@@ -26,15 +26,15 @@ Operator rejected sticky **full** Review guidance (too much viewport loss).
 
 ### Defect fix — reminder not appearing (manual test)
 
-**Root cause:** (1) `tmp-r4-hetero-preview.html` / static learner HTML lacked reminder CSS, so un-hiding left the reminder in its natural slot already above the fold with no sticky/fixed presentation; (2) `position:sticky` from a slot already scrolled off-screen does not re-enter the viewport; (3) scroll listening was window-only (misses nested overflow roots).
+**Root cause:** (1) the then-current static learner HTML preview lacked reminder CSS, so un-hiding left the reminder in its natural slot already above the fold with no sticky/fixed presentation; (2) `position:sticky` from a slot already scrolled off-screen does not re-enter the viewport; (3) scroll listening was window-only (misses nested overflow roots).
 
 **Fix:** reminder uses `position:fixed` when `data-revision-reminder-active`; PE CSS inlined into learner page; scroll capture + scroll-parent-aware in-view checks; show only when guidance out of view and task still in view.
 
 ### Second manual repro — runtime investigation (2026-08-28)
 
-Operator reported hard-refreshed regenerated `tmp-r4-hetero-preview.html` still showed no compact reminder.
+Operator reported hard-refreshed regenerated bare preview HTML still showed no compact reminder.
 
-**1. Artefact identity (on-disk proof):** refreshed preview contains `#prism-revision-reminder-css`, `position:fixed` active rule, compact reminder markup, single `syncReminderFromGuidance` PE, `getScrollParent` / `taskInView=isInView(task)`. No duplicate PE. Generation path is current `renderLearnerPageHtml` (prefer `node tmp-regen-r4-preview.js`).
+**1. Artefact identity (on-disk proof):** refreshed preview contains `#prism-revision-reminder-css`, `position:fixed` active rule, compact reminder markup, single `syncReminderFromGuidance` PE, `getScrollParent` / `taskInView=isInView(task)`. No duplicate PE. Generation path is current `renderLearnerPageHtml` (prefer `node tools/s81-revision-reminder-preview/regen-bare-preview.js`).
 
 **2. What “Task” means in the condition:** `task` = the entire Do section `section[data-composition-moment=do]` — **not** the “Your task” heading alone.
 
@@ -59,7 +59,7 @@ Operator screenshot (full learner shell) showed production scrolled into view wi
 
 **Fix (positioning only):** active reminder uses `top: var(--learner-sticky-nav-height, 0px)` (same shell token used for `scroll-margin-top`); keep `z-index:40` below nav `50`. Sources: `revision-criterion-accompaniment.js` + `app.js` presentation CSS. Bare fixture without the token falls back to `0px`.
 
-**Browser proof (full shell `tmp-r4-hetero-shell-preview.html`):** nav rect bottom≈214.5; reminder `top:215px`, `z-index:40`, `overlapNavReminder=false`, gap≈0.5px; reminder visible below journey nav over production.
+**Browser proof (full shell preview):** nav rect bottom≈214.5; reminder `top:215px`, `z-index:40`, `overlapNavReminder=false`, gap≈0.5px; reminder visible below journey nav over production.
 ---
 
 ## 1. Implementation
@@ -149,17 +149,26 @@ Same representative page as R1:
 
 `tests/fixtures/page-render/heteroscedasticity-beat-assignment-page.json`
 
-```bash
-node tmp-regen-r4-shell-preview.js
-```
-
-Open `tmp-r4-hetero-shell-preview.html` (full sticky journey nav) — preferred for this defect — or:
+Automated coverage: `tests/s81-t-008-revision-criterion-accompaniment.test.js`.  
+Optional browser utilities (permanent location): `tools/s81-revision-reminder-preview/` — see that folder’s README.
 
 ```bash
-node tmp-regen-r4-preview.js
+node tools/s81-revision-reminder-preview/regen-shell-preview.js
 ```
 
-(Equivalent bare fragment without shell.) Hard-refresh, then check:
+Open `tools/s81-revision-reminder-preview/out/heteroscedasticity-revision-reminder-shell.html` (full sticky journey nav) — preferred for this defect — or:
+
+```bash
+node tools/s81-revision-reminder-preview/regen-bare-preview.js
+```
+
+(Equivalent bare fragment without shell under `out/`.) Optionally:
+
+```bash
+node tools/s81-revision-reminder-preview/serve-preview.js
+```
+
+Hard-refresh, then check:
 
 1. Revise with this criterion → full guidance at Task.  
 2. Scroll toward response fields → full guidance leaves view → compact reminder appears.  

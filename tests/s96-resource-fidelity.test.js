@@ -12,15 +12,15 @@ const unifiedShell = require("../lib/learning-journey-unified-shell.js");
 
 const STANDALONE_C2 = path.join(
   __dirname,
-  "..",
-  "tmp-duu-standalone-m2-overflow",
+  "fixtures",
+  "s96-duu-standalone-m2-overflow",
   "c2",
   "index.html"
 );
 const STANDALONE_C4 = path.join(
   __dirname,
-  "..",
-  "tmp-duu-standalone-m2-overflow",
+  "fixtures",
+  "s96-duu-standalone-m2-overflow",
   "c4",
   "index.html"
 );

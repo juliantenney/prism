@@ -5,9 +5,13 @@ tools/_tmp_hetero_live_export/
 # S74C — prevent reintroduction of hygiene scratch (S74C-D02 / T-020 Group G)
 /test*.txt
 /tmp-*
+/temp/
 # Dotted local inspection / unzip extracts (historically got committed)
 /.tmp-*/
 /page - *.html
 /NEXT-CHAT-CONTEXT.md
 /tmp-was-marx-right/
 tools/_tmp_*/
+# Generated S81 revision-reminder previews (scripts are tracked; HTML outputs are not)
+tools/s81-revision-reminder-preview/out/*
+!tools/s81-revision-reminder-preview/out/.gitkeep

@@ -16,7 +16,11 @@ const canonical = require("../lib/assessment-pack-canonical.js");
 const family = require("../lib/first-class-workflow-family.js");
 const { renderLearnerPageHtml } = require("../lib/learner-renderer-vnext");
 
-const FIXTURE = path.join(__dirname, "..", "tmp-c02-assessment-design-page-fail.json");
+const FIXTURE = path.join(
+  __dirname,
+  "fixtures",
+  "assessment-pack-c02-design-page-research-study-stimulus.json"
+);
 
 function c02Page() {
   return JSON.parse(fs.readFileSync(FIXTURE, "utf8"));

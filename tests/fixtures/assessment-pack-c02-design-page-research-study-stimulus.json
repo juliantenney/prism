@@ -1,0 +1,224 @@
+{
+  "artifact_type": "page",
+  "schema_version": "2.0.0",
+  "product_id": "assessment_pack",
+  "page_kind": "assessment",
+  "title": "Write your first explanation",
+  "activities": [],
+  "framing": "In this activity, you will write your first independent explanation of a fictional research study for someone who has not seen the research account. Your aim is to communicate the principal finding in your own words. This is a formative starting point, not a graded assessment. You will return to your original explanation in later activities to examine your choices, revise your writing and reflect on what changed.",
+  "attempt_instructions": "Allow approximately 12 minutes, including time to read the research account and write your explanation.\n\nRead the complete fictional study provided with the writing task. You may refer to it while writing, but no external research or tools are needed.\n\nWrite independently for a non-specialist reader. Approximately 80–120 words is suggested as guidance, not a strict limit. Decide for yourself which evidence and context to include, how to communicate the numerical findings and how confidently to express your conclusions.\n\nKeep your original explanation unchanged for later diagnosis, revision and reflection. You will not receive an automatic grade or detailed corrective feedback at this stage.",
+  "assessment_evidence": {
+    "purpose": {
+      "role": "R2",
+      "visibility_claim": "This formative assessment makes visible how a learner independently communicates the principal finding of the canonical fictional observational survey to a non-specialist audience. The learner's constructed explanation provides evidence of their ability to select and express relevant numerical findings, distinguish observed association from unsupported causal conclusions, communicate methodological context and make independent decisions about the scope and confidence of their claims. It also establishes an original learner-authored baseline for later diagnosis, revision and reflection. The evidence is qualitative and non-determinate: the response can be examined subsequently, but it is not automatically judged, scored or classified as correct or incorrect.",
+      "stop_rationale": "This formative stop occurs after 'Interpret the research evidence' and before learners encounter contrasting worked explanations, detailed evaluative criteria or corrective feedback. Its educational purpose is to capture an independent first performance rather than a response shaped by supplied models or assessment guidance. The learner has access to the complete canonical research account, including the two groups of 100 students, the reported good-concentration rates of 72% and 58%, the observed 14-percentage-point difference, the observational method and its limitations. The learner must decide independently how to communicate this evidence. Preserving the initial explanation creates a meaningful reference point for 'Diagnose your explanation', 'Revise your explanation' and 'Explain what changed and why'. The stop is formative and does not determine progression, award a grade or impose a mastery threshold.",
+      "forward_intent": {
+        "artefact_title": "My first explanation",
+        "artefact_identifier": "C02.E1",
+        "primary_elicitation_id": "E1",
+        "intended_audience": "The learner, with the explanation itself written for a non-specialist reader who has not encountered the research account.",
+        "learner_output": "A copyable, learner-authored explanation of the principal research finding, preserving the learner's original wording. Approximately 80–120 words is suggested as optional guidance rather than a rigid requirement. The explanation is a standalone piece of prose, not an automatically generated interpretation, diagnosis or synthesis.",
+        "learner_facing_action": "Keep a copy of my first explanation",
+        "assembly_intent": "The Design Page provides an action that assembles the learner's own unrestricted written response into a clearly identified, copyable artefact titled 'My first explanation'. The action preserves the learner's wording without rewriting, correcting, evaluating or supplementing it. The output is suitable for later comparison with revised work.",
+        "required_evidence": "One primary non_determinate constructed_performance elicitation with stable elicitation_id E1. The delivery includes a learner-facing writing prompt, an unrestricted response workspace and an explicit intention to produce and retain the original explanation. The complete canonical research account remains accessible during composition.",
+        "downstream_use": [
+          {
+            "resource": "Diagnose your explanation",
+            "purpose": "Examine the communication decisions made in the original explanation."
+          },
+          {
+            "resource": "Revise your explanation",
+            "purpose": "Use later evaluative judgements and feedback-informed decisions to improve the explanation while preserving the original."
+          },
+          {
+            "resource": "Explain what changed and why",
+            "purpose": "Compare the original and revised explanations and articulate the reasons for changes."
+          }
+        ],
+        "delivery_boundary": "The output_specification identifies the learner-owned response and its assembly action. It does not create additional assessment performances or formative-return materials."
+      },
+      "learning_outcome_alignment": [
+        {
+          "outcome": 1,
+          "statement": "Select and communicate relevant evidence from the illustrative study to explain its principal finding accurately to a non-specialist audience.",
+          "evidence_visibility": "The learner's choices about which research findings to include, how to express the numerical comparison and how to communicate the findings accessibly are visible in the constructed explanation."
+        },
+        {
+          "outcome": 2,
+          "statement": "Distinguish the observed association between reported study breaks and reported concentration from conclusions that the observational evidence cannot establish.",
+          "evidence_visibility": "The explanation reveals how the learner represents the observational nature of the findings, self-reported concentration, methodological limitations and uncertainty about causation. Different evidence-grounded emphases remain legitimate."
+        },
+        {
+          "outcome": 3,
+          "statement": "Produce and retain an original concise explanation that records initial communication decisions for subsequent diagnosis, revision and reflection.",
+          "evidence_visibility": "The existence and preservation of the learner's original response provides the baseline artefact C02.E1. Its educational value depends on retaining the initial wording rather than replacing it with corrected or preferred wording."
+        }
+      ],
+      "assessment_design_notes": {
+        "intent": "formative_check",
+        "depth": "standard",
+        "extent": "short",
+        "epistemic_class": "non_determinate",
+        "primary_evidence_form": "constructed_performance",
+        "component_count": 1,
+        "count_basis": "The commission requires one independent constructed explanation with stable elicitation_id E1. A single unrestricted written performance can provide evidence across all three authoritative learning outcomes. The author fixes the primary performance requirement, but does not prescribe additional determinate items. No determinate items are selected because supplementary questions would add learner burden, risk revealing evaluative expectations before the initial attempt and provide limited additional evidence for this specific baseline purpose.",
+        "evidence_rationale": "The requested standard depth is achieved through the breadth of decisions visible within one authentic constructed performance rather than through multiple questions. The explanation simultaneously exposes numerical communication, evidence selection, treatment of methodological context, confidence of interpretation and independent composition. This is sufficient for a useful formative baseline within approximately 12 minutes. Later learning experiences provide further opportunities for comparison, diagnosis and revision.",
+        "determinate_item_count": 0,
+        "determinate_item_forms": [],
+        "planned_component_forms": [],
+        "optional_weighting": false,
+        "feedback_timing": "per_component",
+        "feedback_application": "The per-component feedback setting applies to determinate items, of which none are planned. For the unrestricted constructed response, provide only a neutral acknowledgement of completion and a reminder to retain the original wording. Do not supply a correctness judgement, score, detailed corrective feedback, model answer or replacement wording.",
+        "automatic_grading": false,
+        "runtime_ai_judgement": false,
+        "pass_fail_gate": false,
+        "pathway_control": false,
+        "learner_effort_minutes": 12,
+        "suggested_response_length": "Approximately 80–120 words, advisory only.",
+        "external_research_or_tools": false,
+        "progressive_disclosure": "The complete research account is available before and during the learner's independent attempt. Worked explanations, detailed quality criteria, preferred responses and corrective feedback are withheld until later learning experiences.",
+        "source_fidelity": "All evidence must remain consistent with the fictional observational survey. The observed difference is 14 percentage points between 72% and 58%, not a 14% increase or an established causal effect. No statistical significance, confidence interval, objectively measured performance outcome or additional research finding may be invented.",
+        "completion_evidence": "A learner-authored response exists and can be retained unchanged. Completion does not establish mastery or automatically demonstrate that every aspect of the explanation is accurate."
+      }
+    },
+    "learner_context": {
+      "depends_on_prior_work": true,
+      "bring_forward": [
+        {
+          "what": "If you completed 'Interpret the research evidence', revisit your own interpretation of the study's findings and the distinction you made between what the researchers observed and what might be inferred.",
+          "how_used": "Use that earlier thinking to inform your first independent explanation for a non-specialist reader. You do not need an earlier written response; draw on your interpretation while making your own decisions about what evidence and context to communicate."
+        }
+      ],
+      "entry_assumptions": [
+        "The learner is an undergraduate or comparable higher education learner developing research interpretation and evidence communication skills.",
+        "The learner has been offered the opportunity to examine the complete research account in 'Interpret the research evidence', but completion and individual responses are not assumed.",
+        "The learner has not been supplied with a worked communication example, preferred wording or detailed quality criteria before this independent attempt.",
+        "The learner can consult the complete canonical fictional research account during the activity.",
+        "The learner can produce a short unrestricted prose response without external research or tools.",
+        "The learner's initial explanation will be needed as learner-owned work in later diagnosis, revision and reflection activities."
+      ]
+    },
+    "elicitations": [
+      {
+        "elicitation_id": "E1",
+        "order": 1,
+        "evidence_ask": "Elicit the learner's first independent written explanation of the principal finding from the canonical illustrative research study for a non-specialist audience. The performance should make visible the learner's own decisions about evidence selection, numerical expression, methodological context and the confidence of conclusions. The original response becomes the journalable baseline artefact C02.E1 for later diagnosis, revision and reflection.",
+        "epistemic_class": "non_determinate",
+        "mapped_learning_outcome_ids": [1, 2, 3],
+        "stimulus": {
+          "title": "Study breaks and concentration among undergraduate students",
+          "status": "This is a fictional, illustrative research study created for educational purposes. The findings are synthetic, not results from an actual investigation.",
+          "research_question": "Is taking regular short breaks during independent study associated with students reporting good concentration?",
+          "method": "A university research team conducted an observational survey of 200 undergraduate students. Students reported their own study habits and concentration. Researchers divided respondents into two groups according to whether they reported taking regular short breaks during independent study. Students were not randomly assigned to take or avoid breaks.",
+          "findings": [
+            {
+              "group": "Regular short breaks",
+              "students": 100,
+              "students_reporting_good_concentration": 72,
+              "percentage_reporting_good_concentration": "72%"
+            },
+            {
+              "group": "No regular short breaks",
+              "students": 100,
+              "students_reporting_good_concentration": 58,
+              "percentage_reporting_good_concentration": "58%"
+            }
+          ],
+          "observed_difference": "72% minus 58% equals 14 percentage points. The proportion reporting good concentration was 14 percentage points higher among students reporting regular short breaks.",
+          "methodological_limitations": "The survey was observational rather than a randomised experiment. Both study habits and concentration were self-reported. Students were not randomly assigned to groups. Potentially relevant factors such as sleep, motivation, workload and study environment were not controlled. The study does not establish whether reported concentration corresponds to objectively measured concentration or performance. The sample cannot automatically be assumed to represent all undergraduate students.",
+          "evidence_boundary": "The study reports an association between reported study habits and reported concentration. It does not establish a causal effect. No statistical significance or confidence interval has been established, and the study does not identify an optimal frequency or duration of breaks."
+        },
+        "delivery": {
+          "kind": "constructed_performance",
+          "prompt": {
+            "title": "Write your first explanation",
+            "context": "Imagine you are explaining this illustrative study to someone who has not seen the research account and has no specialist knowledge of research methods.",
+            "task": "Write your own short explanation of the study's principal finding for that reader. Use the research account provided above. Decide for yourself which evidence and context to include, how to communicate the numerical findings and how confidently to express your conclusions.",
+            "response_expectation": "Write a concise explanation in your own words. This is your first independent attempt, so there is no model explanation to follow. Keep your original wording for use in 'Diagnose your explanation', 'Revise your explanation' and 'Explain what changed and why'.",
+            "suggested_length": "Approximately 80–120 words, as a guide rather than a strict limit.",
+            "indicative_time": "Allow approximately 12 minutes for the activity, including writing. No external research or tools are needed."
+          },
+          "instructions": "Read the complete illustrative research account before composing your explanation. Write independently for a non-specialist audience. When you have finished, retain a copy of your original explanation without revising it in response to model answers or feedback.",
+          "response_workspace": {
+            "intention": "An unrestricted prose response containing the learner's first independent explanation of the research finding, preserved verbatim as the baseline artefact C02.E1.",
+            "guidance": "Write your explanation here in your own words. You can refer to the research account while writing. The suggested word count is guidance only."
+          }
+        },
+        "artefact_contribution": {
+          "artefact_id": "C02.E1",
+          "artefact_title": "My first explanation",
+          "source": "The learner's complete original response to E1.",
+          "preservation_requirement": "Retain the response verbatim, including the learner's own wording, organisation and level of qualification. Do not automatically correct, rewrite, evaluate or synthesise it.",
+          "intended_reuse": [
+            "Diagnose your explanation",
+            "Revise your explanation",
+            "Explain what changed and why"
+          ]
+        },
+        "assessment_constraints": {
+          "auto_checkable": false,
+          "automatic_judgement": false,
+          "score": null,
+          "correct_answer": null,
+          "detailed_corrective_feedback": false,
+          "worked_example_before_response": false,
+          "preferred_wording_before_response": false,
+          "rigid_word_count_threshold": false,
+          "external_research_required": false
+        },
+        "formative_return": {
+          "materials": [
+            {
+              "material_id": "E1_completion_acknowledgement",
+              "body": "You have written your first explanation. This is a record of how you chose to communicate the study at this point in your learning. It has not been automatically marked or assessed for correctness."
+            },
+            {
+              "material_id": "E1_self_evaluation_orientation",
+              "body": "Keep your original explanation unchanged. When you return to it in 'Diagnose your explanation', you will be able to examine the decisions you made about what to include and how to communicate the findings. There is no need to evaluate or rewrite it now."
+            },
+            {
+              "material_id": "E1_original_response_reminder",
+              "body": "Keep a copy of your first explanation in your own words. You will use this original version in 'Diagnose your explanation', 'Revise your explanation' and 'Explain what changed and why' to consider how your explanation develops."
+            }
+          ],
+          "forward_orientation": "Your first explanation is now a starting point for further learning. In 'Compare explanations and judge their quality', you can explore different ways of communicating the same research evidence. Keep your original explanation available so that, in 'Diagnose your explanation', you can examine your own communication choices before developing a revised version.",
+          "optional_revision": {
+            "offered": false
+          }
+        }
+      }
+    ],
+    "output_specification": {
+      "specification_id": "initial-explanation",
+      "artefact_title": "My first explanation",
+      "audience": "You, for later revision and comparison",
+      "purpose": "Retain your original explanation in your own words so that you can return to it during later diagnosis, revision and reflection. This artefact reproduces what you wrote; it does not generate a summary, correction or evaluation.",
+      "action_label": "Keep a copy of my first explanation",
+      "missing_response_text": "Not yet written.",
+      "sections": [
+        {
+          "section_id": "original-explanation",
+          "order": 1,
+          "heading": "My first explanation",
+          "contributions": [
+            {
+              "contribution_id": "initial-explanation-text",
+              "label": "My original explanation",
+              "elicitation_id": "E1",
+              "response_part": "response_text"
+            }
+          ]
+        }
+      ]
+    },
+    "pack_forward_orientation": "Keep a copy of 'My first explanation' exactly as you originally wrote it. This first version provides a baseline for exploring explanation quality in 'Compare explanations and judge their quality', examining your choices in 'Diagnose your explanation', developing an improved version in 'Revise your explanation', and reflecting on the differences in 'Explain what changed and why'. Your response has not been automatically graded or rewritten, and there is no requirement to revise it at this stage."
+  },
+  "editorial_opening_image": {
+    "decision": "generate",
+    "subject": "An undergraduate student's independent study workspace",
+    "context": "A quiet university study environment that establishes the setting for an independent writing activity about research evidence and student study habits.",
+    "caption_intent": "Provide a restrained visual introduction to independent study and research communication without suggesting what the fictional findings mean.",
+    "alt_text": "",
+    "detailed_description": "A naturalistic, understated editorial photograph of a quiet university library study desk, viewed from a slightly elevated three-quarter angle. An open blank notebook, a simple pen, a closed laptop and a small stack of unmarked academic books sit on a light wooden surface. Soft daylight enters from a nearby window. Background shelves and study furniture are softly out of focus. The composition is calm, spacious and academically credible, with muted neutral colours and no identifiable people. Avoid clocks, charts, graphs, numerical displays, highlighted research findings, study-break cues or any other visual elements that could suggest a preferred interpretation of the assessment. No visible words, letters, logos, titles, labels, slogans, banners, caption panels or embedded typography. The image is purely contextual and contains no information needed to complete the assessment."
+  }
+}

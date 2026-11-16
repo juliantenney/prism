@@ -11,8 +11,20 @@ const path = require("node:path");
 const artefact = require("../lib/learner-renderer-vnext/learner-artefact-contract.js");
 const sibling = require("../lib/learning-journey-sibling-prompts.js");
 
-const STANDALONE_C5 = path.join(__dirname, "..", "tmp-duu-standalone-m2-overflow", "c5", "index.html");
-const STANDALONE_C6 = path.join(__dirname, "..", "tmp-duu-standalone-m2-overflow", "c6", "index.html");
+const STANDALONE_C5 = path.join(
+  __dirname,
+  "fixtures",
+  "s96-duu-standalone-m2-overflow",
+  "c5",
+  "index.html"
+);
+const STANDALONE_C6 = path.join(
+  __dirname,
+  "fixtures",
+  "s96-duu-standalone-m2-overflow",
+  "c6",
+  "index.html"
+);
 
 function hasFixture(filePath) {
   try {

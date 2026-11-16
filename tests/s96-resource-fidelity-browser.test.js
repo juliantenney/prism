@@ -19,7 +19,7 @@ const PLAYWRIGHT_CANDIDATES = [
   "playwright"
 ];
 
-const STANDALONE_ROOT = path.join(__dirname, "..", "tmp-duu-standalone-m2-overflow");
+const STANDALONE_ROOT = path.join(__dirname, "fixtures", "s96-duu-standalone-m2-overflow");
 const EVIDENCE_DIR = path.join(
   __dirname,
   "..",

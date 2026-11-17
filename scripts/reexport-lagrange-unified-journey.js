@@ -3,6 +3,10 @@
  * assembled package, applying publishing-boundary ID namespacing and chrome
  * stripping without regenerating resource content.
  *
+ * Optional local utility only. Defaults read a Downloads source ZIP and write
+ * a local ignored output under dist/ — generated packages are not repository
+ * source. Published exemplars live in the separate exemplar corpus.
+ *
  * Usage:
  *   node scripts/reexport-lagrange-unified-journey.js [sourceZip] [outZip]
  */

@@ -20,3 +20,5 @@ tools/s81-revision-reminder-preview/out/*
 /archive.zip
 # Orphaned generated HTML smoke outputs (generator removed in S74C)
 /tests/output/
+# Generated Learning Journey packages / local export outputs (not source)
+/dist/

@@ -15,3 +15,8 @@ tools/_tmp_*/
 # Generated S81 revision-reminder previews (scripts are tracked; HTML outputs are not)
 tools/s81-revision-reminder-preview/out/*
 !tools/s81-revision-reminder-preview/out/.gitkeep
+# Accidental root dumps / packaging leftovers (historically committed)
+/*-locations.txt
+/archive.zip
+# Orphaned generated HTML smoke outputs (generator removed in S74C)
+/tests/output/

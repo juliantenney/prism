@@ -7,6 +7,7 @@ const path = require("node:path");
 const vm = require("node:vm");
 const { runPrismLibScriptsInSandbox, PEDAGOGICAL_ICON_LIBS } = require("./prism-vm-lib-bootstrap.js");
 const workflowResources = require("../lib/prism-workflow-resources.js");
+const originalDeleteResourcesForWorkflow = workflowResources.deleteResourcesForWorkflow;
 
 const repoRoot = path.resolve(__dirname, "..");
 const appJsPath = path.join(repoRoot, "app.js");
@@ -26,6 +27,7 @@ function createElementStub(tagName) {
     style: {},
     dataset: {},
     disabled: false,
+    checked: false,
     open: false,
     returnValue: "",
     classList: {
@@ -86,6 +88,11 @@ function createElementStub(tagName) {
   if (tag === "DIALOG") {
     el.showModal = function () {
       this.open = true;
+      if (typeof this.__onShowModal === "function") {
+        try {
+          this.__onShowModal();
+        } catch (_err) {}
+      }
       const scripted = this.__nextReturnValue || "cancel";
       this.returnValue = scripted;
       setTimeout(() => this.close(), 0);
@@ -171,9 +178,23 @@ function boot(options) {
 
   const deleteDialog = createElementStub("dialog");
   deleteDialog.__nextReturnValue = opts.deleteDialogChoice || "cancel";
+  const alsoDeletePrompts = createElementStub("input");
+  alsoDeletePrompts.type = "checkbox";
+  alsoDeletePrompts.checked = false;
+  const alsoDeletePromptsRow = createElementStub("label");
+  alsoDeletePromptsRow.classList.add("hidden");
+  const alsoDeletePromptsLabel = createElementStub("span");
+  if (opts.deleteAlsoRelatedPrompts) {
+    deleteDialog.__onShowModal = function () {
+      alsoDeletePrompts.checked = true;
+    };
+  }
   elementStore.set("deleteWorkflowConfirmDialog", deleteDialog);
   elementStore.set("deleteWorkflowConfirmTitle", createElementStub("h2"));
   elementStore.set("deleteWorkflowConfirmBody", createElementStub("p"));
+  elementStore.set("deleteWorkflowAlsoDeletePromptsRow", alsoDeletePromptsRow);
+  elementStore.set("deleteWorkflowAlsoDeletePrompts", alsoDeletePrompts);
+  elementStore.set("deleteWorkflowAlsoDeletePromptsLabel", alsoDeletePromptsLabel);
   elementStore.set("deleteWorkflowConfirmCancel", createElementStub("button"));
   elementStore.set("deleteWorkflowConfirmSubmit", createElementStub("button"));
 
@@ -256,7 +277,17 @@ function boot(options) {
     Blob: function Blob() {},
     Library: {
       importPromptsFromEntries: () => Promise.resolve({ added: 0, updated: 0, skipped: 0 }),
-      getAllPrompts: () => Promise.resolve(libraryState.slice())
+      getAllPrompts: () => Promise.resolve(libraryState.slice()),
+      deletePrompt: (id) => {
+        const target = String(id || "");
+        const before = libraryState.length;
+        for (let i = libraryState.length - 1; i >= 0; i -= 1) {
+          if (String((libraryState[i] && libraryState[i].id) || "") === target) {
+            libraryState.splice(i, 1);
+          }
+        }
+        return Promise.resolve({ ok: true, deleted: before !== libraryState.length });
+      }
     }
   };
 
@@ -265,6 +296,9 @@ function boot(options) {
   windowStub.window = windowStub;
   sandbox.globalThis = windowStub;
   workflowResources.resetStorageBackendForTests();
+  // Always restore the real implementation first — a prior test may have
+  // replaced deleteResourcesForWorkflow with a failing stub.
+  workflowResources.deleteResourcesForWorkflow = originalDeleteResourcesForWorkflow;
   if (typeof opts.overrideDeleteResourcesForWorkflow === "function") {
     workflowResources.deleteResourcesForWorkflow = opts.overrideDeleteResourcesForWorkflow;
   }
@@ -282,7 +316,11 @@ function boot(options) {
   return {
     api: sandbox.window.__PRISM_TEST_API,
     storage,
-    toastContainer: elementStore.get("toastContainer")
+    toastContainer: elementStore.get("toastContainer"),
+    libraryState,
+    alsoDeletePrompts,
+    alsoDeletePromptsRow,
+    elementStore
   };
 }
 
@@ -438,4 +476,115 @@ test("Delete failure on resource purge blocks definition deletion and success to
   const toasts = getToastMessages(toastContainer);
   assert.ok(toasts.some((msg) => /Resource purge failed|cleanup failed/i.test(msg)));
   assert.ok(!toasts.some((msg) => /Workflow deleted\./i.test(msg)));
+});
+
+test("Delete keeps related Prompt Library prompts by default", async () => {
+  const wfA = workflow("wf-P1", "Prompt Keep", "step-p1");
+  wfA.steps[0].promptId = "prompt-keep";
+  wfA.steps[0].prompt_source_type = "library_prompt";
+  const prompts = [{ id: "prompt-keep", title: "Keep me", body: "Body" }];
+  const { api, libraryState, alsoDeletePromptsRow, toastContainer } = boot({
+    deleteDialogChoice: "confirm",
+    promptEntries: prompts,
+    seedStorage: {
+      [WFKEY]: JSON.stringify([wfA]),
+      [RUNKEY]: JSON.stringify({})
+    }
+  });
+  await flushDelete();
+  api.setWorkflowsForTest([wfA]);
+  api.setSelectedWorkflowIdForTest("wf-P1");
+  api.setPromptsForTest(prompts);
+  api.saveWorkflowsForTest();
+
+  await api.handleDeleteWorkflowForTest();
+
+  assert.equal(api.getWorkflowsForTest().length, 0);
+  assert.equal(libraryState.some((p) => p.id === "prompt-keep"), true);
+  assert.equal(alsoDeletePromptsRow.classList.contains("hidden"), false);
+  const toasts = getToastMessages(toastContainer);
+  assert.ok(toasts.some((msg) => /Workflow deleted\./i.test(msg)));
+  assert.ok(!toasts.some((msg) => /related prompt/i.test(msg)));
+});
+
+test("Delete removes exclusive related prompts when option is checked", async () => {
+  const wfA = workflow("wf-P2", "Prompt Delete", "step-p2");
+  wfA.steps[0].promptId = "prompt-gone";
+  wfA.steps[0].prompt_source_type = "library_prompt";
+  const prompts = [{ id: "prompt-gone", title: "Remove me", body: "Body" }];
+  const { api, libraryState, toastContainer } = boot({
+    deleteDialogChoice: "confirm",
+    deleteAlsoRelatedPrompts: true,
+    promptEntries: prompts,
+    seedStorage: {
+      [WFKEY]: JSON.stringify([wfA]),
+      [RUNKEY]: JSON.stringify({})
+    }
+  });
+  await flushDelete();
+  api.setWorkflowsForTest([wfA]);
+  api.setSelectedWorkflowIdForTest("wf-P2");
+  api.setPromptsForTest(prompts);
+  api.saveWorkflowsForTest();
+
+  await api.handleDeleteWorkflowForTest();
+
+  assert.equal(api.getWorkflowsForTest().length, 0);
+  assert.equal(libraryState.some((p) => p.id === "prompt-gone"), false);
+  const toasts = getToastMessages(toastContainer);
+  assert.ok(toasts.some((msg) => /1 related prompt removed/i.test(msg)));
+});
+
+test("Delete keeps shared prompts even when option is checked", async () => {
+  const wfA = workflow("wf-P3a", "Owner A", "step-p3a");
+  const wfB = workflow("wf-P3b", "Owner B", "step-p3b");
+  wfA.steps[0].promptId = "prompt-shared";
+  wfA.steps[0].prompt_source_type = "library_prompt";
+  wfB.steps[0].promptId = "prompt-shared";
+  wfB.steps[0].prompt_source_type = "library_prompt";
+  const prompts = [{ id: "prompt-shared", title: "Shared", body: "Body" }];
+  const { api, libraryState } = boot({
+    deleteDialogChoice: "confirm",
+    deleteAlsoRelatedPrompts: true,
+    promptEntries: prompts,
+    seedStorage: {
+      [WFKEY]: JSON.stringify([wfA, wfB]),
+      [RUNKEY]: JSON.stringify({})
+    }
+  });
+  await flushDelete();
+  api.setWorkflowsForTest([wfA, wfB]);
+  api.setSelectedWorkflowIdForTest("wf-P3a");
+  api.setPromptsForTest(prompts);
+  api.saveWorkflowsForTest();
+
+  await api.handleDeleteWorkflowForTest();
+
+  assert.equal(api.getWorkflowsForTest().some((wf) => wf.id === "wf-P3a"), false);
+  assert.equal(api.getWorkflowsForTest().some((wf) => wf.id === "wf-P3b"), true);
+  assert.equal(libraryState.some((p) => p.id === "prompt-shared"), true);
+});
+
+test("Delete with no related prompts hides the option and still succeeds", async () => {
+  const wfA = workflow("wf-P4", "No Prompt Link", "step-p4");
+  const { api, alsoDeletePromptsRow, alsoDeletePrompts, toastContainer } = boot({
+    deleteDialogChoice: "confirm",
+    promptEntries: [{ id: "unrelated", title: "Unrelated", body: "x" }],
+    seedStorage: {
+      [WFKEY]: JSON.stringify([wfA]),
+      [RUNKEY]: JSON.stringify({})
+    }
+  });
+  await flushDelete();
+  api.setWorkflowsForTest([wfA]);
+  api.setSelectedWorkflowIdForTest("wf-P4");
+  api.setPromptsForTest([{ id: "unrelated", title: "Unrelated", body: "x" }]);
+  api.saveWorkflowsForTest();
+
+  await api.handleDeleteWorkflowForTest();
+
+  assert.equal(api.getWorkflowsForTest().length, 0);
+  assert.equal(alsoDeletePromptsRow.classList.contains("hidden"), true);
+  assert.equal(alsoDeletePrompts.checked, false);
+  assert.ok(getToastMessages(toastContainer).some((msg) => /Workflow deleted\./i.test(msg)));
 });

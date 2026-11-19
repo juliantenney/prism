@@ -809,6 +809,22 @@ textarea:focus {
   white-space: pre-line;
 }
 
+.prism-confirm-dialog-option {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.45rem;
+  margin: 0 0 0.85rem;
+  font-size: 0.85rem;
+  line-height: 1.4;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.prism-confirm-dialog-option input[type="checkbox"] {
+  margin-top: 0.15rem;
+  flex: 0 0 auto;
+}
+
 .prism-confirm-dialog-actions {
   display: flex;
   flex-wrap: wrap;
@@ -2479,6 +2495,18 @@ textarea:focus {
 
 .workflow-run-step-output-status--warning {
   color: #b45309;
+}
+
+.workflow-run-workload-feasibility-warning {
+  margin-top: 0.45rem;
+  padding: 0.55rem 0.7rem;
+  border: 1px solid #f59e0b;
+  background: #fffbeb;
+  color: #92400e;
+  border-radius: var(--radius-md);
+  font-size: 0.82rem;
+  line-height: 1.45;
+  white-space: pre-wrap;
 }
 
 .workflow-validation-panel {

@@ -1602,6 +1602,19 @@
     <form method="dialog" class="prism-confirm-dialog-panel">
       <h2 id="deleteWorkflowConfirmTitle" class="prism-confirm-dialog-title"></h2>
       <p id="deleteWorkflowConfirmBody" class="prism-confirm-dialog-body"></p>
+      <label
+        id="deleteWorkflowAlsoDeletePromptsRow"
+        class="prism-confirm-dialog-option hidden"
+        for="deleteWorkflowAlsoDeletePrompts"
+      >
+        <input
+          type="checkbox"
+          id="deleteWorkflowAlsoDeletePrompts"
+        />
+        <span id="deleteWorkflowAlsoDeletePromptsLabel"
+          >Also delete related Prompt Library prompts</span
+        >
+      </label>
       <div class="prism-confirm-dialog-actions">
         <button
           type="submit"
@@ -1626,6 +1639,10 @@
   <script src="lib/assessment-component-forms.js?v=20260928-s88-forms"></script>
   <script src="lib/first-class-workflow-family.js?v=20261102-ap-framing-string"></script>
   <script src="lib/first-class-commission-intake.js?v=20261006-s91-direct-init"></script>
-  <script src="app.js?v=20261106-c4-text-fence"></script>
+  <script src="lib/workload-feasibility-estimator.js?v=20261117-s100a"></script>
+  <script src="lib/interactive-workload-feasibility-adapter.js?v=20261117-s100b1"></script>
+  <script src="lib/assessment-pack-workload-feasibility-adapter.js?v=20261117-s100b2"></script>
+  <script src="lib/learning-journey-workload-feasibility-adapter.js?v=20261117-s100c"></script>
+  <script src="app.js?v=20261117-s100b1-workload"></script>
 </body>
 </html>

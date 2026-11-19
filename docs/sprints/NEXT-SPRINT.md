@@ -1,47 +1,55 @@
 # Next sprint — active programme
 
-**Status:** **No open sprint.** Sprint 99 **CLOSED — ACCEPTED WITH QUALIFICATIONS**. Sprint 98 **CLOSED — ACCEPTED WITH QUALIFICATIONS**. Sprint 97 **CLOSED — ACCEPTED** (qualified). Sprint 96 **CLOSED — ACCEPTED**. Alpha development **complete**.  
-**Updated:** 2026-11-16 (post–Sprint 99 programme transition)
+**Status:** **Sprint 101 OPEN** — Practice as a Learning Journey Component. Sprint 100 **CLOSED — ACCEPTED WITH QUALIFICATIONS**. Sprint 99 **CLOSED — ACCEPTED WITH QUALIFICATIONS**. Sprint 98 **CLOSED — ACCEPTED WITH QUALIFICATIONS**. Sprint 97 **CLOSED — ACCEPTED** (qualified). Sprint 96 **CLOSED — ACCEPTED**. Alpha development **complete**.  
+**Updated:** 2026-11-19 (Sprint 101 opened)
 
 ---
 
 ## Current programme
 
-**Open sprint:** none.
+**Open sprint:** [Sprint 101 — Practice as a Learning Journey Component](sprint-101-practice-as-a-learning-journey-component.md) · [development pack](../development/sprints/2026-11-19-sprint-101-practice-as-a-learning-journey-component/)
 
-**Next programme activity (not a sprint opening):** **Interactive and Expository corpus regeneration** — regenerate and track the live resource corpus using existing inventory / evidence mechanisms where they already exist. Do **not** open a new sprint for this activity unless separately authorised. Do **not** create a duplicate corpus governance structure.
+**Last closed:** [Sprint 100 — Learner Workload and Timing Realism](sprint-100-learner-workload-and-timing-realism.md) — **CLOSED — ACCEPTED WITH QUALIFICATIONS** · [SPRINT-100-CLOSURE.md](../development/sprints/2026-11-17-sprint-100-learner-workload-and-timing-realism/SPRINT-100-CLOSURE.md)
 
-**Prior closed:** [Sprint 99](sprint-99-expository-instructional-quality-and-academic-plain-english.md) — **CLOSED — ACCEPTED WITH QUALIFICATIONS** · [SPRINT-99-CLOSURE.md](../development/sprints/2026-11-16-sprint-99-expository-instructional-quality-and-academic-plain-english/SPRINT-99-CLOSURE.md)
+**Parallel programme activity (not a sprint gate):** **Interactive and Expository corpus regeneration** may continue using existing inventory / evidence mechanisms. Do **not** create a duplicate corpus governance structure.
+
+**Also closed:** [Sprint 99](sprint-99-expository-instructional-quality-and-academic-plain-english.md) — **CLOSED — ACCEPTED WITH QUALIFICATIONS** · [SPRINT-99-CLOSURE.md](../development/sprints/2026-11-16-sprint-99-expository-instructional-quality-and-academic-plain-english/SPRINT-99-CLOSURE.md)
 
 **Also closed:** [Sprint 98](sprint-98-interactive-instructional-coherence-and-academic-plain-english.md) — **CLOSED — ACCEPTED WITH QUALIFICATIONS** — do not reopen
 
-**Hard invariants:** Assessment Pack remains **NON-SUMMATIVE**. Constituent Learning Journey products remain standalone-publishable. No implicit sharing of all learner responses. No AI marking of shared artefacts. Author Learning Journey download is **unified-only** (S96-D14); legacy multi-document packager is internal.
+**Hard invariants:** Assessment Pack remains **NON-SUMMATIVE**. Constituent Learning Journey products remain standalone-publishable. No implicit sharing of all learner responses. No AI marking of shared artefacts. Author Learning Journey download is **unified-only** (S96-D14); legacy multi-document packager is internal. Standalone Interactive remains available and must not be disturbed by Sprint 101.
 
 ### Protected state
 
 | Item | State |
 | ---- | ----- |
-| Open sprint | **None** |
-| Next activity | **Interactive + Expository corpus regeneration** (no sprint opened) |
+| Open sprint | **Sprint 101 — Practice as a Learning Journey Component** |
+| Last closed sprint | **Sprint 100 — CLOSED — ACCEPTED WITH QUALIFICATIONS** |
+| Parallel activity | Interactive + Expository corpus regeneration (optional; not a Sprint 101 gate) |
 | Sprint 99 | **CLOSED — ACCEPTED WITH QUALIFICATIONS** |
 | Sprint 98 | **CLOSED — ACCEPTED WITH QUALIFICATIONS** |
 | Sprint 97 | **CLOSED — ACCEPTED** (qualified) — do not reopen |
 | Assessment Pack four-case quality review | **Accepted — no substantive implementation** ([sprint-100 stub superseded](sprint-100-assessment-pack-instructional-quality.md)) |
-| Situated Task (this phase) | **Not separately evaluated** — do not claim independently validated or passed |
+| Situated Task (post–S99 phase) | **Not separately evaluated** — do not claim independently validated or passed |
 | Interactive LS study-flow fidelity | Programme [D-015](../development/governance/ARCHITECTURAL-DEBT.md#d-015--interactive-learning-sequence-study-flow-fidelity) (unchanged; S98 / S99 cross-refs retained) |
 
 ---
 
 ## Immediate next
 
-1. Proceed with **Interactive and Expository corpus regeneration** when authorised (operator / author activity). Prefer existing case lists, evidence registers and QA artefacts rather than inventing a parallel tracker.  
-2. Do **not** open Sprint 100 / 101 for Assessment Pack or Situated Task implementation on the strength of the closed review-first stubs — Assessment Pack four-case review is already accepted without substantive change; Situated Task was not separately evaluated in this phase.  
-3. Do **not** reopen Sprint 97–99 for polish. Retain Sprint 99 deferred **M3-3 / M3-4** and qualifications unchanged.  
-4. Interactive Learning Sequence fidelity remains [D-015](../development/governance/ARCHITECTURAL-DEBT.md#d-015--interactive-learning-sequence-study-flow-fidelity) (S98 M5 Option C; S98-AD-004; S99-AD-012) — distinct from PB-FA-019 unless allocated. Do not renumber or duplicate this debt.
+1. Continue **Sprint 101** per its charter — **101A complete**; next **101B Practice instructional contract** and **101C wireframe** (both require design review before 101D).  
+2. Do **not** begin Practice implementation, product registration, prompt/schema/renderer edits, or exemplar regeneration until 101B and 101C are approved.  
+3. Optional parallel: **Interactive and Expository corpus regeneration** when authorised (operator / author activity). Prefer existing case lists, evidence registers and QA artefacts rather than inventing a parallel tracker.  
+4. Do **not** reopen Sprint 97–100 for polish. Retain Sprint 99 deferred **M3-3 / M3-4**, Sprint 100 qualifications, and programme residuals unchanged.  
+5. Interactive Learning Sequence fidelity remains [D-015](../development/governance/ARCHITECTURAL-DEBT.md#d-015--interactive-learning-sequence-study-flow-fidelity) (S98 M5 Option C; S98-AD-004; S99-AD-012) — distinct from PB-FA-019 unless allocated. Do not renumber or duplicate this debt.
+
+### Sprint 100 carry-forward (not Sprint 101 implementation work)
+
+Workload estimates remain **indicative**. Insufficient evidence may yield no warning. Learning Journey commissioning feasibility is provisional. The five external QA workflows updated to v1.3 have **not** yet undergone systematic exemplar-corpus calibration. Future learner testing may refine workload bands. See [SPRINT-100-CLOSURE.md](../development/sprints/2026-11-17-sprint-100-learner-workload-and-timing-realism/SPRINT-100-CLOSURE.md).
 
 ### Assessment Pack (post–Sprint 99)
 
-Four-case Assessment Pack instructional quality review: **accepted without substantive implementation**. Planned Sprint 100 implementation stub is **superseded** — see [sprint-100-assessment-pack-instructional-quality.md](sprint-100-assessment-pack-instructional-quality.md).
+Four-case Assessment Pack instructional quality review: **accepted without substantive implementation**. Planned Assessment Pack Sprint 100 stub is **superseded** — see [sprint-100-assessment-pack-instructional-quality.md](sprint-100-assessment-pack-instructional-quality.md). The closed workload/timing Sprint 100 is a different programme.
 
 **Non-blocking follow-ups (optional; not sprint gates):**
 
@@ -73,7 +81,9 @@ Situated Task was **not separately evaluated** after Sprint 99. Do **not** descr
 
 | Activity | Status |
 | -------- | ------ |
-| **Interactive + Expository corpus regeneration** | **Next** — not opened as a sprint by this transition |
+| **Sprint 101 — Practice as LJ component** | **OPEN** — 101A complete; 101B/101C next |
+| **Interactive + Expository corpus regeneration** | Optional parallel activity — not a Sprint 101 gate |
+| Sprint 100 workload / timing realism | **CLOSED — ACCEPTED WITH QUALIFICATIONS** |
 | Assessment Pack four-case quality review | **Accepted** — no substantive implementation; stub superseded |
 | Situated Task separate evaluation | **Not done this phase** |
 | Optional AP APE alignment / answer-disclosure check | Non-blocking follow-ups |
@@ -84,6 +94,8 @@ Situated Task was **not separately evaluated** after Sprint 99. Do **not** descr
 
 ## Previous sprints
 
+- [Sprint 101](sprint-101-practice-as-a-learning-journey-component.md) — **OPEN**
+- [Sprint 100](sprint-100-learner-workload-and-timing-realism.md) — **CLOSED — ACCEPTED WITH QUALIFICATIONS**
 - [Sprint 99](sprint-99-expository-instructional-quality-and-academic-plain-english.md) — **CLOSED — ACCEPTED WITH QUALIFICATIONS**
 - [Sprint 98](sprint-98-interactive-instructional-coherence-and-academic-plain-english.md) — **CLOSED — ACCEPTED WITH QUALIFICATIONS**
 - [Sprint 97](sprint-97-learning-journal-and-design-pattern-foundations.md) — **CLOSED — ACCEPTED** (qualified)

@@ -297,6 +297,9 @@ function boot(options) {
   elementStore.set("deleteWorkflowConfirmDialog", deleteDialog);
   elementStore.set("deleteWorkflowConfirmTitle", createElementStub("h2"));
   elementStore.set("deleteWorkflowConfirmBody", createElementStub("p"));
+  elementStore.set("deleteWorkflowAlsoDeletePromptsRow", createElementStub("label"));
+  elementStore.set("deleteWorkflowAlsoDeletePrompts", createElementStub("input"));
+  elementStore.set("deleteWorkflowAlsoDeletePromptsLabel", createElementStub("span"));
   elementStore.set("deleteWorkflowConfirmCancel", createElementStub("button"));
   elementStore.set("deleteWorkflowConfirmSubmit", createElementStub("button"));
 

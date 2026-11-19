@@ -143,7 +143,11 @@ function runPrismLibScriptsInSandbox(sandbox, repoRoot, libs, options) {
       "PRISM_UTILITIES_VISUAL_JOBS_WORKSPACE",
       "PRISM_LEARNER_PACKAGE",
       "PRISM_LEARNER_PACKAGE_ZIP",
-      "PRISM_LEARNER_CONTENT_VIEWER"
+      "PRISM_LEARNER_CONTENT_VIEWER",
+      "PrismWorkloadFeasibilityEstimator",
+      "PrismInteractiveWorkloadFeasibilityAdapter",
+      "PrismAssessmentPackWorkloadFeasibilityAdapter",
+      "PrismLearningJourneyWorkloadFeasibilityAdapter"
     ].forEach(function (key) {
       if (sandbox[key]) {
         sandbox.window[key] = sandbox[key];

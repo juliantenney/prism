@@ -1,0 +1,65 @@
+{
+  "schema_version": "100A.1",
+  "cases": [
+    {
+      "id": "philosophical_argument_10min",
+      "label": "300–400-word philosophical argument allocated 10 minutes",
+      "expect": "overload",
+      "input": {
+        "activityType": "philosophical_argument",
+        "declaredDurationMinutes": 10,
+        "suggestedLengthWords": { "min": 300, "max": 400 },
+        "reasoningDemand": "argument",
+        "readingDemand": "moderate"
+      }
+    },
+    {
+      "id": "analytical_reconsideration_5min",
+      "label": "180–250-word analytical reconsideration allocated 5 minutes",
+      "expect": "overload",
+      "input": {
+        "activityType": "analytical_reconsideration",
+        "declaredDurationMinutes": 5,
+        "suggestedLengthWords": { "min": 180, "max": 250 },
+        "reasoningDemand": "analysis",
+        "readingDemand": "moderate"
+      }
+    },
+    {
+      "id": "institutional_recommendation_19min",
+      "label": "350–500-word institutional recommendation with dossier review, 19 minutes",
+      "expect": "overload",
+      "input": {
+        "activityType": "institutional_recommendation",
+        "declaredDurationMinutes": 19,
+        "suggestedLengthWords": { "min": 350, "max": 500 },
+        "reasoningDemand": "evaluation",
+        "readingDemand": "dossier",
+        "dossierReview": true
+      }
+    },
+    {
+      "id": "short_mcq_3min",
+      "label": "Short multiple-choice judgement with limited reading, 2–3 minutes",
+      "expect": "feasible",
+      "input": {
+        "activityType": "mcq",
+        "declaredDurationMinutes": 3,
+        "reasoningDemand": "comprehension",
+        "readingDemand": "brief"
+      }
+    },
+    {
+      "id": "math_problem_20min_with_feedback",
+      "label": "Focused mathematical problem ~15 min independent + 5 min feedback review",
+      "expect": "feasible",
+      "input": {
+        "activityType": "mathematical_problem",
+        "declaredDurationMinutes": 20,
+        "reasoningDemand": "application",
+        "readingDemand": "brief",
+        "requiresFeedbackInterpretation": true
+      }
+    }
+  ]
+}

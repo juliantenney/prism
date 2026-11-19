@@ -582,6 +582,15 @@
     els.deleteWorkflowConfirmDialog = document.getElementById("deleteWorkflowConfirmDialog");
     els.deleteWorkflowConfirmTitle = document.getElementById("deleteWorkflowConfirmTitle");
     els.deleteWorkflowConfirmBody = document.getElementById("deleteWorkflowConfirmBody");
+    els.deleteWorkflowAlsoDeletePromptsRow = document.getElementById(
+      "deleteWorkflowAlsoDeletePromptsRow"
+    );
+    els.deleteWorkflowAlsoDeletePrompts = document.getElementById(
+      "deleteWorkflowAlsoDeletePrompts"
+    );
+    els.deleteWorkflowAlsoDeletePromptsLabel = document.getElementById(
+      "deleteWorkflowAlsoDeletePromptsLabel"
+    );
     els.deleteWorkflowConfirmCancel = document.getElementById("deleteWorkflowConfirmCancel");
     els.deleteWorkflowConfirmSubmit = document.getElementById("deleteWorkflowConfirmSubmit");
     els.addWorkflowStepBtn = document.getElementById("addWorkflowStepBtn");
@@ -13435,6 +13444,199 @@
     return contractMod;
   }
 
+  function resolveInteractiveWorkloadFeasibilityAdapterLib() {
+    try {
+      if (typeof require === "function") {
+        return require("./lib/interactive-workload-feasibility-adapter.js");
+      }
+    } catch (_err) {}
+    if (
+      typeof window !== "undefined" &&
+      window.PrismInteractiveWorkloadFeasibilityAdapter
+    ) {
+      return window.PrismInteractiveWorkloadFeasibilityAdapter;
+    }
+    if (
+      typeof globalThis !== "undefined" &&
+      globalThis.PrismInteractiveWorkloadFeasibilityAdapter
+    ) {
+      return globalThis.PrismInteractiveWorkloadFeasibilityAdapter;
+    }
+    return null;
+  }
+
+  function resolveAssessmentPackWorkloadFeasibilityAdapterLib() {
+    try {
+      if (typeof require === "function") {
+        return require("./lib/assessment-pack-workload-feasibility-adapter.js");
+      }
+    } catch (_err) {}
+    if (
+      typeof window !== "undefined" &&
+      window.PrismAssessmentPackWorkloadFeasibilityAdapter
+    ) {
+      return window.PrismAssessmentPackWorkloadFeasibilityAdapter;
+    }
+    if (
+      typeof globalThis !== "undefined" &&
+      globalThis.PrismAssessmentPackWorkloadFeasibilityAdapter
+    ) {
+      return globalThis.PrismAssessmentPackWorkloadFeasibilityAdapter;
+    }
+    return null;
+  }
+
+  function resolveLearningJourneyWorkloadFeasibilityAdapterLib() {
+    try {
+      if (typeof require === "function") {
+        return require("./lib/learning-journey-workload-feasibility-adapter.js");
+      }
+    } catch (_err) {}
+    if (
+      typeof window !== "undefined" &&
+      window.PrismLearningJourneyWorkloadFeasibilityAdapter
+    ) {
+      return window.PrismLearningJourneyWorkloadFeasibilityAdapter;
+    }
+    if (
+      typeof globalThis !== "undefined" &&
+      globalThis.PrismLearningJourneyWorkloadFeasibilityAdapter
+    ) {
+      return globalThis.PrismLearningJourneyWorkloadFeasibilityAdapter;
+    }
+    return null;
+  }
+
+  /**
+   * Resolve Learning Journey learning-time envelope minutes from workflow seed/brief.
+   * Advisory only — does not alter TIME CHECK arithmetic.
+   */
+  function resolveLearningJourneyLearningTimeEnvelopeMinutes(wf) {
+    var workflow = wf && typeof wf === "object" ? wf : null;
+    var candidates = [];
+    function pushCandidate(value) {
+      if (value == null || value === "") return;
+      candidates.push(value);
+    }
+    if (workflow) {
+      var seed =
+        (workflow.deliverySeed && typeof workflow.deliverySeed === "object"
+          ? workflow.deliverySeed
+          : null) ||
+        (workflow.resolvedFactors && typeof workflow.resolvedFactors === "object"
+          ? workflow.resolvedFactors
+          : null) ||
+        null;
+      if (seed) {
+        pushCandidate(seed.learning_time);
+        pushCandidate(seed.learningTime);
+      }
+      if (workflow.initialBrief && typeof workflow.initialBrief === "object") {
+        pushCandidate(workflow.initialBrief.learningTime);
+        pushCandidate(workflow.initialBrief.learning_time);
+      }
+      pushCandidate(workflow.learningTime);
+      pushCandidate(workflow.learning_time);
+    }
+    var adapter = resolveLearningJourneyWorkloadFeasibilityAdapterLib();
+    var i;
+    for (i = 0; i < candidates.length; i += 1) {
+      if (adapter && typeof adapter.parseLearningTimeEnvelopeMinutes === "function") {
+        var parsed = adapter.parseLearningTimeEnvelopeMinutes(candidates[i]);
+        if (parsed != null) return parsed;
+      } else {
+        var n = Number(candidates[i]);
+        if (Number.isFinite(n) && n > 0) return Math.round(n);
+      }
+    }
+    return null;
+  }
+
+  /**
+   * Sprint 100B-1 — non-blocking Interactive workload feasibility warnings.
+   * Never converts findings into capture errors.
+   */
+  function appendInteractiveWorkloadFeasibilityWarnings(page, baseline, warningsOut) {
+    if (!Array.isArray(warningsOut)) return;
+    var adapter = resolveInteractiveWorkloadFeasibilityAdapterLib();
+    if (!adapter || typeof adapter.collectInteractiveWorkloadWarnings !== "function") return;
+    var rows = [];
+    try {
+      rows = adapter.collectInteractiveWorkloadWarnings(page, baseline) || [];
+    } catch (_err) {
+      return;
+    }
+    if (!Array.isArray(rows) || !rows.length) return;
+    rows.forEach(function (row) {
+      var text = String(row || "").trim();
+      if (text) warningsOut.push(text);
+    });
+  }
+
+  /**
+   * Sprint 100B-2 — non-blocking Assessment Pack workload feasibility warnings.
+   * Never converts findings into capture errors.
+   */
+  function appendAssessmentPackWorkloadFeasibilityWarnings(artefact, warningsOut) {
+    if (!Array.isArray(warningsOut)) return;
+    var adapter = resolveAssessmentPackWorkloadFeasibilityAdapterLib();
+    if (!adapter || typeof adapter.collectAssessmentPackWorkloadWarnings !== "function") return;
+    var rows = [];
+    try {
+      rows = adapter.collectAssessmentPackWorkloadWarnings(artefact) || [];
+    } catch (_err) {
+      return;
+    }
+    if (!Array.isArray(rows) || !rows.length) return;
+    var seen = Object.create(null);
+    rows.forEach(function (row) {
+      var text = String(row || "").trim();
+      if (!text || seen[text]) return;
+      seen[text] = true;
+      warningsOut.push(text);
+    });
+  }
+
+  /**
+   * Sprint 100C — non-blocking Learning Journey workload feasibility warnings.
+   * Never converts findings into capture errors or changes TIME CHECK arithmetic.
+   */
+  function appendLearningJourneyWorkloadFeasibilityWarnings(page, wf, warningsOut) {
+    if (!Array.isArray(warningsOut)) return;
+    var adapter = resolveLearningJourneyWorkloadFeasibilityAdapterLib();
+    if (!adapter || typeof adapter.collectLearningJourneyWorkloadWarnings !== "function") return;
+    var rows = [];
+    try {
+      rows =
+        adapter.collectLearningJourneyWorkloadWarnings(page, {
+          learningTimeEnvelopeMinutes: resolveLearningJourneyLearningTimeEnvelopeMinutes(wf)
+        }) || [];
+    } catch (_err) {
+      return;
+    }
+    if (!Array.isArray(rows) || !rows.length) return;
+    var seen = Object.create(null);
+    rows.forEach(function (row) {
+      var text = String(row || "").trim();
+      if (!text || seen[text]) return;
+      seen[text] = true;
+      warningsOut.push(text);
+    });
+  }
+
+  function attachLearningJourneyWorkloadWarningsToGate(gate, page, wf) {
+    if (!gate || !gate.ok) {
+      if (!gate) return { ok: false, errors: ["invalid_learning_journey_page"], warnings: [] };
+      if (!Array.isArray(gate.warnings)) {
+        return Object.assign({}, gate, { warnings: [] });
+      }
+      return gate;
+    }
+    var warnings = Array.isArray(gate.warnings) ? gate.warnings.slice() : [];
+    appendLearningJourneyWorkloadFeasibilityWarnings(page, wf, warnings);
+    return Object.assign({}, gate, { warnings: warnings });
+  }
+
   function resolveDlaCanonicalSlotCopyStep(context) {
     var cid = String(
       (context &&
@@ -13778,9 +13980,17 @@
       if (workflowRecordIsLearningJourney(workflow) || isLearningJourneyWorkflow(workflow)) {
         var ljDesignMod = resolveLearningJourneyDesignPageLib();
         if (ljDesignMod && typeof ljDesignMod.validateLearningJourneyDesignPage === "function") {
-          return ljDesignMod.validateLearningJourneyDesignPage(parsed);
+          return attachLearningJourneyWorkloadWarningsToGate(
+            ljDesignMod.validateLearningJourneyDesignPage(parsed),
+            parsed,
+            workflow
+          );
         }
-        return { ok: false, errors: ["learning_journey_design_page_module_unavailable"] };
+        return {
+          ok: false,
+          errors: ["learning_journey_design_page_module_unavailable"],
+          warnings: []
+        };
       }
       if (workflowRecordIsSituatedTask(workflow) || isSituatedTaskWorkflow(workflow)) {
         var stDesignMod = resolveSituatedTaskDesignPageLib();
@@ -14369,10 +14579,9 @@
         (resolvePartialPageCaptureStageFromStep(step) === "learning_sequence" ||
           (!step && partialMode))
       ) {
-        return validateLearningSequencePartialPageCapture(
-          parsed,
-          buildLearningSequencePartialValidationOptions(workflow)
-        );
+        var lsPartialOptions = buildLearningSequencePartialValidationOptions(workflow) || {};
+        lsPartialOptions.baselinePage = baseline || null;
+        return validateLearningSequencePartialPageCapture(parsed, lsPartialOptions);
       }
       var errors = [];
       if (
@@ -14414,7 +14623,12 @@
           errors.push("activity_id order changed from baseline");
         }
       }
-      return errors.length ? { ok: false, errors: errors } : { ok: true, errors: [] };
+      if (errors.length) {
+        return { ok: false, errors: errors, warnings: [] };
+      }
+      var fullPageWarnings = [];
+      appendInteractiveWorkloadFeasibilityWarnings(parsed, baseline || null, fullPageWarnings);
+      return { ok: true, errors: [], warnings: fullPageWarnings };
     }
     if (parsed.timeline || parsed.activities_used || parsed.activities_omitted || parsed.checks) {
       return { ok: false, errors: ["unrecognized capture shape — use modern partial page artefact"] };
@@ -14424,7 +14638,7 @@
 
   function validateLearningSequencePartialPageCapture(parsed, options) {
     if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
-      return { ok: false, errors: ["invalid capture object"] };
+      return { ok: false, errors: ["invalid capture object"], warnings: [] };
     }
     var errors = [];
     if (String(parsed.schema_version || "") !== "2.0.0") {
@@ -14444,7 +14658,16 @@
       errors.push("learning_sequence object required");
     }
     appendLearningSequenceDurationComplianceErrors(parsed, options, errors);
-    return errors.length ? { ok: false, errors: errors } : { ok: true, errors: [] };
+    if (errors.length) {
+      return { ok: false, errors: errors, warnings: [] };
+    }
+    var warnings = [];
+    appendInteractiveWorkloadFeasibilityWarnings(
+      parsed,
+      options && options.baselinePage ? options.baselinePage : null,
+      warnings
+    );
+    return { ok: true, errors: [], warnings: warnings };
   }
 
   function resolveLearningSequenceEnrichedPageJsonForDesignPageCopy(wf) {
@@ -14569,7 +14792,7 @@
 
   function validateAssessmentDesignPageCapture(parsed) {
     if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
-      return { ok: false, errors: ["invalid capture object"] };
+      return { ok: false, errors: ["invalid capture object"], warnings: [] };
     }
     var errors = [];
     if (String(parsed.schema_version || "").trim() !== "2.0.0") {
@@ -14605,7 +14828,13 @@
     assessmentStructuredStimulusCaptureErrors(parsed).forEach(function (message) {
       errors.push(message);
     });
-    return errors.length ? { ok: false, errors: errors } : { ok: true, errors: [] };
+    if (errors.length) {
+      return { ok: false, errors: errors, warnings: [] };
+    }
+    // Sprint 100B-2 — advisory only; assessment_evidence elicitations when present.
+    var warnings = [];
+    appendAssessmentPackWorkloadFeasibilityWarnings(parsed, warnings);
+    return { ok: true, errors: [], warnings: warnings };
   }
 
   /**
@@ -14812,9 +15041,17 @@
     if (workflowRecordIsLearningJourney(workflow) || isLearningJourneyWorkflow(workflow)) {
       var ljMod = resolveLearningJourneyDesignPageLib();
       if (ljMod && typeof ljMod.validateLearningJourneyDesignPage === "function") {
-        return ljMod.validateLearningJourneyDesignPage(parsed);
+        return attachLearningJourneyWorkloadWarningsToGate(
+          ljMod.validateLearningJourneyDesignPage(parsed),
+          parsed,
+          workflow
+        );
       }
-      return { ok: false, errors: ["learning_journey_design_page_module_unavailable"] };
+      return {
+        ok: false,
+        errors: ["learning_journey_design_page_module_unavailable"],
+        warnings: []
+      };
     }
     if (workflowRecordIsSituatedTask(workflow) || isSituatedTaskWorkflow(workflow)) {
       var stMod = resolveSituatedTaskDesignPageLib();
@@ -17033,7 +17270,8 @@
             return {
               ok: false,
               errors: keyErrors,
-              message: keyErrors.join("; ")
+              message: keyErrors.join("; "),
+              warnings: []
             };
           }
           var stimulusErrors = assessmentStructuredStimulusCaptureErrors(parsedAssessment);
@@ -17041,7 +17279,26 @@
             return {
               ok: false,
               errors: stimulusErrors,
-              message: stimulusErrors.join("; ")
+              message: stimulusErrors.join("; "),
+              warnings: []
+            };
+          }
+          // Sprint 100B-2 — Design Evidence Elicitation / Author Formative Return:
+          // surface advisory workload warnings once specs + indicative times are present.
+          // Design Page continues through validateAssessmentDesignPageCapture below.
+          if (
+            assessmentOutput === "assessment_evidence_elicitation" ||
+            assessmentOutput === "assessment_formative_return"
+          ) {
+            var apWorkloadWarnings = [];
+            appendAssessmentPackWorkloadFeasibilityWarnings(
+              parsedAssessment,
+              apWorkloadWarnings
+            );
+            return {
+              ok: true,
+              errors: [],
+              warnings: apWorkloadWarnings
             };
           }
         }
@@ -17085,10 +17342,15 @@
         return {
           ok: false,
           errors: lsCheck.errors || ["invalid_learning_sequence_v2_capture"],
-          message: (lsCheck.errors || []).join("; ")
+          message: (lsCheck.errors || []).join("; "),
+          warnings: []
         };
       }
-      return { ok: true, errors: [] };
+      return {
+        ok: true,
+        errors: [],
+        warnings: Array.isArray(lsCheck.warnings) ? lsCheck.warnings.slice() : []
+      };
     }
     if (isDesignPagePageEnrichmentV2CopyStep(step, workflow)) {
       var parsedDp = tryParseWorkflowArtefactJson(raw);
@@ -17096,7 +17358,8 @@
         return {
           ok: false,
           errors: ["invalid_json"],
-          message: "Design Page v2 capture must be valid JSON page artefact"
+          message: "Design Page v2 capture must be valid JSON page artefact",
+          warnings: []
         };
       }
       parsedDp = applyExpositoryDesignPageCaptureEnvelopeIdentity(parsedDp, step, workflow);
@@ -17105,10 +17368,15 @@
         return {
           ok: false,
           errors: dpCheck.errors || ["invalid_design_page_v2_capture"],
-          message: (dpCheck.errors || []).join("; ")
+          message: (dpCheck.errors || []).join("; "),
+          warnings: []
         };
       }
-      return { ok: true, errors: [] };
+      return {
+        ok: true,
+        errors: [],
+        warnings: Array.isArray(dpCheck.warnings) ? dpCheck.warnings.slice() : []
+      };
     }
     if (
       isWorkflowStepDesignAssessment({
@@ -28749,6 +29017,7 @@
     state.workflowRunGamFormatValidation = {};
     state.workflowRunGamPageValidation = {};
     state.workflowRunGamFormatWarnings = {};
+    state.workflowRunWorkloadFeasibilityWarnings = {};
     state.workflowRunLearnerPageFramingValidation = {};
     state.workflowRunGamSuitabilityReviewValidation = {};
     state.workflowRunGamVerificationCheck = {};
@@ -29331,8 +29600,26 @@
             if (state.workflowRunStepCompleted[sid]) {
               delete state.workflowRunStepCompleted[sid];
             }
+            if (state.workflowRunWorkloadFeasibilityWarnings) {
+              delete state.workflowRunWorkloadFeasibilityWarnings[sid];
+            }
           } else {
             delete state.workflowRunStrictJsonValidation[sid];
+            var workloadWarnings =
+              strictCheck && Array.isArray(strictCheck.warnings) ? strictCheck.warnings : [];
+            if (workloadWarnings.length) {
+              state.workflowRunWorkloadFeasibilityWarnings =
+                state.workflowRunWorkloadFeasibilityWarnings || {};
+              state.workflowRunWorkloadFeasibilityWarnings[sid] = workloadWarnings.join("\n\n");
+              if (typeof showToast === "function") {
+                showToast(
+                  "Workload feasibility warning: one or more tasks may be allocated less time than their visible demands suggest. Review the step warning for details. You can continue without changing the design.",
+                  "warning"
+                );
+              }
+            } else if (state.workflowRunWorkloadFeasibilityWarnings) {
+              delete state.workflowRunWorkloadFeasibilityWarnings[sid];
+            }
           }
         }
       } else {
@@ -29603,6 +29890,11 @@
         : "";
     var gamFormatWarn =
       sid && state.workflowRunGamFormatWarnings ? state.workflowRunGamFormatWarnings[sid] : "";
+    var workloadWarn =
+      sid && state.workflowRunWorkloadFeasibilityWarnings
+        ? state.workflowRunWorkloadFeasibilityWarnings[sid]
+        : "";
+    var advisoryWarn = String(gamFormatWarn || workloadWarn || "").trim();
     var marked = !!(sid && state.workflowRunStepCompleted[sid]);
     var gamVerificationView = resolveGamMaterialsVerificationView(sid);
     var gamVerificationPending = !!(
@@ -29637,7 +29929,7 @@
       text = gamVerificationView.stepStatusText || GAM_VERIFICATION_COPY.pendingStatus;
     } else {
       text = formatWorkflowRunStepCompleteStatus(oname, body.length > 0, marked);
-      if (gamFormatWarn) {
+      if (advisoryWarn) {
         text = text || "Step captured";
         text += " (with warnings)";
       }
@@ -29649,6 +29941,12 @@
       } else {
         statusEl.title = blockingMessage;
       }
+    } else if (advisoryWarn) {
+      if (typeof statusEl.setAttribute === "function") {
+        statusEl.setAttribute("title", advisoryWarn);
+      } else {
+        statusEl.title = advisoryWarn;
+      }
     } else if (typeof statusEl.removeAttribute === "function") {
       statusEl.removeAttribute("title");
     } else {
@@ -29658,8 +29956,26 @@
     statusEl.classList.toggle("workflow-run-step-output-status--error", hasBlockingErr);
     statusEl.classList.toggle(
       "workflow-run-step-output-status--warning",
-      !hasBlockingErr && !!gamFormatWarn
+      !hasBlockingErr && !!advisoryWarn
     );
+    var workloadNote = li.querySelector('[data-role="workload-feasibility-warning"]');
+    if (!hasBlockingErr && workloadWarn) {
+      if (!workloadNote) {
+        workloadNote = document.createElement("div");
+        workloadNote.setAttribute("data-role", "workload-feasibility-warning");
+        workloadNote.className = "helper-text workflow-run-workload-feasibility-warning";
+        if (statusEl.parentNode) {
+          statusEl.parentNode.insertBefore(workloadNote, statusEl.nextSibling);
+        } else {
+          li.appendChild(workloadNote);
+        }
+      }
+      workloadNote.textContent = String(workloadWarn);
+      workloadNote.hidden = false;
+    } else if (workloadNote) {
+      workloadNote.textContent = "";
+      workloadNote.hidden = true;
+    }
     refreshGamSuitabilityReviewUi(li);
   }
 
@@ -30705,6 +31021,7 @@
       state.workflowRunGamFormatValidation = {};
       state.workflowRunGamPageValidation = {};
       state.workflowRunGamFormatWarnings = {};
+    state.workflowRunWorkloadFeasibilityWarnings = {};
       state.workflowRunGamSuitabilityReviewValidation = {};
       state.workflowRunGamVerificationCheck = {};
       state.workflowRunGamVerificationPages = {};
@@ -35046,6 +35363,7 @@
     state.workflowRunGamFormatValidation = {};
     state.workflowRunGamPageValidation = {};
     state.workflowRunGamFormatWarnings = {};
+    state.workflowRunWorkloadFeasibilityWarnings = {};
     if (els.workflowName) els.workflowName.value = "";
     if (els.workflowLibraryTags) els.workflowLibraryTags.value = "";
     if (els.workflowLibraryNotes) els.workflowLibraryNotes.value = "";
@@ -37460,8 +37778,18 @@
     if (deleteIds.indexOf(selectedId) < 0) {
       deleteIds = [selectedId].concat(deleteIds);
     }
-    var confirmed = await requestDeleteWorkflowConfirmation(title, cascadePlan);
-    if (!confirmed) return;
+    var workflowsToDelete =
+      cascadePlan && Array.isArray(cascadePlan.deleteWorkflows) && cascadePlan.deleteWorkflows.length
+        ? cascadePlan.deleteWorkflows.filter(Boolean)
+        : [wf];
+    var relatedPrompts = collectPromptsForWorkflows(workflowsToDelete);
+    var confirmation = await requestDeleteWorkflowConfirmation(
+      title,
+      cascadePlan,
+      relatedPrompts
+    );
+    if (!confirmation || !confirmation.confirmed) return;
+    var deleteRelatedPrompts = !!confirmation.deleteRelatedPrompts;
 
     var resourcesMod = getWorkflowResourcesMod();
     var i;
@@ -37498,13 +37826,18 @@
     deleteIds.forEach(function (id) {
       deleteIdSet[id] = true;
     });
+    var remainingWorkflows = (state.workflows || []).filter(function (w) {
+      return !deleteIdSet[String((w && w.id) || "")];
+    });
+    var exclusivePromptIds = deleteRelatedPrompts
+      ? collectExclusiveRelatedPromptIds(workflowsToDelete, remainingWorkflows)
+      : [];
+
     deleteIds.forEach(function (id) {
       clearPersistedWorkflowRunStateForWorkflow(id);
       pruneWorkflowSessionStateForDeletedWorkflow(id);
     });
-    state.workflows = state.workflows.filter(function (w) {
-      return !deleteIdSet[String((w && w.id) || "")];
-    });
+    state.workflows = remainingWorkflows;
     state.selectedWorkflowId = null;
     try {
       var saveOutcome = saveWorkflows();
@@ -37512,19 +37845,57 @@
         await saveOutcome;
       }
     } catch (_saveErr) {}
+
+    var deletedPromptCount = 0;
+    if (exclusivePromptIds.length && window.Library && typeof window.Library.deletePrompt === "function") {
+      for (i = 0; i < exclusivePromptIds.length; i += 1) {
+        var promptId = exclusivePromptIds[i];
+        try {
+          await window.Library.deletePrompt(promptId);
+          deletedPromptCount += 1;
+        } catch (_promptErr) {}
+      }
+      if (deletedPromptCount > 0) {
+        var removedSet = {};
+        exclusivePromptIds.forEach(function (id) {
+          removedSet[id] = true;
+        });
+        state.prompts = (state.prompts || []).filter(function (p) {
+          return !removedSet[String((p && p.id) || "")];
+        });
+        if (
+          state.selectedPromptId &&
+          removedSet[String(state.selectedPromptId)]
+        ) {
+          state.selectedPromptId = null;
+          if (typeof clearDetailForm === "function") {
+            try {
+              clearDetailForm();
+            } catch (_clearErr) {}
+          }
+        }
+      }
+    }
+
     renderWorkflowList({ skipDefaultSelection: true });
     clearWorkflowDetail();
     renderLibraryList();
-    showToast(
-      cascadePlan.cascade
-        ? "Learning Journey and " +
-            cascadePlan.constituents.length +
-            " constituent workflow" +
-            (cascadePlan.constituents.length === 1 ? "" : "s") +
-            " deleted."
-        : "Workflow deleted.",
-      "success"
-    );
+    var baseToast = cascadePlan.cascade
+      ? "Learning Journey and " +
+        cascadePlan.constituents.length +
+        " constituent workflow" +
+        (cascadePlan.constituents.length === 1 ? "" : "s") +
+        " deleted."
+      : "Workflow deleted.";
+    if (deletedPromptCount > 0) {
+      baseToast +=
+        " " +
+        deletedPromptCount +
+        " related prompt" +
+        (deletedPromptCount === 1 ? "" : "s") +
+        " removed.";
+    }
+    showToast(baseToast, "success");
     if (els.exportWorkflowBtn) {
       els.exportWorkflowBtn.disabled = true;
     }
@@ -40994,17 +41365,29 @@
     return plan;
   }
 
-  function buildDeleteWorkflowConfirmCopy(workflowName, cascadePlan) {
+  function buildDeleteWorkflowConfirmCopy(workflowName, cascadePlan, relatedPromptCount) {
     var name = String(workflowName || "this workflow").trim() || "this workflow";
     var plan = cascadePlan && typeof cascadePlan === "object" ? cascadePlan : null;
     var constituents =
       plan && Array.isArray(plan.constituents) ? plan.constituents.filter(Boolean) : [];
+    var promptCount =
+      typeof relatedPromptCount === "number" && isFinite(relatedPromptCount)
+        ? Math.max(0, Math.floor(relatedPromptCount))
+        : 0;
+    var promptNote =
+      promptCount > 0
+        ? "\n\nRelated Prompt Library prompts (" +
+          promptCount +
+          ") are kept unless you choose to delete them below."
+        : "";
     if (!constituents.length) {
       return {
         title: 'Delete "' + name + '"?',
         body:
-          "This will permanently delete the workflow, its Run data and its generated assets. This cannot be undone.",
-        submitLabel: "Delete workflow"
+          "This will permanently delete the workflow, its Run data and its generated assets. This cannot be undone." +
+          promptNote,
+        submitLabel: "Delete workflow",
+        relatedPromptCount: promptCount
       };
     }
     var lines = constituents.map(function (wf) {
@@ -41021,17 +41404,68 @@
         (count === 1 ? "" : "s") +
         ":\n\n" +
         lines.join("\n") +
-        "\n\nThis cannot be undone.",
-      submitLabel: "Delete Learning Journey"
+        "\n\nThis cannot be undone." +
+        promptNote,
+      submitLabel: "Delete Learning Journey",
+      relatedPromptCount: promptCount
     };
   }
 
-  function requestDeleteWorkflowConfirmation(workflowName, cascadePlan) {
-    var copy = buildDeleteWorkflowConfirmCopy(workflowName, cascadePlan);
+  function collectPromptIdsReferencedByWorkflows(workflows) {
+    var ids = {};
+    (Array.isArray(workflows) ? workflows : []).forEach(function (wf) {
+      (wf && Array.isArray(wf.steps) ? wf.steps : []).forEach(function (step) {
+        var pid = String((step && step.promptId) || "").trim();
+        if (pid) ids[pid] = true;
+      });
+    });
+    return Object.keys(ids);
+  }
+
+  /**
+   * Prompts referenced by workflowsToDelete that are not referenced by any
+   * workflow outside that delete set.
+   */
+  function collectExclusiveRelatedPromptIds(workflowsToDelete, remainingWorkflows) {
+    var candidateIds = collectPromptIdsReferencedByWorkflows(workflowsToDelete);
+    if (!candidateIds.length) return [];
+    var retainedIds = {};
+    collectPromptIdsReferencedByWorkflows(remainingWorkflows).forEach(function (id) {
+      retainedIds[id] = true;
+    });
+    return candidateIds.filter(function (id) {
+      return !retainedIds[id];
+    });
+  }
+
+  function requestDeleteWorkflowConfirmation(workflowName, cascadePlan, relatedPrompts) {
+    var related = Array.isArray(relatedPrompts) ? relatedPrompts.filter(Boolean) : [];
+    var copy = buildDeleteWorkflowConfirmCopy(workflowName, cascadePlan, related.length);
     var dialog = els.deleteWorkflowConfirmDialog;
+    var optionRow = els.deleteWorkflowAlsoDeletePromptsRow;
+    var optionInput = els.deleteWorkflowAlsoDeletePrompts;
+    var optionLabel = els.deleteWorkflowAlsoDeletePromptsLabel;
+    if (optionInput) {
+      optionInput.checked = false;
+      optionInput.disabled = related.length === 0;
+    }
+    if (optionLabel) {
+      optionLabel.textContent =
+        related.length === 1
+          ? "Also delete 1 related Prompt Library prompt"
+          : "Also delete " + related.length + " related Prompt Library prompts";
+    }
+    if (optionRow && optionRow.classList) {
+      if (related.length > 0) optionRow.classList.remove("hidden");
+      else optionRow.classList.add("hidden");
+    }
     if (!dialog || typeof dialog.showModal !== "function") {
+      // Fallback cannot express the checkbox; keep related prompts.
       var fallback = window.confirm(copy.title + "\n\n" + copy.body);
-      return Promise.resolve(!!fallback);
+      return Promise.resolve({
+        confirmed: !!fallback,
+        deleteRelatedPrompts: false
+      });
     }
     if (els.deleteWorkflowConfirmTitle) {
       els.deleteWorkflowConfirmTitle.textContent = copy.title;
@@ -41045,14 +41479,22 @@
     return new Promise(function (resolve) {
       var onClose = function () {
         dialog.removeEventListener("close", onClose);
-        resolve(String(dialog.returnValue || "") === "confirm");
+        var confirmed = String(dialog.returnValue || "") === "confirm";
+        var deleteRelatedPrompts =
+          confirmed &&
+          related.length > 0 &&
+          !!(optionInput && optionInput.checked);
+        resolve({
+          confirmed: confirmed,
+          deleteRelatedPrompts: deleteRelatedPrompts
+        });
       };
       dialog.addEventListener("close", onClose);
       try {
         dialog.showModal();
       } catch (_eShow) {
         dialog.removeEventListener("close", onClose);
-        resolve(false);
+        resolve({ confirmed: false, deleteRelatedPrompts: false });
         return;
       }
       if (els.deleteWorkflowConfirmCancel && typeof els.deleteWorkflowConfirmCancel.focus === "function") {
@@ -55806,10 +56248,12 @@
       typeof designMod.validateLearningJourneyDesignPageForCapture === "function"
         ? designMod.validateLearningJourneyDesignPageForCapture(parsed)
         : designMod.validateLearningJourneyDesignPage(parsed);
+    gate = attachLearningJourneyWorkloadWarningsToGate(gate, parsed, wf);
     if (!gate.ok) {
       return {
         ok: false,
         errors: gate.errors || ["invalid_learning_journey_page"],
+        warnings: [],
         message:
           "Learning Journey Design Page must be a valid shared page with product_id learning_journey" +
           (gate.errors && gate.errors.length ? " (" + gate.errors.join("; ") + ")" : ".")
@@ -55844,6 +56288,7 @@
     return {
       ok: true,
       errors: [],
+      warnings: Array.isArray(gate.warnings) ? gate.warnings.slice() : [],
       parsed: parsed,
       json: JSON.stringify(parsed, null, 2),
       sharedSource: sharedApply || null
@@ -62020,6 +62465,9 @@
                   strictCheck.message || strictCheck.errors.join(", ")
                 );
                 delete state.workflowRunStepCompleted[sid];
+                if (state.workflowRunWorkloadFeasibilityWarnings) {
+                  delete state.workflowRunWorkloadFeasibilityWarnings[sid];
+                }
               }
               updateRunStepOutputStatus(currentLi);
               showToast(
@@ -62029,6 +62477,18 @@
                 "error"
               );
               return;
+            }
+            if (sid) {
+              var advanceWorkloadWarnings =
+                strictCheck && Array.isArray(strictCheck.warnings) ? strictCheck.warnings : [];
+              if (advanceWorkloadWarnings.length) {
+                state.workflowRunWorkloadFeasibilityWarnings =
+                  state.workflowRunWorkloadFeasibilityWarnings || {};
+                state.workflowRunWorkloadFeasibilityWarnings[sid] =
+                  advanceWorkloadWarnings.join("\n\n");
+              } else if (state.workflowRunWorkloadFeasibilityWarnings) {
+                delete state.workflowRunWorkloadFeasibilityWarnings[sid];
+              }
             }
           }
           if (storesArtefact && pageStructureStep && body) {
@@ -62966,6 +63426,7 @@
       state.workflowRunGamFormatValidation = {};
       state.workflowRunGamPageValidation = {};
       state.workflowRunGamFormatWarnings = {};
+    state.workflowRunWorkloadFeasibilityWarnings = {};
     };
     prismTestApi.setWorkflowRunCapturedOutputsRawForTest = function (captures) {
       state.workflowRunCapturedOutputsRaw =
@@ -63079,6 +63540,8 @@
       shouldSuppressWorkflowImportWarning;
     prismTestApi.buildDeleteWorkflowConfirmCopyForTest = buildDeleteWorkflowConfirmCopy;
     prismTestApi.requestDeleteWorkflowConfirmationForTest = requestDeleteWorkflowConfirmation;
+    prismTestApi.collectPromptsForWorkflowsForTest = collectPromptsForWorkflows;
+    prismTestApi.collectExclusiveRelatedPromptIdsForTest = collectExclusiveRelatedPromptIds;
     prismTestApi.planDeleteWorkflowCascadeForTest = planDeleteWorkflowCascade;
     prismTestApi.pruneWorkflowSessionStateForDeletedWorkflowForTest =
       pruneWorkflowSessionStateForDeletedWorkflow;
@@ -64125,8 +64588,25 @@
     prismTestApi.validateDlaOrPageCapture = validateDlaOrPageCapture;
     prismTestApi.validateLearningSequencePartialPageCapture =
       validateLearningSequencePartialPageCapture;
+    prismTestApi.resolveInteractiveWorkloadFeasibilityAdapterLib =
+      resolveInteractiveWorkloadFeasibilityAdapterLib;
+    prismTestApi.appendInteractiveWorkloadFeasibilityWarnings =
+      appendInteractiveWorkloadFeasibilityWarnings;
+    prismTestApi.resolveAssessmentPackWorkloadFeasibilityAdapterLib =
+      resolveAssessmentPackWorkloadFeasibilityAdapterLib;
+    prismTestApi.appendAssessmentPackWorkloadFeasibilityWarnings =
+      appendAssessmentPackWorkloadFeasibilityWarnings;
+    prismTestApi.resolveLearningJourneyWorkloadFeasibilityAdapterLib =
+      resolveLearningJourneyWorkloadFeasibilityAdapterLib;
+    prismTestApi.appendLearningJourneyWorkloadFeasibilityWarnings =
+      appendLearningJourneyWorkloadFeasibilityWarnings;
+    prismTestApi.attachLearningJourneyWorkloadWarningsToGate =
+      attachLearningJourneyWorkloadWarningsToGate;
+    prismTestApi.resolveLearningJourneyLearningTimeEnvelopeMinutes =
+      resolveLearningJourneyLearningTimeEnvelopeMinutes;
     prismTestApi.validateDesignPagePartialPageCapture = validateDesignPagePartialPageCapture;
     prismTestApi.validateAssessmentDesignPageCapture = validateAssessmentDesignPageCapture;
+    prismTestApi.validateDesignPageOrPageCapture = validateDesignPageOrPageCapture;
     prismTestApi.validateDesignAssessmentPartialPageCapture =
       validateDesignAssessmentPartialPageCapture;
     prismTestApi.validateGenerateAssessmentItemsPartialPageCapture =

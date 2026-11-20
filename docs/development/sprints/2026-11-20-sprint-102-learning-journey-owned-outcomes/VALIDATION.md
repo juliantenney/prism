@@ -1,30 +1,49 @@
 # Sprint 102 — Validation plan / ledger
 
-**Sprint:** 102 — Learning Journey–Owned Outcomes and Commission-Native Component Authoring  
-**Status:** OPEN — setup only; no investigation or implementation runs yet
+**Status:** OPEN — 102D automated validation complete; 102E not authorised
 
 ---
 
-## Setup (2026-11-20)
+## 102D automated results (2026-11-20)
 
-**Mode:** Documentation / programme registration only.  
-**Automated tests:** **Not run** (no application changes).
+**Command:** `node --test --test-concurrency=1 tests/s102-commission-native-lo-bind.test.js` (+ related intake suites)
 
-| Claim | Evidence |
-| ----- | -------- |
-| Sprint 102 opened | [S102-D01](decisions.md#s102-d01--open-sprint-102) |
-| Development pack created | This folder |
-| Programme registration | [NEXT-SPRINT.md](../../../sprints/NEXT-SPRINT.md), [sprint-102 pointer](../../../sprints/sprint-102-learning-journey-owned-outcomes.md) |
+| Suite | Result |
+| ----- | ------ |
+| `tests/s102-commission-native-lo-bind.test.js` | **PASS** (25) |
+| `tests/s101-practice-product-identity-and-intake.test.js` | **PASS** |
+| `tests/s96-lj-shared-source-handoff.test.js` | **PASS** |
+| `tests/s93-assessment-pack-lj-commission-focus-handoff.test.js` | **PASS** |
 
----
+### Coverage claimed
 
-## Planned later (not yet authorised)
+| Area | Covered |
+| ---- | ------- |
+| Marker extract valid/missing/duplicate/empty/invalid/row-check | Yes |
+| Component vs journey authority (no journey substitute) | Yes |
+| Topology: Practice/Interactive → EP; Expository → EJP; AP → Purpose | Yes |
+| Legacy/invalid markers → foundation | Yes |
+| Create-from-topic Interactive foundation retained | Yes |
+| Planning preamble + LO embed (Practice EP, Expository EJP) | Yes |
+| AP Purpose commissioned wording | Yes |
+| LJ Requirements/Progression/DP prompt contracts | Yes |
+| Practice LJ-only Create posture | Yes |
 
-| Phase | Intended validation |
-| ----- | ------------------- |
-| 102A | Read-only investigation claims with code citations; no tests required unless docs-only |
-| 102B–C | Design acceptance gates before implementation |
-| 102D | Focused tests: commission-native EP entry; standalone GLC→MK→DLO unchanged; Interactive/Practice/AP isolation |
-| 102E | Human/regression evidence; qualified close |
+### 102E automated (runtime path fix)
 
-**Hard rule:** Do not treat opening documentation as investigation or implementation acceptance.
+**Command:** `node --test --test-concurrency=1 tests/s102e-commission-native-runtime-path.test.js`
+
+| Suite | Result |
+| ----- | ------ |
+| `tests/s102e-commission-native-runtime-path.test.js` | **PASS** (13) |
+
+Covers: `index.html` bind script order; all four products intake+apply first stage; invalid-marker foundation fallback; create/save parent expand; planning prompt grounding.
+
+### Remaining for human / 102E live
+
+- Hard-refresh app, delete broken foundation children, recommission with valid COMPONENT markers.  
+- Confirm first stage + navigation for Expository / Interactive / Practice / AP.  
+- Expository EJP quality without `learning_content` (S102-AD-015).  
+- Confirm Design Page commissions include COMPONENT markers (regenerate DP only if markers absent).  
+
+**Hard rule:** Automated green does not close the sprint.

@@ -423,7 +423,7 @@ test("Interactive and Assessment Pack responses resolve into Journal without fab
   assert.equal(reloaded.text, "Revised authentic initial judgement.");
 });
 
-test("Expository journal producer surfaces an explicit family limitation", () => {
+test("Expository journal producer without learner_artefacts reports elicitation gap", () => {
   const proposal = proposeArtefactContractFromLearningJourney({
     page: {
       artifact_type: "page",
@@ -446,8 +446,8 @@ test("Expository journal producer surfaces an explicit family limitation", () =>
             {
               entry_id: "j1",
               order: 1,
-              title: "Impossible",
-              framing: "Cannot capture.",
+              title: "Missing declaration",
+              framing: "Needs learner_artefacts.",
               artefact_id: "c2.E1"
             }
           ]
@@ -468,12 +468,94 @@ test("Expository journal producer surfaces an explicit family limitation", () =>
   assert.ok(
     proposal.gaps.some(
       (gap) =>
-        gap.code === "journal_producer_family_cannot_capture" &&
+        gap.code === "journal_producer_elicitation_missing" &&
         gap.artefactId === "c2.E1" &&
-        /Expository/i.test(gap.message)
+        /learner_artefacts\.produces/i.test(gap.message)
     ),
     JSON.stringify(proposal.gaps)
   );
+});
+
+test("Expository page with learner_artefacts mounts text_entry and resolves Journal", () => {
+  const storage = memoryStorage();
+  const api = createLearnerDraftStorage(storage);
+  const page = Object.assign({}, expositoryPage("Journalable reading"), {
+    learner_artefacts: {
+      produces: [
+        {
+          elicitation_id: "E1",
+          response_kind: "constructed_text",
+          label: "Your reflection",
+          prompt: "Record one insight you will carry forward."
+        }
+      ]
+    }
+  });
+  const producers = discoverConstructedTextProducers(page);
+  assert.equal(producers.length, 1);
+  assert.equal(producers[0].elicitationId, "E1");
+  assert.equal(producers[0].source, "learner_artefacts");
+  const rendered = renderLearnerPageHtml(page);
+  assert.match(rendered.html, /data-region="learner-artefacts"/);
+  assert.match(rendered.html, /data-workspace-kind="text_entry"/);
+  assert.match(rendered.html, /data-workspace-id="learner-constructed-E1"/);
+
+  const proposal = proposeArtefactContractFromLearningJourney({
+    page: {
+      artifact_type: "page",
+      product_id: "learning_journey",
+      title: "Expository journal",
+      commissions: [
+        {
+          commission_id: "c2",
+          order: 1,
+          product_id: "expository",
+          title: "Reading",
+          dependencies: ""
+        }
+      ],
+      learning_journey: {
+        journal: {
+          enabled: true,
+          title: "Journal",
+          entries: [
+            {
+              entry_id: "j1",
+              order: 1,
+              title: "Reflection",
+              framing: "Your insight.",
+              artefact_id: "c2.E1"
+            }
+          ]
+        }
+      }
+    },
+    constituents: [
+      {
+        commissionId: "c2",
+        productId: "expository",
+        title: "Reading",
+        sourcePage: page,
+        pageKey: "page-c2"
+      }
+    ]
+  });
+  assert.equal(proposal.ok, true, JSON.stringify(proposal.gaps));
+  assert.equal(proposal.contract.produces[0].workspaceId, "learner-constructed-E1");
+
+  const draft = envelope.createEmptyEnvelope("page-c2");
+  draft.workspaces["learner-constructed-E1"] = envelope.createWorkspaceState("text_entry", {
+    text: "I will watch for threshold effects."
+  });
+  assert.equal(api.saveLearnerDraft("page-c2", draft).ok, true);
+  const resolved = resolveArtefactReference({
+    contract: proposal.contract,
+    artefactId: "c2.E1",
+    resources: [{ commissionId: "c2", pageKey: "page-c2", title: "Reading" }],
+    storage
+  });
+  assert.equal(resolved.ok, true);
+  assert.equal(resolved.text, "I will watch for threshold effects.");
 });
 
 test("Situated Task constructed artefact resolves through shared contract", () => {

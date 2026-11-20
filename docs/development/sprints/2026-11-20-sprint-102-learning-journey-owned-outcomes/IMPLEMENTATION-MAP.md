@@ -1,49 +1,35 @@
 # Sprint 102 — Implementation map
 
-**Status:** **OPEN**  
-**Charter:** [SPRINT-102-CHARTER.md](SPRINT-102-CHARTER.md)  
-**Investigation plan:** [INITIAL-INVESTIGATION.md](INITIAL-INVESTIGATION.md)  
-**Decisions:** [decisions.md](decisions.md)
+**Status:** **OPEN** — 102D implemented  
+**Design:** [COMMISSION-NATIVE-AUTHORING-DESIGN.md](COMMISSION-NATIVE-AUTHORING-DESIGN.md) — Accepted  
+**Readiness:** [IMPLEMENTATION-READINESS.md](IMPLEMENTATION-READINESS.md)  
+**Implementation:** [S102-D06](decisions.md#s102-d06--implement-commission-native-authoring-102d)
 
 ---
 
 ## Phase posture
 
 ```text
-102A    Read-only investigation                             PLANNED (not yet authorised)
-102B    Journey-owned outcomes + commission-native contract Pending 102A
-102C    Design / readiness gate                             Pending 102B
-102D    Implementation                                      Pending design approval
-102E    Validation + qualified close                        Pending
+102A–C  Investigation / design / readiness                     COMPLETE
+102D    Implementation + automated validation                  COMPLETE (S102-D06)
+102E    Validation + qualified close                           Pending authorisation
 ```
 
 ---
 
-## 102A — Investigation (planned)
+## 102D delivered surfaces
 
-| Path | Role |
-| ---- | ---- |
-| [INITIAL-INVESTIGATION.md](INITIAL-INVESTIGATION.md) | Scoped plan — execute only when authorised |
-
-**Intended inspection themes:** journey LO generation/representation; allocation to commissions; intake → child seed; EP LO binding; text-commission sufficiency; safe GLC/MK/DLO bypass; continuity without re-teach.
-
----
-
-## Later phases (placeholders)
-
-| Phase | Intended surface |
-| ----- | ---------------- |
-| 102B | Design artefacts / contracts for journey-owned outcomes and EP-authoritative commission binding |
-| 102C | Readiness gate; Interactive/Practice/Expository/AP isolation checklist |
-| 102D | Topology/intake/EP entry changes only as approved; standalone foundation retained |
-| 102E | Focused tests + qualified close |
+| Step | Surface |
+| ---- | ------- |
+| 1 | `lib/learning-journey-sibling-prompts.js` Requirements + Progression; `lib/learning-journey-design-page.js` commission LO marker guidance |
+| 2 | `lib/commission-native-lo-bind.js`; `lib/first-class-commission-intake.js` `intakeCommission` |
+| 3–4 | Topology omit for Interactive/Practice/Expository/AP; `lib/first-class-workflow-family.js` AP Purpose wording |
+| 5 | `app.js` resolve/delivery/preamble; `tests/s102-commission-native-lo-bind.test.js` |
 
 ---
 
-## Non-goals until authorised
+## Non-goals until 102E authorised
 
-- Application code / prompt / schema / validator / workflow edits  
-- Component regeneration  
-- Journey-level QA programme  
-- Sprint 101 polish items as Sprint 102 deliverables  
-- Commit / push without explicit author request
+- Sprint close  
+- Human end-to-end journey regeneration  
+- Commit / push without explicit request  

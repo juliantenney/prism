@@ -27,7 +27,7 @@ Investigate and then implement a simpler Learning Journey component-authoring wo
 3. Component commissioning briefs carry those outcomes and relevant journey context as text, using the **existing commissioning mechanism** where possible.  
 4. Component **Episode Plan (EP)** consumes the commissioned outcomes as **authoritative** rather than generating competing outcomes.  
 5. The existing **EP → DLA → GAM → LS → DP** pipeline is reused wherever possible.  
-6. **Standalone products retain** their existing GLC → MK → DLO workflow.
+6. Products that already support a standalone Create-from-topic (or equivalent) foundation path retain their existing GLC → MK → DLO workflow. **Practice is LJ-commissioned only in v1** — it has no standalone Create path to preserve.
 
 **Design principle:** The Learning Journey owns curriculum coherence; components realise their commissioned contribution.
 
@@ -36,12 +36,18 @@ Investigate and then implement a simpler Learning Journey component-authoring wo
 ## Agreed product decisions (locked at opening)
 
 1. Learning Journeys remain PRISM’s primary instructional design product.  
-2. Standalone Interactive, Practice (standalone-path products), Expository, Assessment Pack and Situated Task must not lose their existing foundation workflows where those apply today.  
+2. Preserve existing standalone foundation workflows for products that actually support them today (notably standalone Interactive, Expository, Assessment Pack, Situated Task as applicable). Do **not** imply Practice has a standalone Create workflow — Practice is Learning Journey–commissioned only.  
 3. Prefer text-based commission fields already in use over inventing new commission JSON keys, unless investigation proves they are insufficient.  
 4. EP must not invent competing learning outcomes when commissioned journey outcomes are authoritative and sufficient.  
 5. Journey-level QA is a **subsequent** workstream — not Sprint 102.  
 6. Sprint 101 is **closed**; do not reopen it for polish.  
 7. Do not regenerate Lagrange / C-series components as part of this sprint setup or investigation.
+
+**Authority / transport / representation (S102-D02):**
+
+- **Authority:** the Learning Journey defines and allocates outcomes.  
+- **Transport:** existing commissioning text carries those outcomes.  
+- **Representation:** EP may require the same outcomes in a structured format. Converting authoritative commissioned outcomes into EP’s required representation must not silently generate or rewrite outcomes.
 
 ---
 
@@ -49,13 +55,16 @@ Investigate and then implement a simpler Learning Journey component-authoring wo
 
 | Phase | Intent | State |
 | ----- | ------ | ----- |
-| **102A** | Read-only investigation (outcomes, commissioning, EP binding, skip-foundation safety) | **PLANNED** — not yet authorised |
-| **102B** | Design / contract for journey-owned outcomes + commission-native EP entry | Pending 102A |
-| **102C** | Implementation readiness / gated design approval | Pending 102B |
-| **102D** | Implementation (authorised after design gates) | Pending |
-| **102E** | Validation and qualified close | Pending |
+| **102A** | Read-only investigation (outcomes, commissioning, EP binding, skip-foundation safety) | **COMPLETE** |
+| **102B** | Boundary compatibility across Expository / Interactive / Practice / AP | **COMPLETE** — [COMPONENT-BOUNDARY-COMPATIBILITY.md](COMPONENT-BOUNDARY-COMPATIBILITY.md) |
+| **102B** | Commission-native authoring design | **COMPLETE** — [COMMISSION-NATIVE-AUTHORING-DESIGN.md](COMMISSION-NATIVE-AUTHORING-DESIGN.md) / [S102-D04](decisions.md#s102-d04--commission-native-authoring-design) **Accepted** |
+| **102C** | Accept design + implementation readiness | **COMPLETE** — [S102-D05](decisions.md#s102-d05--implementation-readiness) **Ready with qualifications** |
+| **102D** | Implementation | **COMPLETE** — [S102-D06](decisions.md#s102-d06--implement-commission-native-authoring-102d) |
+| **102E** | Validation and qualified close | Pending **separate authorisation** |
 
-Exact phase labels may be refined after 102A; **102A requires separate authorisation** before execution.
+**Boundary finding (S102-D03):** Interactive and Practice share Design Episode Plan; Expository enters at Expository Journey Plan; Assessment Pack at Interpret Evidence Purpose. A literal shared EP-first mechanism for all four is rejected.
+
+
 
 ---
 
@@ -75,5 +84,7 @@ Exact phase labels may be refined after 102A; **102A requires separate authorisa
 - Journey-level QA programme  
 - Reopening Sprint 101 deliverables (C4 A3 radios/prose, image-fragment hygiene, C4 image render verify) as Sprint 102 scope — carry forward as references only  
 - Regenerating Lagrange / Practice C1–C4 packages  
-- Deprecating standalone GLC → MK → DLO for Create-from-topic workflows  
+- Deprecating standalone GLC → MK → DLO for Create-from-topic workflows on products that already use them  
+- Treating Sprint 101G Ready / Needs enrichment / Requires full workflow as a mandatory classification system — candidate mechanism only; prefer the smallest working implementation  
+- Introducing compensating knowledge-modelling prompts unless a concrete dependency or observed failure justifies them  
 - Broader pipeline redesign beyond commission-native component authoring

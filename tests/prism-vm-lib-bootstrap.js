@@ -56,6 +56,8 @@ const DEFAULT_LIBS = [
   "lib/assessment-pack-canonical.js",
   "lib/first-class-workflow-family.js",
   "lib/ld-practice-presentation-contracts.js",
+  "lib/workflow-artefact-json-strict.js",
+  "lib/commission-native-lo-bind.js",
   "lib/first-class-commission-intake.js",
   "lib/learning-journey-design-page.js",
   "lib/learning-journey-commission-production-status.js",

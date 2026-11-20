@@ -5619,6 +5619,22 @@
       : Array.isArray(initial.requiredLearnerArtefacts)
         ? initial.requiredLearnerArtefacts.slice()
         : [];
+    var commissionedLos =
+      seed.commissioned_learning_outcomes ||
+      initial.commissionedLearningOutcomes ||
+      null;
+    var commissionNativeLoBound = !!(
+      seed.commission_native_lo_bound ||
+      initial.commissionNativeBound ||
+      (commissionedLos &&
+        typeof commissionedLos === "object" &&
+        Array.isArray(commissionedLos.learning_outcomes) &&
+        commissionedLos.learning_outcomes.length)
+    );
+    var commissionedLosProvenance =
+      seed.commissioned_learning_outcomes_provenance ||
+      initial.commissionedLearningOutcomesProvenance ||
+      null;
     return {
       seed: seed,
       initial: initial,
@@ -5627,6 +5643,9 @@
       commissionDependencies: commissionDependencies,
       publishedTitleDirectory: publishedTitleDirectory,
       requiredLearnerArtefacts: requiredLearnerArtefacts,
+      commissionedLearningOutcomes: commissionedLos,
+      commissionedLearningOutcomesProvenance: commissionedLosProvenance,
+      commissionNativeLoBound: commissionNativeLoBound,
       hasCommissionContext: !!(
         commissionSpec ||
         journeyContext ||
@@ -5635,6 +5654,36 @@
         requiredLearnerArtefacts.length
       )
     };
+  }
+
+  function resolveCommissionNativeLoBindLib() {
+    try {
+      if (typeof require === "function") {
+        try {
+          return require("./lib/commission-native-lo-bind.js");
+        } catch (_e1) {
+          try {
+            return require("../lib/commission-native-lo-bind.js");
+          } catch (_e2) {}
+        }
+      }
+    } catch (_err) {}
+    if (typeof globalThis !== "undefined" && globalThis.PRISM_COMMISSION_NATIVE_LO_BIND) {
+      return globalThis.PRISM_COMMISSION_NATIVE_LO_BIND;
+    }
+    if (typeof window !== "undefined" && window.PRISM_COMMISSION_NATIVE_LO_BIND) {
+      return window.PRISM_COMMISSION_NATIVE_LO_BIND;
+    }
+    return null;
+  }
+
+  function readCommissionedLearningOutcomes(wf) {
+    var ctx = readWorkflowCommissionContext(wf);
+    if (!ctx.commissionNativeLoBound || !ctx.commissionedLearningOutcomes) return null;
+    var los = ctx.commissionedLearningOutcomes;
+    if (!los || typeof los !== "object" || Array.isArray(los)) return null;
+    if (!Array.isArray(los.learning_outcomes) || !los.learning_outcomes.length) return null;
+    return los;
   }
 
   function composeLearnerFacingCrossResourceReferenceConstraint(hasPublishedTitles) {
@@ -5938,9 +5987,11 @@
   }
 
   /**
-   * When a Learning Journey Journal (or equivalent) requires this Interactive
-   * commission to produce constructed-text artefacts, instruct DLA to bind
-   * response_fulfilment.artefact_elicitation_id exactly. Empty when not required.
+   * When a Learning Journey Journal (or equivalent) requires constructed-text
+   * artefacts, instruct the owning learner-facing stage to declare them.
+   * Interactive → DLA response_fulfilment binding.
+   * Expository → Design Page learner_artefacts.produces[] (shared contract; not activities).
+   * Empty when not required or product cannot host the declaration.
    */
   function composeCommissionedLearnerArtefactProducerInstruction(wf) {
     var ctx = readWorkflowCommissionContext(wf);
@@ -5958,19 +6009,39 @@
       .toLowerCase();
     var isInteractive =
       firstClassPromptRoute(wf) === "interactive" || product === "interactive";
-    if (!isInteractive) return "";
+    var isExpository =
+      (typeof isExpositoryResourceWorkflow === "function" && isExpositoryResourceWorkflow(wf)) ||
+      firstClassPromptRoute(wf) === "expository" ||
+      product === "expository";
+    if (!isInteractive && !isExpository) return "";
     var lines = [
       "SHARED LEARNER ARTEFACT PRODUCER REQUIREMENT (authoritative)",
       "",
-      "This Learning Journey commission requires constructed-text learner artefact(s) for later reuse (Learning Journal and/or cross-resource handoff).",
-      "For EACH required elicitation_id below, author a genuine learner-authored text production surface and bind it:",
-      '- Use response_fulfilment.kind \"learner_text_production\" (or \"learner_workspace\") with response_kind \"text_compose\".',
-      "- Set response_fulfilment.artefact_elicitation_id to the elicitation_id EXACTLY as listed (preserve spelling and case).",
-      "- The surface must collect authentic learner wording; do not summarise, invent, or auto-improve the contribution.",
-      "- Do not invent additional artefact ids. Do not mark unrelated interactions as artefacts.",
-      "",
-      "Required producers:"
+      "This Learning Journey commission requires constructed-text learner artefact(s) for later reuse (Learning Journal and/or cross-resource handoff)."
     ];
+    if (isExpository) {
+      lines.push(
+        "For EACH required elicitation_id below, declare a page-root learner_artefacts.produces[] entry on the Design Page:",
+        '- { elicitation_id, response_kind: \"constructed_text\", label, prompt }.',
+        "- Preserve elicitation_id EXACTLY as listed (spelling and case).",
+        "- Do not invent Interactive activities[], workspaces, or response_fulfilment bindings.",
+        "- Do not bury response_id / producer / stable_identifier metadata inside exposition material bodies.",
+        "- The surface must collect authentic learner wording; do not summarise, invent, or auto-improve the contribution.",
+        "- Do not invent additional artefact ids. Omit learner_artefacts when no contribution is required.",
+        "",
+        "Required producers:"
+      );
+    } else {
+      lines.push(
+        "For EACH required elicitation_id below, author a genuine learner-authored text production surface and bind it:",
+        '- Use response_fulfilment.kind \"learner_text_production\" (or \"learner_workspace\") with response_kind \"text_compose\".',
+        "- Set response_fulfilment.artefact_elicitation_id to the elicitation_id EXACTLY as listed (preserve spelling and case).",
+        "- The surface must collect authentic learner wording; do not summarise, invent, or auto-improve the contribution.",
+        "- Do not invent additional artefact ids. Do not mark unrelated interactions as artefacts.",
+        "",
+        "Required producers:"
+      );
+    }
     var i;
     for (i = 0; i < rows.length; i += 1) {
       var row = rows[i];
@@ -6085,11 +6156,49 @@
     return /\{\{\s*ORIGINAL_BRIEF\s*\}\}/.test(String(template || ""));
   }
 
+  function isCommissionNativePlanningStep(step, wf) {
+    if (!step || !wf) return false;
+    var ctx = readWorkflowCommissionContext(wf);
+    if (!ctx.commissionNativeLoBound) return false;
+    var cid = String(step.canonical_step_id || step.canonicalStepId || "")
+      .trim()
+      .toLowerCase();
+    var title = String(step.title || "").trim().toLowerCase();
+    var product = String((wf && wf.product) || "")
+      .trim()
+      .toLowerCase();
+    var isEp =
+      cid === "step_design_episode_plan" || title === "design episode plan";
+    var isEjp =
+      cid === "step_expository_journey_plan" || title === "expository journey plan";
+    var isPurpose =
+      cid === "step_interpret_evidence_purpose" || title === "interpret evidence purpose";
+    if (isEp && (firstClassPromptRoute(wf) === "interactive" || firstClassPromptRoute(wf) === "practice" || product === "interactive" || product === "practice")) {
+      return true;
+    }
+    if (
+      isEjp &&
+      ((typeof isExpositoryResourceWorkflow === "function" && isExpositoryResourceWorkflow(wf)) ||
+        product === "expository")
+    ) {
+      return true;
+    }
+    if (
+      isPurpose &&
+      ((typeof workflowRecordIsAssessmentPack === "function" && workflowRecordIsAssessmentPack(wf)) ||
+        product === "assessment_pack")
+    ) {
+      return true;
+    }
+    return false;
+  }
+
   function isCommissionContextDeliveryStep(step, wf) {
     if (!step || !wf) return false;
     if (!readWorkflowCommissionContext(wf).hasCommissionContext) return false;
     if (isLearningJourneyWorkflow(wf) || workflowRecordIsLearningJourney(wf)) return false;
     if (isSituatedTaskWorkflow(wf) || workflowRecordIsSituatedTask(wf)) return false;
+    if (isCommissionNativePlanningStep(step, wf)) return true;
     var cid = String(step.canonical_step_id || step.canonicalStepId || "")
       .trim()
       .toLowerCase();
@@ -6124,16 +6233,20 @@
       cid === "step_design_learning_activities" || title === "design learning activities";
     var isXd =
       cid === "step_expository_development" || title === "expository development";
+    var isDp = cid === "step_design_page" || title === "design page";
     var isPurpose =
       cid === "step_interpret_evidence_purpose" || title === "interpret evidence purpose";
+    var isExpositoryProduct =
+      (typeof isExpositoryResourceWorkflow === "function" && isExpositoryResourceWorkflow(wf)) ||
+      product === "expository";
     if (isDla && (firstClassPromptRoute(wf) === "interactive" || product === "interactive")) {
       return true;
     }
-    if (
-      isXd &&
-      ((typeof isExpositoryResourceWorkflow === "function" && isExpositoryResourceWorkflow(wf)) ||
-        product === "expository")
-    ) {
+    if (isXd && isExpositoryProduct) {
+      return true;
+    }
+    // Expository Design Page owns optional learner_artefacts.produces[] declarations.
+    if (isDp && isExpositoryProduct) {
       return true;
     }
     if (
@@ -6144,6 +6257,65 @@
       return true;
     }
     return false;
+  }
+
+  function composeCommissionNativePlanningBlocks(wf, step) {
+    var blocks = [];
+    if (!isCommissionNativePlanningStep(step, wf)) return blocks;
+    var bindLib = resolveCommissionNativeLoBindLib();
+    if (bindLib && typeof bindLib.composeCommissionNativeOutcomePreamble === "function") {
+      blocks.push(bindLib.composeCommissionNativeOutcomePreamble());
+    } else {
+      blocks.push(
+        [
+          "COMMISSION-NATIVE OUTCOME AUTHORITY",
+          "",
+          "Outcome authority. The commissioned component learning_outcomes supplied with this workflow are authoritative. Do not replace them or independently regenerate a competing outcome set.",
+          "",
+          "Journey membership. This component belongs to a larger Learning Journey sequence. It need not be independently comprehensive of the whole journey.",
+          "",
+          "Prior learning. Build on knowledge and capabilities explicitly established by earlier components (see LEARNING JOURNEY CONTEXT). Do not unnecessarily reteach that material.",
+          "",
+          "Component responsibility. Fulfil the specified instructional role and the allocated component learning_outcomes only.",
+          "",
+          "Continuity. Where the commission identifies later dependencies, prepare learners for those subsequent components without assuming this resource must complete the whole journey.",
+          "",
+          "Disciplinary reasoning. Apply subject knowledge directly as required by the commission and outcomes. Do not invent a parallel knowledge-modelling stage or substitute knowledge_model artefact."
+        ].join("\n")
+      );
+    }
+    var los = readCommissionedLearningOutcomes(wf);
+    if (los) {
+      blocks.push(
+        [
+          "AUTHORITATIVE COMMISSIONED LEARNING OUTCOMES",
+          "",
+          "Treat the following learning_outcomes object as authoritative for this planning stage. Prefer it over any absent Define Learning Outcomes step output.",
+          "",
+          "```json",
+          JSON.stringify(los, null, 2),
+          "```"
+        ].join("\n")
+      );
+    }
+    var title = String((step && step.title) || "")
+      .trim()
+      .toLowerCase();
+    var cid = String((step && (step.canonical_step_id || step.canonicalStepId)) || "")
+      .trim()
+      .toLowerCase();
+    if (cid === "step_expository_journey_plan" || title === "expository journey plan") {
+      blocks.push(
+        [
+          "EXPOSITORY COMMISSION-NATIVE GROUNDING",
+          "",
+          "Generate Learning Content / Model Knowledge steps may be absent on this commission-native path. Do not invent learning_content or knowledge_model artefacts.",
+          "When SOURCE / CONTEXT MATERIAL or AUTHORITATIVE SHARED SOURCE MATERIAL is supplied in the commission brief, use it for grounding and formal fidelity.",
+          "Prefer learning_content only when it is actually present as an upstream artefact."
+        ].join("\n")
+      );
+    }
+    return blocks;
   }
 
   function applyCommissionedOriginalBriefDelivery(body, step, wf, options) {
@@ -6157,6 +6329,25 @@
     var blocks = [];
     if (wp4 || wp5) blocks.push(composeCommissionedContextHonourInstruction(wf));
     if (wp5) blocks.push(composeCommissionedLearnerFacingBringForwardInstruction(wf));
+    // Expository Design Page: inject shared artefact producer requirement when commissioned.
+    var stepCid = String((step && (step.canonical_step_id || step.canonicalStepId)) || "")
+      .trim()
+      .toLowerCase();
+    var stepTitle = String((step && step.title) || "")
+      .trim()
+      .toLowerCase();
+    if (
+      wp5 &&
+      (stepCid === "step_design_page" || stepTitle === "design page") &&
+      ((typeof isExpositoryResourceWorkflow === "function" && isExpositoryResourceWorkflow(wf)) ||
+        String((wf && wf.product) || "")
+          .trim()
+          .toLowerCase() === "expository")
+    ) {
+      var expoArtefactInstruction = composeCommissionedLearnerArtefactProducerInstruction(wf);
+      if (expoArtefactInstruction) blocks.push(expoArtefactInstruction);
+    }
+    Array.prototype.push.apply(blocks, composeCommissionNativePlanningBlocks(wf, step));
     if (opts.originalBriefTokenPresent) {
       return attachCommissionedRuntimeInstructionBlocks(raw, blocks, brief);
     }
@@ -17036,6 +17227,20 @@
         }
       }
     }
+    if (target === "learning_outcomes") {
+      var commissionedLos = readCommissionedLearningOutcomes(wf);
+      if (commissionedLos) {
+        return diagnostic
+          ? {
+              parsed: commissionedLos,
+              matched_step_id: "",
+              source: "commissioned_learning_outcomes",
+              parse_ok: true,
+              provenance: readWorkflowCommissionContext(wf).commissionedLearningOutcomesProvenance
+            }
+          : commissionedLos;
+      }
+    }
     if (diagnostic) {
       return (
         lastDiagnosticMiss || {
@@ -26755,7 +26960,21 @@
           ? envelope.requiredLearnerArtefacts.slice()
           : Array.isArray(seed.requiredLearnerArtefacts)
             ? seed.requiredLearnerArtefacts.slice()
-            : []
+            : [],
+        commissionNativeBound: !!(
+          family.commissionNativeBound ||
+          seed.commissionNativeBound ||
+          (family.deliverySeed && family.deliverySeed.commission_native_lo_bound)
+        ),
+        commissionedLearningOutcomes:
+          (family.deliverySeed && family.deliverySeed.commissioned_learning_outcomes) ||
+          seed.commissionedLearningOutcomes ||
+          null,
+        commissionedLearningOutcomesProvenance:
+          (family.deliverySeed &&
+            family.deliverySeed.commissioned_learning_outcomes_provenance) ||
+          seed.commissionedLearningOutcomesProvenance ||
+          null
       },
       askedFactors: [],
       inferredFactors: {},
@@ -26778,6 +26997,12 @@
       firstClassLocal: true,
       commissionIntake: true
     };
+    if (state.workflowDesignResult && state.workflowDesignResult.commissionIntake) {
+      state.workflowDesignResult.commissionIntake.commissionNativeBound = !!(
+        family.commissionNativeBound ||
+        (family.deliverySeed && family.deliverySeed.commission_native_lo_bound)
+      );
+    }
     renderWorkflowBriefResolvedPanel(state.workflowBriefResolved);
     renderWorkflowDesignResult();
     return { ok: true, intake: intakeResult, built: family };
@@ -27157,7 +27382,9 @@
           ? "Expository"
           : result.productId === "assessment_pack"
             ? "Assessment Pack"
-            : "Interactive";
+            : result.productId === "practice"
+              ? "Practice"
+              : "Interactive";
       showToast(label + " workflow created from Learning Journey commission.", "success");
       appendWorkflowDesignLog(
         "assistant",
@@ -27169,6 +27396,18 @@
           (result.workflow && result.workflow.id ? " (" + result.workflow.id + ")" : "") +
           "."
       );
+      // Mirror open-product navigation: expand parent LJ and select the new child.
+      var parentId = String(result.sourceJourneyWorkflowId || "").trim();
+      var childId =
+        result.workflow && result.workflow.id ? String(result.workflow.id).trim() : "";
+      if (parentId) expandLearningJourneyParentInWorkflowList(parentId);
+      if (childId) {
+        try {
+          switchTab("workflows");
+          selectWorkflow(childId);
+          setWorkflowMode("run");
+        } catch (_navErr) {}
+      }
       return result;
     }
 
@@ -43140,6 +43379,14 @@
         );
       }
       try {
+        var parentForExpand = String(
+          (wf && (wf.sourceWorkflowId || wf.source_workflow_id)) ||
+            (design &&
+              design.commissionIntake &&
+              design.commissionIntake.sourceJourneyWorkflowId) ||
+            ""
+        ).trim();
+        if (parentForExpand) expandLearningJourneyParentInWorkflowList(parentForExpand);
         switchTab("workflows");
         selectWorkflow(wfId);
         setWorkflowMode("run");
@@ -64913,6 +65160,9 @@
     prismTestApi.isCommissionLearnerFacingCopyStep = isCommissionLearnerFacingCopyStep;
     prismTestApi.applyCommissionedOriginalBriefDelivery = applyCommissionedOriginalBriefDelivery;
     prismTestApi.readWorkflowCommissionContext = readWorkflowCommissionContext;
+    prismTestApi.readCommissionedLearningOutcomes = readCommissionedLearningOutcomes;
+    prismTestApi.isCommissionNativePlanningStep = isCommissionNativePlanningStep;
+    prismTestApi.composeCommissionNativePlanningBlocks = composeCommissionNativePlanningBlocks;
     prismTestApi.workflowRecordIsLearningJourney = workflowRecordIsLearningJourney;
     prismTestApi.workflowHasSprint58PagePipelineSteps = workflowHasSprint58PagePipelineSteps;
     prismTestApi.recomposeWorkflowPageCapturesFromUpstream =

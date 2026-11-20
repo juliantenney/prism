@@ -10,6 +10,7 @@ const fs = require("node:fs");
 const path = require("node:path");
 const vm = require("node:vm");
 const workflowResources = require("../lib/prism-workflow-resources.js");
+const workflowRunstateStore = require("../lib/prism-workflow-runstate-store.js");
 const {
   runPrismLibScriptsInSandbox,
   PEDAGOGICAL_ICON_LIBS,
@@ -171,14 +172,23 @@ function boot(options) {
   }
   sandbox.PRISM_WORKFLOW_RESOURCES = resourcesProxy;
   windowStub.PRISM_WORKFLOW_RESOURCES = resourcesProxy;
+  workflowRunstateStore.resetStorageBackendForTests();
+  sandbox.PRISM_WORKFLOW_RUNSTATE_STORE = workflowRunstateStore;
+  windowStub.PRISM_WORKFLOW_RUNSTATE_STORE = workflowRunstateStore;
+  windowStub.__PRISM_TEST_HARNESS__ = true;
   vm.createContext(sandbox);
   runPrismLibScriptsInSandbox(
     sandbox,
     repoRoot,
-    PEDAGOGICAL_ICON_LIBS.concat(["lib/page-vnext-assemble.js"])
+    PEDAGOGICAL_ICON_LIBS.concat([
+      "lib/page-vnext-assemble.js",
+      "lib/prism-workflow-runstate-store.js"
+    ])
   );
   wirePageVnextAssembleForTests(windowStub, repoRoot);
   injectLearnerRendererVNextInSandbox(sandbox, repoRoot);
+  sandbox.PRISM_WORKFLOW_RUNSTATE_STORE = workflowRunstateStore;
+  windowStub.PRISM_WORKFLOW_RUNSTATE_STORE = workflowRunstateStore;
   vm.runInContext(fs.readFileSync(appJsPath, "utf8"), sandbox, { filename: "app.js" });
   const api = sandbox.window.__PRISM_TEST_API;
   // Ensure toast path is live for failure classification tests.
@@ -430,7 +440,8 @@ test("toast classification: invalid_put_input is not storage-full", () => {
     },
     { ok: false }
   );
-  assert.equal(msg, api.WORKFLOW_RUN_CAPTURE_PERSIST_TOAST_GENERIC_FOR_TEST);
+  assert.ok(msg.startsWith(api.WORKFLOW_RUN_CAPTURE_PERSIST_TOAST_GENERIC_FOR_TEST));
+  assert.match(msg, /\[invalid_put_input @ indexeddb_putTextResource/);
   assert.doesNotMatch(msg, /storage is full/i);
 });
 
@@ -440,16 +451,42 @@ test("toast classification: resource_store_unavailable is not storage-full", () 
     { ok: false, reason: "resource_store_unavailable" },
     { ok: false }
   );
-  assert.equal(msg, api.WORKFLOW_RUN_CAPTURE_PERSIST_TOAST_GENERIC_FOR_TEST);
+  assert.ok(msg.startsWith(api.WORKFLOW_RUN_CAPTURE_PERSIST_TOAST_GENERIC_FOR_TEST));
+  assert.match(msg, /\[resource_store_unavailable @ indexeddb_putTextResource/);
 });
 
 test("toast classification: generic storage_write_failed is not storage-full", () => {
   const { api } = boot();
   const msg = api.buildWorkflowRunCapturePersistFailureToastMessageForTest(
     { ok: true },
-    { ok: false, reason: "storage_write_failed" }
+    {
+      ok: false,
+      reason: "storage_write_failed",
+      // Classic DOMException text that previously false-positive matched /storage/i
+      message: "Failed to execute 'setItem' on 'Storage': Access is denied.",
+      error_name: "SecurityError",
+      quota: false
+    }
   );
-  assert.equal(msg, api.WORKFLOW_RUN_CAPTURE_PERSIST_TOAST_GENERIC_FOR_TEST);
+  assert.doesNotMatch(msg, /storage is full/i);
+  assert.match(msg, /storage_write_failed/);
+  assert.match(msg, /indexeddb_runstate|localStorage_runstate/);
+  assert.match(msg, /saved the result body/i);
+});
+
+test("toast classification: bare Storage setItem message with false quota flag is not storage-full", () => {
+  const { api } = boot();
+  const msg = api.buildWorkflowRunCapturePersistFailureToastMessageForTest(
+    { ok: true },
+    {
+      ok: false,
+      reason: "storage_write_failed",
+      quota: true, // over-broad historical flag
+      message: "Failed to execute 'setItem' on 'Storage': Access is denied.",
+      error_name: "SecurityError"
+    }
+  );
+  assert.doesNotMatch(msg, /browser storage is full/i);
 });
 
 test("toast classification: genuine quota wording retained", () => {
@@ -462,7 +499,7 @@ test("toast classification: genuine quota wording retained", () => {
     },
     { ok: false }
   );
-  assert.equal(msg, api.WORKFLOW_RUN_CAPTURE_PERSIST_TOAST_QUOTA_FOR_TEST);
+  assert.ok(msg.startsWith(api.WORKFLOW_RUN_CAPTURE_PERSIST_TOAST_QUOTA_FOR_TEST));
   assert.match(msg, /storage is full/i);
 });
 

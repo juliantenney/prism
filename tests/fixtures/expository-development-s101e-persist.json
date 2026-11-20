@@ -1,0 +1,66 @@
+{
+  "artifact_type": "expository_development",
+  "title": "From constrained movement to parallel gradients",
+  "sections": [
+    {
+      "id": "S1",
+      "title": "Constrained movement on the level set",
+      "body": "Consider a smooth objective f(x,y) and a constraint g(x,y)=c whose level set is a regular curve. At a feasible point the admissible infinitesimal displacements δr satisfy ∇g·δr=0. Therefore any first-order change in f along the constraint is ∇f·δr. If ∇f is not parallel to ∇g, there exists an admissible δr for which ∇f·δr≠0, so f can increase or decrease while remaining on the constraint. Only when ∇f=λ∇g for some multiplier λ is every admissible directional derivative zero. The symbols ∇, λ, δr and the identity ∇f·δr=0 are retained as disciplinary notation."
+    },
+    {
+      "id": "S2",
+      "title": "Parallel gradients as a stationarity condition",
+      "body": "The multiplier equations ∇f=λ∇g together with g=c characterise constrained stationary points. They do not, by themselves, establish a global maximum or minimum: second-order or boundary analysis may still be required. Feasibility of (x*,y*) on g=c and vanishing of first-order constrained variation are necessary for an interior constrained extremum under standard smoothness assumptions."
+    },
+    {
+      "id": "S3",
+      "title": "Worked algebraic sketch",
+      "body": "Example. Let f(x,y)=x²+y² and g(x,y)=x+y with c=1. Then ∇f=(2x,2y) and ∇g=(1,1). Parallelism requires 2x=λ and 2y=λ, hence x=y, and with x+y=1 we obtain x=y=½, λ=1. The candidate (½,½) is feasible and stationary for the constrained problem."
+    },
+    {
+      "id": "S4",
+      "title": "What the equations establish — and do not",
+      "body": "The system establishes a constrained stationary candidate. It does not automatically certify that the candidate is a constrained minimum of f on the whole level set; comparing values or using a second-derivative test on the constraint is a further justification step."
+    },
+    {
+      "id": "S5",
+      "title": "Unsupported inference to watch for",
+      "body": "An unsupported inference would claim that solving ∇f=λ∇g and g=c alone proves a global constrained extremum without additional argument. Distinguish constrained stationarity from an established extremum."
+    },
+    {
+      "id": "S6",
+      "title": "Geometric reading",
+      "body": "Geometrically, level curves of f are tangent to the constraint curve when gradients are parallel. Tangency is the geometric face of ∇f=λ∇g. Movement along the constraint cannot raise or lower f to first order at such a point."
+    },
+    {
+      "id": "S7",
+      "title": "Continuity into materials",
+      "body": "Subsequent materials should ask learners to formulate multiplier equations, solve a small system, and evaluate what the solution establishes. Prefer performing the algebra and structured judgements over writing about how one would perform them."
+    },
+    {
+      "id": "S8",
+      "title": "Generation notes (author-facing summary retained in artefact)",
+      "body": "PADDING_BLOCK_FOR_REALISTIC_SIZE: This section intentionally carries extended exposition so the fixture approximates a live ~33KB Expository Development paste with Unicode mathematics (∇, λ, δ, ≤, ≥, ∈, ℝ) and repeated explanatory paragraphs. " 
+    }
+  ],
+  "materials_commissions": [
+    {
+      "id": "M1",
+      "purpose": "Formulate and solve a small multiplier system from a supplied objective and constraint."
+    },
+    {
+      "id": "M2",
+      "purpose": "Evaluate what a solved multiplier system establishes versus what further justification is needed."
+    }
+  ],
+  "generation_notes": {
+    "register": "expository",
+    "extent": "component",
+    "unicode_math": "∇ λ δr ≤ ≥ ∈ ℝ ≠",
+    "note": "Structurally representative Sprint 101E persistence fixture; not the live C1 paste.",
+    "nested": {
+      "must_remain_object": true,
+      "symbols": ["∇", "λ", "δr"]
+    }
+  }
+}

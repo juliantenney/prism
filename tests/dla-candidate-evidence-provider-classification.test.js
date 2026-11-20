@@ -242,6 +242,120 @@ test("ordinary teaching text cannot satisfy evidence_requirement by declaration 
   );
 });
 
+test("C3 A4-M5: transfer claim scenario with 'no additional teaching' negation remains a valid provider", () => {
+  // Reproduction: Practice culminating activity commissioned a scenario claim
+  // provider whose specification closed with S78-T-041-style wording
+  // ("…so no additional teaching is needed."). Bare "teaching" previously
+  // tripped materialLooksTeachingOnly despite the prohibition clause.
+  assertProviderRolePass(
+    activityDefaults({
+      activity_id: "A4",
+      title: "Repair and defend an argument",
+      task_material_decision: {
+        separate_inputs_required: true,
+        task_input_material_ids: ["A4-M1", "A4-M5"]
+      },
+      evidence_decision: {
+        required: true,
+        reason:
+          "Inspect a supplied student argument and a distinct transfer claim.",
+        provider_material_ids: ["A4-M1", "A4-M5"]
+      },
+      required_materials: [
+        {
+          material_id: "A4-M1",
+          material_type: "scenario",
+          purpose:
+            "Supply a complete but logically incomplete student argument for independent evaluation and improvement.",
+          specification:
+            "Present a short student argument with inspectable premises and conclusions. Present it as a student claim to evaluate, not as an authoritative mathematical statement.",
+          evidence_requirement: evidenceRequirement({
+            purpose:
+              "Provide the exact student reasoning and mathematical claims that E1 must evaluate.",
+            learner_action:
+              "Inspect the argument and identify its unsupported inference.",
+            observable_features: [
+              "The stated objective and equality constraint",
+              "The claim that multiplier solutions automatically prove extrema"
+            ],
+            minimum_suitable_form:
+              "One complete, inspectable student argument containing premises, inference and conclusion."
+          })
+        },
+        {
+          material_id: "A4-M2",
+          material_type: "template",
+          purpose: "E1 learner response workspace.",
+          specification: "Editable sections for the evaluation.",
+          response_fulfilment: {
+            kind: "learner_text_production",
+            response_kind: "text_compose",
+            binds_production_steps: [1],
+            allows_partial_exemplar: false
+          }
+        },
+        checklistRow("A4-M4"),
+        {
+          material_id: "A4-M5",
+          material_type: "scenario",
+          purpose:
+            "Supply a distinct, compact claim for transfer from mathematical critique to tutor-facing feedback.",
+          specification:
+            "Present a new student-facing claim with the full recoverable particulars: 'In the problem f(x,y)=x^3 subject to y=0, the origin satisfies the multiplier condition with λ=0. Therefore, it must be a local minimum.' Ask no question and provide no correction in this evidence row. The new claim must be treated as a distinct feedback-writing context, not a request to repeat the earlier full counterexample analysis. Learners have already encountered the underlying mathematics, so no additional teaching is needed.",
+          evidence_requirement: evidenceRequirement({
+            purpose:
+              "Provide a complete, newly framed mathematical claim whose reasoning must be corrected for a different audience.",
+            learner_action:
+              "Inspect the claim and formulate a concise tutor-facing correction.",
+            observable_features: [
+              "The cubic objective and feasible-line constraint",
+              "The origin as the specified multiplier solution",
+              "The student's asserted local-minimum classification",
+              "The inference from stationarity to optimality"
+            ],
+            disclosure_constraint:
+              "Do not include the corrected tutor response in the evidence provider.",
+            minimum_suitable_form:
+              "One complete, directly inspectable claim suitable for concise tutor feedback."
+          })
+        },
+        {
+          material_id: "A4-M6",
+          material_type: "template",
+          purpose: "Capture the tutor-facing correction.",
+          specification: "One editable Tutor-facing correction field.",
+          response_fulfilment: {
+            kind: "learner_text_production",
+            response_kind: "text_compose",
+            binds_production_steps: [2],
+            allows_partial_exemplar: false
+          }
+        }
+      ]
+    }),
+    "C3 A4-M5 transfer claim"
+  );
+});
+
+test("genuine teaching overview still fails provider-role even if it mentions a claim", () => {
+  assertProviderRoleFail(
+    activityDefaults({
+      required_materials: [
+        {
+          material_id: "A1-M1",
+          material_type: "text",
+          purpose: "Introduce key concepts about stationarity claims.",
+          specification:
+            "Explanatory teaching overview discussing multiplier theory in general terms only.",
+          evidence_requirement: evidenceRequirement()
+        },
+        checklistRow("A1-M2")
+      ]
+    }),
+    "teaching overview with claim noun"
+  );
+});
+
 test("existing scenario evidence provider arrangement remains accepted", () => {
   assertProviderRolePass(
     activityDefaults({

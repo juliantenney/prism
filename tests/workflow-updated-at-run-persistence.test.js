@@ -12,6 +12,7 @@ const vm = require("node:vm");
 const { runPrismLibScriptsInSandbox, PEDAGOGICAL_ICON_LIBS } = require("./prism-vm-lib-bootstrap.js");
 const workflowResources = require("../lib/prism-workflow-resources.js");
 const catalogueStore = require("../lib/prism-workflow-catalogue-store.js");
+const workflowRunstateStore = require("../lib/prism-workflow-runstate-store.js");
 
 const repoRoot = path.resolve(__dirname, "..");
 const appJsPath = path.join(repoRoot, "app.js");
@@ -238,6 +239,7 @@ function boot(options) {
     addEventListener() {},
     removeEventListener() {},
     location: { hash: "", pathname: "/" },
+    __PRISM_TEST_HARNESS__: true,
     _: sandbox._,
     Utils: {
       debounce: (fn) => fn,
@@ -263,14 +265,23 @@ function boot(options) {
   sandbox.globalThis = windowStub;
   workflowResources.resetStorageBackendForTests();
   catalogueStore.resetStorageBackendForTests();
+  workflowRunstateStore.resetStorageBackendForTests();
   sandbox.PRISM_WORKFLOW_RESOURCES = workflowResources;
   windowStub.PRISM_WORKFLOW_RESOURCES = workflowResources;
   sandbox.PRISM_WORKFLOW_CATALOGUE_STORE = catalogueStore;
   windowStub.PRISM_WORKFLOW_CATALOGUE_STORE = catalogueStore;
+  sandbox.PRISM_WORKFLOW_RUNSTATE_STORE = workflowRunstateStore;
+  windowStub.PRISM_WORKFLOW_RUNSTATE_STORE = workflowRunstateStore;
   vm.createContext(sandbox);
-  runPrismLibScriptsInSandbox(sandbox, repoRoot, PEDAGOGICAL_ICON_LIBS);
+  runPrismLibScriptsInSandbox(
+    sandbox,
+    repoRoot,
+    PEDAGOGICAL_ICON_LIBS.concat(["lib/prism-workflow-runstate-store.js"])
+  );
   sandbox.PRISM_WORKFLOW_CATALOGUE_STORE = catalogueStore;
   windowStub.PRISM_WORKFLOW_CATALOGUE_STORE = catalogueStore;
+  sandbox.PRISM_WORKFLOW_RUNSTATE_STORE = workflowRunstateStore;
+  windowStub.PRISM_WORKFLOW_RUNSTATE_STORE = workflowRunstateStore;
   vm.runInContext(source, sandbox, { filename: "app.js" });
   return {
     api: sandbox.window.__PRISM_TEST_API,
@@ -323,7 +334,7 @@ test("1. Saving a new step result updates that workflow updatedAt", async () => 
       }
     }
   });
-  const persistResult = api.persistWorkflowRunStateForWorkflowForTest("wf-A", {
+  const persistResult = await api.persistWorkflowRunStateForWorkflowForTest("wf-A", {
     source: "test_step_save",
     observedStepId: "step-wf-A"
   });
@@ -365,7 +376,7 @@ test("2. Replacing or clearing run results updates updatedAt", async () => {
       final: { resource_id: "new", slot_key: "run_capture:step-wf-A2:final" }
     }
   });
-  const replaceResult = api.persistWorkflowRunStateForWorkflowForTest("wf-A2", {
+  const replaceResult = await api.persistWorkflowRunStateForWorkflowForTest("wf-A2", {
     source: "test_replace"
   });
   await awaitSave(api);
@@ -374,7 +385,7 @@ test("2. Replacing or clearing run results updates updatedAt", async () => {
   const afterReplace = find(api, "wf-A2").updatedAt;
   assert.ok(afterReplace > beforeReplace);
 
-  api.clearPersistedWorkflowRunStateForWorkflowForTest("wf-A2");
+  await api.clearPersistedWorkflowRunStateForWorkflowForTest("wf-A2");
   await awaitSave(api);
   assert.ok(find(api, "wf-A2").updatedAt > afterReplace);
   assert.equal(find(api, "wf-A2").createdAt, 1000);
@@ -424,7 +435,7 @@ test("4. Read-only selection / navigation-style persist does not update updatedA
   api.restoreWorkflowRunStateForWorkflowForTest("wf-ro");
   const before = find(api, "wf-ro").updatedAt;
 
-  const suppressed = api.persistWorkflowRunStateForWorkflowForTest("wf-ro", {
+  const suppressed = await api.persistWorkflowRunStateForWorkflowForTest("wf-ro", {
     source: "test_navigation",
     touchUpdatedAt: false
   });
@@ -433,7 +444,7 @@ test("4. Read-only selection / navigation-style persist does not update updatedA
   assert.equal(find(api, "wf-ro").updatedAt, before);
 
   // Unchanged activity fingerprint (same capture refs restored into live state).
-  const noop = api.persistWorkflowRunStateForWorkflowForTest("wf-ro", {
+  const noop = await api.persistWorkflowRunStateForWorkflowForTest("wf-ro", {
     source: "test_selection_flush"
   });
   await flush();

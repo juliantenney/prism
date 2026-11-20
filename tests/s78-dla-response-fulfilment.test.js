@@ -108,7 +108,8 @@ test("contract: live version 78-DLA-WS-1 includes response_fulfilment commission
   assert.equal(dlaContract.CONTRACT_VERSION, "78-DLA-WS-3");
   assert.match(text, /S78-WS-1 response fulfilment binding/i);
   assert.match(text, /response_fulfilment\.response_kind/i);
-  assert.match(text, /table_compare \| table_complete/i);
+  assert.match(text, /table_compare \| table_complete/);
+  assert.match(text, /selection_choose/);
 });
 
 test("R2 negative: table production with static-only materials fails closed", () => {

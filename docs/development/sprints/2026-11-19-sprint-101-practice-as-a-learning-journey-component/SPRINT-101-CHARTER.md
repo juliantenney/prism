@@ -1,10 +1,12 @@
 # Sprint 101 — Charter
 
 **Sprint:** 101 — Practice as a Learning Journey Component  
-**Status:** **OPEN**  
+**Status:** **CLOSED — ACCEPTED WITH QUALIFICATIONS**  
 **Opened:** 2026-11-19  
+**Closed:** 2026-11-20  
 **Type:** Component architecture / instructional product design  
 **Opening:** [S101-D01](decisions.md#s101-d01--open-sprint-101--practice-as-a-learning-journey-component)  
+**Close:** [S101-D06](decisions.md#s101-d06--close-sprint-101--accepted-with-qualifications) · [SPRINT-101-CLOSURE.md](SPRINT-101-CLOSURE.md)  
 **Map:** [IMPLEMENTATION-MAP.md](IMPLEMENTATION-MAP.md)  
 **Investigation:** [INITIAL-INVESTIGATION.md](INITIAL-INVESTIGATION.md)
 
@@ -42,10 +44,14 @@ Establish Practice as the activity-oriented Learning Journey component — via i
 | Phase | Intent | State |
 | ----- | ------ | ----- |
 | **101A** | Architectural investigation (read-only) | **COMPLETE** |
-| **101B** | Practice instructional contract | Pending — **design review gate** |
-| **101C** | Learner-facing wireframe and worked example | Pending — **design review gate** |
-| **101D** | Implementation | Pending — blocked until 101B + 101C approved |
-| **101E** | Validation and closure | Pending |
+| **101B** | Practice instructional contract | **ACCEPTED** (refined by 101C-3) |
+| **101C** | Learner-facing wireframe and worked example | **ACCEPTED** as design foundation |
+| **101C-3** | Technical capability audit / implementation readiness | **ACCEPTED** |
+| **101D** | Implementation | **COMPLETE** |
+| **101E** | Validation (selection, persistence, progressive design, export) | **COMPLETE** |
+| **101F** | Practice workload proportion | **COMPLETE** |
+| **101G** | Commission-native feasibility (read-only) | **COMPLETE** — not implemented |
+| **101H** | Image-brief precision / completeness | **COMPLETE** |
 
 ---
 

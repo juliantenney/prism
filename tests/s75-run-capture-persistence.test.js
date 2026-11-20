@@ -23,6 +23,11 @@ const indexHtmlPath = path.join(repoRoot, "index.html");
 const fixturesDir = path.join(__dirname, "fixtures", "page-assemble");
 const assemble = require(path.join(repoRoot, "lib", "page-vnext-assemble.js"));
 const workflowResources = require(path.join(repoRoot, "lib", "prism-workflow-resources.js"));
+const workflowRunstateStore = require(path.join(
+  repoRoot,
+  "lib",
+  "prism-workflow-runstate-store.js"
+));
 const RUNKEY = "promptr.workflows.runstate.v1";
 
 function loadFixture(name) {
@@ -120,6 +125,7 @@ function boot(options) {
     setTimeout,
     clearTimeout,
     location: { hash: "", pathname: "/" },
+    __PRISM_TEST_HARNESS__: true,
     _: sandbox._,
     Utils: {
       debounce: (fn) => fn,
@@ -139,14 +145,24 @@ function boot(options) {
   if (!opts.retainResourceBackend) {
     workflowResources.resetStorageBackendForTests();
   }
+  if (!opts.retainRunstateBackend) {
+    workflowRunstateStore.resetStorageBackendForTests();
+  }
   sandbox.PRISM_WORKFLOW_RESOURCES = workflowResources;
   windowStub.PRISM_WORKFLOW_RESOURCES = workflowResources;
+  sandbox.PRISM_WORKFLOW_RUNSTATE_STORE = workflowRunstateStore;
+  windowStub.PRISM_WORKFLOW_RUNSTATE_STORE = workflowRunstateStore;
   vm.createContext(sandbox);
   runPrismLibScriptsInSandbox(
     sandbox,
     repoRoot,
-    PEDAGOGICAL_ICON_LIBS.concat(["lib/page-vnext-assemble.js"])
+    PEDAGOGICAL_ICON_LIBS.concat([
+      "lib/page-vnext-assemble.js",
+      "lib/prism-workflow-runstate-store.js"
+    ])
   );
+  sandbox.PRISM_WORKFLOW_RUNSTATE_STORE = workflowRunstateStore;
+  windowStub.PRISM_WORKFLOW_RUNSTATE_STORE = workflowRunstateStore;
   wirePageVnextAssembleForTests(windowStub, repoRoot);
   injectLearnerRendererVNextInSandbox(sandbox, repoRoot);
   vm.runInContext(fs.readFileSync(appJsPath, "utf8"), sandbox, { filename: "app.js" });
@@ -157,8 +173,16 @@ function keys(obj) {
   return Object.keys(obj || {}).sort();
 }
 
-function storeRec(storage, workflowId) {
-  const raw = storage[RUNKEY];
+function storeRec(apiOrStorage, workflowId) {
+  // Prefer in-memory / IndexedDB-backed cache after async IDB saves.
+  if (
+    apiOrStorage &&
+    typeof apiOrStorage.loadWorkflowRunStateStoreForTest === "function"
+  ) {
+    const store = apiOrStorage.loadWorkflowRunStateStoreForTest() || {};
+    return store[workflowId] || null;
+  }
+  const raw = apiOrStorage && apiOrStorage[RUNKEY];
   if (!raw) return null;
   const store = JSON.parse(raw);
   return store[workflowId] || null;
@@ -237,16 +261,19 @@ function buildPartialWorkflow(id) {
   };
 }
 
-function selectLike(api, fromId, toId) {
+async function selectLike(api, fromId, toId) {
   if (fromId && fromId !== toId) {
-    api.persistWorkflowRunStateForWorkflowForTest(fromId, { toastType: "" });
+    const persist = api.persistWorkflowRunStateForWorkflowForTest(fromId, {
+      toastType: ""
+    });
+    if (persist && typeof persist.then === "function") await persist;
   }
   api.restoreWorkflowRunStateForWorkflowForTest(toId);
   api.setSelectedWorkflowIdForTest(toId);
 }
 
 async function selectLikeAsync(api, fromId, toId) {
-  selectLike(api, fromId, toId);
+  await selectLike(api, fromId, toId);
   await api.hydrateWorkflowRunCapturePayloadsForWorkflowForTest(toId);
 }
 
@@ -267,7 +294,13 @@ async function persistMapsAsRefs(api, wfId, finalMap, rawMap, stepCompleted) {
   api.setWorkflowRunCapturedOutputsForTest(finalMap);
   api.setWorkflowRunCapturedOutputsRawForTest(rawMap);
   if (stepCompleted) api.setWorkflowRunStepCompletedForTest(stepCompleted);
-  return api.persistWorkflowRunStateForWorkflowForTest(wfId, { toastType: "" });
+  const persist = api.persistWorkflowRunStateForWorkflowForTest(wfId, {
+    toastType: ""
+  });
+  const result =
+    persist && typeof persist.then === "function" ? await persist : persist;
+  assert.equal(result && result.ok, true, JSON.stringify(result));
+  return result;
 }
 
 function assertNoInlineBodies(rec) {
@@ -315,7 +348,7 @@ test("A: cumulative persistence retains earlier capture refs after each persist"
     mem[sid] = JSON.stringify(page);
     memRaw[sid] = JSON.stringify(page, null, 2);
     await persistMapsAsRefs(api, wf.id, Object.assign({}, mem), Object.assign({}, memRaw));
-    const rec = storeRec(storage, wf.id);
+    const rec = storeRec(api, wf.id);
     assertNoInlineBodies(rec);
     assert.deepEqual(keys(rec.captureRefs), keys(memRaw));
     await api.hydrateWorkflowRunCapturePayloadsForWorkflowForTest(wf.id);
@@ -333,16 +366,16 @@ test("B: truncated live persist must not destroy fuller durable capture refs", a
   api.setWorkflowsForTest([wf]);
   api.setSelectedWorkflowIdForTest(wf.id);
   await persistMapsAsRefs(api, wf.id, full, fullRaw, completed);
-  assert.equal(keys(storeRec(storage, wf.id).captureRefs).length, 5);
+  assert.equal(keys(storeRec(api, wf.id).captureRefs).length, 5);
 
   api.setWorkflowRunCaptureRefsForTest({
-    ep_step: storeRec(storage, wf.id).captureRefs.ep_step
+    ep_step: storeRec(api, wf.id).captureRefs.ep_step
   });
   api.setWorkflowRunCapturedOutputsForTest({ ep_step: full.ep_step });
   api.setWorkflowRunCapturedOutputsRawForTest({ ep_step: fullRaw.ep_step });
-  api.persistWorkflowRunStateForWorkflowForTest(wf.id, { toastType: "" });
+  await api.persistWorkflowRunStateForWorkflowForTest(wf.id, { toastType: "" });
 
-  const rec = storeRec(storage, wf.id);
+  const rec = storeRec(api, wf.id);
   assert.deepEqual(keys(rec.captureRefs), [
     "dla_step",
     "dp_step",
@@ -390,7 +423,7 @@ test("C: live update wins for matching capture refs", async () => {
   const live = api.getWorkflowRunCapturedOutputsRawForTest();
   assert.match(JSON.parse(live.dla_step).title, /MARKER_NEW_DLA/);
   assert.doesNotMatch(JSON.parse(live.dla_step).title, /OLD_DLA/);
-  assertNoInlineBodies(storeRec(storage, wf.id));
+  assertNoInlineBodies(storeRec(api, wf.id));
 });
 
 test("D/E: workflow switch A→B→A and A→B→C→A preserve A captures", async () => {
@@ -439,7 +472,7 @@ test("D/E: workflow switch A→B→A and A→B→C→A preserve A captures", asy
 
   await selectLikeAsync(api, wfB.id, wfA.id);
   assert.equal(keys(api.getWorkflowRunCapturedOutputsRawForTest()).length, 5);
-  assert.equal(keys(storeRec(storage, wfA.id).captureRefs).length, 5);
+  assert.equal(keys(storeRec(api, wfA.id).captureRefs).length, 5);
 
   await selectLikeAsync(api, wfA.id, wfB.id);
   await selectLikeAsync(api, wfB.id, wfC.id);
@@ -475,13 +508,17 @@ test("F: reload restores full A captures after selecting another workflow", asyn
   first.api.setSelectedWorkflowIdForTest(wfA.id);
   await persistMapsAsRefs(first.api, wfA.id, full, fullRaw, completed);
   const dump = first.storage[RUNKEY];
+  assert.ok(dump, "expected best-effort localStorage backup after IndexedDB save");
 
   const second = boot({ retainResourceBackend: true });
   second.storage[RUNKEY] = dump;
+  if (typeof second.api.hydrateWorkflowRunStateStoreFromDurableForTest === "function") {
+    await second.api.hydrateWorkflowRunStateStoreFromDurableForTest();
+  }
   second.api.setWorkflowsForTest([wfA, wfB]);
   second.api.setSelectedWorkflowIdForTest(wfB.id);
   second.api.restoreWorkflowRunStateForWorkflowForTest(wfB.id);
-  assert.equal(keys(storeRec(second.storage, wfA.id).captureRefs).length, 5);
+  assert.equal(keys(storeRec(second.api, wfA.id).captureRefs).length, 5);
   await selectLikeAsync(second.api, wfB.id, wfA.id);
   assert.equal(keys(second.api.getWorkflowRunCapturedOutputsRawForTest()).length, 5);
   assert.match(
@@ -501,7 +538,7 @@ test("G: Authoring hydrate+reconcile recovers durable captures when live is trun
   api.setWorkflowRunCapturedOutputsForTest({ ep_step: full.ep_step });
   api.setWorkflowRunCapturedOutputsRawForTest({ ep_step: fullRaw.ep_step });
   assert.equal(keys(api.getWorkflowRunCapturedOutputsRawForTest()).length, 1);
-  assert.equal(keys(storeRec(storage, wf.id).captureRefs).length, 5);
+  assert.equal(keys(storeRec(api, wf.id).captureRefs).length, 5);
 
   await api.hydrateWorkflowRunCapturePayloadsForWorkflowForTest(wf.id);
   const reconciled = api.reconcileWorkflowRunCapturesWithDurableStateForTest(wf.id);
@@ -571,16 +608,16 @@ test("I: explicit Clear Run Data removes durable record and merge cannot resurre
   api.setWorkflowsForTest([wf]);
   api.setSelectedWorkflowIdForTest(wf.id);
   await persistMapsAsRefs(api, wf.id, full, fullRaw, completed);
-  assert.ok(storeRec(storage, wf.id));
+  assert.ok(storeRec(api, wf.id));
 
-  api.clearPersistedWorkflowRunStateForWorkflowForTest(wf.id);
+  await api.clearPersistedWorkflowRunStateForWorkflowForTest(wf.id);
   api.setWorkflowRunCaptureRefsForTest({});
   api.setWorkflowRunCapturedOutputsForTest({});
   api.setWorkflowRunCapturedOutputsRawForTest({});
-  assert.equal(storeRec(storage, wf.id), null);
+  assert.equal(storeRec(api, wf.id), null);
 
-  api.persistWorkflowRunStateForWorkflowForTest(wf.id, { toastType: "" });
-  const rec = storeRec(storage, wf.id);
+  await api.persistWorkflowRunStateForWorkflowForTest(wf.id, { toastType: "" });
+  const rec = storeRec(api, wf.id);
   assert.ok(rec);
   assert.equal(keys(rec.captureRefs || {}).length, 0);
   assertNoInlineBodies(rec);
@@ -618,7 +655,7 @@ test("M: unchanged in-memory accepted capture still persists to resource refs", 
   const raw = JSON.stringify(dpPartial, null, 2);
   const parsed = JSON.stringify(dpPartial);
   await persistMapsAsRefs(api, wf.id, { dp_step: parsed }, { dp_step: raw });
-  const rec = storeRec(storage, wf.id);
+  const rec = storeRec(api, wf.id);
   assert.ok(rec);
   assert.ok(rec.captureRefs && rec.captureRefs.dp_step);
   assertNoInlineBodies(rec);
@@ -639,10 +676,10 @@ test("N: durable blank placeholder is replaced by accepted non-blank DLA capture
   const dlaFinal = JSON.stringify(dlaPartial);
   api.setWorkflowRunCapturedOutputsForTest({ dla_step: "" });
   api.setWorkflowRunCapturedOutputsRawForTest({ dla_step: "" });
-  api.persistWorkflowRunStateForWorkflowForTest(wf.id, { toastType: "" });
+  await api.persistWorkflowRunStateForWorkflowForTest(wf.id, { toastType: "" });
 
   await persistMapsAsRefs(api, wf.id, { dla_step: dlaFinal }, { dla_step: dlaRaw });
-  const rec = storeRec(storage, wf.id);
+  const rec = storeRec(api, wf.id);
   assert.ok(rec);
   assert.ok(rec.captureRefs && rec.captureRefs.dla_step);
   assertNoInlineBodies(rec);
@@ -678,7 +715,7 @@ test("DLA accepted input persists as resource refs and survives non-current blan
   const dlaRaw = JSON.stringify(dlaPartial, null, 2);
   const dlaFinal = JSON.stringify(dlaPartial);
   await persistMapsAsRefs(api, wf.id, { dla_step: dlaFinal }, { dla_step: dlaRaw });
-  let rec = storeRec(storage, wf.id);
+  let rec = storeRec(api, wf.id);
   assert.ok(rec.captureRefs && rec.captureRefs.dla_step);
   assertNoInlineBodies(rec);
 
@@ -695,7 +732,7 @@ test("DLA accepted input persists as resource refs and survives non-current blan
   const dpLi = buildRunLi("dp_step", "page", "", "step_design_page");
   api.setWorkflowStepElementsForTest([epLi.li, dlaLi.li, gamLi.li, clsLi.li, dpLi.li]);
   api.syncAllWorkflowRunCapturesFromDomToState();
-  rec = storeRec(storage, wf.id);
+  rec = storeRec(api, wf.id);
   assert.ok(rec.captureRefs && rec.captureRefs.dla_step);
   assert.equal(String(api.getWorkflowRunCapturedOutputsRawForTest().dla_step || "").length > 0, true);
 });
@@ -710,14 +747,14 @@ test("GAM accepted input follows same resource-backed persistence path", async (
   const gamRaw = JSON.stringify(gamPartial, null, 2);
   const gamFinal = JSON.stringify(gamPartial);
   await persistMapsAsRefs(api, wf.id, { gam_step: gamFinal }, { gam_step: gamRaw });
-  const rec = storeRec(storage, wf.id);
+  const rec = storeRec(api, wf.id);
   assert.ok(rec.captureRefs && rec.captureRefs.gam_step);
   assertNoInlineBodies(rec);
 });
 
-test("quota-like storage failure retries with compacted blank placeholders", () => {
+test("localStorage quota on backup must not fail IndexedDB runstate persist", async () => {
   let throwOnNextSet = false;
-  const { api, storage } = boot({
+  const { api } = boot({
     onSetItem() {
       if (throwOnNextSet) {
         throwOnNextSet = false;
@@ -741,12 +778,12 @@ test("quota-like storage failure retries with compacted blank placeholders", () 
   });
   api.setWorkflowRunStepCompletedForTest({ dla_step: true });
   throwOnNextSet = true;
-  const ok = api.persistWorkflowRunStateForWorkflowForTest(wf.id, {
+  const ok = await api.persistWorkflowRunStateForWorkflowForTest(wf.id, {
     source: "test_quota_retry",
     observedStepId: "dla_step"
   });
   assert.equal(ok.ok, true);
-  const rec = storeRec(storage, wf.id);
+  const rec = storeRec(api, wf.id);
   assert.ok(rec);
   assert.ok(rec.captureRefs && rec.captureRefs.dla_step);
 });

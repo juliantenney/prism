@@ -261,6 +261,12 @@
   // IndexedDB-first catalogue: in-memory revision + serialised save queue.
   var workflowCatalogueRevision = 0;
   var workflowCatalogueSaveTail = Promise.resolve();
+  // IndexedDB-first run-state: memory cache + serialised save queue.
+  // localStorage is migration/recovery backup only — not required for durability.
+  var workflowRunStateMemoryStore = null;
+  var workflowRunStateRevision = 0;
+  var workflowRunStateSaveTail = Promise.resolve();
+  var workflowRunStateHydrated = false;
 
   function cacheElements() {
     els.apiKeyFile = document.getElementById("apiKeyFile");
@@ -5654,8 +5660,10 @@
     if (typeof workflowRecordIsAssessmentPack === "function" && workflowRecordIsAssessmentPack(wf)) {
       return "Assessment Pack";
     }
+    if (firstClassPromptRoute(wf) === "practice") return "Practice";
     if (firstClassPromptRoute(wf) === "interactive") return "Interactive Resource";
     var product = String((wf && wf.product) || "").trim().toLowerCase();
+    if (product === "practice") return "Practice";
     if (product === "interactive") return "Interactive Resource";
     if (product === "expository") return "Expository Resource";
     if (product === "assessment_pack") return "Assessment Pack";
@@ -13240,6 +13248,58 @@
     return null;
   }
 
+  function resolveLdPracticePresentationContractsLib() {
+    var roots = [];
+    var w = ldTableFidelityGlobalRoot();
+    if (w) roots.push(w);
+    if (typeof globalThis !== "undefined" && globalThis !== w) roots.push(globalThis);
+    var i;
+    for (i = 0; i < roots.length; i += 1) {
+      if (roots[i] && roots[i].PRISM_LD_PRACTICE_PRESENTATION_CONTRACTS) {
+        return roots[i].PRISM_LD_PRACTICE_PRESENTATION_CONTRACTS;
+      }
+    }
+    if (typeof require === "function") {
+      try {
+        return require("./lib/ld-practice-presentation-contracts.js");
+      } catch (_err) {}
+    }
+    return null;
+  }
+
+  function isPracticeWorkflow(wf) {
+    return firstClassPromptRoute(wf) === "practice";
+  }
+
+  function applyPracticePresentationContractsToDraft(draftText, context, wf) {
+    var draftBody = String(draftText || "").trim();
+    if (!draftBody) return "";
+    var lib = resolveLdPracticePresentationContractsLib();
+    if (!lib || typeof lib.buildPracticePresentationContractBlock !== "function") {
+      return draftBody;
+    }
+    if (lib.MARKER && draftBody.indexOf(lib.MARKER) !== -1) {
+      return draftBody;
+    }
+    var stage = "all";
+    if (typeof lib.resolvePracticeContractStage === "function") {
+      stage = lib.resolvePracticeContractStage(context, {
+        isDesignEpisodePlan: isWorkflowStepDesignEpisodePlan,
+        isDesignLearningActivities: isWorkflowStepDesignLearningActivities,
+        isGenerateActivityMaterials: isWorkflowStepGenerateActivityMaterials,
+        isConstructLearningSequence: isWorkflowStepConstructLearningSequence,
+        isDesignPage: isWorkflowStepDesignPage
+      });
+    }
+    var block = lib.buildPracticePresentationContractBlock(stage);
+    var shape =
+      isWorkflowStepDesignPage(context) &&
+      typeof lib.buildCanonicalPracticeDesignPageShapeSnippet === "function"
+        ? lib.buildCanonicalPracticeDesignPageShapeSnippet()
+        : "";
+    return [draftBody, block, shape].filter(Boolean).join("\n\n").trim();
+  }
+
   function resolveLdGaiPageEnrichContractLib() {
     var roots = [];
     var w = ldTableFidelityGlobalRoot();
@@ -13707,10 +13767,16 @@
           ""
       ).trim()
     };
+    // Sprint 101F — Practice must not inherit Interactive guided-learning scaffold
+    // or DLA-WB workbook ceremony via the learner-page framing gate.
+    var practiceRoute = isPracticeWorkflow(wf);
     var productionParts = [];
     var commissioningParts = [];
     var outputParts = [];
-    if (shouldApplyLearnerPagePedagogicFramingScaffold(context, resolved, base)) {
+    var framingScaffoldOn =
+      !practiceRoute &&
+      shouldApplyLearnerPagePedagogicFramingScaffold(context, resolved, base);
+    if (framingScaffoldOn) {
       var scaffold = buildLdGuidedLearningScaffoldPromptBlock({
         includeCompose: false,
         includeDlaPreEmit: true,
@@ -13718,18 +13784,23 @@
       });
       if (scaffold) productionParts.push(String(scaffold));
     }
-    if (shouldApplySelfDirectedLearnerPageMaterialShapeScaffold(context, resolved, base)) {
+    if (
+      !practiceRoute &&
+      shouldApplySelfDirectedLearnerPageMaterialShapeScaffold(context, resolved, base)
+    ) {
       productionParts.push(buildSelfDirectedTimelineSequencingAlignmentPromptBlock());
       commissioningParts.push(buildLdTableFidelityPromptBlock({ role: "dla" }));
     }
     try {
       outputParts.push(buildLdMathRenderPromptBlock());
     } catch (_) {}
-    productionParts = attachCommissionedInteractiveDlaProductionSlot(
-      productionParts,
-      context,
-      wf
-    );
+    if (!practiceRoute) {
+      productionParts = attachCommissionedInteractiveDlaProductionSlot(
+        productionParts,
+        context,
+        wf
+      );
+    }
     if (
       isCommissionLearnerFacingCopyStep(resolveDlaCanonicalSlotCopyStep(context), wf)
     ) {
@@ -13739,7 +13810,7 @@
         commissioningParts.push(artefactProducerInstruction);
       }
     }
-    var overlayOn = shouldApplyLearnerPagePedagogicFramingScaffold(context, resolved, base);
+    var overlayOn = framingScaffoldOn;
     var contractMod = resolveLdDlaPageEnrichContractLib();
     // S80-S6 §4/§7: the workbook overlay used to assert a hardcoded ~60-minute
     // session, which was simply false for any other duration. It now receives
@@ -13758,6 +13829,7 @@
       facilitatedDelivery: facilitatedDelivery,
       overlayText: overlayText,
       includeExamples: true,
+      practiceProduct: practiceRoute,
       productionSlot: productionParts.filter(Boolean).join("\n"),
       commissioningSlot: commissioningParts.filter(Boolean).join("\n"),
       outputSlot: outputParts.filter(Boolean).join("\n")
@@ -14843,7 +14915,8 @@
    * First-class Expository (S87 EQ7 / T-003 + T-007 live fix): do NOT require
    * page_synthesis.knowledge_summary, overview, learning_purpose, closing_paragraph,
    * or sections[].section_id="knowledge_summary". Empty page_synthesis {} is valid.
-   * Product discriminator: isExpositoryResourceWorkflow(wf) — not content heuristics.
+   * Practice (Sprint 101D): same KS exemption as Expository — task-led presentation.
+   * Product discriminator: workflow promptRoute — not content heuristics.
    */
   function validateDesignPagePartialPageCapture(parsed, wf) {
     if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
@@ -14863,6 +14936,7 @@
       errors.push("page_synthesis and/or sections required");
     }
     var expositoryWorkflow = isExpositoryResourceWorkflow(wf);
+    var practiceWorkflow = isPracticeWorkflow(wf);
     var hasPageSynthesisKnowledgeSummary =
       parsed.page_synthesis &&
       typeof parsed.page_synthesis === "object" &&
@@ -14877,15 +14951,57 @@
         );
       });
     // EQ7: Expository Design Page must not require Knowledge Summary furniture.
+    // Practice Design Page likewise omits mandatory KS ceremony (Sprint 101D).
     // Interactive partial Design Page retains the historical requirement.
     if (
       !expositoryWorkflow &&
+      !practiceWorkflow &&
       !hasPageSynthesisKnowledgeSummary &&
       !hasKnowledgeSummarySection
     ) {
       errors.push(
         'knowledge summary required: include page_synthesis.knowledge_summary and/or sections[].section_id="knowledge_summary"'
       );
+    }
+    if (practiceWorkflow) {
+      var practiceProductId = String(parsed.product_id || parsed.productId || "")
+        .trim()
+        .toLowerCase();
+      var practicePageKind = String(parsed.page_kind || parsed.pageKind || "")
+        .trim()
+        .toLowerCase();
+      if (practiceProductId && practiceProductId !== "practice") {
+        errors.push('Practice Design Page product_id must be "practice" when present');
+      }
+      if (practicePageKind && practicePageKind !== "practice") {
+        errors.push('Practice Design Page page_kind must be "practice" when present');
+      }
+      var practiceEditorial =
+        parsed.editorial_opening_image && typeof parsed.editorial_opening_image === "object"
+          ? parsed.editorial_opening_image
+          : null;
+      var practiceEditorialDecision = String(
+        (practiceEditorial && practiceEditorial.decision) || ""
+      )
+        .trim()
+        .toLowerCase();
+      if (!practiceEditorial) {
+        errors.push(
+          'Practice Design Page requires editorial_opening_image with decision "generate"'
+        );
+      } else if (practiceEditorialDecision !== "generate") {
+        errors.push(
+          'Practice Design Page editorial_opening_image.decision must be "generate" (skip is not permitted)'
+        );
+      } else {
+        ["subject", "context", "caption_intent", "detailed_description"].forEach(function (field) {
+          if (!String((practiceEditorial && practiceEditorial[field]) || "").trim()) {
+            errors.push(
+              "Practice Design Page editorial_opening_image." + field + " is required"
+            );
+          }
+        });
+      }
     }
     var vpcMod =
       typeof PRISM_VISUAL_PLANNING_CONTRACT !== "undefined" ? PRISM_VISUAL_PLANNING_CONTRACT : null;
@@ -16167,41 +16283,305 @@
   }
 
   var WORKFLOW_RUN_CAPTURE_PERSIST_TOAST_QUOTA =
-    "PRISM couldn't save this result because browser storage is full. The result is still available in this session, but it may be lost if you refresh or close PRISM.";
+    "PRISM couldn't save this result because browser storage is full. The result is still available in this session — copy it now, free storage, then press Next again to retry. Do not refresh until it saves.";
   var WORKFLOW_RUN_CAPTURE_PERSIST_TOAST_GENERIC =
-    "PRISM couldn't save this result. The result is still available in this session, but it may be lost if you refresh or close PRISM.";
+    "PRISM couldn't save this result. The result is still available in this session — copy it now, then press Next again to retry. Do not refresh until it saves.";
+  var WORKFLOW_RUN_UNSAVED_CAPTURE_STORAGE_KEY = "promptr.workflows.run.unsaved.v1";
+  var _workflowRunCapturePersistChains = Object.create(null);
 
-  function isWorkflowRunCapturePersistQuotaFailure(payloadPersist, runstatePersistResult) {
+  function classifyWorkflowRunCapturePersistFailure(payloadPersist, runstatePersistResult) {
     var detail =
       payloadPersist && payloadPersist.detail && typeof payloadPersist.detail === "object"
         ? payloadPersist.detail
         : null;
     var code = String(
       (detail && (detail.code || detail.reason)) ||
-        (payloadPersist && payloadPersist.reason) ||
-        (runstatePersistResult && runstatePersistResult.reason) ||
+        (payloadPersist && (payloadPersist.reason || payloadPersist.code)) ||
+        (runstatePersistResult && (runstatePersistResult.reason || runstatePersistResult.code)) ||
         ""
-    ).toLowerCase();
+    ).trim();
     var message = String(
       (detail && detail.message) ||
         (payloadPersist && payloadPersist.message) ||
         (runstatePersistResult && runstatePersistResult.message) ||
         ""
-    ).toLowerCase();
+    ).trim();
+    var errorName = String(
+      (detail && detail.error_name) ||
+        (payloadPersist && payloadPersist.error_name) ||
+        (runstatePersistResult && runstatePersistResult.error_name) ||
+        ""
+    ).trim();
+    return {
+      code: code || "persist_failed",
+      message: message,
+      errorName: errorName,
+      blob: (code + " " + errorName + " " + message).toLowerCase()
+    };
+  }
+
+  function resolveWorkflowRunCapturePersistFailureStage(payloadPersist, runstatePersistResult) {
+    if (!payloadPersist || !payloadPersist.ok) {
+      return "indexeddb_putTextResource";
+    }
+    if (!runstatePersistResult || !runstatePersistResult.ok) {
+      return (
+        (runstatePersistResult && runstatePersistResult.stage) || "indexeddb_runstate"
+      );
+    }
+    return "unknown";
+  }
+
+  function isWorkflowRunCapturePersistQuotaFailure(payloadPersist, runstatePersistResult) {
+    var classified = classifyWorkflowRunCapturePersistFailure(
+      payloadPersist,
+      runstatePersistResult
+    );
+    var code = String(classified.code || "").toLowerCase();
     if (/invalid_put_input|resource_store_unavailable|missing_workflow|missing_step/.test(code)) {
       return false;
     }
-    if (/quota|exceed|storage.?full|ns_error_dom_quota/.test(code + " " + message)) {
+    // Trust explicit quota flag only when the underlying error also looks like quota.
+    // Bare storage_write_failed + quota:true from over-broad detectors is not enough.
+    if (
+      runstatePersistResult &&
+      runstatePersistResult.quota === true &&
+      isQuotaExceededStorageError({
+        name: runstatePersistResult.error_name || classified.errorName,
+        message: runstatePersistResult.message || classified.message
+      })
+    ) {
       return true;
     }
+    if (
+      /quotaexceeded|exceeded the quota|quota.?exceeded|storage.?full|file_error_no_space|no space|disk.*full|ns_error_dom_quota|sqlite_full/.test(
+        classified.blob
+      )
+    ) {
+      return true;
+    }
+    if (code === "quota_exceeded") return true;
     return false;
   }
 
   function buildWorkflowRunCapturePersistFailureToastMessage(payloadPersist, runstatePersistResult) {
+    var classified = classifyWorkflowRunCapturePersistFailure(
+      payloadPersist,
+      runstatePersistResult
+    );
+    var stage = resolveWorkflowRunCapturePersistFailureStage(
+      payloadPersist,
+      runstatePersistResult
+    );
+    var safeReason = String(classified.code || "persist_failed")
+      .replace(/[^a-z0-9_\-]+/gi, "_")
+      .slice(0, 48);
+    var safeStage = String(stage || "unknown")
+      .replace(/[^a-z0-9_\-]+/gi, "_")
+      .slice(0, 40);
+    var safeName = String(classified.errorName || "")
+      .replace(/[^a-z0-9_\-]+/gi, "_")
+      .slice(0, 40);
+    var diag =
+      "[" +
+      safeReason +
+      " @ " +
+      safeStage +
+      (safeName ? " · " + safeName : "") +
+      "]";
     if (isWorkflowRunCapturePersistQuotaFailure(payloadPersist, runstatePersistResult)) {
-      return WORKFLOW_RUN_CAPTURE_PERSIST_TOAST_QUOTA;
+      return WORKFLOW_RUN_CAPTURE_PERSIST_TOAST_QUOTA + " " + diag;
     }
-    return WORKFLOW_RUN_CAPTURE_PERSIST_TOAST_GENERIC;
+    if (
+      (stage === "indexeddb_runstate" || stage === "localStorage_runstate") &&
+      payloadPersist &&
+      payloadPersist.ok
+    ) {
+      return (
+        "PRISM saved the result body, but could not update the durable run index. " +
+        "The result is still available in this session — copy it now, then press Next again to retry. " +
+        "Do not refresh until it saves. " +
+        diag
+      );
+    }
+    return WORKFLOW_RUN_CAPTURE_PERSIST_TOAST_GENERIC + " " + diag;
+  }
+
+  function logWorkflowRunCapturePersistFailureDiagnostics(
+    payloadPersist,
+    runstatePersistResult,
+    estimate
+  ) {
+    try {
+      var classified = classifyWorkflowRunCapturePersistFailure(
+        payloadPersist,
+        runstatePersistResult
+      );
+      var stage = resolveWorkflowRunCapturePersistFailureStage(
+        payloadPersist,
+        runstatePersistResult
+      );
+      var detail =
+        payloadPersist && payloadPersist.detail && typeof payloadPersist.detail === "object"
+          ? payloadPersist.detail
+          : null;
+      console.warn("[PRISM] run-capture persist failed", {
+        stage: stage,
+        code: classified.code,
+        errorName: classified.errorName || (detail && detail.error_name) || "",
+        message: String(classified.message || "").slice(0, 240),
+        payloadOk: !!(payloadPersist && payloadPersist.ok),
+        runstateOk: !!(runstatePersistResult && runstatePersistResult.ok),
+        quotaClassified: isWorkflowRunCapturePersistQuotaFailure(
+          payloadPersist,
+          runstatePersistResult
+        ),
+        dbName: "prismWorkflowResourcesDB",
+        objectStore: stage === "indexeddb_putTextResource" ? "resource_meta" : "",
+        storageEstimate: estimate
+          ? {
+              usage: estimate.usage,
+              quota: estimate.quota,
+              usageRatio: estimate.usageRatio,
+              remaining: estimate.remaining
+            }
+          : null
+      });
+    } catch (_e) {}
+  }
+
+  function readUnsavedWorkflowRunCaptureStore() {
+    try {
+      var raw =
+        typeof sessionStorage !== "undefined" && sessionStorage
+          ? sessionStorage.getItem(WORKFLOW_RUN_UNSAVED_CAPTURE_STORAGE_KEY)
+          : null;
+      var parsed = raw ? JSON.parse(raw) : {};
+      return parsed && typeof parsed === "object" && !Array.isArray(parsed) ? parsed : {};
+    } catch (_e) {
+      return {};
+    }
+  }
+
+  function writeUnsavedWorkflowRunCaptureStore(store) {
+    try {
+      if (typeof sessionStorage === "undefined" || !sessionStorage) return false;
+      sessionStorage.setItem(
+        WORKFLOW_RUN_UNSAVED_CAPTURE_STORAGE_KEY,
+        JSON.stringify(store && typeof store === "object" ? store : {})
+      );
+      return true;
+    } catch (_e) {
+      return false;
+    }
+  }
+
+  function stashUnsavedWorkflowRunCapture(workflowId, stepId, rawValue, finalValue, refs) {
+    var wid = String(workflowId || "").trim();
+    var sid = String(stepId || "").trim();
+    if (!wid || !sid) return false;
+    var store = readUnsavedWorkflowRunCaptureStore();
+    if (!store[wid] || typeof store[wid] !== "object") store[wid] = {};
+    var refCopy = null;
+    if (refs && typeof refs === "object") {
+      try {
+        refCopy = JSON.parse(JSON.stringify(refs));
+      } catch (_e) {
+        refCopy = null;
+      }
+    }
+    store[wid][sid] = {
+      raw: String(rawValue || ""),
+      final: String(finalValue || ""),
+      refs: refCopy,
+      at: Date.now()
+    };
+    return writeUnsavedWorkflowRunCaptureStore(store);
+  }
+
+  function clearUnsavedWorkflowRunCapture(workflowId, stepId) {
+    var wid = String(workflowId || "").trim();
+    var sid = String(stepId || "").trim();
+    if (!wid) return;
+    var store = readUnsavedWorkflowRunCaptureStore();
+    if (!store[wid]) return;
+    if (sid) {
+      delete store[wid][sid];
+      if (!Object.keys(store[wid]).length) delete store[wid];
+    } else {
+      delete store[wid];
+    }
+    writeUnsavedWorkflowRunCaptureStore(store);
+  }
+
+  function restoreUnsavedWorkflowRunCapturesIntoState(workflowId, options) {
+    var opts = options && typeof options === "object" ? options : {};
+    // Unsaved backups are accepted results that failed durable write — prefer them
+    // over older hydrated durable payloads until a successful save clears the stash.
+    var preferUnsaved = opts.preferUnsaved !== false;
+    var wid = String(workflowId || "").trim();
+    if (!wid) return { restored: 0 };
+    var store = readUnsavedWorkflowRunCaptureStore();
+    var byStep = store[wid] && typeof store[wid] === "object" ? store[wid] : null;
+    if (!byStep) return { restored: 0 };
+    var restored = 0;
+    state.workflowRunCapturedOutputs = state.workflowRunCapturedOutputs || {};
+    state.workflowRunCapturedOutputsRaw = state.workflowRunCapturedOutputsRaw || {};
+    state.workflowRunCaptureRefs = state.workflowRunCaptureRefs || {};
+    Object.keys(byStep).forEach(function (sid) {
+      var row = byStep[sid] && typeof byStep[sid] === "object" ? byStep[sid] : null;
+      if (!row) return;
+      var raw = String(row.raw || "");
+      var finalText = String(row.final || "");
+      if (!String(raw || "").trim() && !String(finalText || "").trim()) return;
+      if (
+        preferUnsaved ||
+        !String(state.workflowRunCapturedOutputs[sid] || "").trim()
+      ) {
+        state.workflowRunCapturedOutputs[sid] = finalText || raw;
+      }
+      if (
+        preferUnsaved ||
+        !String(state.workflowRunCapturedOutputsRaw[sid] || "").trim()
+      ) {
+        state.workflowRunCapturedOutputsRaw[sid] = raw || finalText;
+      }
+      if (
+        row.refs &&
+        typeof row.refs === "object" &&
+        (preferUnsaved ||
+          !(
+            state.workflowRunCaptureRefs[sid] &&
+            state.workflowRunCaptureRefs[sid].final &&
+            state.workflowRunCaptureRefs[sid].final.resource_id
+          ))
+      ) {
+        try {
+          state.workflowRunCaptureRefs[sid] = JSON.parse(JSON.stringify(row.refs));
+        } catch (_e) {}
+      }
+      restored += 1;
+    });
+    return { restored: restored };
+  }
+
+  function enqueueWorkflowRunCapturePersist(workflowId, stepId, workFn) {
+    var key = String(workflowId || "").trim() + "::" + String(stepId || "").trim();
+    var prev = _workflowRunCapturePersistChains[key] || Promise.resolve();
+    var next = prev.catch(function () {
+      return null;
+    }).then(function () {
+      return workFn();
+    });
+    _workflowRunCapturePersistChains[key] = next.then(
+      function () {
+        return null;
+      },
+      function () {
+        return null;
+      }
+    );
+    return next;
   }
 
   function buildWorkflowStepRowFromRunLi(li, wf) {
@@ -19546,11 +19926,13 @@
       "- context: write as a visual brief (not a label). Specify relationships/comparisons to communicate, key concepts to include, learner perspective, educational purpose, and conceptual boundaries so later deterministic prompt building does not infer intent.",
       "- context must NOT include artistic style, rendering instructions, filenames, or runtime metadata.",
       "- must_show / must_not_show must use concrete educational constraints (e.g., widening residual spread, threshold boundaries, bidirectional causal links), not vague phrases such as \"important concepts\".",
+      "- Precision-critical Show items (Sprint 101H): when the figure must display an exact equation, symbolic relationship, numeric value, or technical label, put that exact authored expression in must_show and/or evidence_anchors to the learner material that already contains it. Do not commission only generic placeholders (e.g. g(x,y)=0 or ∇f=λ∇g) when concrete forms are already authored. Distinguish objective functions from objective gradients in labels. Do not invent missing expressions. The image pipeline extracts precision-critical forms from authored materials — it does not require GLC/MK artefacts.",
       "- S78-DP: allowed_claims, disallowed_claims, and canonical_discipline_note must encode taught model-class and claim-strength bounds (not filler). Do not commission visuals that broaden the taught representation class or upgrade procedure products into unrestricted disciplinary conclusions.",
       "- S78-VA synthesis (page scope / purpose:synthesis): must_show and allowed_claims must enumerate taught entities, category membership, and relationships — not vague \"inputs and outputs around the system\". Preserve qualification/conditionality/claim strength. Put plausible out-of-model extensions in must_not_show / disallowed_claims. Synthesis integrates multiple AUTHORISED relationships only; do not commission peer categories, fluxes, or causal links absent from the taught model. Prefer evidence_anchors including page_synthesis.knowledge_summary when that is the consolidation source.",
       "- evidence_anchors: non-empty string array of canonical artefact references only. Each entry MUST be exactly activity_id.path (e.g. \"A3.learner_task\", \"A3.materials.scenarios\") or page_synthesis.field (overview|knowledge_summary|learning_purpose|study_tips). Forbidden: free-text labels, topic names, incomplete activity IDs without a path, source_basis prose, or object shapes.",
       "- Prefer citing every supporting location that grounds the row (learner_task + materials + page_synthesis) using those canonical forms.",
       "- activity scope rows require activity_id. page scope rows require region (currently knowledge_summary).",
+      "- Scope binding is mandatory on EVERY visual_decision (generate, defer, and skip): activity rows MUST include activity_id; page rows MUST include region \"knowledge_summary\". Omitting region on a page-scoped skip/defer/generate row is invalid — do not emit scope \"page\" without region.",
       "- visual_decision must be exactly: generate, defer, or skip. reject is accepted only as legacy alias for skip.",
       "- No downstream prompt may invent purpose, preferred_representation, subject, context, or evidence anchors; later steps may repair schema shape only.",
       "- Field types (strict): anti_spoiler and requires_exact_data_match are JSON booleans (true/false), never sentences; when anti_spoiler is true, spoiler_boundary boolean fields (hide_answers, hide_classification_keys, hide_model_solution, allow_structural_hint) are also literal JSON booleans (true/false), never sentences and never omitted; source_basis is a non-empty string citing upstream paths in the same dotted canonical form as evidence_anchors; must_show, must_not_show, allowed_claims, disallowed_claims, representation_avoid are non-empty string arrays.",
@@ -19565,10 +19947,10 @@
       "- Use \"post_reasoning\" when the visual consolidates, summarises, or represents reasoning after the learner has completed the relevant analysis.",
       "- Do not use learner_stage values such as: introduction, introductory, foundation, foundational, pre_reasoning, during_reasoning, post_classification, synthesis, consolidation, overview, beginner, intermediate, advanced.",
       "- Activity example shape: {\"scope\":\"activity\",\"activity_id\":\"A1\",\"visual_slot\":\"materials-entry\",\"learner_stage\":\"pre_classification\",\"rationale\":\"Makes discriminating category cues inspectable before classification.\"}.",
-      "- Page Knowledge Summary example shape: {\"scope\":\"page\",\"visual_slot\":\"knowledge-summary-after-content\",\"learner_stage\":\"post_reasoning\",\"rationale\":\"Externalises concept relationships so learners can revisit synthesis links.\"}.",
+      "- Page Knowledge Summary example shape: {\"scope\":\"page\",\"region\":\"knowledge_summary\",\"visual_slot\":\"knowledge-summary-after-content\",\"learner_stage\":\"post_reasoning\",\"rationale\":\"Externalises concept relationships so learners can revisit synthesis links.\"}.",
       "- defer_reason (defer only): worked_example_sufficient_first | model_row_sufficient_first.",
       "- skip_reason (skip only): low_pedagogical_value | debrief_without_new_reasoning | duplicate_existing_structure | decorative_only | spoiler_risk | assessment_text_sufficient | insufficient_source_basis.",
-      "- generate rows must include: affordance_id, scope, rationale, subject, context, evidence_anchors, visual_decision, visual_slot (activity-after-header | materials-entry | materials-card-grid-after | materials-table-pair-between | assessment-before-checkpoint | knowledge-summary-after-content), tier, purpose, preferred_representation, reasoning_supported, learner_stage, anti_spoiler, representation_avoid (>=1 token), canonical_discipline_note, requires_exact_data_match, must_show, must_not_show, allowed_claims, disallowed_claims, source_basis, caption_intent, alt_text, detailed_description, discipline_risk_level; when anti_spoiler is true also emit a complete spoiler_boundary with literal JSON booleans hide_answers, hide_classification_keys, hide_model_solution, allow_structural_hint; requires_exact_data_match true when preferred_representation is number_line_segments.",
+      "- generate rows must include: affordance_id, scope, rationale, subject, context, evidence_anchors, visual_decision, visual_slot (activity-after-header | materials-entry | materials-card-grid-after | materials-table-pair-between | assessment-before-checkpoint | knowledge-summary-after-content), tier, purpose, preferred_representation, reasoning_supported, learner_stage, anti_spoiler, representation_avoid (>=1 token), canonical_discipline_note, requires_exact_data_match, must_show, must_not_show, allowed_claims, disallowed_claims, source_basis, caption_intent, alt_text, detailed_description, discipline_risk_level; plus activity_id (activity scope) or region \"knowledge_summary\" (page scope); when anti_spoiler is true also emit a complete spoiler_boundary with literal JSON booleans hide_answers, hide_classification_keys, hide_model_solution, allow_structural_hint; requires_exact_data_match true when preferred_representation is number_line_segments.",
     ]
       .concat(
         typeof PRISM_SPRINT38_VISUAL_AFFORDANCES !== "undefined" &&
@@ -19584,8 +19966,9 @@
       )
       .concat([
       "- visual_slot guidance: reuse existing activity slot names for activity placements; introduce new slot names only when genuinely required (e.g., knowledge-summary-after-content for page synthesis placement).",
-      "- defer rows: affordance_id, scope, visual_decision, defer_reason, rationale, subject, context, evidence_anchors — omit purpose, preferred_representation, visual_slot, tier, and generate-only fields.",
-      "- skip rows: affordance_id, scope, visual_decision, skip_reason, rationale, subject, context, evidence_anchors — omit purpose, preferred_representation, visual_slot, tier, and generate-only fields.",
+      "- defer rows: affordance_id, scope, visual_decision, defer_reason, rationale, subject, context, evidence_anchors, plus activity_id (activity scope) or region \"knowledge_summary\" (page scope) — omit purpose, preferred_representation, visual_slot, tier, and generate-only fields.",
+      "- skip rows: affordance_id, scope, visual_decision, skip_reason, rationale, subject, context, evidence_anchors, plus activity_id (activity scope) or region \"knowledge_summary\" (page scope) — omit purpose, preferred_representation, visual_slot, tier, and generate-only fields.",
+      "- Example page-scope Knowledge Summary skip (region still required): {\"affordance_id\":\"va-page-summary-skip-01\",\"scope\":\"page\",\"region\":\"knowledge_summary\",\"visual_decision\":\"skip\",\"skip_reason\":\"spoiler_risk\",\"rationale\":\"A completed synthesis diagram would disclose judgements learners must construct.\",\"subject\":\"Relationships among taught distinctions\",\"context\":\"Visual brief: page orientation already states the distinctions as open questions; a completed map would resolve them prematurely.\",\"evidence_anchors\":[\"page_synthesis.knowledge_summary\",\"page_synthesis.learning_purpose\"]}.",
       "- Prefer valid generate when materials support classification or data_pattern_reading; defer worked-example-first; skip debrief-only or duplicate-structure activities.",
       "- activities_visual_review[]: REQUIRED — one object per upstream activity_id. Exact shape: {\"activity_id\":\"A1\",\"activity_visual_value\":{\"decision\":\"high\",\"rationale\":\"Non-empty pedagogical reason why visual value is high|medium|low|none.\"}}. Both activity_visual_value.decision (high|medium|low|none) AND activity_visual_value.rationale (non-empty string) are mandatory. Forbidden: omitting rationale; emitting decision alone; using recommendation/visual_need/reason as substitutes for activity_visual_value; empty rationale strings.",
       "- Example activities_visual_review row: {\"activity_id\":\"A3\",\"activity_visual_value\":{\"decision\":\"high\",\"rationale\":\"Classification matrix supports mechanism typing before the analysis table.\"}}.",
@@ -20426,6 +20809,29 @@
     if (promptRoute === "situated_task") {
       draft = applyMathSafeOutputContractToDraft(draft, ctx);
       draft = applyStrictJsonArtefactContractToDraft(draft, ctx);
+      return String(draft || "").trim();
+    }
+    if (promptRoute === "practice") {
+      // Sprint 101D/E — Practice-owned presentation contracts; do not enter Interactive
+      // scaffold/KS stack. Shared Sprint 38 visual-affordance authoring is product-
+      // independent and must still apply on Design Page (101E defect fix).
+      // Apply Practice contracts LAST: DLA v2 assembleLiveDlaCanonicalPrompt replaces
+      // the draft body, so earlier Practice injection would be wiped.
+      draft = applyEducationalQualityFrameworkPromptBlockToDraft(draft, ctx);
+      if (isWorkflowStepDesignPage(ctx)) {
+        draft = stripContradictoryDesignPageVisualAffordanceOmitClauses(draft);
+        draft = applySprint38VisualAffordanceContractToDraft(draft, ctx);
+      }
+      draft = applyMathSafeOutputContractToDraft(draft, ctx);
+      draft = applyStrictJsonArtefactContractToDraft(draft, ctx);
+      if (
+        isWorkflowStepDesignLearningActivities(ctx) &&
+        isPageEnrichmentV2WorkflowEnabled(wf)
+      ) {
+        draft = applyEpisodePlanDlaPopulationPromptBlockToDraft(draft, ctx, wf);
+      }
+      draft = applyGamPageEnrichPromptBlockToDraft(draft, ctx, wf);
+      draft = applyPracticePresentationContractsToDraft(draft, ctx, wf);
       return String(draft || "").trim();
     }
     if (promptRoute !== "interactive") {
@@ -26611,6 +27017,8 @@
     var intakeOpts = {};
     if (authoritativeProductId === "interactive") {
       intakeOpts.ldCreateOutputType = "self_study_resource";
+    } else if (authoritativeProductId === "practice") {
+      intakeOpts.ldCreateOutputType = "practice";
     }
     // Keep existing commissioned topology (no Normalize Content) unless caller opts in.
 
@@ -28993,20 +29401,30 @@
 
   function clearPersistedWorkflowRunStateForWorkflow(workflowId) {
     var wid = String(workflowId || "").trim();
-    if (!wid) return;
+    if (!wid) return Promise.resolve({ ok: false, reason: "missing_workflow_id" });
     var store = loadWorkflowRunStateStore();
-    if (!store || typeof store !== "object" || !store[wid]) return;
-    delete store[wid];
-    var cleared = saveWorkflowRunStateStore(store, {
-      source: "clearPersistedWorkflowRunStateForWorkflow",
-      workflowId: wid
-    });
-    if (cleared) {
-      touchWorkflowUpdatedAt(wid, {
-        source: "clearPersistedWorkflowRunStateForWorkflow",
-        renderList: true
-      });
+    if (!store || typeof store !== "object" || !store[wid]) {
+      return Promise.resolve({ ok: true, cleared: false });
     }
+    delete store[wid];
+    return Promise.resolve(
+      saveWorkflowRunStateStore(store, {
+        source: "clearPersistedWorkflowRunStateForWorkflow",
+        workflowId: wid
+      })
+    ).then(function (cleared) {
+      if (isWorkflowRunStateStoreSaveOk(cleared)) {
+        touchWorkflowUpdatedAt(wid, {
+          source: "clearPersistedWorkflowRunStateForWorkflow",
+          renderList: true
+        });
+        return { ok: true, cleared: true };
+      }
+      return {
+        ok: false,
+        reason: (cleared && cleared.reason) || "runstate_write_failed"
+      };
+    });
   }
 
   function resetWorkflowRunValidationState() {
@@ -29819,35 +30237,97 @@
         !ljDesignPageBlocked &&
         (!hasBlockingValidationError || hasNonEmptyAcceptedCaptureNow);
       if (shouldPersist) {
-        return persistWorkflowRunCapturePayloadForStep(
-          state.selectedWorkflowId,
-          sid,
-          persistedRawNow,
-          persistedFinalNow
-        ).then(function (payloadPersist) {
-          var persistResult = { ok: false };
-          if (payloadPersist && payloadPersist.ok) {
-            state.workflowRunCaptureRefs = state.workflowRunCaptureRefs || {};
-            state.workflowRunCaptureRefs[sid] = payloadPersist.refs || {};
-            persistResult = persistWorkflowRunStateForWorkflow(state.selectedWorkflowId, {
-              source: "syncWorkflowRunCapturedOutputToState",
-              observedStepId: sid,
-              renderList: true
-            });
-          }
-          if (!payloadPersist || !payloadPersist.ok || !(persistResult && persistResult.ok)) {
-            showToast(
-              buildWorkflowRunCapturePersistFailureToastMessage(payloadPersist, persistResult),
-              "error"
-            );
-            return { ok: false, reason: "persist_failed" };
-          }
-          queueWorkflowRunAutosaveToast("success");
-          refreshWorkflowListStatuses();
-          return { ok: true, touchedUpdatedAt: !!(persistResult && persistResult.touchedUpdatedAt) };
+        var persistWid = String(state.selectedWorkflowId || "").trim();
+        var persistSid = sid;
+        var persistRaw = persistedRawNow;
+        var persistFinal = persistedFinalNow;
+        return enqueueWorkflowRunCapturePersist(persistWid, persistSid, function () {
+          return persistWorkflowRunCapturePayloadForStep(
+            persistWid,
+            persistSid,
+            persistRaw,
+            persistFinal
+          ).then(function (payloadPersist) {
+            var persistCtx = {
+              workflowId: persistWid,
+              stepId: persistSid,
+              rawValue: persistRaw,
+              finalValue: persistFinal
+            };
+            var persistResult = { ok: false };
+            if (payloadPersist && payloadPersist.ok) {
+              state.workflowRunCaptureRefs = state.workflowRunCaptureRefs || {};
+              state.workflowRunCaptureRefs[persistSid] = payloadPersist.refs || {};
+              return Promise.resolve(
+                persistWorkflowRunStateForWorkflow(persistWid, {
+                  source: "syncWorkflowRunCapturedOutputToState",
+                  observedStepId: persistSid,
+                  renderList: true
+                })
+              ).then(function (runstateResult) {
+                return finishCapturePersistOutcome(
+                  payloadPersist,
+                  runstateResult || { ok: false },
+                  persistCtx
+                );
+              });
+            }
+            return finishCapturePersistOutcome(payloadPersist, persistResult, persistCtx);
+          });
         });
       }
     }
+  }
+
+  function finishCapturePersistOutcome(payloadPersist, persistResult, context) {
+    var ctx = context && typeof context === "object" ? context : {};
+    var persistWid = String(ctx.workflowId || state.selectedWorkflowId || "").trim();
+    var persistSid = String(ctx.stepId || "").trim();
+    var persistRaw = String(ctx.rawValue || "");
+    var persistFinal = String(ctx.finalValue || "");
+    if (!payloadPersist || !payloadPersist.ok || !(persistResult && persistResult.ok)) {
+      stashUnsavedWorkflowRunCapture(
+        persistWid,
+        persistSid,
+        persistRaw,
+        persistFinal,
+        state.workflowRunCaptureRefs && state.workflowRunCaptureRefs[persistSid]
+          ? state.workflowRunCaptureRefs[persistSid]
+          : null
+      );
+      var failureToast = buildWorkflowRunCapturePersistFailureToastMessage(
+        payloadPersist,
+        persistResult
+      );
+      showToast(failureToast, "error");
+      Promise.resolve(estimateBrowserStoragePressure())
+        .then(function (estimate) {
+          logWorkflowRunCapturePersistFailureDiagnostics(
+            payloadPersist,
+            persistResult,
+            estimate
+          );
+          return null;
+        })
+        .catch(function () {
+          logWorkflowRunCapturePersistFailureDiagnostics(payloadPersist, persistResult, null);
+          return null;
+        });
+      return {
+        ok: false,
+        reason: "persist_failed",
+        stage: resolveWorkflowRunCapturePersistFailureStage(payloadPersist, persistResult),
+        payloadPersist: payloadPersist || null,
+        runstatePersist: persistResult || null
+      };
+    }
+    clearUnsavedWorkflowRunCapture(persistWid, persistSid);
+    queueWorkflowRunAutosaveToast("success");
+    refreshWorkflowListStatuses();
+    return {
+      ok: true,
+      touchedUpdatedAt: !!(persistResult && persistResult.touchedUpdatedAt)
+    };
   }
 
   function updateRunStepOutputStatus(li) {
@@ -30491,6 +30971,7 @@
     var route = firstClassPromptRoute(wf);
     var labels = {
       interactive: "Interactive",
+      practice: "Practice",
       expository: "Expository",
       assessment: "Assessment Pack",
       learning_journey: "Learning Journey",
@@ -30505,6 +30986,7 @@
     if (productId === "assessment_pack" || productId === "assessment") return "Assessment Pack";
     if (productId === "learning_journey") return "Learning Journey";
     if (productId === "situated_task") return "Situated Task";
+    if (productId === "practice") return "Practice";
     if (productId === "interactive" || productId === "self_study_resource") return "Interactive";
     return route && route !== "generic" ? route : "";
   }
@@ -33274,9 +33756,19 @@
   }
 
   function isQuotaExceededStorageError(err) {
-    var errName = String((err && err.name) || "Error");
+    var errName = String((err && err.name) || "");
     var errMsg = String((err && err.message) || err || "");
-    return /quota|exceed|storage/i.test(errName + " " + errMsg);
+    var blob = (errName + " " + errMsg).toLowerCase();
+    // Do NOT match bare "Storage" (DOMException messages often say setItem on 'Storage').
+    if (
+      errName === "QuotaExceededError" ||
+      errName === "NS_ERROR_DOM_QUOTA_REACHED"
+    ) {
+      return true;
+    }
+    return /quotaexceeded|exceeded the quota|quota.?exceeded|storage.?full|file_error_no_space|no space|disk.*full|ns_error_dom_quota|sqlite_full/i.test(
+      blob
+    );
   }
 
   function readWorkflowStorageBackendMarker() {
@@ -33704,38 +34196,187 @@
     });
   }
 
-  function loadWorkflowRunStateStore() {
-    var raw = null;
+  function resolveWorkflowRunStateStoreMod() {
     try {
-      raw = window.localStorage.getItem(WORKFLOW_RUN_STATE_STORAGE_KEY);
+      if (typeof PRISM_WORKFLOW_RUNSTATE_STORE !== "undefined" && PRISM_WORKFLOW_RUNSTATE_STORE) {
+        return PRISM_WORKFLOW_RUNSTATE_STORE;
+      }
+    } catch (_e) {}
+    try {
+      if (
+        typeof window !== "undefined" &&
+        window.PRISM_WORKFLOW_RUNSTATE_STORE
+      ) {
+        return window.PRISM_WORKFLOW_RUNSTATE_STORE;
+      }
+    } catch (_e2) {}
+    return null;
+  }
+
+  function readLocalWorkflowRunStateJson() {
+    try {
+      return window.localStorage.getItem(WORKFLOW_RUN_STATE_STORAGE_KEY);
     } catch (_e) {
-      raw = null;
+      return null;
     }
-    if (!raw) return {};
+  }
+
+  /**
+   * Best-effort recovery backup only. Never required for IndexedDB durability.
+   * Failures are ignored — localStorage quota must not block authoritative saves.
+   */
+  function tryWriteLocalWorkflowRunStateBackup(json) {
+    try {
+      window.localStorage.setItem(WORKFLOW_RUN_STATE_STORAGE_KEY, String(json || ""));
+      return { ok: true };
+    } catch (err) {
+      return {
+        ok: false,
+        quota: isQuotaExceededStorageError(err),
+        reason: isQuotaExceededStorageError(err) ? "quota_exceeded" : "storage_write_failed"
+      };
+    }
+  }
+
+  function applyEpisodePlanMigrationToRunStateStore(store) {
+    var next = store && typeof store === "object" ? store : {};
+    var migrationMod = resolveEpisodePlanPersistenceMigrationLib();
+    if (!migrationMod || typeof migrationMod.migrateRunStateStore !== "function") {
+      return { store: next, changed: false };
+    }
+    var migrated = migrationMod.migrateRunStateStore(next);
+    if (migrated && migrated.changed) {
+      if (typeof console !== "undefined" && typeof console.info === "function") {
+        console.info("[prism:episode-plan-persistence-migration]", {
+          provenance: "loadWorkflowRunStateStore",
+          storageKey: WORKFLOW_RUN_STATE_STORAGE_KEY,
+          migrations: migrated.migrations
+        });
+      }
+      return { store: migrated.store, changed: true, migrations: migrated.migrations };
+    }
+    return { store: next, changed: false };
+  }
+
+  /**
+   * Synchronous read of the in-memory run-state cache.
+   * Durable hydration is IndexedDB-first via hydrateWorkflowRunStateStoreFromDurable().
+   * Pre-hydrate / test cold paths may bootstrap once from legacy localStorage.
+   */
+  function loadWorkflowRunStateStore() {
+    if (workflowRunStateMemoryStore && typeof workflowRunStateMemoryStore === "object") {
+      return workflowRunStateMemoryStore;
+    }
+    var raw = readLocalWorkflowRunStateJson();
+    if (!raw) {
+      workflowRunStateMemoryStore = {};
+      return workflowRunStateMemoryStore;
+    }
     try {
       var parsed = JSON.parse(raw);
       var store = parsed && typeof parsed === "object" ? parsed : {};
-      var migrationMod = resolveEpisodePlanPersistenceMigrationLib();
-      if (migrationMod && typeof migrationMod.migrateRunStateStore === "function") {
-        var migrated = migrationMod.migrateRunStateStore(store);
-        if (migrated && migrated.changed) {
-          saveWorkflowRunStateStore(migrated.store, {
-            source: "loadWorkflowRunStateStore:migration"
-          });
-          if (typeof console !== "undefined" && typeof console.info === "function") {
-            console.info("[prism:episode-plan-persistence-migration]", {
-              provenance: "loadWorkflowRunStateStore",
-              storageKey: WORKFLOW_RUN_STATE_STORAGE_KEY,
-              migrations: migrated.migrations
-            });
-          }
-          return migrated.store;
-        }
+      var migrated = applyEpisodePlanMigrationToRunStateStore(store);
+      workflowRunStateMemoryStore = migrated.store;
+      if (migrated.changed) {
+        saveWorkflowRunStateStore(workflowRunStateMemoryStore, {
+          source: "loadWorkflowRunStateStore:migration"
+        });
       }
-      return store;
+      return workflowRunStateMemoryStore;
     } catch (_err) {
-      return {};
+      workflowRunStateMemoryStore = {};
+      return workflowRunStateMemoryStore;
     }
+  }
+
+  /**
+   * Non-destructive startup hydration: IndexedDB authoritative, migrate richer
+   * legacy localStorage into IDB when needed, leave LS payload in place as backup.
+   */
+  function hydrateWorkflowRunStateStoreFromDurable() {
+    var storeMod = resolveWorkflowRunStateStoreMod();
+    var lsRaw = readLocalWorkflowRunStateJson();
+    if (!storeMod || typeof storeMod.readRunStateRecord !== "function") {
+      // Module unavailable — keep memory/LS bootstrap only (tests without store).
+      loadWorkflowRunStateStore();
+      workflowRunStateHydrated = true;
+      return Promise.resolve({
+        ok: true,
+        source: lsRaw ? "localStorage_bootstrap" : "empty",
+        migrated: false,
+        backend: "unavailable"
+      });
+    }
+    return storeMod
+      .readRunStateRecord()
+      .then(function (row) {
+        var idbRaw = row && row.json ? String(row.json) : null;
+        var prefer =
+          storeMod.preferRicherRunStateJson &&
+          typeof storeMod.preferRicherRunStateJson === "function"
+            ? storeMod.preferRicherRunStateJson(lsRaw, idbRaw)
+            : idbRaw || lsRaw;
+        var chosenRaw = prefer || idbRaw || lsRaw || "{}";
+        var migratedFromLs = !!(lsRaw && chosenRaw === lsRaw && chosenRaw !== idbRaw);
+        var parsed = {};
+        try {
+          parsed = JSON.parse(chosenRaw);
+        } catch (_e) {
+          parsed = {};
+        }
+        if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) parsed = {};
+        var migratedEp = applyEpisodePlanMigrationToRunStateStore(parsed);
+        workflowRunStateMemoryStore = migratedEp.store;
+        workflowRunStateRevision =
+          row && row.revision != null && !migratedFromLs ? Number(row.revision) || 0 : 0;
+        var needWrite = migratedFromLs || migratedEp.changed || !idbRaw;
+        var writePromise = Promise.resolve({ ok: true, skipped: !needWrite });
+        if (needWrite) {
+          var json = JSON.stringify(workflowRunStateMemoryStore || {});
+          writePromise = storeMod
+            .writeRunStateJson(json, {
+              nextRevision: (workflowRunStateRevision || 0) + 1
+            })
+            .then(function (result) {
+              if (result && result.ok) {
+                workflowRunStateRevision =
+                  result.revision != null
+                    ? Number(result.revision)
+                    : workflowRunStateRevision + 1;
+                tryWriteLocalWorkflowRunStateBackup(json);
+                if (migratedFromLs && typeof console !== "undefined" && console.info) {
+                  console.info("[PRISM] migrated workflow runstate localStorage → IndexedDB", {
+                    workflows: Object.keys(workflowRunStateMemoryStore || {}).length,
+                    revision: workflowRunStateRevision
+                  });
+                }
+              }
+              return result || { ok: false, reason: "runstate_migrate_write_failed" };
+            });
+        }
+        return writePromise.then(function (writeResult) {
+          workflowRunStateHydrated = true;
+          return {
+            ok: !!(writeResult && writeResult.ok !== false),
+            source: migratedFromLs ? "localStorage" : idbRaw ? "idb" : "empty",
+            migrated: migratedFromLs || !!migratedEp.changed,
+            backend: "idb",
+            revision: workflowRunStateRevision
+          };
+        });
+      })
+      .catch(function (err) {
+        // Fall back to memory/LS bootstrap; do not wipe existing memory.
+        loadWorkflowRunStateStore();
+        workflowRunStateHydrated = true;
+        return {
+          ok: false,
+          source: lsRaw ? "localStorage_bootstrap" : "empty",
+          migrated: false,
+          backend: "idb_unavailable",
+          message: String((err && err.message) || err || "")
+        };
+      });
   }
 
   function readWorkflowRunStateStepValueLengths(workflowId, stepId) {
@@ -33769,33 +34410,123 @@
     };
   }
 
+  function isWorkflowRunStateStoreSaveOk(result) {
+    return result === true || (!!result && typeof result === "object" && result.ok === true);
+  }
+
+  /**
+   * Persist run-state to IndexedDB (authoritative). Updates the in-memory cache
+   * immediately. localStorage is a best-effort backup only and must never gate success.
+   * Always returns a Promise of { ok, backend?, revision?, reason?, stage? }.
+   */
   function saveWorkflowRunStateStore(store, meta) {
     var writerMeta = meta && typeof meta === "object" ? meta : {};
-    try {
-      var serialized = JSON.stringify(store && typeof store === "object" ? store : {});
-      window.localStorage.setItem(WORKFLOW_RUN_STATE_STORAGE_KEY, serialized);
-      return true;
-    } catch (_e) {
-      var errName = String((_e && _e.name) || "Error");
-      var errMsg = String((_e && _e.message) || _e || "");
-      var quotaLike = /quota|exceed|storage/i.test(errName + " " + errMsg);
-      if (quotaLike && store && typeof store === "object") {
-        try {
-          var compactedStore = {};
-          Object.keys(store).forEach(function (widKey) {
-            compactedStore[widKey] = pruneBlankWorkflowRunStateRecordEntries(store[widKey]);
-          });
-          window.localStorage.setItem(
-            WORKFLOW_RUN_STATE_STORAGE_KEY,
-            JSON.stringify(compactedStore)
-          );
-          return true;
-        } catch (_retryErr) {
-          // Fall through to failure.
-        }
+    var nextStore =
+      store && typeof store === "object" && !Array.isArray(store) ? store : {};
+    workflowRunStateMemoryStore = nextStore;
+    var serialized = JSON.stringify(nextStore);
+    var storeMod = resolveWorkflowRunStateStoreMod();
+
+    if (!storeMod || typeof storeMod.writeRunStateJson !== "function") {
+      // Test harnesses without the store module: memory-only success so sync paths
+      // keep working; production always loads the module via index.html.
+      if (typeof window !== "undefined" && window.__PRISM_TEST_HARNESS__) {
+        tryWriteLocalWorkflowRunStateBackup(serialized);
+        return Promise.resolve({
+          ok: true,
+          backend: "memory_test",
+          stage: "indexeddb_runstate"
+        });
       }
-      return false;
+      return Promise.resolve({
+        ok: false,
+        reason: "runstate_store_unavailable",
+        stage: "indexeddb_runstate"
+      });
     }
+
+    var savePromise = workflowRunStateSaveTail.then(function () {
+      var expectedRevision = workflowRunStateRevision;
+      return storeMod
+        .writeRunStateJson(serialized, {
+          expectedRevision: expectedRevision,
+          nextRevision: expectedRevision + 1
+        })
+        .then(function (result) {
+          if (result && result.ok) {
+            workflowRunStateRevision =
+              result.revision != null ? Number(result.revision) : expectedRevision + 1;
+            tryWriteLocalWorkflowRunStateBackup(serialized);
+            return {
+              ok: true,
+              backend: result.backend || "idb",
+              revision: workflowRunStateRevision,
+              stage: "indexeddb_runstate",
+              source: writerMeta.source || ""
+            };
+          }
+          if (result && result.reason === "stale_revision") {
+            var retryExpected =
+              result.currentRevision != null
+                ? Number(result.currentRevision)
+                : workflowRunStateRevision;
+            workflowRunStateRevision = retryExpected;
+            return storeMod
+              .writeRunStateJson(serialized, {
+                expectedRevision: retryExpected,
+                nextRevision: retryExpected + 1
+              })
+              .then(function (retryResult) {
+                if (retryResult && retryResult.ok) {
+                  workflowRunStateRevision =
+                    retryResult.revision != null
+                      ? Number(retryResult.revision)
+                      : retryExpected + 1;
+                  tryWriteLocalWorkflowRunStateBackup(serialized);
+                  return {
+                    ok: true,
+                    backend: retryResult.backend || "idb",
+                    revision: workflowRunStateRevision,
+                    stage: "indexeddb_runstate"
+                  };
+                }
+                return {
+                  ok: false,
+                  reason: (retryResult && retryResult.reason) || "runstate_write_failed",
+                  message: (retryResult && retryResult.message) || "",
+                  error_name: (retryResult && retryResult.error_name) || "",
+                  stage: "indexeddb_runstate"
+                };
+              });
+          }
+          return {
+            ok: false,
+            reason: (result && result.reason) || "runstate_write_failed",
+            message: (result && result.message) || "",
+            error_name: (result && result.error_name) || "",
+            stage: "indexeddb_runstate"
+          };
+        });
+    });
+
+    workflowRunStateSaveTail = savePromise.then(
+      function () {
+        return null;
+      },
+      function () {
+        return null;
+      }
+    );
+
+    return savePromise.catch(function (err) {
+      return {
+        ok: false,
+        reason: "runstate_write_exception",
+        message: String((err && err.message) || err || ""),
+        error_name: String((err && err.name) || ""),
+        stage: "indexeddb_runstate"
+      };
+    });
   }
 
   function buildWorkflowRunStateSnapshotForCurrentSelection() {
@@ -34080,7 +34811,7 @@
     var opts = options && typeof options === "object" ? options : {};
     var wid = String(workflowId || "").trim();
     if (!wid) {
-      return { ok: false, reason: "missing_workflow_id" };
+      return Promise.resolve({ ok: false, reason: "missing_workflow_id" });
     }
     var store = loadWorkflowRunStateStore();
     var existing =
@@ -34092,24 +34823,34 @@
     var pruned = pruneBlankWorkflowRunStateRecordEntries(mergedRecord);
     store[wid] = pruned;
     var afterFp = buildWorkflowRunStateActivityFingerprint(pruned);
-    var ok = saveWorkflowRunStateStore(store, {
-      source: String(opts.source || "persistWorkflowRunStateForWorkflow"),
-      workflowId: wid,
-      observedStepId: String(opts.observedStepId || "")
-    });
-    if (!ok) {
-      return { ok: false, reason: "storage_write_failed" };
-    }
     var shouldTouch =
       opts.touchUpdatedAt === true ||
       (opts.touchUpdatedAt !== false && beforeFp !== afterFp);
-    if (shouldTouch) {
-      touchWorkflowUpdatedAt(wid, {
+    return Promise.resolve(
+      saveWorkflowRunStateStore(store, {
         source: String(opts.source || "persistWorkflowRunStateForWorkflow"),
-        renderList: opts.renderList !== false
-      });
-    }
-    return { ok: true, touchedUpdatedAt: !!shouldTouch };
+        workflowId: wid,
+        observedStepId: String(opts.observedStepId || "")
+      })
+    ).then(function (saveResult) {
+      if (!isWorkflowRunStateStoreSaveOk(saveResult)) {
+        return {
+          ok: false,
+          reason: (saveResult && saveResult.reason) || "runstate_write_failed",
+          quota: !!(saveResult && saveResult.quota),
+          message: (saveResult && saveResult.message) || "",
+          error_name: (saveResult && saveResult.error_name) || "",
+          stage: (saveResult && saveResult.stage) || "indexeddb_runstate"
+        };
+      }
+      if (shouldTouch) {
+        touchWorkflowUpdatedAt(wid, {
+          source: String(opts.source || "persistWorkflowRunStateForWorkflow"),
+          renderList: opts.renderList !== false
+        });
+      }
+      return { ok: true, touchedUpdatedAt: !!shouldTouch, stage: "indexeddb_runstate" };
+    });
   }
 
   function persistWorkflowRunCapturePayloadForStep(workflowId, stepId, rawValue, finalValue) {
@@ -34243,6 +34984,9 @@
     return chain.then(function () {
       state.workflowRunCapturedOutputs = nextFinal;
       state.workflowRunCapturedOutputsRaw = nextRaw;
+      // Re-apply session unsaved backups after ref hydration so a failed durable
+      // write is not overwritten by an older IndexedDB payload on refresh.
+      restoreUnsavedWorkflowRunCapturesIntoState(wid, { preferUnsaved: true });
       state.workflowRunCaptureHydrationByWorkflow[wid] = {
         pending: false,
         hydrated: hydratedCount,
@@ -35028,6 +35772,9 @@
           ? Object.assign({}, rec.capturedOutputsRaw)
           : {};
     }
+    // Session backup for captures that failed durable write — restore into live maps
+    // so a same-tab refresh does not discard the accepted result.
+    restoreUnsavedWorkflowRunCapturesIntoState(wid);
     state.workflowRunStepCompleted =
       rec && rec.stepCompleted && typeof rec.stepCompleted === "object"
         ? Object.assign({}, rec.stepCompleted)
@@ -39154,6 +39901,27 @@
           "Copilot output contract: return one pretty-printed fenced JSON page artefact (triple-backtick json fence, 2-space indentation). No prose before the fence. After the closing fence emit exactly one runner footer line: " +
             exactFooterLine +
             ". No other text after the footer line."
+        );
+      } else if (isPracticeWorkflow(wfForChain)) {
+        lines.push(
+          "Practice Design Page partial output mode: return a partial page artefact with product_id \"practice\", page_kind \"practice\", title, optional brief page_synthesis, visual_affordance_schema_version \"38.4\", activities_visual_review[], visual_affordances[], editorial_opening_image decision, optional sections[], and assembly_state."
+        );
+        lines.push(
+          "PRISM does not embed stored prior step outputs in this mode. Use Copilot conversation context for upstream Practice continuity."
+        );
+        lines.push(
+          "Always emit editorial_opening_image at page root with decision \"generate\" and a suitable editorial brief (subject, context, caption_intent, alt_text, detailed_description). It is required for every newly authored Practice Design Page. Commission a decorative, text-free opening scene that establishes context and visual identity for the Practice stop as a whole (no text overlays, labels, titles, slogans or banners in the image); set alt_text to \"\"; do not reveal worked solutions, classifications, or answers learners must develop; do not place it in visual_affordances[]. Do not use skip and do not omit the field. Empty instructional visual_affordances [] remains valid and does not remove this requirement."
+        );
+        lines.push(
+          "Retain concise, skippable Overview, Learning purpose and Knowledge summary so learners can re-enter after a break. Keep them lean. Do not remove orientation fields to save workload — economy belongs in response production. Study tips remain omit-by-default. Do not change learner-facing learning outcomes for workload economy."
+        );
+        lines.push(
+          "Copilot output contract: return one complete pretty-printed fenced JSON partial page artefact (triple-backtick json fence, 2-space indentation). Include only Design Page owned fields — do not replay the full upstream page. No prose before the fence. After the closing fence emit exactly one runner footer line: " +
+            exactFooterLine +
+            ". No other text after the footer line."
+        );
+        lines.push(
+          "Practice Design Page constraints: modify only Design Page owned fields (title, page_synthesis, visual_affordance_schema_version, activities_visual_review, visual_affordances, editorial_opening_image, optional sections[], assembly_state). Author a concise learner-facing title. editorial_opening_image is required with decision \"generate\". Every visual_affordances[] row must include affordance_id plus the shared Sprint 38 required children for that visual_decision (generate|defer|skip). Use only recognised visual_slot values. Prefer purposeful conceptual/mathematical imagery with anti_spoiler controls when warranted; emit visual_affordances [] when none are justified. Do not regenerate activities, materials, learning_outcomes, episode_plans, or learning_sequence."
         );
       } else if (workflowRecordIsAssessmentPack(wfForChain)) {
         lines.push(
@@ -53666,6 +54434,15 @@
       ".util-learner-renderer-vnext .util-learner-workspace__input:focus{outline:2px solid #2563eb;outline-offset:1px;border-color:#93c5fd}",
       ".util-learner-renderer-vnext .util-learner-workspace__prompt{margin:0 0 var(--learner-space-2);font-size:var(--learner-text-sm);line-height:var(--learner-leading-body);color:#475569}",
       ".util-learner-renderer-vnext .util-learner-response-group{margin:var(--learner-space-3) 0;display:grid;gap:var(--learner-space-3)}",
+      ".util-learner-renderer-vnext .util-practice-decision-grid{grid-template-columns:1fr;align-items:stretch;gap:var(--learner-space-4)}",
+      ".util-learner-renderer-vnext .util-practice-selection-workspace{margin-top:0;min-width:0}",
+      ".util-learner-renderer-vnext .util-practice-selection{margin:0;padding:var(--learner-space-3);border:1px solid #e2e8f0;border-radius:10px;background:#fff}",
+      ".util-learner-renderer-vnext .util-practice-selection .util-assessment-item-header{margin:0 0 var(--learner-space-2)}",
+      ".util-learner-renderer-vnext .util-practice-selection__title{margin:0;font-size:var(--learner-text-base);line-height:var(--learner-leading-heading);font-weight:650;color:#0f172a}",
+      ".util-learner-renderer-vnext .util-practice-selection__note{margin:var(--learner-space-2) 0 0;font-size:var(--learner-text-sm);line-height:var(--learner-leading-body);color:#475569}",
+      ".util-learner-renderer-vnext .util-assessment-result[data-assessment-state=\"correct\"]{border-left-color:#166534;background:#f0fdf4}",
+      ".util-learner-renderer-vnext .util-assessment-result[data-assessment-state=\"incorrect\"]{border-left-color:#9a3412;background:#fff7ed}",
+      "@media (max-width:720px){.util-learner-renderer-vnext .util-practice-decision-grid{grid-template-columns:1fr}}",
       ".util-learner-renderer-vnext .util-learner-response-group__note{margin:0;font-size:var(--learner-text-xs);line-height:1.45;color:#64748b}",
       ".util-learner-renderer-vnext .util-learner-response-group .util-learner-workspace{margin:0}",
       ".util-learner-renderer-vnext .util-ordering-workspace{margin-top:var(--learner-space-3);padding:var(--learner-space-3);border:1px solid #bfdbfe;border-radius:10px;background:#f8fbff}",
@@ -58079,8 +58856,22 @@
     var graphicsCount = 0;
     var videoCount = 0;
     var resourcesCount = 0;
-    if (ws && ws.compilerResult && Array.isArray(ws.compilerResult.briefs)) {
-      graphicsCount = ws.compilerResult.briefs.length;
+    if (ws) {
+      var utilWs =
+        typeof PRISM_UTILITIES_VISUAL_JOBS_WORKSPACE !== "undefined"
+          ? PRISM_UTILITIES_VISUAL_JOBS_WORKSPACE
+          : null;
+      if (utilWs && typeof utilWs.countAuthoringGraphicsJobs === "function") {
+        graphicsCount = utilWs.countAuthoringGraphicsJobs(ws);
+      } else if (
+        ws.contractResult &&
+        ws.contractResult.authoritative_planning_present !== false &&
+        ws.contractResult.valid === false
+      ) {
+        graphicsCount = 0;
+      } else if (ws.compilerResult && Array.isArray(ws.compilerResult.briefs)) {
+        graphicsCount = ws.compilerResult.briefs.length;
+      }
     }
     if (ws && ws.pageResourceRefs && String(ws.pageResourceRefs.video_resource_id || "").trim()) {
       videoCount = 1;
@@ -62404,9 +63195,36 @@
         var liSteps = getWorkflowStepElements();
         var idx = state.currentWorkflowRunIndex;
         var currentLi = liSteps[idx] || null;
-        if (currentLi) {
-          syncWorkflowRunCapturedOutputToState(currentLi, { source: "next_click" });
-          var sid = String(currentLi.getAttribute("data-step-id") || "").trim();
+        // Durable capture persist is async (IndexedDB). Do not advance until it
+        // settles — otherwise Step N can appear accepted while refs never land.
+        var syncPromise = currentLi
+          ? Promise.resolve(
+              syncWorkflowRunCapturedOutputToState(currentLi, { source: "next_click" })
+            )
+          : Promise.resolve(null);
+        syncPromise
+          .then(function (persistOutcome) {
+            if (
+              persistOutcome &&
+              persistOutcome.ok === false &&
+              String(persistOutcome.reason || "") === "persist_failed"
+            ) {
+              if (currentLi) updateRunStepOutputStatus(currentLi);
+              return;
+            }
+            if (!currentLi) {
+              if (isWorkflowRunAtFinalStep(idx, liSteps.length)) {
+                updateWorkflowRunView();
+                return;
+              }
+              state.currentWorkflowRunIndex += 1;
+              if (String(state.selectedWorkflowId || "").trim()) {
+                persistWorkflowRunStateForWorkflow(state.selectedWorkflowId);
+              }
+              updateWorkflowRunView();
+              return;
+            }
+            var sid = String(currentLi.getAttribute("data-step-id") || "").trim();
           var wf = state.selectedWorkflowId ? findWorkflowById(state.selectedWorkflowId) : null;
           var stepRow = null;
           if (wf && Array.isArray(wf.steps) && sid) {
@@ -62659,19 +63477,26 @@
           if (String(state.selectedWorkflowId || "").trim()) {
             persistWorkflowRunStateForWorkflow(state.selectedWorkflowId);
           }
-        }
-        // Final stage: keep the learner on this step (Next remains visible but
-        // does not advance beyond the workflow). Completion uses Continue to
-        // Authoring when that destination applies.
-        if (isWorkflowRunAtFinalStep(idx, liSteps.length)) {
+          // Final stage: keep the learner on this step (Next remains visible but
+          // does not advance beyond the workflow). Completion uses Continue to
+          // Authoring when that destination applies.
+          if (isWorkflowRunAtFinalStep(idx, liSteps.length)) {
+            updateWorkflowRunView();
+            return;
+          }
+          state.currentWorkflowRunIndex += 1;
+          if (String(state.selectedWorkflowId || "").trim()) {
+            persistWorkflowRunStateForWorkflow(state.selectedWorkflowId);
+          }
           updateWorkflowRunView();
-          return;
-        }
-        state.currentWorkflowRunIndex += 1;
-        if (String(state.selectedWorkflowId || "").trim()) {
-          persistWorkflowRunStateForWorkflow(state.selectedWorkflowId);
-        }
-        updateWorkflowRunView();
+          })
+          .catch(function () {
+            if (currentLi) updateRunStepOutputStatus(currentLi);
+            showToast(
+              WORKFLOW_RUN_CAPTURE_PERSIST_TOAST_GENERIC + " [sync_exception]",
+              "error"
+            );
+          });
       });
     }
     if (els.workflowModeRunBtn) {
@@ -62778,6 +63603,9 @@
     loadLibrary()
       .then(function () {
         return loadWorkflows();
+      })
+      .then(function () {
+        return hydrateWorkflowRunStateStoreFromDurable();
       })
       .then(function () {
         finalizeInitialUiSetup();
@@ -64453,6 +65281,11 @@
     prismTestApi.rehydrateWorkflowPageResourcesIntoWorkspaceForTest =
       rehydrateWorkflowPageResourcesIntoWorkspace;
     prismTestApi.persistWorkflowRunStateForWorkflowForTest = persistWorkflowRunStateForWorkflow;
+    prismTestApi.hydrateWorkflowRunStateStoreFromDurableForTest =
+      hydrateWorkflowRunStateStoreFromDurable;
+    prismTestApi.loadWorkflowRunStateStoreForTest = loadWorkflowRunStateStore;
+    prismTestApi.saveWorkflowRunStateStoreForTest = saveWorkflowRunStateStore;
+    prismTestApi.WORKFLOW_RUN_STATE_STORAGE_KEY_FOR_TEST = WORKFLOW_RUN_STATE_STORAGE_KEY;
     prismTestApi.touchWorkflowUpdatedAtForTest = touchWorkflowUpdatedAt;
     prismTestApi.buildWorkflowRunStateActivityFingerprintForTest =
       buildWorkflowRunStateActivityFingerprint;
@@ -64469,6 +65302,14 @@
       WORKFLOW_RUN_CAPTURE_PERSIST_TOAST_QUOTA;
     prismTestApi.WORKFLOW_RUN_CAPTURE_PERSIST_TOAST_GENERIC_FOR_TEST =
       WORKFLOW_RUN_CAPTURE_PERSIST_TOAST_GENERIC;
+    prismTestApi.WORKFLOW_RUN_UNSAVED_CAPTURE_STORAGE_KEY_FOR_TEST =
+      WORKFLOW_RUN_UNSAVED_CAPTURE_STORAGE_KEY;
+    prismTestApi.stashUnsavedWorkflowRunCaptureForTest = stashUnsavedWorkflowRunCapture;
+    prismTestApi.clearUnsavedWorkflowRunCaptureForTest = clearUnsavedWorkflowRunCapture;
+    prismTestApi.restoreUnsavedWorkflowRunCapturesIntoStateForTest =
+      restoreUnsavedWorkflowRunCapturesIntoState;
+    prismTestApi.readUnsavedWorkflowRunCaptureStoreForTest = readUnsavedWorkflowRunCaptureStore;
+    prismTestApi.syncWorkflowRunCapturedOutputToStateForTest = syncWorkflowRunCapturedOutputToState;
     prismTestApi.hydrateWorkflowRunCapturePayloadsForWorkflowForTest =
       hydrateWorkflowRunCapturePayloadsForWorkflow;
     prismTestApi.migrateLegacyInlineWorkflowRunCapturesToResourceRefsForTest =

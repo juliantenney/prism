@@ -4,6 +4,7 @@ const fs = require("node:fs");
 const path = require("node:path");
 const vm = require("node:vm");
 const workflowResources = require("../lib/prism-workflow-resources.js");
+const workflowRunstateStore = require("../lib/prism-workflow-runstate-store.js");
 const {
   runPrismLibScriptsInSandbox,
   PEDAGOGICAL_ICON_LIBS,
@@ -61,6 +62,7 @@ function boot() {
     setTimeout,
     clearTimeout,
     location: { hash: "", pathname: "/" },
+    __PRISM_TEST_HARNESS__: true,
     _: sandbox._,
     Utils: { debounce: (fn) => fn, uuid: () => "id-" + Math.random().toString(16).slice(2) },
     localStorage,
@@ -76,22 +78,37 @@ function boot() {
   sandbox.window = windowStub;
   windowStub.window = windowStub;
   workflowResources.resetStorageBackendForTests();
+  workflowRunstateStore.resetStorageBackendForTests();
   sandbox.PRISM_WORKFLOW_RESOURCES = workflowResources;
   windowStub.PRISM_WORKFLOW_RESOURCES = workflowResources;
+  sandbox.PRISM_WORKFLOW_RUNSTATE_STORE = workflowRunstateStore;
+  windowStub.PRISM_WORKFLOW_RUNSTATE_STORE = workflowRunstateStore;
   vm.createContext(sandbox);
   runPrismLibScriptsInSandbox(
     sandbox,
     repoRoot,
-    PEDAGOGICAL_ICON_LIBS.concat(["lib/page-vnext-assemble.js"])
+    PEDAGOGICAL_ICON_LIBS.concat([
+      "lib/page-vnext-assemble.js",
+      "lib/prism-workflow-runstate-store.js"
+    ])
   );
+  sandbox.PRISM_WORKFLOW_RUNSTATE_STORE = workflowRunstateStore;
+  windowStub.PRISM_WORKFLOW_RUNSTATE_STORE = workflowRunstateStore;
   wirePageVnextAssembleForTests(windowStub, repoRoot);
   injectLearnerRendererVNextInSandbox(sandbox, repoRoot);
   vm.runInContext(fs.readFileSync(appJsPath, "utf8"), sandbox, { filename: "app.js" });
   return { api: sandbox.window.__PRISM_TEST_API, storage };
 }
 
-function storeRec(storage, workflowId) {
-  const raw = storage[RUNKEY];
+function storeRec(apiOrStorage, workflowId) {
+  if (
+    apiOrStorage &&
+    typeof apiOrStorage.loadWorkflowRunStateStoreForTest === "function"
+  ) {
+    const store = apiOrStorage.loadWorkflowRunStateStoreForTest() || {};
+    return store[workflowId] || null;
+  }
+  const raw = apiOrStorage && apiOrStorage[RUNKEY];
   if (!raw) return null;
   const store = JSON.parse(raw);
   return store[workflowId] || null;
@@ -119,8 +136,10 @@ test("new capture persists as resource refs, not inline localStorage bodies", as
   );
   assert.equal(put.ok, true, JSON.stringify(put));
   api.setWorkflowRunCaptureRefsForTest({ dla_step: put.refs });
-  api.persistWorkflowRunStateForWorkflowForTest(wf.id, { observedStepId: "dla_step" });
-  const rec = storeRec(storage, wf.id);
+  await api.persistWorkflowRunStateForWorkflowForTest(wf.id, {
+    observedStepId: "dla_step"
+  });
+  const rec = storeRec(api, wf.id);
   assert.ok(rec.captureRefs && rec.captureRefs.dla_step);
   assert.equal(Object.keys(rec.capturedOutputs || {}).length, 0);
   assert.equal(Object.keys(rec.capturedOutputsRaw || {}).length, 0);
@@ -172,13 +191,15 @@ test("cold restore hydrates capture payload from refs", async () => {
     payload
   );
   api.setWorkflowRunCaptureRefsForTest({ dla_step: put.refs });
-  api.persistWorkflowRunStateForWorkflowForTest(wf.id, { observedStepId: "dla_step" });
+  await api.persistWorkflowRunStateForWorkflowForTest(wf.id, {
+    observedStepId: "dla_step"
+  });
   api.setWorkflowRunCapturedOutputsForTest({});
   api.setWorkflowRunCapturedOutputsRawForTest({});
   await api.hydrateWorkflowRunCapturePayloadsForWorkflowForTest(wf.id);
   const live = api.getWorkflowRunCapturedOutputsForTest();
   assert.equal(String(live.dla_step || "").length > 1000, true);
-  const rec = storeRec(storage, wf.id);
+  const rec = storeRec(api, wf.id);
   assert.ok(rec.captureRefs.dla_step.final.resource_id);
 });
 
@@ -190,7 +211,9 @@ test("legacy inline runstate migrates safely to refs", async () => {
   const big = JSON.stringify({ text: "x".repeat(20000) });
   api.setWorkflowRunCapturedOutputsForTest({ dla_step: big });
   api.setWorkflowRunCapturedOutputsRawForTest({ dla_step: big });
-  api.persistWorkflowRunStateForWorkflowForTest(wf.id, { observedStepId: "dla_step" });
+  await api.persistWorkflowRunStateForWorkflowForTest(wf.id, {
+    observedStepId: "dla_step"
+  });
   // Force legacy inline shape.
   const store = api.loadWorkflowRunStateStoreForTest();
   store[wf.id].capturedOutputs = { dla_step: big };
@@ -200,7 +223,9 @@ test("legacy inline runstate migrates safely to refs", async () => {
   const beforeChars = String(storage[RUNKEY] || "").length;
   const migration = await api.migrateLegacyInlineWorkflowRunCapturesToResourceRefsForTest(wf.id);
   assert.equal(migration.migrated >= 1, true);
-  const after = storeRec(storage, wf.id);
+  // Migration triggers async IndexedDB save — await a follow-up flush.
+  await api.saveWorkflowRunStateStoreForTest(api.loadWorkflowRunStateStoreForTest());
+  const after = storeRec(api, wf.id);
   assert.ok(after.captureRefs && after.captureRefs.dla_step);
   assert.equal(Object.keys(after.capturedOutputs || {}).length, 0);
   assert.equal(Object.keys(after.capturedOutputsRaw || {}).length, 0);
@@ -227,7 +252,9 @@ test("failed migration retains legacy inline payload", async () => {
   workflowResources.setStorageBackend(failingBackend);
   api.setWorkflowRunCapturedOutputsForTest({ dla_step: big });
   api.setWorkflowRunCapturedOutputsRawForTest({ dla_step: big });
-  api.persistWorkflowRunStateForWorkflowForTest(wf.id, { observedStepId: "dla_step" });
+  await api.persistWorkflowRunStateForWorkflowForTest(wf.id, {
+    observedStepId: "dla_step"
+  });
   const store = api.loadWorkflowRunStateStoreForTest();
   store[wf.id].capturedOutputs = { dla_step: big };
   store[wf.id].capturedOutputsRaw = { dla_step: big };
@@ -235,7 +262,7 @@ test("failed migration retains legacy inline payload", async () => {
   storage[RUNKEY] = JSON.stringify(store);
   const migration = await api.migrateLegacyInlineWorkflowRunCapturesToResourceRefsForTest(wf.id);
   assert.equal(migration.ok, false);
-  const rec = storeRec(storage, wf.id);
+  const rec = storeRec(api, wf.id);
   assert.equal(String(rec.capturedOutputs.dla_step || "").length > 1000, true);
   workflowResources.resetStorageBackendForTests();
 });
@@ -253,13 +280,16 @@ test("localStorage runstate stays lightweight after resource-backed persist", as
     payload
   );
   api.setWorkflowRunCaptureRefsForTest({ dla_step: put.refs });
-  api.persistWorkflowRunStateForWorkflowForTest(wf.id, { observedStepId: "dla_step" });
+  await api.persistWorkflowRunStateForWorkflowForTest(wf.id, {
+    observedStepId: "dla_step"
+  });
   const usage = api.buildLocalStorageUsageSnapshotForTest();
   assert.equal(typeof usage.runstateChars, "number");
   assert.equal(usage.runstateChars < payload.length, true);
-  const rec = storeRec(storage, wf.id);
+  const rec = storeRec(api, wf.id);
   assert.ok(rec.captureRefs.dla_step);
   assert.equal(Object.keys(rec.capturedOutputs || {}).length, 0);
+  assert.ok(String(storage[RUNKEY] || "").length < payload.length);
 });
 
 test("resource write failure is surfaced and inline data is not claimed durable", async () => {
@@ -305,11 +335,13 @@ test("Authoring assemble path hydrates capture refs before using live maps", asy
     payload
   );
   api.setWorkflowRunCaptureRefsForTest({ dla_step: put.refs });
-  api.persistWorkflowRunStateForWorkflowForTest(wf.id, { observedStepId: "dla_step" });
+  await api.persistWorkflowRunStateForWorkflowForTest(wf.id, {
+    observedStepId: "dla_step"
+  });
   api.setWorkflowRunCapturedOutputsForTest({});
   api.setWorkflowRunCapturedOutputsRawForTest({});
   await api.hydrateWorkflowRunCapturePayloadsForWorkflowForTest(wf.id);
   const live = api.getWorkflowRunCapturedOutputsForTest();
   assert.equal(String(live.dla_step || "").length > 500, true);
-  assert.ok(storeRec(storage, wf.id).captureRefs.dla_step);
+  assert.ok(storeRec(api, wf.id).captureRefs.dla_step);
 });

@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Practice wireframe — Seeing gradients and tangency (C2)</title>
+  <script>
+    window.MathJax = {
+      tex: { inlineMath: [["\\(", "\\)"]], displayMath: [["\\[", "\\]"]] },
+      options: { skipHtmlTags: ["script", "noscript", "style", "textarea", "pre", "code"] }
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+  <style>
+    :root {
+      --ink: #1c2429;
+      --muted: #5a6670;
+      --line: #d7d0c4;
+      --paper: #f7f4ee;
+      --card: #fffdf8;
+      --accent: #0f5c4c;
+      --accent-soft: #e4f1ec;
+      --warn: #8a4b12;
+      --warn-soft: #f6eadc;
+      --ok: #1f6b3a;
+      --ok-soft: #e7f4ea;
+      --bad: #8b2e2e;
+      --bad-soft: #f7e8e8;
+      --focus: #1d4f91;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: "Source Serif 4", "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+      color: var(--ink);
+      background:
+        radial-gradient(1200px 500px at 10% -10%, #e8efe9 0%, transparent 55%),
+        radial-gradient(900px 400px at 100% 0%, #efe8dc 0%, transparent 50%),
+        var(--paper);
+      line-height: 1.55;
+    }
+    .banner {
+      border-bottom: 1px solid var(--line);
+      background: rgba(255, 253, 248, 0.92);
+      backdrop-filter: blur(6px);
+      position: sticky;
+      top: 0;
+      z-index: 5;
+    }
+    .banner-inner, .wrap {
+      width: min(860px, calc(100% - 2rem));
+      margin: 0 auto;
+    }
+    .banner-inner {
+      display: flex;
+      gap: 1rem;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: 0.7rem 0;
+      font-family: "Segoe UI", system-ui, sans-serif;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+    .banner strong { color: var(--accent); font-weight: 650; }
+    .wrap { padding: 1.5rem 0 4rem; }
+    .eyebrow {
+      font-family: "Segoe UI", system-ui, sans-serif;
+      font-size: 0.78rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin: 0 0 0.4rem;
+    }
+    h1 {
+      font-size: clamp(1.7rem, 3vw, 2.2rem);
+      font-weight: 650;
+      letter-spacing: -0.02em;
+      margin: 0 0 0.6rem;
+      line-height: 1.2;
+    }
+    h2 {
+      font-size: 1.28rem;
+      margin: 0 0 0.55rem;
+      letter-spacing: -0.01em;
+    }
+    h3 {
+      font-family: "Segoe UI", system-ui, sans-serif;
+      font-size: 0.95rem;
+      font-weight: 650;
+      margin: 1.1rem 0 0.45rem;
+    }
+    p, li { font-size: 1.02rem; }
+    .lede {
+      font-size: 1.08rem;
+      color: #2b363d;
+      margin: 0 0 1rem;
+      max-width: 42rem;
+    }
+    .meta {
+      font-family: "Segoe UI", system-ui, sans-serif;
+      font-size: 0.86rem;
+      color: var(--muted);
+      margin: 0 0 1.6rem;
+    }
+    .setup, .activity, .feedback, .hint, .note {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 1rem 1.1rem 1.15rem;
+      margin: 0 0 1.1rem;
+    }
+    .setup { border-left: 4px solid var(--accent); }
+    .activity { padding-top: 1.15rem; }
+    .activity-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      align-items: baseline;
+      margin-bottom: 0.35rem;
+    }
+    .activity-num {
+      font-family: "Segoe UI", system-ui, sans-serif;
+      font-size: 0.78rem;
+      color: var(--accent);
+      font-weight: 650;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+    .task {
+      margin: 0.7rem 0 0.9rem;
+      padding: 0.75rem 0.9rem;
+      background: #f3f0e8;
+      border-radius: 8px;
+    }
+    .task p { margin: 0; }
+    .diagram {
+      margin: 0.8rem 0 1rem;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 0.6rem;
+      overflow-x: auto;
+    }
+    .diagram svg { display: block; width: min(100%, 520px); height: auto; margin: 0 auto; }
+    .caption {
+      font-family: "Segoe UI", system-ui, sans-serif;
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin: 0.45rem 0 0;
+    }
+    label.field {
+      display: block;
+      font-family: "Segoe UI", system-ui, sans-serif;
+      font-size: 0.88rem;
+      font-weight: 600;
+      margin: 0.85rem 0 0.35rem;
+    }
+    select, textarea, input[type="text"] {
+      width: 100%;
+      font: inherit;
+      padding: 0.55rem 0.65rem;
+      border: 1px solid #c9c1b4;
+      border-radius: 7px;
+      background: #fff;
+      color: var(--ink);
+    }
+    textarea { min-height: 5.2rem; resize: vertical; }
+    select:focus, textarea:focus, input:focus, button:focus-visible {
+      outline: 2px solid var(--focus);
+      outline-offset: 2px;
+    }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem 1rem;
+    }
+    @media (max-width: 700px) { .grid-2 { grid-template-columns: 1fr; } }
+    table.vec {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: "Segoe UI", system-ui, sans-serif;
+      font-size: 0.9rem;
+      margin: 0.6rem 0 0.2rem;
+    }
+    table.vec th, table.vec td {
+      border: 1px solid var(--line);
+      padding: 0.45rem 0.5rem;
+      vertical-align: top;
+      text-align: left;
+    }
+    table.vec th { background: #f1eee6; }
+    table.vec select { font-size: 0.86rem; padding: 0.35rem; }
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.9rem;
+    }
+    button {
+      font-family: "Segoe UI", system-ui, sans-serif;
+      font-size: 0.9rem;
+      font-weight: 650;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      padding: 0.48rem 0.95rem;
+      cursor: pointer;
+    }
+    button.primary {
+      background: var(--accent);
+      color: #fff;
+    }
+    button.primary:hover { filter: brightness(1.05); }
+    button.ghost {
+      background: transparent;
+      border-color: #b9b1a3;
+      color: var(--ink);
+    }
+    button.ghost:hover { background: #f1eee6; }
+    .feedback { display: none; border-left: 4px solid var(--ok); background: var(--ok-soft); }
+    .feedback.show { display: block; }
+    .feedback.mixed { border-left-color: var(--warn); background: var(--warn-soft); }
+    .feedback h3 { margin-top: 0; }
+    .hint { display: none; border-left: 4px solid var(--warn); background: var(--warn-soft); }
+    .hint.show { display: block; }
+    .note {
+      border-left: 4px solid #6b7280;
+      background: #f3f4f6;
+      font-family: "Segoe UI", system-ui, sans-serif;
+      font-size: 0.88rem;
+      color: #374151;
+    }
+    .status {
+      font-family: "Segoe UI", system-ui, sans-serif;
+      font-size: 0.86rem;
+      margin: 0.55rem 0 0;
+      min-height: 1.2em;
+    }
+    .status.ok { color: var(--ok); }
+    .status.bad { color: var(--bad); }
+    .chip {
+      display: inline-block;
+      font-family: "Segoe UI", system-ui, sans-serif;
+      font-size: 0.75rem;
+      padding: 0.15rem 0.5rem;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-weight: 650;
+    }
+    .end {
+      margin-top: 1.5rem;
+      padding-top: 0.5rem;
+      color: var(--muted);
+      font-family: "Segoe UI", system-ui, sans-serif;
+      font-size: 0.9rem;
+    }
+    .sr-only {
+      position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+      overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="banner">
+    <div class="banner-inner">
+      <div><strong>Sprint 101C wireframe</strong> · Practice · not production renderer</div>
+      <div>Source case: Lagrange LJ · C2 Interactive</div>
+    </div>
+  </div>
+
+  <main class="wrap">
+    <p class="eyebrow">Learning Journey practice stop</p>
+    <h1>Seeing gradients and tangency</h1>
+    <p class="lede">
+      Use the fixed-perimeter rectangle to decide which movements improve area,
+      which preserve the constraint, and why the gradients align at a regular constrained stationary point.
+    </p>
+    <p class="meta">
+      Assumes prior journey work on why the constraint matters.
+      Record judgements before opening feedback.
+      <span class="chip">Advisory ~25–35 min</span>
+    </p>
+
+    <section class="setup" aria-labelledby="setup-title">
+      <h2 id="setup-title">Problem in play</h2>
+      <p>
+        Maximise area \(A(x,y)=xy\) for positive side lengths subject to fixed perimeter
+        \(2x+2y=20\), equivalently \(x+y=10\).
+      </p>
+      <p>
+        General gradients:
+        \(\nabla A(x,y)=(y,x)\) and \(\nabla g(x,y)=(1,1)\) when \(g(x,y)=x+y\).
+        A feasible tangent direction is \(\mathbf{t}=(1,-1)\).
+      </p>
+      <p class="caption">
+        This compact setup is intentional. A full knowledge summary is omitted because the journey already framed the optimisation setting; the formulae here are retained only as working apparatus for the activities.
+      </p>
+    </section>
+
+    <!-- ========== Activity 1 ========== -->
+    <section class="activity" id="a1" aria-labelledby="a1-title">
+      <div class="activity-head">
+        <div>
+          <div class="activity-num">Activity 1</div>
+          <h2 id="a1-title">Predict increase versus feasibility</h2>
+        </div>
+      </div>
+
+      <div class="diagram" aria-hidden="false">
+        <svg viewBox="0 0 420 320" role="img" aria-labelledby="fig1-title fig1-desc">
+          <title id="fig1-title">Level curves and perimeter constraint</title>
+          <desc id="fig1-desc">Coordinate plane with constraint line x+y=10 and area level curves xy=16 and xy=24, with points (2,8), (4,6) and (6,6).</desc>
+          <rect x="0" y="0" width="420" height="320" fill="#fffef9"/>
+          <!-- axes -->
+          <line x1="40" y1="280" x2="390" y2="280" stroke="#94a3b8" stroke-width="1.5"/>
+          <line x1="40" y1="280" x2="40" y2="30" stroke="#94a3b8" stroke-width="1.5"/>
+          <text x="380" y="298" font-size="14" fill="#64748b" font-family="Segoe UI,sans-serif">x</text>
+          <text x="18" y="42" font-size="14" fill="#64748b" font-family="Segoe UI,sans-serif">y</text>
+          <!-- constraint x+y=10 : map x' = 40+32x, y' = 280-28y -->
+          <line x1="72" y1="56" x2="328" y2="280" stroke="#0f5c4c" stroke-width="2.5"/>
+          <text x="250" y="120" font-size="13" fill="#0f5c4c" font-family="Segoe UI,sans-serif">x+y=10</text>
+          <!-- xy=16 approx curve -->
+          <path d="M 72 168 C 100 90, 140 55, 200 45 C 250 38, 300 55, 340 110" fill="none" stroke="#b45309" stroke-width="2"/>
+          <text x="300" y="70" font-size="12" fill="#b45309" font-family="Segoe UI,sans-serif">xy=16</text>
+          <!-- xy=24 -->
+          <path d="M 95 210 C 130 120, 170 80, 230 68 C 280 60, 330 85, 365 150" fill="none" stroke="#1d4f91" stroke-width="2"/>
+          <text x="320" y="175" font-size="12" fill="#1d4f91" font-family="Segoe UI,sans-serif">xy=24</text>
+          <!-- points (2,8)->(104,56); (4,6)->(168,112); (6,6)->(232,112) -->
+          <circle cx="104" cy="56" r="5" fill="#b45309"/>
+          <text x="112" y="52" font-size="12" font-family="Segoe UI,sans-serif">(2,8)</text>
+          <circle cx="168" cy="112" r="5" fill="#1d4f91"/>
+          <text x="176" y="108" font-size="12" font-family="Segoe UI,sans-serif">(4,6)</text>
+          <circle cx="232" cy="112" r="5" fill="#9f1239"/>
+          <text x="240" y="108" font-size="12" font-family="Segoe UI,sans-serif">(6,6)</text>
+        </svg>
+        <p class="caption">Figure. Constant-area curves \(xy=16\), \(xy=24\) and the perimeter line \(x+y=10\). No feasibility labels are supplied.</p>
+      </div>
+
+      <div class="task">
+        <p>
+          Classify each marked point and decide whether a small step in the direction of
+          \(\nabla A\) from \((4,6)\) preserves the perimeter.
+        </p>
+      </div>
+
+      <div class="grid-2">
+        <div>
+          <label class="field" for="p28">Point \((2,8)\)</label>
+          <select id="p28">
+            <option value="">Choose…</option>
+            <option value="feasible-16">Feasible; area 16</option>
+            <option value="feasible-24">Feasible; area 24</option>
+            <option value="infeasible-36">Infeasible; area 36</option>
+          </select>
+        </div>
+        <div>
+          <label class="field" for="p46">Point \((4,6)\)</label>
+          <select id="p46">
+            <option value="">Choose…</option>
+            <option value="feasible-16">Feasible; area 16</option>
+            <option value="feasible-24">Feasible; area 24</option>
+            <option value="infeasible-36">Infeasible; area 36</option>
+          </select>
+        </div>
+        <div>
+          <label class="field" for="p66">Point \((6,6)\)</label>
+          <select id="p66">
+            <option value="">Choose…</option>
+            <option value="feasible-16">Feasible; area 16</option>
+            <option value="feasible-24">Feasible; area 24</option>
+            <option value="infeasible-36">Infeasible; area 36</option>
+          </select>
+        </div>
+        <div>
+          <label class="field" for="gradStep">Small step \(\varepsilon(6,4)\) from \((4,6)\)</label>
+          <select id="gradStep">
+            <option value="">Choose…</option>
+            <option value="preserves">Preserves \(x+y=10\)</option>
+            <option value="breaks">Breaks the perimeter constraint</option>
+            <option value="unclear">Cannot tell from first-order evidence</option>
+          </select>
+        </div>
+      </div>
+
+      <label class="field" for="a1reason">Why are “larger area” and “feasible movement” different judgements?</label>
+      <textarea id="a1reason" placeholder="Keep the two claims separate in your wording."></textarea>
+
+      <div class="actions">
+        <button type="button" class="ghost" data-hint="a1-hint">Hint</button>
+        <button type="button" class="primary" data-check="a1">Check</button>
+      </div>
+      <p class="status" id="a1-status" aria-live="polite"></p>
+
+      <div class="hint" id="a1-hint">
+        <h3>Hint</h3>
+        <p>
+          Check \(x+y\) and \(xy\) independently. Then compute the change in \(x+y\) under
+          \((\Delta x,\Delta y)=\varepsilon(6,4)\).
+        </p>
+      </div>
+
+      <div class="feedback" id="a1-feedback">
+        <h3>Feedback</h3>
+        <p>
+          \((2,8)\) and \((4,6)\) both satisfy \(x+y=10\) (areas \(16\) and \(24\)).
+          \((6,6)\) has larger area \(36\) but \(x+y=12\), so it is not admissible.
+        </p>
+        <p>
+          At \((4,6)\), \(\nabla A=(6,4)\). A step \(\varepsilon(6,4)\) changes the coordinate sum by
+          \(10\varepsilon\neq 0\), so steepest unrestricted increase is not feasible.
+          A feasible direction such as \((1,-1)\) preserves \(x+y\).
+        </p>
+        <p>
+          <strong>Revision cue:</strong> if your explanation fused “area rises” with “allowed by the constraint”, rewrite so each claim has its own evidence.
+        </p>
+        <label class="field" for="a1revise">Optional revision</label>
+        <textarea id="a1revise" placeholder="Revise the distinction in one or two sentences."></textarea>
+      </div>
+    </section>
+
+    <!-- ========== Activity 2 ========== -->
+    <section class="activity" id="a2" aria-labelledby="a2-title">
+      <div class="activity-head">
+        <div>
+          <div class="activity-num">Activity 2</div>
+          <h2 id="a2-title">Assign tangent and normal roles</h2>
+        </div>
+      </div>
+
+      <div class="diagram">
+        <svg viewBox="0 0 420 300" role="img" aria-labelledby="fig2-title">
+          <title id="fig2-title">Four candidate vectors at (4,6)</title>
+          <rect width="420" height="300" fill="#fffef9"/>
+          <line x1="40" y1="260" x2="390" y2="260" stroke="#94a3b8"/>
+          <line x1="40" y1="260" x2="40" y2="30" stroke="#94a3b8"/>
+          <!-- constraint -->
+          <line x1="70" y1="50" x2="330" y2="260" stroke="#0f5c4c" stroke-width="2"/>
+          <!-- level curve sketch -->
+          <path d="M 90 200 C 130 110, 180 75, 250 85 C 300 92, 340 130, 360 180" fill="none" stroke="#1d4f91" stroke-width="2"/>
+          <!-- point -->
+          <circle cx="180" cy="140" r="5" fill="#111"/>
+          <text x="188" y="132" font-size="12" font-family="Segoe UI,sans-serif">(4,6)</text>
+          <!-- vectors scaled -->
+          <line x1="180" y1="140" x2="240" y2="92" stroke="#b45309" stroke-width="2.5" marker-end="url(#arrow)"/>
+          <text x="244" y="90" font-size="12" fill="#b45309" font-family="Segoe UI,sans-serif">(6,4)</text>
+          <line x1="180" y1="140" x2="228" y2="212" stroke="#9f1239" stroke-width="2.5"/>
+          <text x="232" y="220" font-size="12" fill="#9f1239" font-family="Segoe UI,sans-serif">(4,-6)</text>
+          <line x1="180" y1="140" x2="220" y2="100" stroke="#0f5c4c" stroke-width="2.5"/>
+          <text x="150" y="95" font-size="12" fill="#0f5c4c" font-family="Segoe UI,sans-serif">(1,1)</text>
+          <line x1="180" y1="140" x2="220" y2="180" stroke="#1d4f91" stroke-width="2.5"/>
+          <text x="224" y="188" font-size="12" fill="#1d4f91" font-family="Segoe UI,sans-serif">(1,-1)</text>
+        </svg>
+        <p class="caption">Figure. Candidate directions at \((4,6)\) on \(xy=24\) and \(x+y=10\). Roles are for you to establish by calculation.</p>
+      </div>
+
+      <div class="task">
+        <p>
+          For each vector, decide its relationship to \(\nabla A=(6,4)\) or \(\nabla g=(1,1)\)
+          using a dot-product check—not the look of the diagram.
+        </p>
+      </div>
+
+      <table class="vec">
+        <thead>
+          <tr>
+            <th scope="col">Vector</th>
+            <th scope="col">Your classification</th>
+            <th scope="col">Dot-product check you would write</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>\((6,4)\)</td>
+            <td>
+              <select id="v64" aria-label="Classify (6,4)">
+                <option value="">Choose…</option>
+                <option value="obj-grad">Objective gradient / normal to objective level curve</option>
+                <option value="obj-tan">Tangent to objective level curve</option>
+                <option value="con-grad">Constraint gradient / normal to constraint</option>
+                <option value="con-tan">Feasible tangent to constraint</option>
+              </select>
+            </td>
+            <td><input type="text" id="v64check" placeholder="e.g. (6,4)·(4,-6)=…" /></td>
+          </tr>
+          <tr>
+            <td>\((4,-6)\)</td>
+            <td>
+              <select id="v4m6" aria-label="Classify (4,-6)">
+                <option value="">Choose…</option>
+                <option value="obj-grad">Objective gradient / normal to objective level curve</option>
+                <option value="obj-tan">Tangent to objective level curve</option>
+                <option value="con-grad">Constraint gradient / normal to constraint</option>
+                <option value="con-tan">Feasible tangent to constraint</option>
+              </select>
+            </td>
+            <td><input type="text" id="v4m6check" placeholder="Dot product…" /></td>
+          </tr>
+          <tr>
+            <td>\((1,1)\)</td>
+            <td>
+              <select id="v11" aria-label="Classify (1,1)">
+                <option value="">Choose…</option>
+                <option value="obj-grad">Objective gradient / normal to objective level curve</option>
+                <option value="obj-tan">Tangent to objective level curve</option>
+                <option value="con-grad">Constraint gradient / normal to constraint</option>
+                <option value="con-tan">Feasible tangent to constraint</option>
+              </select>
+            </td>
+            <td><input type="text" id="v11check" placeholder="Dot product…" /></td>
+          </tr>
+          <tr>
+            <td>\((1,-1)\)</td>
+            <td>
+              <select id="v1m1" aria-label="Classify (1,-1)">
+                <option value="">Choose…</option>
+                <option value="obj-grad">Objective gradient / normal to objective level curve</option>
+                <option value="obj-tan">Tangent to objective level curve</option>
+                <option value="con-grad">Constraint gradient / normal to constraint</option>
+                <option value="con-tan">Feasible tangent to constraint</option>
+              </select>
+            </td>
+            <td><input type="text" id="v1m1check" placeholder="Dot product…" /></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <label class="field" for="a2meaning">Why does an objective-level tangent have a different role from a feasible constraint tangent?</label>
+      <textarea id="a2meaning"></textarea>
+
+      <div class="actions">
+        <button type="button" class="ghost" data-hint="a2-hint">Hint</button>
+        <button type="button" class="primary" data-check="a2">Check classifications</button>
+      </div>
+      <p class="status" id="a2-status" aria-live="polite"></p>
+
+      <div class="hint" id="a2-hint">
+        <h3>Hint</h3>
+        <p>
+          On a regular level set, \(\nabla f\cdot\mathbf{t}=0\) for a tangent \(\mathbf{t}\).
+          Check \((6,4)\cdot(4,-6)\) and \((1,1)\cdot(1,-1)\).
+        </p>
+      </div>
+
+      <div class="feedback" id="a2-feedback">
+        <h3>Feedback</h3>
+        <p>
+          \((6,4)=\nabla A\) is normal to the objective level curve.
+          \((4,-6)\) is tangent to \(xy=24\) because \((6,4)\cdot(4,-6)=0\).
+          \((1,1)=\nabla g\) is normal to the constraint.
+          \((1,-1)\) is a feasible tangent because \((1,1)\cdot(1,-1)=0\).
+        </p>
+        <p>
+          Moving along the objective tangent keeps area stationary to first order.
+          Moving along the constraint tangent keeps the perimeter stationary to first order.
+          Those are different conserved quantities—so the two tangents are not interchangeable.
+        </p>
+      </div>
+    </section>
+
+    <!-- ========== Activity 3 ========== -->
+    <section class="activity" id="a3" aria-labelledby="a3-title">
+      <div class="activity-head">
+        <div>
+          <div class="activity-num">Activity 3</div>
+          <h2 id="a3-title">First-order change and gradient alignment</h2>
+        </div>
+      </div>
+
+      <div class="task">
+        <p>
+          At feasible points \((4,6)\) and \((5,5)\), investigate
+          \(\nabla A\cdot\mathbf{t}\) with \(\mathbf{t}=(1,-1)\). Then decide what the vanishing of that directional derivative does—and does not—establish.
+        </p>
+      </div>
+
+      <p>
+        Use \(\nabla A(x,y)=(y,x)\) and \(\mathbf{t}=(1,-1)\).
+      </p>
+
+      <div class="grid-2">
+        <div>
+          <label class="field" for="dot46">\(\nabla A(4,6)\cdot(1,-1)\)</label>
+          <input type="text" id="dot46" inputmode="numeric" placeholder="number" />
+        </div>
+        <div>
+          <label class="field" for="dot55">\(\nabla A(5,5)\cdot(1,-1)\)</label>
+          <input type="text" id="dot55" inputmode="numeric" placeholder="number" />
+        </div>
+        <div>
+          <label class="field" for="pred55">At \((5,5)\), first-order feasible improvement is…</label>
+          <select id="pred55">
+            <option value="">Choose…</option>
+            <option value="possible">Possible along \(\mathbf{t}\)</option>
+            <option value="zero">Zero to first order along \(\mathbf{t}\)</option>
+            <option value="global">Impossible globally, proved by this alone</option>
+          </select>
+        </div>
+        <div>
+          <label class="field" for="align">Therefore, at a regular constrained stationary point…</label>
+          <select id="align">
+            <option value="">Choose…</option>
+            <option value="parallel">\(\nabla A\) is parallel to \(\nabla g\)</option>
+            <option value="equal">\(\nabla A=\nabla g\) exactly</option>
+            <option value="perp-each-other">\(\nabla A\perp\nabla g\)</option>
+          </select>
+        </div>
+      </div>
+
+      <label class="field" for="a3scope">What does \(\nabla A\cdot\mathbf{t}=0\) establish, and what does it leave open?</label>
+      <textarea id="a3scope" placeholder="Mention first-order stationarity vs global optimality."></textarea>
+
+      <div class="actions">
+        <button type="button" class="ghost" data-hint="a3-hint">Hint</button>
+        <button type="button" class="primary" data-check="a3">Check</button>
+      </div>
+      <p class="status" id="a3-status" aria-live="polite"></p>
+
+      <div class="hint" id="a3-hint">
+        <h3>Hint</h3>
+        <p>
+          \(\nabla A(4,6)=(6,4)\) and \(\nabla A(5,5)=(5,5)\).
+          If every feasible tangent gives zero first-order objective change, \(\nabla A\) is normal to the feasible tangent—and so is \(\nabla g\) when \(\nabla g\neq\mathbf{0}\).
+        </p>
+      </div>
+
+      <div class="feedback" id="a3-feedback">
+        <h3>Feedback</h3>
+        <p>
+          \(\nabla A(4,6)\cdot(1,-1)=6-4=2\neq 0\): a first-order feasible change in area is available.
+          \(\nabla A(5,5)\cdot(1,-1)=5-5=0\): no first-order feasible improvement along \(\mathbf{t}\).
+        </p>
+        <p>
+          At a regular equality-constrained local stationary point, \(\nabla A\cdot\mathbf{t}=0\) for feasible tangents \(\mathbf{t}\),
+          so \(\nabla A\) and \(\nabla g\) are parallel: \(\nabla A=\lambda\nabla g\).
+          That is a necessary first-order condition under regularity—not by itself a proof of a global maximum.
+        </p>
+        <p>
+          <strong>Revision cue:</strong> if you treated vanishing first-order change as a global optimality certificate, revise the scope sentence.
+        </p>
+        <label class="field" for="a3revise">Optional revision of scope</label>
+        <textarea id="a3revise"></textarea>
+      </div>
+    </section>
+
+    <!-- ========== Activity 4 ========== -->
+    <section class="activity" id="a4" aria-labelledby="a4-title">
+      <div class="activity-head">
+        <div>
+          <div class="activity-num">Activity 4</div>
+          <h2 id="a4-title">Transfer across equivalent constraints</h2>
+        </div>
+      </div>
+
+      <div class="task">
+        <p>
+          At \((5,5)\), the same rectangles can be written \(g_1=x+y=10\) or \(g_2=2x+2y=20\).
+          Decide what changes and what must stay geometrically the same.
+        </p>
+      </div>
+
+      <div class="grid-2">
+        <div>
+          <label class="field" for="g2grad">\(\nabla g_2\) at any point</label>
+          <select id="g2grad">
+            <option value="">Choose…</option>
+            <option value="11">(1,1)</option>
+            <option value="22">(2,2)</option>
+            <option value="20">(2,0)</option>
+          </select>
+        </div>
+        <div>
+          <label class="field" for="lambda">If \(\nabla A(5,5)=\lambda\nabla g_2\), then \(\lambda\)</label>
+          <select id="lambda">
+            <option value="">Choose…</option>
+            <option value="5">5</option>
+            <option value="2.5">2.5</option>
+            <option value="1">1</option>
+          </select>
+        </div>
+        <div>
+          <label class="field" for="geom">Which geometric facts are unchanged?</label>
+          <select id="geom">
+            <option value="">Choose…</option>
+            <option value="feasible-set">Feasible set and feasible tangents</option>
+            <option value="multiplier-value">Numerical value of \(\lambda\) only</option>
+            <option value="gradient-equal">The two constraint gradients are identical vectors</option>
+          </select>
+        </div>
+        <div>
+          <label class="field" for="claim">Claim: “\(\nabla A=\lambda\nabla g\) proves the square maximises area.”</label>
+          <select id="claim">
+            <option value="">Choose…</option>
+            <option value="true">True as stated</option>
+            <option value="false">False — necessary first-order condition only</option>
+            <option value="depends">True only when \(\lambda>0\)</option>
+          </select>
+        </div>
+      </div>
+
+      <label class="field" for="a4explain">In two or three sentences, explain the parallel-gradient condition from the feasible tangent, without starting from \(\nabla A=\lambda\nabla g\).</label>
+      <textarea id="a4explain"></textarea>
+
+      <div class="actions">
+        <button type="button" class="ghost" data-hint="a4-hint">Hint</button>
+        <button type="button" class="primary" data-check="a4">Check</button>
+      </div>
+      <p class="status" id="a4-status" aria-live="polite"></p>
+
+      <div class="hint" id="a4-hint">
+        <h3>Hint</h3>
+        <p>
+          \(g_2=2g_1\) scales the constraint gradient, so \(\lambda\) rescales, but the feasible tangent and the requirement \(\nabla A\cdot\mathbf{t}=0\) are unchanged.
+        </p>
+      </div>
+
+      <div class="feedback" id="a4-feedback">
+        <h3>Feedback</h3>
+        <p>
+          \(\nabla g_2=(2,2)\). With \(\nabla A(5,5)=(5,5)\), \(\lambda=2.5\) satisfies \(\nabla A=\lambda\nabla g_2\).
+          Relative to \(g_1\), the multiplier would be \(5\). The feasible set and feasible tangents are unchanged; only the scaling of the normal representation changes.
+        </p>
+        <p>
+          The alignment condition is necessary for a regular constrained local stationary point.
+          It does not, by itself, prove a global maximum of area on the perimeter constraint.
+        </p>
+      </div>
+    </section>
+
+    <p class="end">End of practice stop. Return to the Learning Journey for the next experience.</p>
+
+    <div class="note">
+      <strong>Wireframe notes for reviewers.</strong>
+      Omitted relative to Interactive C2: editorial opening image, Overview / Learning purpose / Knowledge summary / Learning outcomes / Study tips stacks,
+      long “Explore the idea” teaching materials, repeated activity bridges, and criterion checklists.
+      Retained: rectangle mathematics, vector evidence, first-order reasoning, transfer across equivalent constraints, hints, checkable feedback, optional revision.
+    </div>
+  </main>
+
+  <script>
+    (function () {
+      function $(id) { return document.getElementById(id); }
+
+      document.querySelectorAll("[data-hint]").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          var el = $(btn.getAttribute("data-hint"));
+          if (!el) return;
+          el.classList.toggle("show");
+          btn.textContent = el.classList.contains("show") ? "Hide hint" : "Hint";
+        });
+      });
+
+      function showFeedback(id, mixed) {
+        var el = $(id);
+        el.classList.add("show");
+        el.classList.toggle("mixed", !!mixed);
+        if (window.MathJax && MathJax.typesetPromise) {
+          MathJax.typesetPromise([el]).catch(function () {});
+        }
+      }
+
+      function setStatus(id, ok, msg) {
+        var el = $(id);
+        el.textContent = msg;
+        el.className = "status " + (ok ? "ok" : "bad");
+      }
+
+      document.querySelector('[data-check="a1"]').addEventListener("click", function () {
+        var ok =
+          $("p28").value === "feasible-16" &&
+          $("p46").value === "feasible-24" &&
+          $("p66").value === "infeasible-36" &&
+          $("gradStep").value === "breaks";
+        var wrote = $("a1reason").value.trim().length > 20;
+        if (!ok) {
+          setStatus("a1-status", false, "One or more classifications need another look. Compare x+y and xy separately, then open feedback when ready.");
+          showFeedback("a1-feedback", true);
+          return;
+        }
+        setStatus("a1-status", true, wrote
+          ? "Classifications match the mathematics. Compare your distinction with the feedback."
+          : "Classifications match. Add a short distinction before treating the activity as finished.");
+        showFeedback("a1-feedback", !wrote);
+      });
+
+      document.querySelector('[data-check="a2"]').addEventListener("click", function () {
+        var ok =
+          $("v64").value === "obj-grad" &&
+          $("v4m6").value === "obj-tan" &&
+          $("v11").value === "con-grad" &&
+          $("v1m1").value === "con-tan";
+        if (!ok) {
+          setStatus("a2-status", false, "At least one role is off. Use the perpendicularity checks, then compare with feedback.");
+          showFeedback("a2-feedback", true);
+          return;
+        }
+        setStatus("a2-status", true, "Vector roles match the dot-product evidence.");
+        showFeedback("a2-feedback", false);
+      });
+
+      function parseNum(v) {
+        var n = Number(String(v).replace(/[^0-9.+-]/g, ""));
+        return isFinite(n) ? n : NaN;
+      }
+
+      document.querySelector('[data-check="a3"]').addEventListener("click", function () {
+        var d46 = parseNum($("dot46").value);
+        var d55 = parseNum($("dot55").value);
+        var okNums = d46 === 2 && d55 === 0;
+        var okSel = $("pred55").value === "zero" && $("align").value === "parallel";
+        if (!(okNums && okSel)) {
+          setStatus("a3-status", false, "Recheck the directional derivatives and what they license.");
+          showFeedback("a3-feedback", true);
+          return;
+        }
+        setStatus("a3-status", true, "First-order calculations and alignment reading look right.");
+        showFeedback("a3-feedback", false);
+      });
+
+      document.querySelector('[data-check="a4"]').addEventListener("click", function () {
+        var ok =
+          $("g2grad").value === "22" &&
+          $("lambda").value === "2.5" &&
+          $("geom").value === "feasible-set" &&
+          $("claim").value === "false";
+        if (!ok) {
+          setStatus("a4-status", false, "Something in the transfer judgements needs revision.");
+          showFeedback("a4-feedback", true);
+          return;
+        }
+        setStatus("a4-status", true, "Transfer judgements match the geometric reading.");
+        showFeedback("a4-feedback", false);
+      });
+    })();
+  </script>
+</body>
+</html>

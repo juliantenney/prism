@@ -16,6 +16,7 @@ const DEFAULT_LIBS = [
   "lib/prism-visual-assets.js",
   "lib/prism-workflow-resources.js",
   "lib/prism-workflow-catalogue-store.js",
+  "lib/prism-workflow-runstate-store.js",
   "lib/utilities-visual-jobs-workspace.js",
   "lib/learner-package.js",
   "lib/learner-package-zip.js",
@@ -54,6 +55,8 @@ const DEFAULT_LIBS = [
   "lib/assessment-component-forms.js",
   "lib/assessment-pack-canonical.js",
   "lib/first-class-workflow-family.js",
+  "lib/ld-practice-presentation-contracts.js",
+  "lib/first-class-commission-intake.js",
   "lib/learning-journey-design-page.js",
   "lib/learning-journey-commission-production-status.js",
   "lib/learning-journey-unified-shell.js",
@@ -127,6 +130,7 @@ function runPrismLibScriptsInSandbox(sandbox, repoRoot, libs, options) {
       "PRISM_ASSESSMENT_COMPONENT_FORMS",
       "PRISM_ASSESSMENT_PACK_CANONICAL",
       "PRISM_FIRST_CLASS_WORKFLOW_FAMILY",
+      "PRISM_LD_PRACTICE_PRESENTATION_CONTRACTS",
       "PRISM_LEARNING_JOURNEY_DESIGN_PAGE",
       "PRISM_LEARNING_JOURNEY_COMMISSION_PRODUCTION_STATUS",
       "PRISM_LEARNING_JOURNEY_LEARNER_PACKAGE",
@@ -438,6 +442,15 @@ function loadPrismAppJsTestApi(options) {
       sandbox.globalThis.PRISM_WORKFLOW_CATALOGUE_STORE = catalogueStore;
     }
   } catch (_catalogueErr) {}
+  try {
+    var runstateStore = require(path.join(root, "lib", "prism-workflow-runstate-store.js"));
+    runstateStore.resetStorageBackendForTests();
+    sandbox.PRISM_WORKFLOW_RUNSTATE_STORE = runstateStore;
+    windowStub.PRISM_WORKFLOW_RUNSTATE_STORE = runstateStore;
+    if (sandbox.globalThis) {
+      sandbox.globalThis.PRISM_WORKFLOW_RUNSTATE_STORE = runstateStore;
+    }
+  } catch (_runstateErr) {}
   vm.runInContext(source, sandbox, { filename: "app.js" });
   var api = sandbox.window.__PRISM_TEST_API;
   if (!api) {

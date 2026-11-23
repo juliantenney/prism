@@ -99,12 +99,14 @@ test("LJ Design Page supports practice product_id", () => {
   const prompt = designPage.buildLearningJourneyDesignPagePrompt();
   assert.match(String(prompt), /practice/);
   assert.match(String(prompt), /Prefer product_id "practice"/i);
+  assert.match(String(prompt), /do not select product_id "interactive"/i);
 });
 
 test("LJ commissioning sibling prompt prefers Practice for activity", () => {
   const body = siblingPrompts.TEMPLATES.learning_commissions;
   assert.match(body, /1\. PRACTICE/);
   assert.match(body, /prefer Practice over Interactive/i);
+  assert.match(body, /Do not commission Interactive on new journeys/i);
   assert.match(body, /CENTRE OF GRAVITY/);
 });
 

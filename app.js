@@ -17843,7 +17843,12 @@
       oname === "learning_commissions" ||
       oname === "assessment_blueprint" ||
       oname === "assessment_items" ||
-      oname === "assessment_check"
+      oname === "assessment_check" ||
+      oname === "assessment_evidence_purpose" ||
+      oname === "assessment_evidence_elicitation" ||
+      oname === "assessment_formative_return" ||
+      oname === "assessment_design_page" ||
+      oname === "assessment_pack"
     ) {
       return true;
     }
@@ -29913,8 +29918,71 @@
     return {
       title: 'Clear run data for "' + name + '"?',
       body:
-        "This will permanently remove this workflow's Run progress, captured data and generated assets. The workflow itself and its settings will not be deleted. This cannot be undone."
+        "This will permanently remove this workflow's Run progress, captured data, generated assets, and learner responses saved on this device for this workflow (including Learning Journal acknowledgements tied to it). The workflow itself, its settings, and authored designs will not be deleted. This cannot be undone."
     };
+  }
+
+  function clearLearnerRuntimeStateForWorkflow(workflowId) {
+    var wid = String(workflowId || "").trim();
+    if (!wid) return { ok: false, reason: "missing-workflow" };
+    var lib =
+      typeof window !== "undefined" && window.PRISM_LEARNER_RENDERER_VNEXT
+        ? window.PRISM_LEARNER_RENDERER_VNEXT
+        : typeof globalThis !== "undefined" && globalThis.PRISM_LEARNER_RENDERER_VNEXT
+          ? globalThis.PRISM_LEARNER_RENDERER_VNEXT
+          : null;
+    if (lib && typeof lib.deleteLearnerRuntimeStateForWorkflow === "function") {
+      try {
+        return lib.deleteLearnerRuntimeStateForWorkflow(wid, {
+          document: typeof document !== "undefined" ? document : null
+        });
+      } catch (_err) {
+        return { ok: false, reason: "learner-runtime-clear-failed" };
+      }
+    }
+    // Fallback when renderer API is unavailable: purge draft keys by workflow prefix.
+    try {
+      var prefix =
+        "learner-renderer-vnext:draft:v1::" +
+        String(wid)
+          .toLowerCase()
+          .replace(/[^a-z0-9._:-]+/g, "-")
+          .replace(/^-+|-+$/g, "")
+          .slice(0, 120) +
+        "::";
+      var ackPrefix = "prism:lj-journal:ack:";
+      var deleted = 0;
+      if (typeof localStorage === "undefined" || !localStorage) {
+        return { ok: false, reason: "storage-unavailable" };
+      }
+      var keys = [];
+      var i = 0;
+      for (; i < localStorage.length; i += 1) {
+        var key = localStorage.key(i);
+        if (key) keys.push(String(key));
+      }
+      keys.forEach(function (key) {
+        if (key.indexOf(prefix) === 0) {
+          localStorage.removeItem(key);
+          deleted += 1;
+          return;
+        }
+        if (key.indexOf(ackPrefix) !== 0) return;
+        var journeyKey = key.slice(ackPrefix.length);
+        if (
+          journeyKey === wid ||
+          journeyKey.indexOf(":" + wid + ":") >= 0 ||
+          journeyKey.indexOf("lj:" + wid + ":") === 0 ||
+          journeyKey.indexOf(wid + ":") === 0
+        ) {
+          localStorage.removeItem(key);
+          deleted += 1;
+        }
+      });
+      return { ok: true, deletedCount: deleted, fallback: true };
+    } catch (_err2) {
+      return { ok: false, reason: "storage-clear-failed" };
+    }
   }
 
   function resetLiveGraphicsStateForClearedRun() {
@@ -29943,6 +30011,10 @@
     bumpWorkflowRunClearEpoch(wid);
     invalidateWorkflowRunCapturePersistChains(wid);
     clearUnsavedWorkflowRunCapture(wid);
+    // Learner draft envelopes / journal acks are separate from run-capture
+    // resources; clear them in the same deliberate reset so constructed
+    // responses cannot repopulate after Clear run data.
+    clearLearnerRuntimeStateForWorkflow(wid);
     if (workflowRunAutosaveToastTimer) {
       window.clearTimeout(workflowRunAutosaveToastTimer);
       workflowRunAutosaveToastTimer = null;
@@ -29973,6 +30045,8 @@
           persist: true
         })
       ).then(function () {
+        // Second pass after async purge — catch any late draft rewrite.
+        clearLearnerRuntimeStateForWorkflow(wid);
         resetWorkflowRunNavigationState({ resetIndex: true });
         updateWorkflowRunView();
         refreshWorkflowListStatuses({ immediate: true });
@@ -40074,11 +40148,18 @@
 
   function ensureAssessmentPackEditorialOpeningInDesignPrompt(text) {
     var body = String(text || "");
-    var oldReturn =
+    var legacyReturnNoEditorial =
       'Return JSON only with artifact_type "page", schema_version "2.0.0", product_id "assessment_pack", page_kind "assessment", title, activities [], and assessment_evidence.';
-    var requiredReturn =
+    var legacyReturnWithEditorial =
       'Return JSON only with artifact_type "page", schema_version "2.0.0", product_id "assessment_pack", page_kind "assessment", title, activities [], assessment_evidence, and editorial_opening_image.';
-    if (body.indexOf(oldReturn) !== -1) body = body.split(oldReturn).join(requiredReturn);
+    var requiredReturn =
+      'Return exactly one Markdown fenced ```json block whose body is a single JSON object with artifact_type "page", schema_version "2.0.0", product_id "assessment_pack", page_kind "assessment", title, activities [], assessment_evidence, and editorial_opening_image. Do not return raw unfenced JSON text.';
+    if (body.indexOf(legacyReturnNoEditorial) !== -1) {
+      body = body.split(legacyReturnNoEditorial).join(requiredReturn);
+    }
+    if (body.indexOf(legacyReturnWithEditorial) !== -1) {
+      body = body.split(legacyReturnWithEditorial).join(requiredReturn);
+    }
     body = body
       .split(
         "You may include editorial_opening_image at page root. Omit the field when no meaningful editorial image is warranted. Do not force a commission."
@@ -55084,7 +55165,19 @@
       root +
       ' .util-visual-asset-caption,' +
       root +
-      ' .util-exposition-diagram-caption__text{margin-top:var(--learner-space-2);font-size:var(--learner-text-sm);line-height:1.5;font-weight:400;color:#4b5563}' +
+      ' .util-exposition-diagram-caption__text{margin-top:var(--learner-space-2);margin-bottom:0;padding-bottom:var(--learner-space-3);font-size:var(--learner-text-sm);line-height:1.5;font-weight:400;color:#4b5563}' +
+      root +
+      ' .util-visual-asset-detailed-description{margin-top:var(--learner-space-2);padding-bottom:var(--learner-space-3);font-size:var(--learner-text-sm);line-height:1.5;color:#4b5563}' +
+      root +
+      ' .util-visual-asset-caption:has(+ .util-visual-asset-detailed-description){padding-bottom:0}' +
+      root +
+      ' .util-exposition-diagram-caption{margin-bottom:var(--learner-space-4)}' +
+      root +
+      ' .util-visual-asset:has(.util-visual-asset-caption),' +
+      root +
+      ' .util-visual-asset:has(.util-visual-asset-detailed-description){margin-bottom:var(--learner-space-5)}' +
+      root +
+      ' .util-visual-asset + .util-exposition-explanation{margin-top:var(--learner-space-3)}' +
       root +
       ' .util-exposition-material{margin:var(--learner-space-4) 0;padding:var(--learner-space-3) 0 0;border:0;border-top:1px solid #e8edf2;border-radius:0;background:transparent;box-shadow:none}' +
       root +
@@ -55354,7 +55447,11 @@
       ".util-learner-renderer-vnext .util-visual-asset{margin:var(--learner-space-3) 0;max-width:100%;position:relative}" +
       ".util-learner-renderer-vnext .util-visual-asset-media{position:relative;display:block;max-width:100%}" +
       ".util-learner-renderer-vnext .util-visual-asset-image{display:block;width:100%;max-width:100%;height:auto;border:1px solid #e5e7eb;border-radius:8px;cursor:zoom-in}" +
-      ".util-learner-renderer-vnext .util-visual-asset-caption{margin-top:var(--learner-space-1);font-size:var(--learner-text-sm);line-height:1.45;color:#475569}" +
+      ".util-learner-renderer-vnext .util-visual-asset-caption{margin-top:var(--learner-space-1);margin-bottom:0;padding-bottom:var(--learner-space-3);font-size:var(--learner-text-sm);line-height:1.45;color:#475569}" +
+      ".util-learner-renderer-vnext .util-visual-asset-detailed-description{margin:var(--learner-space-2) 0 0;padding-bottom:var(--learner-space-3);font-size:var(--learner-text-sm);line-height:1.45;color:#475569}" +
+      ".util-learner-renderer-vnext .util-visual-asset-caption:has(+ .util-visual-asset-detailed-description){padding-bottom:0}" +
+      ".util-learner-renderer-vnext .util-visual-asset:has(.util-visual-asset-caption),.util-learner-renderer-vnext .util-visual-asset:has(.util-visual-asset-detailed-description){margin-bottom:var(--learner-space-4)}" +
+      ".util-learner-renderer-vnext .util-visual-asset + .util-exposition-explanation{margin-top:var(--learner-space-2)}" +
       getUtilityLearnerContentViewerCss() +
       ".util-visual-affordance{display:none!important}" +
       getUtilityVnextCompositionMomentPresentationCss() +
@@ -64891,6 +64988,8 @@
     prismTestApi.requestClearWorkflowRunDataConfirmationForTest =
       requestClearWorkflowRunDataConfirmation;
     prismTestApi.executeClearWorkflowRunDataForTest = executeClearWorkflowRunData;
+    prismTestApi.clearLearnerRuntimeStateForWorkflowForTest =
+      clearLearnerRuntimeStateForWorkflow;
     prismTestApi.handleClearWorkflowRunDataForTest = handleClearWorkflowRunData;
     prismTestApi.getWorkflowRunClearEpochForTest = getWorkflowRunClearEpoch;
     prismTestApi.bumpWorkflowRunClearEpochForTest = bumpWorkflowRunClearEpoch;

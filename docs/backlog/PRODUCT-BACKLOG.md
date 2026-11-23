@@ -2,10 +2,10 @@
 
 **Canonical location:** `docs/backlog/PRODUCT-BACKLOG.md`  
 **Status:** Active — **alpha-use period** (Alpha development complete, 2026-09-02)  
-**Last updated:** 2026-11-23 (final inter-sprint backlog reconciliation — dispositions for FA-015/016/021/025–027 and FA-002/S-005/FA-018/FA-013/FA-010/M-001/S-006/R-011; prior pass FA-019/020/029/030/031 retained)  
-**Open sprint:** [Sprint 103 — Learning Journey Runtime Continuity and Commissioning Fidelity](../development/sprints/2026-11-23-sprint-103-learning-journey-runtime-continuity-and-commissioning-fidelity/SPRINT-103-START-HERE.md) — **OPEN** (103A investigation authorised; implementation gated).  
-**Last closed sprint:** [Sprint 102 — Learning Journey–Owned Outcomes and Commission-Native Component Authoring](../development/sprints/2026-11-20-sprint-102-learning-journey-owned-outcomes/SPRINT-102-CLOSURE.md) — **CLOSED — COMPLETE — ACCEPTED WITH DOCUMENTED QUALIFICATIONS**. Prior: [Sprint 101](../development/sprints/2026-11-19-sprint-101-practice-as-a-learning-journey-component/SPRINT-101-CLOSURE.md) · [Sprint 97](../development/sprints/2026-11-12-sprint-97-learning-journal-and-design-pattern-foundations/SPRINT-97-CLOSURE.md) (PB-FA-028 delivered).  
-**Architectural policy:** [S103-D01 — Learning Journey-first architecture](../development/sprints/2026-11-20-sprint-102-learning-journey-owned-outcomes/decisions.md#s103-d01--learning-journey-first-architecture) — **Accepted**; Sprint 103 verifies commissioning alignment and runtime continuity.
+**Last updated:** 2026-11-23 (Sprint 103 closed — feature freeze until Connect More)  
+**Open sprint:** **None** — feature freeze until Connect More (Wed 2 Dec 12:00): create Learning Journeys → test → fix demonstrated defects → verify.  
+**Last closed sprint:** [Sprint 103 — Learning Journey Runtime Continuity and Commissioning Fidelity](../development/sprints/2026-11-23-sprint-103-learning-journey-runtime-continuity-and-commissioning-fidelity/SPRINT-103-CLOSURE.md) — **CLOSED — COMPLETE — ACCEPTED WITH DOCUMENTED QUALIFICATIONS**. Prior: [Sprint 102](../development/sprints/2026-11-20-sprint-102-learning-journey-owned-outcomes/SPRINT-102-CLOSURE.md) · [Sprint 101](../development/sprints/2026-11-19-sprint-101-practice-as-a-learning-journey-component/SPRINT-101-CLOSURE.md) · [Sprint 97](../development/sprints/2026-11-12-sprint-97-learning-journal-and-design-pattern-foundations/SPRINT-97-CLOSURE.md) (PB-FA-028 delivered).  
+**Architectural policy:** [S103-D01 — Learning Journey-first architecture](../development/sprints/2026-11-20-sprint-102-learning-journey-owned-outcomes/decisions.md#s103-d01--learning-journey-first-architecture) — **Accepted**; commissioning alignment verified in Sprint 103.
 
 This file answers: **what might we actually choose to work on next?**
 
@@ -222,18 +222,20 @@ Author and publish Expository resources with a coherent editorial hierarchy, so 
 
 ### PB-FA-025 — Duration fidelity: learner workload budgeting
 
-**Status:** **Retain — open.** **Not sprint-allocated.**  
+**Status:** **Retain — open.** Partially advanced in Sprint 103 (guidance refinement only). **Not formally closed.**  
 **Priority:** Medium–high (recurring, systemic instructional-design issue).
 
 **Problem:** PRISM frequently generates resources whose actual learner workload substantially exceeds the duration specified during commissioning. The issue is insufficient control of cumulative learner workload, not poor activity quality.
 
 **Reconciliation (2026-11-23):** Learning Journey commissioning has demonstrated coherent **planned** duration allocation across components, but **actual learner workload fidelity remains unverified**. Distinguish **planned duration** from **observed learner workload**. Do **not** mark this item complete based solely on component durations summing to the requested journey length.
 
-**Evidence:** *The Impossible Alibi: The Blackthorn Notebook Mystery* was commissioned as a 25-minute standalone Interactive resource, but review of the complete experience suggests approximately 60–85 minutes of learner activity (QA benchmark 88/100). The same overshoot pattern has been observed repeatedly across PRISM resources.
+**Sprint 103 progress (not completion):** The Sprint 100 advisory workload stack already covered most indicative planning behaviour. Sprint 103 made the smallest coherent refinement: a **familiar/revisit** reading band (distinct from first-pass evidence engagement), adapter inference for bring-forward / earlier-work language, commissioning-prompt duration-fidelity guidance, and advisory wording that prefers workload/staging/feedback adjustments over rewriting authoritative allocations. Focused automated tests pass. This does **not** validate measured learner completion times and does **not** alter the clinical journey’s authoritative 180-minute total or 40-minute final assessment allocation.
 
-**Proposed direction:** Investigate a lightweight, cross-resource approach to duration fidelity using existing workflow stages and generation contracts. Treat commissioned duration as a meaningful design constraint; allocate realistic time budgets across activities; account for reading, evidence examination, cognitive processing, response production and self-review; prevent later material generation from expanding workload beyond the original allocation; check cumulative duration plausibility at Design Page and QA; validate against several existing resources rather than optimising for one example.
+**Evidence:** *The Impossible Alibi: The Blackthorn Notebook Mystery* was commissioned as a 25-minute standalone Interactive resource, but review of the complete experience suggests approximately 60–85 minutes of learner activity (QA benchmark 88/100). The same overshoot pattern has been observed repeatedly across PRISM resources. Sprint 103 clinical Assessment Pack authoring and Learning Journey QA both flagged a commissioned 40-minute independent judgement as potentially tight for a 500–700-word argument — **indicative workload judgements**, not timed learner runs.
 
-**Avoid:** Simplistic word-count calculations; rigid timing formulas; new workflow stages; unnecessary architectural complexity; equating planned journey totals with verified learner workload.
+**Proposed direction:** Continue a lightweight, cross-resource approach using existing workflow stages and generation contracts. Treat commissioned duration as a meaningful design constraint; account for reading, evidence examination, cognitive processing, response production and self-review; distinguish familiar revisit from initial engagement; prevent later material generation from expanding workload beyond the original allocation; check cumulative duration plausibility at Design Page and QA; eventually validate against observed or inspected learner workload across several resources.
+
+**Avoid:** Simplistic word-count calculations; rigid timing formulas; new estimation engines / workflow stages; unnecessary architectural complexity; equating planned journey totals with verified learner workload; closing this item on guidance refinement alone.
 
 **Acceptance criteria (eventual implementation):**
 
@@ -243,9 +245,9 @@ Author and publish Expository resources with a coherent editorial hierarchy, so 
 4. Verification identifies material duration mismatches against observed or inspected learner workload — not only arithmetic of planned component durations.
 5. Existing resource types and workflows remain compatible.
 
-**Boundaries:** Backlog investigation / eventual contract and QA improvements only when sprint-allocated. Do not absorb into the retired Interactive V2 programme ([PB-FA-019](#pb-fa-019--interactive-v2-educational-solution-design-and-interaction-surfaces)) as a substitute for this cross-resource concern.
+**Boundaries:** Backlog investigation / eventual contract and QA improvements. Do not absorb into the retired Interactive V2 programme ([PB-FA-019](#pb-fa-019--interactive-v2-educational-solution-design-and-interaction-surfaces)) as a substitute for this cross-resource concern.
 
-**Readiness:** Proposed 2026-11-09 from alpha-use / QA evidence; open after LJ duration-allocation observation 2026-11-23. Approach not yet chosen — **not sprint-allocated**.
+**Readiness:** Proposed 2026-11-09; open after LJ duration-allocation observation 2026-11-23; Sprint 103 guidance refinement recorded — **measured validation and remaining fidelity work still open**.
 
 ### PB-FA-026 — Assisted brief development: from teaching intention to learning experience
 
@@ -730,7 +732,7 @@ These IDs are **no longer live planning items**. Historical detail remains in pr
 
 ## Related
 
-- Programme pointer: [docs/sprints/NEXT-SPRINT.md](../sprints/NEXT-SPRINT.md) — **no open sprint**; Sprint 102 closed; Sprint 103 unopened  
-- Architectural policy: [S103-D01 — Learning Journey-first architecture](../development/sprints/2026-11-20-sprint-102-learning-journey-owned-outcomes/decisions.md#s103-d01--learning-journey-first-architecture) — **Accepted** (not implemented product defaults)  
+- Programme pointer: [docs/sprints/NEXT-SPRINT.md](../sprints/NEXT-SPRINT.md) — **no open sprint** (feature freeze until Connect More); Sprint 103 closed  
+- Architectural policy: [S103-D01 — Learning Journey-first architecture](../development/sprints/2026-11-20-sprint-102-learning-journey-owned-outcomes/decisions.md#s103-d01--learning-journey-first-architecture) — **Accepted**; commissioning alignment verified in Sprint 103  
 - Alpha close: [SPRINT-82-CLOSURE.md](../development/sprints/2026-09-01-sprint-82-maths-entry-and-alpha-completion/SPRINT-82-CLOSURE.md) · [S82-D04](../development/sprints/2026-09-01-sprint-82-maths-entry-and-alpha-completion/decisions.md#s82-d04--alpha-development-complete)  
 - Legacy notes (non-planning): [ideas.md](ideas.md) · [known-issues.md](known-issues.md) · [future-directions.md](future-directions.md)  

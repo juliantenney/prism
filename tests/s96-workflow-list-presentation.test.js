@@ -106,6 +106,13 @@ test("product labels use authoritative metadata and fall back to Type unknown", 
   );
   assert.equal(
     presentation.resolveWorkflowListProductLabel(
+      { product: "practice" },
+      { familyMod: family }
+    ),
+    "Practice"
+  );
+  assert.equal(
+    presentation.resolveWorkflowListProductLabel(
       { ldCreateOutputType: "self_study_resource", name: "Old Self Study" },
       { familyMod: family }
     ),

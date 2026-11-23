@@ -3180,8 +3180,19 @@ textarea:focus {
 .util-vj-image-meta,
 .util-visual-asset-caption {
   margin-top: 4px;
+  margin-bottom: 0;
+  padding-bottom: 1rem;
   font-size: 0.78rem;
   color: #4b5563;
+}
+
+.util-visual-asset-caption:has(+ .util-visual-asset-detailed-description) {
+  padding-bottom: 0;
+}
+
+.util-visual-asset:has(.util-visual-asset-caption),
+.util-visual-asset:has(.util-visual-asset-detailed-description) {
+  margin-bottom: 1.5rem;
 }
 
 .util-visual-asset {

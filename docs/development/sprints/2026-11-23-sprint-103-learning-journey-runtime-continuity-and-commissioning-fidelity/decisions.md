@@ -41,3 +41,34 @@
 - Reopening Sprint 102.
 
 **Setup outcome:** Pack created under `docs/development/sprints/2026-11-23-sprint-103-learning-journey-runtime-continuity-and-commissioning-fidelity/`; programme pointers updated; [INITIAL-INVESTIGATION.md](INITIAL-INVESTIGATION.md) records the smallest first investigation.
+
+---
+
+## S103-D03 — Close Sprint 103 — Complete / accepted with documented qualifications
+
+**Date:** 2026-11-23  
+**Status:** **Accepted**  
+**Depends on:** [S103-D02](#s103-d02--open-sprint-103--learning-journey-runtime-continuity-and-commissioning-fidelity) **Accepted**; closure evidence in [VALIDATION.md](VALIDATION.md) and [STATUS.md](STATUS.md)
+
+**Decision:** Close Sprint 103 as **CLOSED — COMPLETE — ACCEPTED WITH DOCUMENTED QUALIFICATIONS**.
+
+**Delivered capabilities:**
+
+1. Four-product artefact consumers and Learning Journey-first commissioning alignment (Interactive excluded on new LJs; standalone/legacy preserved).  
+2. Learner-response persistence, cross-resource continuity, and four-entry Learning Journal on the clinical journey.  
+3. Clear run data isolation for learner drafts / journal acknowledgements.  
+4. Multi-question selection / radio grouping expand (manual re-export verified).  
+5. Assessment Pack JSON fencing.  
+6. Duration-fidelity guidance refinement (familiar/revisit + commissioning guidance) without changing authoritative 180/40 allocations.
+
+**Validation:** Focused automated batch **107 pass / 0 fail / 0 skipped**. Manual *Judging Evidence in Clinical Decisions* — five commissions, four first-class products, persistence, Journal, Clear run data, multi-question radios.
+
+**Non-blocking follow-ups (do not reopen Sprint 103):**
+
+1. [PB-FA-025](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-025--duration-fidelity-learner-workload-budgeting) measured learner-time validation — remains open.  
+2. Formal accessibility audit of the clinical journey — not claimed.  
+3. Response-aware adaptive activity — intentionally unsupported.
+
+**Post-close posture:** Feature freeze until Connect More (Wed 2 Dec 12:00) — create Learning Journeys → test → fix demonstrated defects → verify. No new backlog features or major architecture.
+
+**Canonical closure record:** [SPRINT-103-CLOSURE.md](SPRINT-103-CLOSURE.md).

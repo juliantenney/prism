@@ -23,7 +23,7 @@ function estimate(input) {
 }
 
 test("exports schema version and pure estimator", () => {
-  assert.equal(estimator.SCHEMA_VERSION, "100A.1");
+  assert.equal(estimator.SCHEMA_VERSION, "100A.2");
   assert.equal(typeof estimator.estimateActivityWorkload, "function");
 });
 

@@ -198,8 +198,10 @@ test("B: Confirmation copy identifies the selected workflow", () => {
   const { api } = boot();
   const copy = api.buildClearWorkflowRunDataConfirmCopyForTest("Roman Roads");
   assert.equal(copy.title, 'Clear run data for "Roman Roads"?');
-  assert.match(copy.body, /Run progress, captured data and generated assets/);
-  assert.match(copy.body, /workflow itself and its settings will not be deleted/);
+  assert.match(copy.body, /Run progress, captured data, generated assets/);
+  assert.match(copy.body, /learner responses saved on this device/i);
+  assert.match(copy.body, /Learning Journal acknowledgements/i);
+  assert.match(copy.body, /workflow itself, its settings, and authored designs will not be deleted/i);
   assert.match(copy.body, /cannot be undone/i);
 });
 
@@ -321,6 +323,7 @@ test("F: executeClearWorkflowRunData preserves existing cleanup semantics", () =
   assert.match(body, /bumpWorkflowRunClearEpoch/);
   assert.match(body, /deleteGeneratedVisualJobImagesForWorkflow/);
   assert.match(body, /deleteRunCaptureTextResourcesForWorkflow/);
+  assert.match(body, /clearLearnerRuntimeStateForWorkflow/);
   assert.match(body, /resetLiveGraphicsStateForClearedRun/);
   assert.doesNotMatch(body, /deleteResourcesForWorkflow\(/);
   assert.match(body, /clearWorkflowRunCaptureState\(/);

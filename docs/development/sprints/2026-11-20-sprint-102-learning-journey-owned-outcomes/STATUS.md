@@ -20,6 +20,20 @@
 
 ## Work log
 
+### 2026-11-23 — 102E Practice Learning Journal handoff
+
+- **Root cause:** Practice was excluded from `composeCommissionedLearnerArtefactProducerInstruction` and from the DLA `isCommissionLearnerFacingCopyStep` gate. Commissioned journal elicitation ids (`C02.E1`–`E5`) never reached DLA as `response_fulfilment.artefact_elicitation_id`, so exported Practice mounted generic `learner-workspace-*` / selection controls with no `learner-constructed-*` producers for the parent journal.  
+- **Fix:** Treat Practice like Interactive for the shared artefact-producer instruction and DLA learner-facing copy gate (bindable text surfaces → `learner-constructed-{elicitation_id}`). Renderer/journal contracts already accepted Practice pages once bindings exist.  
+- **Migration:** Re-run Practice DLA (then GAM as needed) and re-export after hard-refresh so commissioned producers are authored onto materials. Prior generic-id drafts do not auto-migrate.  
+- Tests: `tests/s102e-practice-journal-handoff.test.js`. Sprint 102E remains open.
+
+### 2026-11-23 — 102E-23 Interactive Learning Journal handoff
+
+- **Root cause:** Artefact-bound Interactive `prompt_set` bodies without numbered list items produced zero response parts, rendered as static prose, and left competing task-step workspaces on generic `learner-workspace-a*` ids. Journal contract correctly expected `learner-constructed-E2..E5`.  
+- **Fix:** `compose-response-parts.js` — artefact-bound unparsed prompt_set emits one constructed-text surface; suppress competing Write task-steps when prompt-set parts exist.  
+- **Migration:** Re-export the Learning Journey (and/or C2) after hard-refresh. Prior generic-id drafts do not auto-migrate — re-enter C2 responses once under the new workspace ids.  
+- Tests: `tests/s102e23-interactive-journal-handoff.test.js`. Sprint 102E remains open.
+
 ### 2026-11-20 — 102E Expository publication defects
 
 - **S8 metadata leak:** response/journal contract keys (`response_id`, `producer`, `stable_identifier`, …) omitted from structured-material learner headings.  

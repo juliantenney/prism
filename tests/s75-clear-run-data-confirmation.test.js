@@ -152,7 +152,10 @@ function boot(options) {
     Library: {
       importPromptsFromEntries: () => Promise.resolve({ added: 0, updated: 0, skipped: 0 }),
       getAllPrompts: () => Promise.resolve([])
-    }
+    },
+    // Without the runstate IDB module in this slim boot, harness mode lets
+    // saveWorkflowRunStateStore update the localStorage backup under test.
+    __PRISM_TEST_HARNESS__: true
   };
   sandbox.document = documentStub;
   sandbox.window = windowStub;
@@ -314,8 +317,10 @@ test("F: executeClearWorkflowRunData preserves existing cleanup semantics", () =
   const start = appSource.indexOf("function executeClearWorkflowRunData");
   assert.ok(start > 0);
   const end = appSource.indexOf("\n  function requestClearWorkflowRunDataConfirmation", start);
-  const body = appSource.slice(start, end > 0 ? end : start + 600);
+  const body = appSource.slice(start, end > 0 ? end : start + 1200);
+  assert.match(body, /bumpWorkflowRunClearEpoch/);
   assert.match(body, /deleteGeneratedVisualJobImagesForWorkflow/);
+  assert.match(body, /deleteRunCaptureTextResourcesForWorkflow/);
   assert.match(body, /resetLiveGraphicsStateForClearedRun/);
   assert.doesNotMatch(body, /deleteResourcesForWorkflow\(/);
   assert.match(body, /clearWorkflowRunCaptureState\(/);

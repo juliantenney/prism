@@ -5731,6 +5731,40 @@
   }
 
   /**
+   * Resolve locked shared source for an LJ-commissioned component GAM prompt.
+   * Prefers the child's source_context; falls back to the parent LJ slot.
+   * Returns "" for standalone workflows or when no source is stored.
+   */
+  function resolveAuthoritativeSharedSourceTextForGamPrompt(wf) {
+    var workflow = wf && typeof wf === "object" ? wf : null;
+    if (!workflow) return "";
+    var ctx = readWorkflowCommissionContext(workflow);
+    if (!ctx || !ctx.hasCommissionContext) return "";
+    var fromChild = readAuthoritativeSharedSourceContext(ctx.seed, ctx.initial);
+    if (fromChild) return fromChild;
+    var parentId = String(
+      (ctx.seed && ctx.seed.source_journey_workflow_id) ||
+        (ctx.initial && ctx.initial.sourceJourneyWorkflowId) ||
+        ""
+    ).trim();
+    if (!parentId) return "";
+    return readLearningJourneyAuthoritativeSourceContext(parentId);
+  }
+
+  function buildAuthoritativeSharedSourceGamHandoffSectionForPrompt(wf) {
+    var source = resolveAuthoritativeSharedSourceTextForGamPrompt(wf);
+    if (!source) return "";
+    var sharedLib = resolveLearningJourneySharedSourceLib();
+    if (
+      sharedLib &&
+      typeof sharedLib.composeAuthoritativeSharedSourceGamHandoffSection === "function"
+    ) {
+      return String(sharedLib.composeAuthoritativeSharedSourceGamHandoffSection(source) || "");
+    }
+    return "";
+  }
+
+  /**
    * Read durable shared source text from a parent Learning Journey workflow.
    * Prefers resolvedFactors.source_context (Create → buildLearningJourneyFamily).
    * Falls back to artefacts, then BODY OF KNOWLEDGE section of original_brief.
@@ -5989,7 +6023,7 @@
   /**
    * When a Learning Journey Journal (or equivalent) requires constructed-text
    * artefacts, instruct the owning learner-facing stage to declare them.
-   * Interactive → DLA response_fulfilment binding.
+   * Interactive / Practice → DLA response_fulfilment binding.
    * Expository → Design Page learner_artefacts.produces[] (shared contract; not activities).
    * Empty when not required or product cannot host the declaration.
    */
@@ -6007,13 +6041,14 @@
     )
       .trim()
       .toLowerCase();
-    var isInteractive =
-      firstClassPromptRoute(wf) === "interactive" || product === "interactive";
+    var route = firstClassPromptRoute(wf);
+    var isInteractive = route === "interactive" || product === "interactive";
+    var isPractice = route === "practice" || product === "practice";
     var isExpository =
       (typeof isExpositoryResourceWorkflow === "function" && isExpositoryResourceWorkflow(wf)) ||
-      firstClassPromptRoute(wf) === "expository" ||
+      route === "expository" ||
       product === "expository";
-    if (!isInteractive && !isExpository) return "";
+    if (!isInteractive && !isPractice && !isExpository) return "";
     var lines = [
       "SHARED LEARNER ARTEFACT PRODUCER REQUIREMENT (authoritative)",
       "",
@@ -6036,6 +6071,7 @@
         "For EACH required elicitation_id below, author a genuine learner-authored text production surface and bind it:",
         '- Use response_fulfilment.kind \"learner_text_production\" (or \"learner_workspace\") with response_kind \"text_compose\".',
         "- Set response_fulfilment.artefact_elicitation_id to the elicitation_id EXACTLY as listed (preserve spelling and case).",
+        "- Prefer bindable material types (prompt_set, template, task_card, or transfer_prompt) so the renderer can mount learner-constructed-{elicitation_id} workspaces on those surfaces.",
         "- The surface must collect authentic learner wording; do not summarise, invent, or auto-improve the contribution.",
         "- Do not invent additional artefact ids. Do not mark unrelated interactions as artefacts.",
         "",
@@ -6236,10 +6272,18 @@
     var isDp = cid === "step_design_page" || title === "design page";
     var isPurpose =
       cid === "step_interpret_evidence_purpose" || title === "interpret evidence purpose";
+    var route = firstClassPromptRoute(wf);
     var isExpositoryProduct =
       (typeof isExpositoryResourceWorkflow === "function" && isExpositoryResourceWorkflow(wf)) ||
       product === "expository";
-    if (isDla && (firstClassPromptRoute(wf) === "interactive" || product === "interactive")) {
+    // Interactive and Practice DLA own response_fulfilment.artefact_elicitation_id bindings.
+    if (
+      isDla &&
+      (route === "interactive" ||
+        route === "practice" ||
+        product === "interactive" ||
+        product === "practice")
+    ) {
       return true;
     }
     if (isXd && isExpositoryProduct) {
@@ -15540,6 +15584,7 @@
         : asm.PROFILES.STUDIO_V2_NONPARTIAL,
       partialMode: partialMode,
       upstreamDlaPageJson: upstreamJson,
+      authoritativeSharedSourceText: resolveAuthoritativeSharedSourceTextForGamPrompt(workflow),
       adapters: {
         // Live contract/shape adapter preserves guided-review VM resolution parity.
         // Pre-emit gate: assembler buildSectionPreEmitGate owns insertion (S79-T-006).
@@ -16756,12 +16801,48 @@
     return { restored: restored };
   }
 
+  function getWorkflowRunClearEpoch(workflowId) {
+    var wid = String(workflowId || "").trim();
+    if (!wid) return 0;
+    state.workflowRunClearEpochByWorkflow = state.workflowRunClearEpochByWorkflow || {};
+    return Number(state.workflowRunClearEpochByWorkflow[wid]) || 0;
+  }
+
+  function bumpWorkflowRunClearEpoch(workflowId) {
+    var wid = String(workflowId || "").trim();
+    if (!wid) return 0;
+    state.workflowRunClearEpochByWorkflow = state.workflowRunClearEpochByWorkflow || {};
+    var next = (Number(state.workflowRunClearEpochByWorkflow[wid]) || 0) + 1;
+    state.workflowRunClearEpochByWorkflow[wid] = next;
+    return next;
+  }
+
+  function isWorkflowRunClearEpochCurrent(workflowId, epoch) {
+    return getWorkflowRunClearEpoch(workflowId) === (Number(epoch) || 0);
+  }
+
+  function invalidateWorkflowRunCapturePersistChains(workflowId) {
+    var wid = String(workflowId || "").trim();
+    if (!wid) return;
+    var prefix = wid + "::";
+    Object.keys(_workflowRunCapturePersistChains).forEach(function (key) {
+      if (String(key || "").indexOf(prefix) === 0) {
+        delete _workflowRunCapturePersistChains[key];
+      }
+    });
+  }
+
   function enqueueWorkflowRunCapturePersist(workflowId, stepId, workFn) {
-    var key = String(workflowId || "").trim() + "::" + String(stepId || "").trim();
+    var wid = String(workflowId || "").trim();
+    var key = wid + "::" + String(stepId || "").trim();
+    var epochAtEnqueue = getWorkflowRunClearEpoch(wid);
     var prev = _workflowRunCapturePersistChains[key] || Promise.resolve();
     var next = prev.catch(function () {
       return null;
     }).then(function () {
+      if (!isWorkflowRunClearEpochCurrent(wid, epochAtEnqueue)) {
+        return { ok: false, abandoned: true, reason: "cleared" };
+      }
       return workFn();
     });
     _workflowRunCapturePersistChains[key] = next.then(
@@ -17699,13 +17780,115 @@
     var w = ldTableFidelityGlobalRoot();
     if (w) roots.push(w);
     if (typeof globalThis !== "undefined" && globalThis !== w) roots.push(globalThis);
+    if (typeof window !== "undefined" && window !== w) roots.push(window);
     var i;
     for (i = 0; i < roots.length; i += 1) {
       if (roots[i] && roots[i].PRISM_WORKFLOW_ARTEFACT_JSON_STRICT) {
         return roots[i].PRISM_WORKFLOW_ARTEFACT_JSON_STRICT;
       }
     }
+    var loaded = null;
+    if (typeof require === "function") {
+      try {
+        loaded = require("./lib/workflow-artefact-json-strict.js");
+      } catch (_e1) {
+        try {
+          loaded = require("../lib/workflow-artefact-json-strict.js");
+        } catch (_e2) {
+          try {
+            loaded = require("./workflow-artefact-json-strict.js");
+          } catch (_e3) {}
+        }
+      }
+    }
+    if (loaded) {
+      if (w && !w.PRISM_WORKFLOW_ARTEFACT_JSON_STRICT) {
+        w.PRISM_WORKFLOW_ARTEFACT_JSON_STRICT = loaded;
+      }
+      if (typeof window !== "undefined" && !window.PRISM_WORKFLOW_ARTEFACT_JSON_STRICT) {
+        window.PRISM_WORKFLOW_ARTEFACT_JSON_STRICT = loaded;
+      }
+      return loaded;
+    }
     return null;
+  }
+
+  function workflowStepDraftLooksLikeJsonOutputPrompt(draftText) {
+    var draft = String(draftText || "");
+    if (!draft) return false;
+    return (
+      /Copilot output contract:/i.test(draft) ||
+      /Output contract \(strict — fenced JSON block only\)/i.test(draft) ||
+      /Output requirements \(strict — fenced JSON block only\)/i.test(draft) ||
+      /pretty-printed fenced JSON/i.test(draft) ||
+      /Return exactly one markdown fenced JSON block/i.test(draft) ||
+      /opened with ```json/i.test(draft)
+    );
+  }
+
+  function workflowStepRequiresJsonOutputPresentation(step, wf, draftText) {
+    if (resolveStrictJsonWorkflowStepKind(step, wf)) return true;
+    var oname = normalizeWorkflowStepOutputNameKey(step);
+    if (
+      oname === "page" ||
+      oname === "episode_plans" ||
+      oname === "knowledge_model" ||
+      oname === "learning_content" ||
+      oname === "learning_sequence" ||
+      oname === "learning_outcomes" ||
+      oname === "expository_journey_plan" ||
+      oname === "expository_development" ||
+      oname === "expository_materials" ||
+      oname === "learning_elements" ||
+      oname === "learning_commissions" ||
+      oname === "assessment_blueprint" ||
+      oname === "assessment_items" ||
+      oname === "assessment_check"
+    ) {
+      return true;
+    }
+    if (
+      step &&
+      (isWorkflowStepDesignEpisodePlanRow(step) ||
+        isWorkflowStepDesignLearningActivities({
+          stepCanonicalStepId: step.canonical_step_id || step.canonicalStepId || "",
+          stepCanonicalTitle: step.title || "",
+          stepTitle: step.title || ""
+        }) ||
+        isWorkflowStepGenerateActivityMaterials({
+          stepCanonicalStepId: step.canonical_step_id || step.canonicalStepId || "",
+          stepCanonicalTitle: step.title || "",
+          stepTitle: step.title || "",
+          stepOutputName: step.outputName || ""
+        }) ||
+        isWorkflowStepDesignPage({
+          stepCanonicalStepId: step.canonical_step_id || step.canonicalStepId || "",
+          stepCanonicalTitle: step.title || "",
+          stepTitle: step.title || ""
+        }) ||
+        isWorkflowStepConstructLearningSequence({
+          stepCanonicalStepId: step.canonical_step_id || step.canonicalStepId || "",
+          stepCanonicalTitle: step.title || "",
+          stepTitle: step.title || ""
+        }))
+    ) {
+      return true;
+    }
+    return workflowStepDraftLooksLikeJsonOutputPrompt(draftText);
+  }
+
+  function applyInlineFencedJsonPresentationRequirementToDraft(draftText, step, wf) {
+    var draft = String(draftText || "").trim();
+    if (!draft) return draft;
+    if (!workflowStepRequiresJsonOutputPresentation(step, wf, draft)) return draft;
+    var strictMod = resolveWorkflowArtefactJsonStrictLib();
+    if (
+      strictMod &&
+      typeof strictMod.appendInlineFencedJsonPresentationRequirement === "function"
+    ) {
+      return strictMod.appendInlineFencedJsonPresentationRequirement(draft);
+    }
+    return draft;
   }
 
   function normalizeWorkflowStepOutputNameKey(step) {
@@ -20998,23 +21181,26 @@
     // Learning Journey, Expository, Assessment Pack and Situated Task all receive it.
     draft = applyLearnerFacingProseTypographyContractToDraft(draft, ctx);
     var promptRoute = firstClassPromptRoute(wf);
+    function finalizeJsonPresentation(body) {
+      return applyInlineFencedJsonPresentationRequirementToDraft(body, step, wf);
+    }
     if (promptRoute === "expository") {
       draft = applyExpositoryDomainGuidanceToDraft(draft, step, wf);
       draft = applyEducationalQualityFrameworkPromptBlockToDraft(draft, ctx);
       draft = applyMathSafeOutputContractToDraft(draft, ctx);
       draft = applyStrictJsonArtefactContractToDraft(draft, ctx);
-      return String(draft || "").trim();
+      return finalizeJsonPresentation(draft);
     }
     if (promptRoute === "assessment") {
-      return String(draft || "").trim();
+      return finalizeJsonPresentation(draft);
     }
     if (promptRoute === "learning_journey") {
-      return String(draft || "").trim();
+      return finalizeJsonPresentation(draft);
     }
     if (promptRoute === "situated_task") {
       draft = applyMathSafeOutputContractToDraft(draft, ctx);
       draft = applyStrictJsonArtefactContractToDraft(draft, ctx);
-      return String(draft || "").trim();
+      return finalizeJsonPresentation(draft);
     }
     if (promptRoute === "practice") {
       // Sprint 101D/E — Practice-owned presentation contracts; do not enter Interactive
@@ -21037,18 +21223,20 @@
       }
       draft = applyGamPageEnrichPromptBlockToDraft(draft, ctx, wf);
       draft = applyPracticePresentationContractsToDraft(draft, ctx, wf);
-      return String(draft || "").trim();
+      return finalizeJsonPresentation(draft);
     }
     if (promptRoute !== "interactive") {
       draft = applyMathSafeOutputContractToDraft(draft, ctx);
       draft = applyStrictJsonArtefactContractToDraft(draft, ctx);
-      return String(draft || "").trim();
+      return finalizeJsonPresentation(draft);
     }
     if (
       isWorkflowStepDesignLearningActivities(ctx) &&
       isPageEnrichmentV2WorkflowEnabled(wf)
     ) {
-      return applyEpisodePlanDlaPopulationPromptBlockToDraft(draft, ctx, wf);
+      return finalizeJsonPresentation(
+        applyEpisodePlanDlaPopulationPromptBlockToDraft(draft, ctx, wf)
+      );
     }
     var map = optionMap && typeof optionMap === "object" ? optionMap : {};
     if (ctx.dlaLearnerPageScaffoldSsot) {
@@ -21074,7 +21262,7 @@
     draft = applyStrictJsonArtefactContractToDraft(draft, ctx);
     draft = applyEpisodePlanDlaPopulationPromptBlockToDraft(draft, ctx, wf);
     draft = applyGamPageEnrichPromptBlockToDraft(draft, ctx, wf);
-    return String(draft || "").trim();
+    return finalizeJsonPresentation(draft);
   }
 
   function applySelfDirectedLearnerPageStepScaffoldsToDraft(draftText, context) {
@@ -29683,6 +29871,16 @@
 
   function clearWorkflowRunCaptureState(options) {
     var opts = options && typeof options === "object" ? options : {};
+    var wid = String(opts.workflowId || state.selectedWorkflowId || "").trim();
+    if (wid) {
+      bumpWorkflowRunClearEpoch(wid);
+      invalidateWorkflowRunCapturePersistChains(wid);
+      clearUnsavedWorkflowRunCapture(wid);
+    }
+    if (workflowRunAutosaveToastTimer) {
+      window.clearTimeout(workflowRunAutosaveToastTimer);
+      workflowRunAutosaveToastTimer = null;
+    }
     state.workflowRunCapturedOutputs = {};
     state.workflowRunCapturedOutputsRaw = {};
     state.workflowRunCaptureRefs = {};
@@ -29703,9 +29901,10 @@
         updateRunStepOutputStatus(li);
       });
     }
-    if (opts.workflowId) {
-      clearPersistedWorkflowRunStateForWorkflow(opts.workflowId);
+    if (wid && opts.persist !== false) {
+      return clearPersistedWorkflowRunStateForWorkflow(wid);
     }
+    return Promise.resolve({ ok: true, cleared: false });
   }
 
   /** Run data is preserved on select/run; users clear it explicitly via Clear run data. */
@@ -29739,27 +29938,48 @@
   function executeClearWorkflowRunData(workflowId) {
     var wid = String(workflowId || "").trim();
     if (!wid) return Promise.resolve();
+    // Invalidate in-flight capture persists before any async purge so stale
+    // "Step output data saved" writes cannot recreate durable runstate.
+    bumpWorkflowRunClearEpoch(wid);
+    invalidateWorkflowRunCapturePersistChains(wid);
+    clearUnsavedWorkflowRunCapture(wid);
+    if (workflowRunAutosaveToastTimer) {
+      window.clearTimeout(workflowRunAutosaveToastTimer);
+      workflowRunAutosaveToastTimer = null;
+    }
     var resourcesMod = getWorkflowResourcesMod();
-    var purgePromise =
+    var purgeImages =
       resourcesMod && typeof resourcesMod.deleteGeneratedVisualJobImagesForWorkflow === "function"
         ? resourcesMod.deleteGeneratedVisualJobImagesForWorkflow(wid)
         : Promise.resolve({ ok: true, deleted_count: 0 });
-    return Promise.resolve(purgePromise)
-      .catch(function () {
+    var purgeCaptures =
+      resourcesMod && typeof resourcesMod.deleteRunCaptureTextResourcesForWorkflow === "function"
+        ? resourcesMod.deleteRunCaptureTextResourcesForWorkflow(wid)
+        : Promise.resolve({ ok: true, deleted_count: 0 });
+    return Promise.all([
+      Promise.resolve(purgeImages).catch(function () {
+        return { ok: false };
+      }),
+      Promise.resolve(purgeCaptures).catch(function () {
         return { ok: false };
       })
-      .then(function () {
-        resetLiveGraphicsStateForClearedRun();
+    ]).then(function () {
+      resetLiveGraphicsStateForClearedRun();
+      return Promise.resolve(
         clearWorkflowRunCaptureState({
           workflowId: wid,
           resetIndex: true,
-          clearDom: true
-        });
+          clearDom: true,
+          persist: true
+        })
+      ).then(function () {
         resetWorkflowRunNavigationState({ resetIndex: true });
         updateWorkflowRunView();
         refreshWorkflowListStatuses({ immediate: true });
         showToast("Run data cleared.", "success");
+        return null;
       });
+    });
   }
 
   function requestClearWorkflowRunDataConfirmation(workflowName) {
@@ -30480,20 +30700,29 @@
         var persistSid = sid;
         var persistRaw = persistedRawNow;
         var persistFinal = persistedFinalNow;
+        var persistEpoch = getWorkflowRunClearEpoch(persistWid);
         return enqueueWorkflowRunCapturePersist(persistWid, persistSid, function () {
+          if (!isWorkflowRunClearEpochCurrent(persistWid, persistEpoch)) {
+            return { ok: false, abandoned: true, reason: "cleared" };
+          }
           return persistWorkflowRunCapturePayloadForStep(
             persistWid,
             persistSid,
             persistRaw,
-            persistFinal
+            persistFinal,
+            { clearEpoch: persistEpoch }
           ).then(function (payloadPersist) {
             var persistCtx = {
               workflowId: persistWid,
               stepId: persistSid,
               rawValue: persistRaw,
-              finalValue: persistFinal
+              finalValue: persistFinal,
+              clearEpoch: persistEpoch
             };
             var persistResult = { ok: false };
+            if (!isWorkflowRunClearEpochCurrent(persistWid, persistEpoch)) {
+              return { ok: false, abandoned: true, reason: "cleared" };
+            }
             if (payloadPersist && payloadPersist.ok) {
               state.workflowRunCaptureRefs = state.workflowRunCaptureRefs || {};
               state.workflowRunCaptureRefs[persistSid] = payloadPersist.refs || {};
@@ -30501,7 +30730,8 @@
                 persistWorkflowRunStateForWorkflow(persistWid, {
                   source: "syncWorkflowRunCapturedOutputToState",
                   observedStepId: persistSid,
-                  renderList: true
+                  renderList: true,
+                  clearEpoch: persistEpoch
                 })
               ).then(function (runstateResult) {
                 return finishCapturePersistOutcome(
@@ -30524,6 +30754,14 @@
     var persistSid = String(ctx.stepId || "").trim();
     var persistRaw = String(ctx.rawValue || "");
     var persistFinal = String(ctx.finalValue || "");
+    if (
+      (ctx.clearEpoch != null &&
+        !isWorkflowRunClearEpochCurrent(persistWid, ctx.clearEpoch)) ||
+      (payloadPersist && payloadPersist.abandoned) ||
+      (persistResult && persistResult.abandoned)
+    ) {
+      return { ok: false, abandoned: true, reason: "cleared" };
+    }
     if (!payloadPersist || !payloadPersist.ok || !(persistResult && persistResult.ok)) {
       stashUnsavedWorkflowRunCapture(
         persistWid,
@@ -35052,6 +35290,13 @@
     if (!wid) {
       return Promise.resolve({ ok: false, reason: "missing_workflow_id" });
     }
+    var epochAtStart = getWorkflowRunClearEpoch(wid);
+    if (
+      opts.clearEpoch != null &&
+      !isWorkflowRunClearEpochCurrent(wid, opts.clearEpoch)
+    ) {
+      return Promise.resolve({ ok: false, abandoned: true, reason: "cleared" });
+    }
     var store = loadWorkflowRunStateStore();
     var existing =
       store && store[wid] && typeof store[wid] === "object" ? store[wid] : null;
@@ -35060,6 +35305,17 @@
     state.workflowRunSessionIndexByWorkflow[wid] = liveSnapshot.runIndex;
     var mergedRecord = mergeWorkflowRunStateRecordWithLiveSnapshot(existing, liveSnapshot);
     var pruned = pruneBlankWorkflowRunStateRecordEntries(mergedRecord);
+    // Clear run data bumps the epoch; abandon before writing so ABSENT≠DELETE
+    // merge cannot resurrect pre-clear captureRefs / stepCompleted.
+    if (!isWorkflowRunClearEpochCurrent(wid, epochAtStart)) {
+      return Promise.resolve({ ok: false, abandoned: true, reason: "cleared" });
+    }
+    if (
+      opts.clearEpoch != null &&
+      !isWorkflowRunClearEpochCurrent(wid, opts.clearEpoch)
+    ) {
+      return Promise.resolve({ ok: false, abandoned: true, reason: "cleared" });
+    }
     store[wid] = pruned;
     var afterFp = buildWorkflowRunStateActivityFingerprint(pruned);
     var shouldTouch =
@@ -35092,7 +35348,14 @@
     });
   }
 
-  function persistWorkflowRunCapturePayloadForStep(workflowId, stepId, rawValue, finalValue) {
+  function persistWorkflowRunCapturePayloadForStep(
+    workflowId,
+    stepId,
+    rawValue,
+    finalValue,
+    options
+  ) {
+    var opts = options && typeof options === "object" ? options : {};
     var wid = String(workflowId || "").trim();
     var sid = String(stepId || "").trim();
     var raw = String(rawValue || "");
@@ -35103,6 +35366,11 @@
         ok: false,
         reason: "resource_store_unavailable"
       });
+    }
+    var epochAtStart =
+      opts.clearEpoch != null ? Number(opts.clearEpoch) || 0 : getWorkflowRunClearEpoch(wid);
+    if (!isWorkflowRunClearEpochCurrent(wid, epochAtStart)) {
+      return Promise.resolve({ ok: false, abandoned: true, reason: "cleared" });
     }
     var finalSlot = buildWorkflowRunCaptureResourceSlotKey(sid, "final");
     var rawSlot = buildWorkflowRunCaptureResourceSlotKey(sid, "raw");
@@ -35115,6 +35383,9 @@
         text_payload: finalText
       })
       .then(function (finalWrite) {
+        if (!isWorkflowRunClearEpochCurrent(wid, epochAtStart)) {
+          return { ok: false, abandoned: true, reason: "cleared" };
+        }
         if (!finalWrite || !finalWrite.ok || !finalWrite.resource_id) {
           return {
             ok: false,
@@ -35141,6 +35412,9 @@
             text_payload: raw
           })
           .then(function (rawWrite) {
+            if (!isWorkflowRunClearEpochCurrent(wid, epochAtStart)) {
+              return { ok: false, abandoned: true, reason: "cleared" };
+            }
             if (!rawWrite || !rawWrite.ok || !rawWrite.resource_id) {
               return {
                 ok: false,
@@ -35174,6 +35448,7 @@
     if (!wid || !resourcesMod || typeof resourcesMod.getTextResourcePayload !== "function") {
       return Promise.resolve({ ok: false, reason: "resource_store_unavailable" });
     }
+    var hydrateEpoch = getWorkflowRunClearEpoch(wid);
     var store = loadWorkflowRunStateStore();
     var rec = store && store[wid] && typeof store[wid] === "object" ? store[wid] : null;
     var refs = rec && rec.captureRefs && typeof rec.captureRefs === "object" ? rec.captureRefs : {};
@@ -35221,6 +35496,16 @@
       });
     });
     return chain.then(function () {
+      if (!isWorkflowRunClearEpochCurrent(wid, hydrateEpoch)) {
+        state.workflowRunCaptureHydrationByWorkflow[wid] = {
+          pending: false,
+          hydrated: 0,
+          failed: 0,
+          abandoned: true,
+          finishedAt: Date.now()
+        };
+        return { ok: false, abandoned: true, reason: "cleared" };
+      }
       state.workflowRunCapturedOutputs = nextFinal;
       state.workflowRunCapturedOutputsRaw = nextRaw;
       // Re-apply session unsaved backups after ref hydration so a failed durable
@@ -39594,6 +39879,7 @@
       pageEnrichmentV2: true,
       dlaPage: dlaPage,
       upstreamDlaPageJson: upstreamJson,
+      authoritativeSharedSourceText: resolveAuthoritativeSharedSourceTextForGamPrompt(workflow),
       stepTitle: String((step && step.title) || "Generate Activity Materials").trim(),
       stepIndex: index,
       outputName: String(outName || "page").trim(),
@@ -39639,7 +39925,7 @@
         return part != null && String(part).length > 0;
       })
       .join("\n");
-    return text;
+    return applyInlineFencedJsonPresentationRequirementToDraft(text, step, workflow);
   }
 
   var ASSESSMENT_KEY_DEFENCE_SUPPORTED_UNSUPPORTED_GUIDANCE =
@@ -40563,7 +40849,11 @@
         return part != null && String(part).length > 0;
       })
       .join("\n");
-    return assembledInstructions;
+    return applyInlineFencedJsonPresentationRequirementToDraft(
+      assembledInstructions,
+      step,
+      wfForChain
+    );
   }
 
   /**
@@ -64602,6 +64892,10 @@
       requestClearWorkflowRunDataConfirmation;
     prismTestApi.executeClearWorkflowRunDataForTest = executeClearWorkflowRunData;
     prismTestApi.handleClearWorkflowRunDataForTest = handleClearWorkflowRunData;
+    prismTestApi.getWorkflowRunClearEpochForTest = getWorkflowRunClearEpoch;
+    prismTestApi.bumpWorkflowRunClearEpochForTest = bumpWorkflowRunClearEpoch;
+    prismTestApi.isWorkflowRunClearEpochCurrentForTest = isWorkflowRunClearEpochCurrent;
+    prismTestApi.enqueueWorkflowRunCapturePersistForTest = enqueueWorkflowRunCapturePersist;
     prismTestApi.buildWorkflowImportCollisionCopyForTest = buildWorkflowImportCollisionCopy;
     prismTestApi.requestWorkflowImportCollisionResolutionForTest =
       requestWorkflowImportCollisionResolution;
@@ -64774,6 +65068,10 @@
     prismTestApi.resolveStrictJsonWorkflowStepKindForTest = resolveStrictJsonWorkflowStepKind;
     prismTestApi.applyStrictJsonArtefactContractToDraftForTest =
       applyStrictJsonArtefactContractToDraft;
+    prismTestApi.applyInlineFencedJsonPresentationRequirementToDraftForTest =
+      applyInlineFencedJsonPresentationRequirementToDraft;
+    prismTestApi.workflowStepRequiresJsonOutputPresentationForTest =
+      workflowStepRequiresJsonOutputPresentation;
     prismTestApi.runUtilityRendererByPlanForTest = runUtilityRendererByPlan;
     prismTestApi.runUtilityPageExportPipelineForTest = runUtilityPageExportPipeline;
     prismTestApi.initialiseFirstClassProductFromLearningJourneyCommissionForTest =
@@ -65141,6 +65439,10 @@
         clearLearningJourneyAuthoritativeSourceContextForRepair;
     }
     prismTestApi.readAuthoritativeSharedSourceContext = readAuthoritativeSharedSourceContext;
+    prismTestApi.resolveAuthoritativeSharedSourceTextForGamPrompt =
+      resolveAuthoritativeSharedSourceTextForGamPrompt;
+    prismTestApi.buildAuthoritativeSharedSourceGamHandoffSectionForPrompt =
+      buildAuthoritativeSharedSourceGamHandoffSectionForPrompt;
     prismTestApi.applyLearningJourneySharedSourceFromCommissionCapture =
       applyLearningJourneySharedSourceFromCommissionCapture;
     prismTestApi.applyLearningJourneySharedSourceFromDesignPageCapture =
@@ -65910,6 +66212,11 @@
     prismTestApi.setWorkflowRunStepCompletedForTest = function (completedMap) {
       state.workflowRunStepCompleted =
         completedMap && typeof completedMap === "object" ? Object.assign({}, completedMap) : {};
+    };
+    prismTestApi.getWorkflowRunStepCompletedForTest = function () {
+      return state.workflowRunStepCompleted && typeof state.workflowRunStepCompleted === "object"
+        ? Object.assign({}, state.workflowRunStepCompleted)
+        : {};
     };
     prismTestApi.isWorkflowRunStepCompletedForTest = function (stepId) {
       var sid = String(stepId || "").trim();

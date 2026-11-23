@@ -20,3 +20,4 @@
 | S102-AD-027 | Expository S8 published response-contract metadata as learner headings | **Fixed** — schema-mechanic omission |
 | S102-AD-028 | Figure detailed_description layout-commission language published as accessible prose | **Fixed** — production-prose filter widened |
 | S102-AD-029 | Expository lacked DP `learner_artefacts` ownership/guidance for journal text | **Fixed** — shared contract path enabled; existing pages need DP re-author |
+| S102-AD-030 | Interactive artefact-bound prose prompt_set used generic task-step workspace ids (102E-23) | **Fixed** — constructed-text surface from unparsed bound prompt_set |

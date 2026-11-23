@@ -2,37 +2,60 @@
 
 **Sprint:** 102 — Learning Journey–Owned Outcomes and Commission-Native Component Authoring  
 **Opened:** 2026-11-20  
-**Status:** **OPEN** — 102D complete; **102E in progress** (runtime path fix applied; live E2E pending)  
-**Design:** [S102-D04](decisions.md#s102-d04--commission-native-authoring-design) — Accepted  
-**Readiness:** [S102-D05](decisions.md#s102-d05--implementation-readiness) — Ready with qualifications  
-**Implementation:** [S102-D06](decisions.md#s102-d06--implement-commission-native-authoring-102d) — Accepted
+**Closed:** 2026-11-23  
+**Status:** **CLOSED — COMPLETE — ACCEPTED WITH DOCUMENTED QUALIFICATIONS**  
+**Opening:** [S102-D01](decisions.md#s102-d01--open-sprint-102)  
+**Close:** [S102-D08](decisions.md#s102-d08--close-sprint-102--complete-accepted-with-documented-qualifications) · [SPRINT-102-CLOSURE.md](SPRINT-102-CLOSURE.md)  
+**Forward policy:** [S103-D01](decisions.md#s103-d01--learning-journey-first-architecture) — **Accepted** (not implemented)
 
 | Item | State |
 | ---- | ----- |
 | S102-D01 … S102-D05 | **Accepted** |
 | S102-D06 Implement 102D | **Accepted** |
+| S102-D07 102E runtime path fix | **Accepted** |
 | 102A–102C | **COMPLETE** |
 | 102D Implementation + automated tests | **COMPLETE** |
-| 102E runtime audit + fix | **IN PROGRESS** — browser bind load + navigation fixed; live E2E pending |
-| Sprint close | **Pending** — not authorised |
+| 102E Validation (runtime, journal, live LJ tests) | **COMPLETE** (with qualifications) |
+| S102-D08 Close sprint | **Accepted** |
+| S103-D01 Learning Journey-first architecture | **Accepted** (policy only — not implemented) |
+
+---
+
+## Non-blocking follow-ups (post-close)
+
+1. Assessment Pack and Situated Task — commission-native runtime integration verify.  
+2. Journal capture for Assessment Pack and Situated Task — unverified.  
+3. Cross-component access to actual previous learner responses — unproven.  
+4. Commissioned-child Clear run data defect reported; fix status **not** confirmed.  
+5. Minor prompt presentation and learning-outcome authority inconsistencies.
+
+Do **not** reopen Sprint 102. Do **not** begin Sprint 103 implementation under S103-D01 alone.
 
 ---
 
 ## Work log
+
+### 2026-11-23 — Close Sprint 102
+
+- Closure: [SPRINT-102-CLOSURE.md](SPRINT-102-CLOSURE.md); decision [S102-D08](decisions.md#s102-d08--close-sprint-102--complete-accepted-with-documented-qualifications).  
+- Recorded LJ Test 1 / 2 / 3 design validation evidence; qualifications carried forward.  
+- Recorded [S103-D01](decisions.md#s103-d01--learning-journey-first-architecture) as accepted architectural policy — **not implemented**.  
+- Implementation for Sprint 102 was previously committed; this closure is documentation-only.  
+- **No Sprint 103 implementation. No application edits. No commit/push for closure docs.**
 
 ### 2026-11-23 — 102E Practice Learning Journal handoff
 
 - **Root cause:** Practice was excluded from `composeCommissionedLearnerArtefactProducerInstruction` and from the DLA `isCommissionLearnerFacingCopyStep` gate. Commissioned journal elicitation ids (`C02.E1`–`E5`) never reached DLA as `response_fulfilment.artefact_elicitation_id`, so exported Practice mounted generic `learner-workspace-*` / selection controls with no `learner-constructed-*` producers for the parent journal.  
 - **Fix:** Treat Practice like Interactive for the shared artefact-producer instruction and DLA learner-facing copy gate (bindable text surfaces → `learner-constructed-{elicitation_id}`). Renderer/journal contracts already accepted Practice pages once bindings exist.  
 - **Migration:** Re-run Practice DLA (then GAM as needed) and re-export after hard-refresh so commissioned producers are authored onto materials. Prior generic-id drafts do not auto-migrate.  
-- Tests: `tests/s102e-practice-journal-handoff.test.js`. Sprint 102E remains open.
+- Tests: `tests/s102e-practice-journal-handoff.test.js`.
 
 ### 2026-11-23 — 102E-23 Interactive Learning Journal handoff
 
 - **Root cause:** Artefact-bound Interactive `prompt_set` bodies without numbered list items produced zero response parts, rendered as static prose, and left competing task-step workspaces on generic `learner-workspace-a*` ids. Journal contract correctly expected `learner-constructed-E2..E5`.  
 - **Fix:** `compose-response-parts.js` — artefact-bound unparsed prompt_set emits one constructed-text surface; suppress competing Write task-steps when prompt-set parts exist.  
 - **Migration:** Re-export the Learning Journey (and/or C2) after hard-refresh. Prior generic-id drafts do not auto-migrate — re-enter C2 responses once under the new workspace ids.  
-- Tests: `tests/s102e23-interactive-journal-handoff.test.js`. Sprint 102E remains open.
+- Tests: `tests/s102e23-interactive-journal-handoff.test.js`.
 
 ### 2026-11-20 — 102E Expository publication defects
 
@@ -47,8 +70,7 @@
 - **Navigation:** create/save handoff now expands parent LJ before selecting the child (parity with open-product).  
 - Hardened marker JSON extract (optional fences). Stamped commissioned LO fields onto brief `initialBrief`.  
 - Tests: `tests/s102e-commission-native-runtime-path.test.js`.  
-- **Already-created children:** delete and recommission after hard-refresh (bind module + cache-bust). Do not repair topology in place.  
-- Sprint 102E remains open for live validation.
+- **Already-created children:** delete and recommission after hard-refresh (bind module + cache-bust). Do not repair topology in place.
 
 ### 2026-11-20 — 102D implementation
 
@@ -56,4 +78,3 @@
 - LJ Requirements/Progression/DP prompts: journey + component LO markers.  
 - `app.js`: commissioned LO resolve fallback; planning delivery preamble + embed; Expository grounding note; AP Purpose wording.  
 - Tests: `tests/s102-commission-native-lo-bind.test.js` — all passing; related intake/AP regressions green.  
-- **Stop.** No commit/push. No 102E. No component regeneration.

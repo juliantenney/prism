@@ -36,4 +36,4 @@ Introduce **Practice** as the leaner activity-oriented component commissioned in
 
 ## Successor
 
-[Sprint 102 — Learning Journey–Owned Outcomes and Commission-Native Component Authoring](sprint-102-learning-journey-owned-outcomes.md) — **OPEN**. Journey-level QA remains a subsequent concern — not Sprint 101 or 102.
+[Sprint 102 — Learning Journey–Owned Outcomes and Commission-Native Component Authoring](sprint-102-learning-journey-owned-outcomes.md) — **CLOSED — COMPLETE — ACCEPTED WITH DOCUMENTED QUALIFICATIONS**. Journey-level QA remains a subsequent concern.

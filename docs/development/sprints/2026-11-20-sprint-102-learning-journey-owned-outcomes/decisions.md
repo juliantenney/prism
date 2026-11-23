@@ -158,4 +158,63 @@
 
 **Operational:** Delete children created under the broken path and recommission after hard-refresh. Do not repair topology in place.
 
-**Sprint 102E remains open** for live validation.
+**Sprint 102E remains open** for live validation. *(Superseded at close — see [S102-D08](#s102-d08--close-sprint-102--complete-accepted-with-documented-qualifications).)*
+
+---
+
+## S102-D08 — Close Sprint 102 — Complete / accepted with documented qualifications
+
+**Date:** 2026-11-23  
+**Status:** **Accepted**  
+**Depends on:** [S102-D06](#s102-d06--implement-commission-native-authoring-102d) **Accepted**; [S102-D07](#s102-d07--102e-runtime-path-fix-browser-bind-load--navigation) **Accepted**; 102E live LJ validation evidence in [VALIDATION.md](VALIDATION.md)
+
+**Decision:** Close Sprint 102 as **CLOSED — COMPLETE — ACCEPTED WITH DOCUMENTED QUALIFICATIONS**.
+
+**Delivered capabilities:**
+
+1. Journey-owned learning outcomes generated during LJ Requirements.  
+2. Component-specific learning outcomes generated during LJ Design Page.  
+3. Commission-native workflows bypassing redundant GLC/MK/DLO when valid outcomes are supplied.  
+4. Safe fallback to full foundation workflows for invalid or legacy commissions.  
+5. Shared authoritative source material passed to commissioned components.  
+6. Learning Journal integration fixes for commissioned Interactive and Practice.  
+7. Standalone workflow compatibility preserved.
+
+**Validation (human):** LJ Test 1 (Expository + Interactive) **PASS**; LJ Test 2 (Expository + Practice) **PASS**; LJ Test 3 unconstrained commissioning design validation **PASS**. LJ Test 3 Design Page preserved six supported commissions, component-specific outcomes, canonical shared material, and six journal entries. **Do not claim** that all six LJ Test 3 children were generated or runtime-tested.
+
+**Non-blocking follow-ups (do not reopen Sprint 102):**
+
+1. Assessment Pack and Situated Task commission-native runtime integration — verify.  
+2. Journal capture for Assessment Pack and Situated Task — unverified.  
+3. Cross-component access to actual previous learner responses — unproven.  
+4. Commissioned-child Clear run data defect reported; fix status **not** confirmed.  
+5. Minor prompt presentation and learning-outcome authority inconsistencies.
+
+**Forward policy (not Sprint 102 work):** [S103-D01](#s103-d01--learning-journey-first-architecture) accepted as architectural direction — **do not implement yet**.
+
+**Explicitly not done by this close:** Sprint 103 implementation; further application edits; claim of full LJ Test 3 child generation/runtime; git commit/push for closure docs.
+
+**Closure record:** [SPRINT-102-CLOSURE.md](SPRINT-102-CLOSURE.md).
+
+---
+
+## S103-D01 — Learning Journey-first architecture
+
+**Date:** 2026-11-23  
+**Status:** **Accepted** (programme architectural policy — **not implemented**)  
+**Depends on:** [S102-D08](#s102-d08--close-sprint-102--complete-accepted-with-documented-qualifications)  
+**Recorded in:** Sprint 102 closure (does **not** open Sprint 103)
+
+**Decision:** Accept **Learning Journey-first architecture** as PRISM programme direction.
+
+Sprint 102 demonstrated that Learning Journeys can produce a substantially richer educational design than relying on one large Interactive resource for the same brief.
+
+**Policy:**
+
+1. The **Learning Journey** becomes PRISM’s primary educational design and construction unit.  
+2. Its commissioning family comprises **Expository**, **Practice**, **Assessment Pack**, and **Situated Task**.  
+3. **Interactive** remains available for legacy and standalone authoring, but should **not** be selected for new LJ commissions.  
+4. The Learning Journey owns progression, outcomes, commissioning and continuity.  
+5. The unified learner shell should increasingly connect learner work and evidence across components.
+
+**Hard rule:** Do **not** implement this policy change yet. Acceptance records direction only; product, UI, commissioning defaults, and prompts must not be altered under this decision until a separately authorised sprint.

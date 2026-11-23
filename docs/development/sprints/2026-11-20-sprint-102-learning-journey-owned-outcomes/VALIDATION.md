@@ -1,6 +1,32 @@
 # Sprint 102 — Validation plan / ledger
 
-**Status:** OPEN — 102D automated validation complete; 102E not authorised
+**Status:** **CLOSED** with Sprint 102 — live LJ design validation recorded; qualifications carried forward  
+**Closure:** [SPRINT-102-CLOSURE.md](SPRINT-102-CLOSURE.md)
+
+---
+
+## Human LJ validation (closure evidence)
+
+| Test | Scope | Result |
+| ---- | ----- | ------ |
+| **LJ Test 1** | Expository + Interactive | **PASS** |
+| **LJ Test 2** | Expository + Practice | **PASS** |
+| **LJ Test 3** | Unconstrained commissioning — design validation | **PASS** |
+
+### LJ Test 3 — Design Page commissioning (not full child runtime)
+
+Independently commissioned in the Design Page:
+
+1. Practice — 7 minutes  
+2. Expository — 18 minutes  
+3. Practice — 20 minutes  
+4. Practice — 10 minutes  
+5. Practice — 15 minutes  
+6. Assessment Pack — 20 minutes  
+
+**Observed at Design Page:** six supported commissions preserved; component-specific outcomes present; canonical shared material present; six journal entries present.
+
+**Hard rule at close:** Do **not** claim that all six LJ Test 3 children were generated or runtime-tested.
 
 ---
 
@@ -29,21 +55,27 @@
 | LJ Requirements/Progression/DP prompt contracts | Yes |
 | Practice LJ-only Create posture | Yes |
 
-### 102E automated (runtime path fix)
+---
 
-**Command:** `node --test --test-concurrency=1 tests/s102e-commission-native-runtime-path.test.js`
+## 102E automated (runtime / publication / journal)
 
 | Suite | Result |
 | ----- | ------ |
 | `tests/s102e-commission-native-runtime-path.test.js` | **PASS** (13) |
+| `tests/s102e-expository-publication-defects.test.js` | **PASS** (checkpoint) |
+| `tests/s102e23-interactive-journal-handoff.test.js` | **PASS** (checkpoint) |
+| `tests/s102e-practice-journal-handoff.test.js` | **PASS** (checkpoint) |
 
-Covers: `index.html` bind script order; all four products intake+apply first stage; invalid-marker foundation fallback; create/save parent expand; planning prompt grounding.
+Covers (among other cases): `index.html` bind script order; intake+apply first stage; invalid-marker foundation fallback; create/save parent expand; planning prompt grounding; Expository publication hygiene; Interactive/Practice journal producer binding.
 
-### Remaining for human / 102E live
+These figures are **checkpoint evidence** — not a claim that the entire repository test suite was re-run at closure.
 
-- Hard-refresh app, delete broken foundation children, recommission with valid COMPONENT markers.  
-- Confirm first stage + navigation for Expository / Interactive / Practice / AP.  
-- Expository EJP quality without `learning_content` (S102-AD-015).  
-- Confirm Design Page commissions include COMPONENT markers (regenerate DP only if markers absent).  
+---
 
-**Hard rule:** Automated green does not close the sprint.
+## Explicit non-claims
+
+- Assessment Pack / Situated Task commission-native runtime — **not** fully verified.  
+- Journal capture for Assessment Pack / Situated Task — **unverified**.  
+- Cross-component access to previous learner responses — **unproven**.  
+- Commissioned-child Clear run data fix — **not confirmed**.  
+- All six LJ Test 3 children generated/runtime-tested — **not claimed**.

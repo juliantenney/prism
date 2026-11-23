@@ -2,9 +2,10 @@
 
 **Canonical location:** `docs/backlog/PRODUCT-BACKLOG.md`  
 **Status:** Active — **alpha-use period** (Alpha development complete, 2026-09-02)  
-**Last updated:** 2026-11-12 (Sprint 97 CLOSED — ACCEPTED, qualified — PB-FA-028 delivered; PB-FA-029 deferred)
-**Open sprint:** None — last closed [Sprint 97](../development/sprints/2026-11-12-sprint-97-learning-journal-and-design-pattern-foundations/SPRINT-97-CLOSURE.md)
-**Last closed sprint:** [Sprint 96 — Unified Learning Journey Experience & Compatibility](../development/sprints/2026-11-03-sprint-96-unified-learning-journey-experience/SPRINT-96-CLOSURE.md) — **CLOSED — ACCEPTED**. Prior: [Sprint 95](../development/sprints/2026-11-03-sprint-95-unified-learning-journey-runtime/SPRINT-95-CLOSURE.md).
+**Last updated:** 2026-11-23 (final inter-sprint backlog reconciliation — dispositions for FA-015/016/021/025–027 and FA-002/S-005/FA-018/FA-013/FA-010/M-001/S-006/R-011; prior pass FA-019/020/029/030/031 retained)  
+**Open sprint:** None — Sprint 103 has **not** started.  
+**Last closed sprint:** [Sprint 102 — Learning Journey–Owned Outcomes and Commission-Native Component Authoring](../development/sprints/2026-11-20-sprint-102-learning-journey-owned-outcomes/SPRINT-102-CLOSURE.md) — **CLOSED — COMPLETE — ACCEPTED WITH DOCUMENTED QUALIFICATIONS**. Prior: [Sprint 101](../development/sprints/2026-11-19-sprint-101-practice-as-a-learning-journey-component/SPRINT-101-CLOSURE.md) · [Sprint 97](../development/sprints/2026-11-12-sprint-97-learning-journal-and-design-pattern-foundations/SPRINT-97-CLOSURE.md) (PB-FA-028 delivered).  
+**Architectural policy:** [S103-D01 — Learning Journey-first architecture](../development/sprints/2026-11-20-sprint-102-learning-journey-owned-outcomes/decisions.md#s103-d01--learning-journey-first-architecture) — **Accepted** as programme direction; **not** an implemented product default.
 
 This file answers: **what might we actually choose to work on next?**
 
@@ -56,7 +57,9 @@ Investigate and design the **editorial** quality layer for first-class Expositor
 
 ### PB-FA-002 — Programming / code learning-resource support
 
-Genuine missing future capability for programming learning resources.
+**Status:** Open — unallocated. **Not sprint-allocated.**
+
+Genuine missing future capability for programming learning resources. Programming-specific learner work, language-aware presentation, evidence and feedback remain potential distinct requirements. **No solution architecture has yet been agreed.**
 
 **Scope sketch:** learner code handling; programming-specific workspaces; language-aware rendering; programming evidence and feedback.
 
@@ -66,26 +69,33 @@ Genuine missing future capability for programming learning resources.
 
 ### PB-S-005 — Release / deployment packaging
 
-Establish a repeatable path from active development to a **known-good stable release** (version/build identity, cache-bust discipline, regression gate, checklist, rollback, deployment/update procedure).
+**Status:** Open — **high priority for operational readiness.** **Not sprint-allocated.** Do **not** claim a release process is implemented.
 
-**Evidence:** Sprint 75 operator/debug experience; governance [D-006](../development/governance/ARCHITECTURAL-DEBT.md#d-006--release-packaging).
+Establish a repeatable path from active development to a **known-good stable release**, emphasising **reproducible deployment packages from a verified source state**, with version/build identity, release checklist, regression gate, and rollback/update procedure.
 
-**Immediate concern:** a clean, reproducible deployment folder/package that separates what a deployable PRISM build needs from development and repository material. D-006 already states this: produce a package from known-good source rather than deploying the working project folder, and record what is shipped and from which verified state. The wider release path already noted here (version/build identity, cache-bust discipline, regression gate, checklist, rollback, update procedure) stays part of the same item.
+**Evidence:** Sprint 75 operator/debug experience; governance [D-006](../development/governance/ARCHITECTURAL-DEBT.md#d-006--release-packaging) (High, post-alpha planning → this item).
 
-**Boundary:** Do not use this item to design hosting, authentication, publishing, server-side user persistence, or other production infrastructure. Those are separate questions. Authentication is [PB-S-006](#pb-s-006--institutional-authentication-university-of-nottingham).
+**Immediate concern:** a clean, reproducible deployment folder/package that separates what a deployable PRISM build needs from development and repository material. D-006 already states this: produce a package from known-good source rather than deploying the working project folder, and record what is shipped and from which verified state.
+
+**Boundary:** Do not use this item to design hosting, authentication, publishing, server-side user persistence, or other production infrastructure. Those are separate questions. Authentication remains [PB-S-006](#pb-s-006--institutional-authentication-university-of-nottingham) — preserve the boundary between deployment packaging and authentication.
 
 **Readiness:** Problem documented; approach and acceptance criteria not yet written — **not sprint-allocated**.
 
 ### PB-FA-018 — Shared data and mathematical visualisation
 
-**Status:** Proposed — deferred to a dedicated future sprint. **Not sprint-allocated.**  
+**Status:** Open — linked to [PB-FA-020](#pb-fa-020--precision-graphics-and-structured-visual-specifications). **Not sprint-allocated.**  
 **Scope:** Cross-product platform capability. Does **not** change Sprint 93’s Assessment Pack educational contract.
 
-Establish a shared, accessible, deterministic visualisation capability available to all PRISM products, supporting both authored data and learner-responsive interactions.
+Establish a shared, accessible, **deterministic** visualisation capability available to all PRISM products, supporting authored data, charts, plotting, and learner-responsive interactions.
 
-**Educational opportunity:** Learners inspect, manipulate, and reason with visual representations of data and mathematical relationships, rather than relying only on static graphics.
+**Distinction from PB-FA-020:**
 
-Charting and deterministic diagramming are potential capabilities inside this same shared graphics pipeline, available across products. They sit alongside mathematical visualisation. They do not retire generative image briefs.
+- **PB-FA-018** — deterministic rendering, charts, plotting, and learner-responsive visualisation.
+- **PB-FA-020** — precision-aware visual specifications and validation of scientific/mathematical accuracy.
+
+Do **not** merge the two items. Do **not** commit to a specific charting or maths library from this note.
+
+**Educational opportunity:** Learners inspect, manipulate, and reason with visual representations of data and mathematical relationships, rather than relying only on static graphics. Charting and deterministic diagramming sit alongside mathematical visualisation. They do not retire generative image briefs.
 
 Potential applications include:
 
@@ -95,7 +105,7 @@ Potential applications include:
 - Charts based on learner-generated observations and data.
 - Accessible visual explanations in Expository and evidence inspection in Assessment Pack.
 - Deterministic concept maps and relationship diagrams whose nodes, labels, and connector conventions are authored as data.
-- Learner-responsive visualisations that update from learner action in Expository, Interactive, Assessment Pack, and Situated Task.
+- Learner-responsive visualisations that update from learner action in Expository, Interactive, **Practice**, Assessment Pack, and Situated Task.
 
 **Architectural principles:**
 
@@ -108,7 +118,7 @@ Potential applications include:
 - Consistent behaviour in Preview, standalone HTML, and Learning Journey packages.
 - Explicit versioning and validation of supported visualisation specifications.
 
-**Existing foundation:** Assessment Pack already compiles a deterministic horizontal-bar SVG from `data_figure` and authoritative numeric data (`lib/assessment-pack-publish.js` · `realiseDataFigure`). That path should inform the shared architecture. It is not a general charting library, and it is not discarded by this item. Generated image briefs (`ordered_bar_strip`, `evidence_t_chart`, and related visual-affordance tokens) remain pictures, not data-bound charts. Where those pictures should stay generative but need a more faithful brief, explicit authored structure is [PB-FA-020](#pb-fa-020--structured-visual-specifications-for-generated-graphics). Optional maths follow-ons stay [PB-M-001](#pb-m-001--future-maths-capabilities).
+**Existing foundation:** Assessment Pack already compiles a deterministic horizontal-bar SVG from `data_figure` and authoritative numeric data (`lib/assessment-pack-publish.js` · `realiseDataFigure`). That path should inform the shared architecture. It is not a general charting library, and it is not discarded by this item. Generated image briefs remain pictures, not data-bound charts. Optional maths follow-ons stay [PB-M-001](#pb-m-001--future-maths-capabilities).
 
 **Sprint discovery questions:**
 
@@ -125,29 +135,25 @@ Potential applications include:
 - A fixed statistical chart in Expository.
 - Equivalent functionality in Preview and exported learner packages.
 
-**Out of scope:** A comprehensive statistical analysis package; arbitrary generated JavaScript; changes to Sprint 93’s educational contract.
+**Out of scope:** A comprehensive statistical analysis package; arbitrary generated JavaScript; changes to Sprint 93’s educational contract; merging into PB-FA-020.
 
-**Readiness:** Proposed from the 2026-10-08 charting audit. Approach not yet chosen — **not sprint-allocated**.
+**Readiness:** Proposed from the 2026-10-08 charting audit; Practice added among potentially supported products 2026-11-23. Approach not yet chosen — **not sprint-allocated**.
 
 ### PB-FA-019 — Interactive V2: educational solution design and interaction surfaces
 
-**Status:** Proposed — future development. **Not sprint-allocated.**  
-**Type:** Major product discovery → later implementation (discovery first).  
-**Priority:** Future development.
+**Status:** **Retired — superseded by Practice and Learning Journey-first architecture** (2026-11-23).  
+**Type:** Major product discovery → later implementation (discovery first). Historical entry preserved.  
+**Priority:** n/a (retired).
 
-**Dependencies:**
+**Retirement (2026-11-23):** Practice ([Sprint 101](../development/sprints/2026-11-19-sprint-101-practice-as-a-learning-journey-component/SPRINT-101-CLOSURE.md)) has realised the principal educational direction previously envisaged for Interactive V2 — lean, control-first, activity-oriented engagement commissioned inside Learning Journeys. Learning Journeys now organise progression across specialised products (Expository, Practice, Assessment Pack, Situated Task) under the accepted Learning Journey-first direction ([S103-D01](../development/sprints/2026-11-20-sprint-102-learning-journey-owned-outcomes/decisions.md#s103-d01--learning-journey-first-architecture); policy accepted, not implemented as product defaults). Outstanding interaction-surface ambition continues under [PB-FA-030](#pb-fa-030--practice-interaction-surfaces), not as an Interactive product redesign. **Standalone Interactive remains supported.** This retirement is not a removal or migration decision.
 
-- Learning Journey commissioning model (in place).
-- Shared-material pipeline — Phase 1 handoff (parent LJ `source_context` → constituent prompts) landed 2026-11-05; **Phase 2** (automatic detection / generate-once shared material) and live stability of LJ generation should be proven before Interactive workflow changes.
-- Accepted Assessment Pack educational-contract revisit [Sprint 93](../development/sprints/2026-10-07-sprint-93-assessment-pack-educational-contract/SPRINT-93-CLOSURE.md) ([PB-FA-017](#pb-fa-017--assessment-pack-first-class-product-revisit)) — **CLOSED — ACCEPTED** (pattern reference for educational-solution design).
+**Historical rationale (preserved):** The original Interactive workflow was designed to support a complete learning experience within a standalone resource. Learning Journeys provide a stronger mechanism for orchestrating pedagogical progression across resources. Interactive v2 had been proposed to adopt the educational-solution design approach already working well for Assessment Packs and other Learning Journey components.
 
-**Rationale:** The original Interactive workflow was designed to support a complete learning experience within a standalone resource. Learning Journeys now provide a stronger mechanism for orchestrating pedagogical progression across resources. Interactive v2 should adopt the educational-solution design approach already working well for Assessment Packs and other Learning Journey components.
+**Historical design principle:** *Learning Journeys orchestrate progression between learning experiences; Interactive designs the pedagogy within an individual experience.*
 
-**Design principle:** *Learning Journeys orchestrate progression between learning experiences; Interactive designs the pedagogy within an individual experience.*
+**Historical central question:** How should Interactive be redesigned when Learning Journey establishes educational context, progression, commissioning brief, and (when present) authoritative shared material, so Interactive concentrates on designing and realising the consequential engagement required inside one experience?
 
-**Central question:** How should Interactive be redesigned when Learning Journey establishes educational context, progression, commissioning brief, and (when present) authoritative shared material, so Interactive concentrates on designing and realising the consequential engagement required inside one experience?
-
-**Proposed direction:**
+**Historical proposed direction:**
 
 - Commission Interactive to design an educational solution from learning purpose, audience, context and constraints.
 - Allow the designer to select appropriate interaction capabilities rather than prescribe a fixed structure.
@@ -157,52 +163,45 @@ Potential applications include:
 - Reduce duplication of pedagogical decisions already made at Learning Journey level.
 - Related platform capability where visuals/data apply: [PB-FA-018](#pb-fa-018--shared-data-and-mathematical-visualisation).
 
-**Initial investigation (when opened):**
+**Historical dependencies (at proposal time):** Learning Journey commissioning model; shared-material Phase 1 handoff; Assessment Pack educational-contract pattern ([PB-FA-017](#pb-fa-017--assessment-pack-first-class-product-revisit) — CLOSED — ACCEPTED).
 
-1. Review the current Interactive workflow against the Learning Journey commissioning model.
-2. Identify which stages can be simplified, retained or replaced.
-3. Assess a small initial set of interaction surfaces.
-4. Clarify division of responsibility between Learning Journey and Interactive; propose an Interactive V2 educational contract.
-5. Evaluate architectural options (evolve existing pipeline vs more fundamental redesign). Do not assume replacement is necessary.
-6. Use authentic commissions (including demanding LJ briefs) as discovery evidence.
+**Historical guardrails (preserved for context):** Preserve standalone Interactive capability; no routine stochastic JavaScript generation; Interactive Learning Sequence study-flow fidelity residual ([D-015](../development/governance/ARCHITECTURAL-DEBT.md#d-015--interactive-learning-sequence-study-flow-fidelity)) was not automatically absorbed into this item.
 
-**Guardrails / out of scope for now:**
+This was a revisit of the existing Interactive product, not a new first-class product under [PB-FA-015](#pb-fa-015--additional-first-class-learning-resource-pipelines).
 
-- **No changes to the current Interactive workflow** until the shared-material pipeline is proven and existing Learning Journey generation is stable.
-- No implementation during discovery.
-- No assumption that more widgets equal better learning.
-- No routine stochastic JavaScript generation.
-- Preserve standalone Interactive capability.
-- No weakening of deterministic execution or learner-facing reliability.
-- Interactive Learning Sequence study-flow fidelity residual ([D-015](../development/governance/ARCHITECTURAL-DEBT.md#d-015--interactive-learning-sequence-study-flow-fidelity); S98 M5 Option C; S98-AD-004; S99-AD-012) is **not** automatically absorbed into this item — allocate explicitly if a fuller study-flow engine is pursued.
+**Readiness:** **Retired** — do not allocate. See [PB-FA-030](#pb-fa-030--practice-interaction-surfaces).
 
-**Success criterion (discovery):** We understand what Interactive must become educationally — including the interaction-surface repertoire and LJ/shared-material contract — before deciding how to build it.
+### PB-FA-020 — Precision graphics and structured visual specifications
 
-This is a revisit of the existing Interactive product, not a new first-class product under [PB-FA-015](#pb-fa-015--additional-first-class-learning-resource-pipelines).
+**Status:** Proposed — unassigned. **Not sprint-allocated.**  
+**Type:** Capability investigation (not an implementation commitment).
 
-**Readiness:** Proposed. Dependencies partially met (LJ commissioning + Assessment Pack pattern + Phase 1 shared-material handoff). Remains **not sprint-allocated**. Do not open until shared-material Phase 2 / LJ generation stability criteria are accepted. Interactive V1 expansion (forced activity structure / transfer beats) remains Sprint 94 debt, not absorbed.
+Author explicit visual structure — nodes, relationships, labels, visual conventions, and constraints — and extend that concern to **precision-aware technical and scientific graphics**, so authored structure can drive faithful generative briefs and/or deterministic render paths rather than relying on unstructured prose alone.
 
-### PB-FA-020 — Structured visual specifications for generated graphics
+**Motivating example:** Lagrangian / constrained-mechanics diagram fidelity problems — cases where approximate or illustrative image generation fails to preserve exact geometry, spatial relationships, mathematical meaning, or disciplinary drawing conventions that the learning demand requires.
 
-**Status:** Proposed — unassigned. **Not sprint-allocated.**
+**Requirements direction:**
 
-Author explicit visual structure — nodes, relationships, labels, visual conventions, and constraints — so image-generation briefs can be compiled from that structure rather than from unstructured prose alone.
+- Distinguish **illustrative imagery** (atmosphere, scene, non-critical layout) from **precision graphics** where exact geometry, spatial relationships, mathematical meaning, or disciplinary conventions are essential.
+- Explore deterministic approaches such as SVG, programmatic plotting, and structured geometric specifications, with validation of underlying data and relationships.
+- **SVG alone does not guarantee correctness** — markup without validated geometry/data can still be wrong.
+- Generative graphics remain a valid rendering route where illustration (not precision) is sufficient; structured authorship makes generative briefs more faithful when generation is retained.
 
-**Intent:** Generative graphics remain a valid rendering route. The specification makes the brief more faithful. It does not replace image generation with a diagram renderer.
+**Related:** Charting and deterministic diagramming, including concept maps, relationship diagrams, and learner-responsive visualisations across products, belong to [PB-FA-018](#pb-fa-018--shared-data-and-mathematical-visualisation). This item supplies structured authorship and precision-graphics investigation; it does not absorb general charting into a single implementation programme.
 
-**Related:** Charting and deterministic diagramming, including concept maps, relationship diagrams, and learner-responsive visualisations across products, belong to [PB-FA-018](#pb-fa-018--shared-data-and-mathematical-visualisation). This item supplies structured authorship for briefs that still generate images.
-
-**Readiness:** Proposed 2026-10-08. Approach not yet chosen — **not sprint-allocated**.
+**Readiness:** Proposed 2026-10-08; scope strengthened 2026-11-23 for precision-aware technical/scientific graphics. Approach not yet chosen — **not sprint-allocated**. Capability investigation only — no implementation commitment.
 
 ### PB-FA-021 — Expository editorial integration and publication quality
 
-**Status:** Proposed — unassigned. **Not sprint-allocated.**
+**Status:** Open — **verification first.** **Not sprint-allocated.**
 
 Author and publish Expository resources with a coherent editorial hierarchy, so the learner experience reads as a deliberately edited educational publication rather than an assembly of authored components.
 
-**Context:** *Choosing a Clinical Study Design: Questions, Evidence and Trade-offs* scored 84/100 on PRISM Expository Resource Quality Benchmark v1.2, with no identified Critical or Major production defects. Its educational purpose, intellectual progression, and disciplinary reasoning are strong. The principal remaining weakness is editorial integration: diagrams, captions, explanatory tables, descriptive equivalents, and prose sometimes compete for attention.
+**Reconciliation (2026-11-23):** Before commissioning further development, **verify whether meaningful editorial-quality issues remain** after earlier Expository improvements ([PB-FA-012](#pb-fa-012--expository-editorial-quality--qa) closed; later publication hygiene). The first future action may be a **bounded verification task** rather than an implementation sprint. Do **not** presume the issue is resolved, and do **not** presume substantial development is required.
 
-**Desired capability:**
+**Context:** *Choosing a Clinical Study Design: Questions, Evidence and Trade-offs* scored 84/100 on PRISM Expository Resource Quality Benchmark v1.2, with no identified Critical or Major production defects. Its educational purpose, intellectual progression, and disciplinary reasoning are strong. The principal remaining weakness at that evidence point was editorial integration: diagrams, captions, explanatory tables, descriptive equivalents, and prose sometimes compete for attention.
+
+**Desired capability (if verification confirms remaining need):**
 
 - Each representation has a clear, distinct educational purpose.
 - Figures, tables, captions, and prose complement rather than unnecessarily repeat one another.
@@ -213,49 +212,53 @@ Author and publish Expository resources with a coherent editorial hierarchy, so 
 
 **Evidence:** Benchmark v1.2: 84/100. Representation 76, Information Architecture 78, Typography/Hierarchy 78. No production cap. Strong educational foundations should be preserved.
 
-**Acceptance direction:** Compare actual published learner experiences with their intended educational purpose. Identify where editorial structure adds to or detracts from understanding. Evaluate improvements through live publication inspection and independent QA. Aim for consistent 90+ quality without treating the score itself as the optimisation target.
+**Acceptance direction:** Compare actual published learner experiences with their intended educational purpose. Identify where editorial structure adds to or detracts from understanding. Evaluate through live publication inspection and independent QA. Aim for consistent 90+ quality without treating the score itself as the optimisation target.
 
-**Boundaries:** Do not modify benchmark workflows or scoring rules. Do not weaken accessibility to make pages visually simpler. Do not reopen the recently fixed metadata leakage or alt-text defects unless new evidence warrants it. This is not shared graphics, deterministic diagramming, or structured visual specification — those remain [PB-FA-018](#pb-fa-018--shared-data-and-mathematical-visualisation) and [PB-FA-020](#pb-fa-020--structured-visual-specifications-for-generated-graphics).
+**Boundaries:** Do not modify benchmark workflows or scoring rules. Do not weaken accessibility to make pages visually simpler. Do not reopen the recently fixed metadata leakage or alt-text defects unless new evidence warrants it. This is not shared graphics, deterministic diagramming, or structured visual specification — those remain [PB-FA-018](#pb-fa-018--shared-data-and-mathematical-visualisation) and [PB-FA-020](#pb-fa-020--precision-graphics-and-structured-visual-specifications).
 
 **Related:** First-class Expository capability is [PB-FA-011](#pb-fa-011--expository-resource). The earlier editorial-quality investigation and first slice are closed under [PB-FA-012](#pb-fa-012--expository-editorial-quality--qa). This item does not reopen that delivery.
 
-**Readiness:** Proposed 2026-10-08. Approach not yet chosen — **not sprint-allocated**.
+**Readiness:** Proposed 2026-10-08; verification-first posture 2026-11-23 — **not sprint-allocated**.
 
 ### PB-FA-025 — Duration fidelity: learner workload budgeting
 
-**Status:** Proposed — unassigned. **Not sprint-allocated.**  
+**Status:** **Retain — open.** **Not sprint-allocated.**  
 **Priority:** Medium–high (recurring, systemic instructional-design issue).
 
 **Problem:** PRISM frequently generates resources whose actual learner workload substantially exceeds the duration specified during commissioning. The issue is insufficient control of cumulative learner workload, not poor activity quality.
+
+**Reconciliation (2026-11-23):** Learning Journey commissioning has demonstrated coherent **planned** duration allocation across components, but **actual learner workload fidelity remains unverified**. Distinguish **planned duration** from **observed learner workload**. Do **not** mark this item complete based solely on component durations summing to the requested journey length.
 
 **Evidence:** *The Impossible Alibi: The Blackthorn Notebook Mystery* was commissioned as a 25-minute standalone Interactive resource, but review of the complete experience suggests approximately 60–85 minutes of learner activity (QA benchmark 88/100). The same overshoot pattern has been observed repeatedly across PRISM resources.
 
 **Proposed direction:** Investigate a lightweight, cross-resource approach to duration fidelity using existing workflow stages and generation contracts. Treat commissioned duration as a meaningful design constraint; allocate realistic time budgets across activities; account for reading, evidence examination, cognitive processing, response production and self-review; prevent later material generation from expanding workload beyond the original allocation; check cumulative duration plausibility at Design Page and QA; validate against several existing resources rather than optimising for one example.
 
-**Avoid:** Simplistic word-count calculations; rigid timing formulas; new workflow stages; unnecessary architectural complexity.
+**Avoid:** Simplistic word-count calculations; rigid timing formulas; new workflow stages; unnecessary architectural complexity; equating planned journey totals with verified learner workload.
 
 **Acceptance criteria (eventual implementation):**
 
 1. Generated activity workloads are plausibly consistent with the commissioned duration.
 2. Time allocations account for learner actions, not just content volume.
 3. Later generation stages preserve the agreed workload budget.
-4. Verification identifies material duration mismatches.
+4. Verification identifies material duration mismatches against observed or inspected learner workload — not only arithmetic of planned component durations.
 5. Existing resource types and workflows remain compatible.
 
-**Boundaries:** Backlog investigation / eventual contract and QA improvements only when sprint-allocated. Do not absorb into Interactive V2 ([PB-FA-019](#pb-fa-019--interactive-v2-educational-and-architectural-discovery)) as a substitute for this cross-resource concern.
+**Boundaries:** Backlog investigation / eventual contract and QA improvements only when sprint-allocated. Do not absorb into the retired Interactive V2 programme ([PB-FA-019](#pb-fa-019--interactive-v2-educational-solution-design-and-interaction-surfaces)) as a substitute for this cross-resource concern.
 
-**Readiness:** Proposed 2026-11-09 from alpha-use / QA evidence. Approach not yet chosen — **not sprint-allocated**.
+**Readiness:** Proposed 2026-11-09 from alpha-use / QA evidence; open after LJ duration-allocation observation 2026-11-23. Approach not yet chosen — **not sprint-allocated**.
 
 ### PB-FA-026 — Assisted brief development: from teaching intention to learning experience
 
-**Status:** Proposed — unassigned. **Not sprint-allocated.**  
-**Priority:** Medium (strategic enhancement; not an immediate implementation priority).
+**Status:** **Retain — lower priority.** **Not sprint-allocated.**  
+**Priority:** Lower (authoring assistance; not an immediate implementation priority).
 
-**Problem:** PRISM’s commissioning form captures structured requirements well, but offers limited support for authors who have a teaching intention without a clear learning experience in mind. Creative briefs that unlock sophisticated generation can emerge through conversation outside PRISM rather than through the commissioning interface — suggesting generation capability may outpace support for formulating imaginative, pedagogically purposeful commissions.
+**Problem:** PRISM’s commissioning form captures structured requirements well, but offers limited support for authors who have a teaching intention without a clear learning experience in mind. Creative briefs that unlock sophisticated generation can emerge through conversation outside PRISM rather than through the commissioning interface.
 
-**Evidence:** The *Impossible Alibi* experiment showed PRISM can construct detailed, internally coherent fictional scenarios (characters, events, evidence, contradictions, authentic reasoning opportunities). The enabling creative brief was developed conversationally outside PRISM.
+**Reconciliation (2026-11-23):** Reframe explicitly around helping authors develop **sufficiently detailed briefs for creating effective Learning Journeys**. This is **authoring assistance**, not a separate pedagogical pattern catalogue (former [PB-FA-029](#pb-fa-029--pedagogical-design-pattern-catalogue) is retired).
 
-**Proposed direction:** Explore an optional conversational brief-development experience that helps authors move from an initial teaching problem or intention towards a well-defined resource commission. It could help clarify what learners should understand, practise, decide or produce; explore pedagogical approaches and learning experiences; consider scenarios, simulations, investigations, explanations, practice and authentic assessment; identify contexts, evidence, decisions, tensions or uncertainties; develop a promising idea into a structured commission compatible with existing workflows; and review/refine the brief before proceeding. Support different disciplines and resource types, including Learning Journeys. Do not privilege fictional scenarios over other appropriate approaches.
+**Evidence:** The *Impossible Alibi* experiment showed PRISM can construct detailed, internally coherent fictional scenarios. The enabling creative brief was developed conversationally outside PRISM.
+
+**Proposed direction:** Explore an optional conversational brief-development experience that helps authors move from an initial teaching problem or intention towards a well-defined **Learning Journey** (and related resource) commission. It could help clarify what learners should understand, practise, decide or produce; explore pedagogical approaches; identify contexts, evidence, decisions, tensions or uncertainties; develop a promising idea into a structured commission compatible with existing workflows; and review/refine the brief before proceeding. Support different disciplines. Do not privilege fictional scenarios over other appropriate approaches.
 
 **Design principles:**
 
@@ -266,25 +269,28 @@ Author and publish Expository resources with a coherent editorial hierarchy, so 
 - Produce structured outputs compatible with existing commissioning requirements.
 - Avoid duplicating existing generation stages or introducing unnecessary architectural complexity.
 - Preserve the distinction between developing a brief and generating the resource.
+- Do not recreate a standing pedagogical pattern catalogue.
 
 **Potential acceptance criteria:**
 
-1. An author can begin with an incomplete teaching intention and explore plausible learning-design approaches.
-2. The author can compare, select and refine ideas before committing to a resource design.
+1. An author can begin with an incomplete teaching intention and explore plausible Learning Journey / learning-design approaches.
+2. The author can compare, select and refine ideas before committing to a commission.
 3. The resulting brief can populate or inform PRISM’s existing commissioning process.
 4. Authors can inspect and edit the brief before generation.
 5. Existing direct commissioning workflows remain unchanged.
 
-**Boundaries:** Backlog investigation only until sprint-allocated. Do not redesign the commissioning form or change generation contracts under this entry alone. Distinct from Interactive V2 redesign ([PB-FA-019](#pb-fa-019--interactive-v2-educational-and-architectural-discovery)) and from duration/workload fidelity ([PB-FA-025](#pb-fa-025--duration-fidelity-learner-workload-budgeting)).
+**Boundaries:** Backlog investigation only until sprint-allocated. Do not redesign the commissioning form or change generation contracts under this entry alone. Distinct from retired Interactive V2 ([PB-FA-019](#pb-fa-019--interactive-v2-educational-solution-design-and-interaction-surfaces)), duration fidelity ([PB-FA-025](#pb-fa-025--duration-fidelity-learner-workload-budgeting)), and retired pattern catalogue ([PB-FA-029](#pb-fa-029--pedagogical-design-pattern-catalogue)).
 
-**Readiness:** Proposed 2026-11-10 from alpha-use / Impossible Alibi commissioning experience. Approach not yet chosen — **not sprint-allocated**.
+**Readiness:** Proposed 2026-11-10; reframed lower-priority LJ authoring assistance 2026-11-23 — **not sprint-allocated**.
 
 ### PB-FA-027 — Learning Design Extraction: technology-independent designs from completed resources
 
-**Status:** Proposed — unassigned. **Not sprint-allocated.**  
+**Status:** **Retain — open.** **Not sprint-allocated.**  
 **Priority:** Medium (future capability / proposed enhancement; not an immediate implementation priority).
 
-**Objective:** Enable PRISM to analyse a completed learning resource or assembled Learning Journey and extract a reusable learning design specification that another educator could implement using different technologies, formats or teaching approaches, including face-to-face delivery.
+**Objective:** Enable a **custom workflow** that takes an existing PRISM Learning Journey and extracts a **generic, technology-independent learning design** that an educator can implement using other tools, platforms or methods — including face-to-face delivery.
+
+The extracted design should preserve educational intent, progression, learner activities, evidence and assessment logic **without requiring PRISM-specific components**. This is **distinct from exporting a runnable PRISM package**.
 
 **Problem:** Completed PRISM resources and Learning Journeys embody substantial pedagogical design (outcomes, sequence, activities, dependencies, assessment, reflection), but that design is currently bound to PRISM’s product forms and delivery mechanisms. Educators who want to reuse the *learning design* elsewhere lack a readable, technology-independent specification that separates pedagogically essential features from implementation-specific choices.
 
@@ -302,9 +308,53 @@ Author and publish Expository resources with a coherent editorial hierarchy, so 
 
 **Acceptance criterion (eventual implementation):** An educator unfamiliar with PRISM can use the extracted specification to plan an alternative implementation without reproducing the original technology, while retaining the essential learning activities, dependencies, assessment and pedagogical intent evident in the source.
 
-**Boundaries:** Future capability investigation only until sprint-allocated. Do not implement extraction workflows, schemas or generation changes under this entry alone. Distinct from assisted brief development ([PB-FA-026](#pb-fa-026--assisted-brief-development-from-teaching-intention-to-learning-experience)) — that item helps authors *compose* a commission; this item would *abstract* a design from a completed resource or journey. Distinct from Course Home / programme assembly ([PB-FA-016](#pb-fa-016--course-home--course-assembly)) and from Learning Journey continuity/runtime delivery (closed under [PB-FA-022](#pb-fa-022--learning-journey-continuity-contract)–[PB-FA-024](#pb-fa-024--unified-learning-journey-experience--compatibility)).
+**Boundaries:** Future capability investigation only until sprint-allocated. Do not implement extraction workflows, schemas or generation changes under this entry alone. Distinct from assisted brief development ([PB-FA-026](#pb-fa-026--assisted-brief-development-from-teaching-intention-to-learning-experience)) — that item helps authors *compose* a commission; this item *abstracts* a design from a completed journey. Distinct from unified Learning Journey shell delivery ([PB-FA-022](#pb-fa-022--learning-journey-continuity-contract)–[PB-FA-024](#pb-fa-024--unified-learning-journey-experience--compatibility)) and from Course Home reconciliation ([PB-FA-016](#pb-fa-016--course-home--course-assembly)). Not a runnable-package export substitute.
 
-**Readiness:** Proposed 2026-11-10 from alpha-use / Learning Journey design-reuse interest. Approach not yet chosen — **not sprint-allocated**. Not implemented.
+**Readiness:** Proposed 2026-11-10; custom-workflow clarification 2026-11-23 — **not sprint-allocated**. Not implemented.
+
+### PB-FA-030 — Practice interaction surfaces
+
+**Status:** Proposed — unassigned. **Not sprint-allocated.**  
+**Type:** Incremental Practice capability (investigation → bounded implementation when authorised).
+
+**Objective:** Extend Practice’s existing control-first interaction architecture with educationally meaningful learner interaction surfaces.
+
+**Candidate interactions:** ordering, ranking, matching, sorting, classification, and variable manipulation (illustrative — not a closed taxonomy).
+
+**Requirements:**
+
+- Make learner decisions and reasoning inspectable.
+- Support appropriate attempt-before-feedback behaviour.
+- Reuse existing Practice evidence, feedback, persistence and journal contracts.
+- Support accessible keyboard operation and non-drag alternatives.
+- Add interaction types incrementally in response to demonstrated educational needs.
+
+**Relationship to retired Interactive V2:** This item replaces the outstanding interaction-development ambition of [PB-FA-019](#pb-fa-019--interactive-v2-educational-solution-design-and-interaction-surfaces) without reopening that Interactive product redesign. Standalone Interactive remains supported.
+
+**Boundaries:** Do **not** implement controls under this entry alone. Do not reopen Interactive V2. Do not invent a parallel evidence/persistence system.
+
+**Readiness:** Proposed 2026-11-23 from inter-sprint backlog reconciliation. Approach and acceptance criteria not yet written — **not sprint-allocated**.
+
+### PB-FA-031 — Workspace folders
+
+**Status:** Proposed — unassigned. **Not sprint-allocated.**  
+**Provisional priority:** Medium–high.  
+**Type:** Author workspace organisation capability.
+
+**Objective:** Allow authors to organise growing collections of Learning Journeys, commissioned components and standalone resources.
+
+**Initial scope:**
+
+- Create, rename and organise folders.
+- Move existing resources between folders.
+- Provide navigation and an unfiled-resources view.
+- Preserve resource identity and Learning Journey commission relationships.
+- Keep workspace organisation distinct from learner-facing Learning Journey structure.
+- Avoid destructive cascading deletion of resources.
+
+**Boundaries:** Do **not** implement folders under this entry alone. Workspace folders are **authoring organisation only** — distinct from the delivered unified Learning Journey shell ([PB-FA-016](#pb-fa-016--course-home--course-assembly) reconciled; [PB-FA-023](#pb-fa-023--unified-learning-journey-runtime)–[PB-FA-024](#pb-fa-024--unified-learning-journey-experience--compatibility) complete).
+
+**Readiness:** Proposed 2026-11-23 from inter-sprint backlog reconciliation. Approach and acceptance criteria not yet written — **not sprint-allocated**.
 
 ---
 
@@ -312,15 +362,19 @@ Author and publish Expository resources with a coherent editorial hierarchy, so 
 
 ### PB-FA-010 — Prompt-contract consistency
 
-Optional consistency / standardisation exercise: determine whether remaining PRISM prompts should be migrated to the structured prompt-contract format established for DLA/GAM **where this improves consistency, inspectability and testability**.
+**Status:** Retain — **optional maintenance.** **Not sprint-allocated.**
 
-**Not:** architectural uncertainty, an alpha issue, or a required system-wide rewrite. Rationalise prompts individually in later bounded work if chosen.
+Optional consistency / standardisation exercise: use **targeted per-prompt rationalisation** to the structured prompt-contract format established for DLA/GAM **where this improves consistency, inspectability and testability**.
 
-**Readiness:** Method proven on DLA (Sprint 77); optional follow-on — **not sprint-allocated**.
+**Not:** architectural uncertainty, an alpha issue, a required system-wide rewrite, or wholesale migration of established prompt contracts. Rationalise prompts individually in later bounded work if chosen.
+
+**Readiness:** Method proven on DLA (Sprint 77); optional maintenance follow-on — **not sprint-allocated**.
 
 ### PB-M-001 — Future maths capabilities
 
-Light future capabilities — **no commitment or scheduling**:
+**Status:** Retain — **exploratory / post-alpha.** **No commitment or scheduling.**
+
+Light future capabilities:
 
 | Capability | Notes |
 | ---------- | ----- |
@@ -328,7 +382,7 @@ Light future capabilities — **no commitment or scheduling**:
 | Per-cell maths in table-style response surfaces | Table cells with `input_modality: math` |
 | CAS / symbolic correctness support | Symbolic checking beyond TeX entry/display |
 
-Sprint 82 delivered first-class MathLive entry + MathJax display for dedicated maths fields. These remain optional post-alpha follow-ons. Shared data and mathematical **visualisation** (charts, distributions, learner-responsive plots) is a separate platform item: [PB-FA-018](#pb-fa-018--shared-data-and-mathematical-visualisation).
+Sprint 82 delivered first-class MathLive entry + MathJax display for dedicated maths fields. These remain optional post-alpha follow-ons. Preserve separation from visualisation work: shared data and mathematical **visualisation** (charts, distributions, learner-responsive plots) is [PB-FA-018](#pb-fa-018--shared-data-and-mathematical-visualisation); precision graphics/specs are [PB-FA-020](#pb-fa-020--precision-graphics-and-structured-visual-specifications).
 
 ### Assessment Pack real-use calibration (Sprint 88 remainder)
 
@@ -382,15 +436,19 @@ Concise only. **No implementation commitment.**
 
 ### PB-R-011 — Expository vs Interactive comparison
 
-Given comparable Expository and Interactive resources derived from the same Content, Model Knowledge and Learning Outcomes:
+**Status:** **Retired — superseded by Learning Journey-first architecture** (2026-11-23).
+
+**Retirement (2026-11-23):** The original comparison treats Expository and Interactive as competing complete-resource approaches. The current direction ([S103-D01](../development/sprints/2026-11-20-sprint-102-learning-journey-owned-outcomes/decisions.md#s103-d01--learning-journey-first-architecture) — accepted architectural **policy**, not an implemented product default) uses complementary specialist components within Learning Journeys (Expository, Practice, Assessment Pack, Situated Task). Historical research rationale is preserved below. Future evaluation of Learning Journey effectiveness, learner judgement, capability and transfer may be proposed separately — do **not** create a new research project from this retirement, and do **not** imply such evaluation has already been conducted.
+
+**Historical research question:** Given comparable Expository and Interactive resources derived from the same Content, Model Knowledge and Learning Outcomes:
 
 1. which do **learners** prefer;
 2. which produces better demonstrated **learning, retention and/or transfer**;
 3. which do **educators** actually choose to create and deploy?
 
-The educator question concerns **actual behaviour**, not merely stated pedagogical preference.
+The educator question concerned **actual behaviour**, not merely stated pedagogical preference. Historically informed [PB-FA-011](#pb-fa-011--expository-resource).
 
-**Readiness:** Post-alpha research opportunity — no implementation commitment; informs PB-FA-011.
+**Readiness:** **Retired** — do not allocate as an open research programme.
 
 ---
 
@@ -400,9 +458,11 @@ The educator question concerns **actual behaviour**, not merely stated pedagogic
 
 ### PB-FA-013 — PRISM-aware model context
 
+**Status:** Retain — **exploratory.** **Not sprint-allocated.**
+
 Explore what contextual understanding of PRISM itself should be available to model stages during a workflow: the product, its educational purposes, its terminology, and the relevant workflow boundaries.
 
-The aim is better PRISM-aware reasoning, not larger prompts or indiscriminately more context. Do not design a context subsystem from this note.
+The aim is better PRISM-aware reasoning, not larger prompts or indiscriminately more context. **No new context subsystem is authorised** from this note. Further work requires a specific demonstrated problem and a bounded proposal.
 
 ### PB-FA-014 — Outcomes Map
 
@@ -443,7 +503,7 @@ Constituents remain standalone. Sprint 94 intentionally excluded cross-component
 
 **Delivered:** required continuity surviving Design Page and product intake; preceding-activity descriptions; binding first-stage prompts; author inspectability; WP6 regression evidence.
 
-**Out of scope (unchanged):** Interactive V2 ([PB-FA-019](#pb-fa-019--interactive-v2-educational-and-architectural-discovery)); home-page redesign; Assessment Pack calibration; Course Home; unified runtime.
+**Out of scope (unchanged):** Interactive V2 ([PB-FA-019](#pb-fa-019--interactive-v2-educational-solution-design-and-interaction-surfaces) — **Retired**); home-page redesign; Assessment Pack calibration; Course Home; unified runtime.
 
 ### PB-FA-023 — Unified Learning Journey runtime
 
@@ -488,47 +548,51 @@ Establish foundations for a unified, accessible, single-document Learning Journe
 
 **Non-goals:** Journal editing, branching, export, journal-specific assessment, AI interpretation, regenerating unchanged constituents for journal work, new caching/regeneration frameworks, conditional/adaptive pathways or rules engines in Sprint 97, changing standalone or carry-forward behaviour.
 
-**Related:** Pattern catalogue [PB-FA-029](#pb-fa-029--pedagogical-design-pattern-catalogue). Assisted brief development remains [PB-FA-026](#pb-fa-026--assisted-brief-development-from-teaching-intention-to-learning-experience).
+**Related:** Former pattern catalogue [PB-FA-029](#pb-fa-029--pedagogical-design-pattern-catalogue) — **Retired** (superseded by exemplars corpus). Assisted brief development remains [PB-FA-026](#pb-fa-026--assisted-brief-development-from-teaching-intention-to-learning-experience).
 
 ### PB-FA-029 — Pedagogical design-pattern catalogue
 
-**Status:** **Open — carry forward** (Sprint 97 M4 deferred; catalogue not created).  
-**Type:** Version-controlled catalogue foundations.  
-**Pack:** [Sprint 97 closure](../development/sprints/2026-11-12-sprint-97-learning-journal-and-design-pattern-foundations/SPRINT-97-CLOSURE.md) (deferred from Sprint 97)
+**Status:** **Retired — superseded by the established exemplars corpus** (2026-11-23).  
+**Type:** Version-controlled catalogue foundations. Historical entry preserved.  
+**Pack:** [Sprint 97 closure](../development/sprints/2026-11-12-sprint-97-learning-journal-and-design-pattern-foundations/SPRINT-97-CLOSURE.md) (deferred from Sprint 97; not delivered)
 
-**Objective:** A central catalogue of Learning Journey pedagogical design patterns, starting with:
+**Retirement (2026-11-23):** The established exemplars corpus already provides worked pedagogical exemplars and surfaces reusable design patterns. Further corpus development will be identified as required rather than maintained as a separate standing backlog commitment. **Do not create** `docs/design-patterns/`. Sprint 97 M4 deferral history is preserved below.
+
+**Sprint 97 deferral history (preserved):** Open — carry forward after Sprint 97 M4 deferred; catalogue not created. Intended durable location had been locked as `docs/design-patterns/` (S97-D03 Q6). Deferred tasks S97-T-010…T-012 remained not started at Sprint 97 close.
+
+**Historical objective:** A central catalogue of Learning Journey pedagogical design patterns, starting with:
 
 1. Progressive Evidence Disclosure — *The Decision That Went Wrong* / DUU.  
 2. Draft, Judge, Revise — *Explaining Research: From First Draft to Better Judgement*.  
 3. Ten provisional, pedagogically distinct candidate patterns.
 
-Each pattern uses a standard specification (purpose, cognitive mechanism, sequence, artefacts, journal opportunities, constraints, examples). Demonstrators use a standard pack including commissioning fields, rationale, cognitive map, artefact/journal map, adaptation guidance, and a copyable Create Your Own LLM prompt. Pattern specs are informed by PRISM’s pedagogical north star (better judgement and/or capability; inspectable learner evidence — S97-D04).
+Each pattern was to use a standard specification (purpose, cognitive mechanism, sequence, artefacts, journal opportunities, constraints, examples). Demonstrators were to use a standard pack including commissioning fields, rationale, cognitive map, artefact/journal map, adaptation guidance, and a copyable Create Your Own LLM prompt. Pattern specs were to be informed by PRISM’s pedagogical north star (better judgement and/or capability; inspectable learner evidence — S97-D04).
 
-**Non-goals:** Demonstrator website; in-product AI brief-development service (see [PB-FA-026](#pb-fa-026--assisted-brief-development-from-teaching-intention-to-learning-experience)).
+**Historical non-goals:** Demonstrator website; in-product AI brief-development service (see [PB-FA-026](#pb-fa-026--assisted-brief-development-from-teaching-intention-to-learning-experience)).
 
-**Related:** Learning Journal [PB-FA-028](#pb-fa-028--learning-journal-unified-learning-journeys).
+**Related:** Learning Journal [PB-FA-028](#pb-fa-028--learning-journal-unified-learning-journeys) (delivered).
 
 ### PB-FA-016 — Course Home / course assembly
 
-Explore a learner-facing way to represent, and eventually publish, the whole journey an Outcomes Map designs — not only the individual PRISM resources inside it. This emerged from [PB-FA-014](#pb-fa-014--outcomes-map) experiments. Investigate it with Outcomes Map, not as an unrelated feature.
+**Status:** **Reconciled with the delivered unified Learning Journey shell** (2026-11-23). Not a separate proposed product architecture. **Not sprint-allocated** as a new Course Home product.
 
-**Opportunity:** An Outcomes Map can describe more than a list of resources: title and purpose, intended outcomes, progression and dependencies, delivery groupings, ordered learner sequences, generated resources, selected source material, activities outside PRISM, workplace application, reflection, approximate workload, and how one part leads to the next. If PRISM only emits the separate resources, that larger design is lost or has to be rebuilt by hand.
+**Established implementation direction:** The unified Learning Journey shell ([PB-FA-023](#pb-fa-023--unified-learning-journey-runtime) · [PB-FA-024](#pb-fa-024--unified-learning-journey-experience--compatibility) — both **Complete**) is the established way learners encounter a whole journey: Journey Home / TOC, single-document navigation, one active mounted constituent, artefact handoff, and (with [PB-FA-028](#pb-fa-028--learning-journal-unified-learning-journeys)) Learning Journal. Continuity of commissioned context is [PB-FA-022](#pb-fa-022--learning-journey-continuity-contract) — **Complete**. Do **not** treat the original Course Home concept as wholly outstanding.
 
-**Working hypothesis, not architecture:** Outcomes Map is a design layer (the journey). First-class resources are a production layer (particular learner experiences). Course Home / course assembly is an assembly and delivery layer (the complete journey and the links among its parts). Do not treat Course Home as another first-class learning-resource product beside Expository, Interactive, and Assessment.
+**Historical context (preserved):** This item emerged from [PB-FA-014](#pb-fa-014--outcomes-map) / Learning Journey experiments as a learner-facing way to represent and publish the whole journey — not only individual resources. Historical working hypothesis: Outcomes Map as design layer; first-class resources as production layer; Course Home / course assembly as assembly and delivery layer — not another first-class learning-resource product beside Expository, Interactive, and Assessment.
 
-A possible authoring flow, not a prescribed build: course brief → Outcomes Map → course skeleton → generate the commissioned resources → those resources take the places already reserved for them → publish. The skeleton could exist before the resources do, with not-yet-generated positions. Generating from a position might later pass that commission into the existing first-class workflow, so the finished resource occupies its place without the author reconstructing the course.
+**Evidenced remaining gaps (do not invent further gaps; do not mark unverified capabilities complete):**
 
-**Product-discovery principle:** A new first-class product still has to be justified by a materially different design process, not merely by needing a place in the course. See [PB-FA-015](#pb-fa-015--additional-first-class-learning-resource-pipelines). **Sprint 90 commissioning invariant:** every required Learning Journey element must ultimately be realisable through one or more learner-facing PRISM product outputs; where the current family cannot realise an experience, keep it as an unsupported commission rather than making the learning invisible ([LEARNING-JOURNEY-FOUNDATIONS.md](../development/sprints/2026-10-05-sprint-90-learning-journey-foundations/LEARNING-JOURNEY-FOUNDATIONS.md)). That does not mean one element equals one product.
+- Sprint 96 residual unified-shell debt (comprehensive a11y / AT; MathLive virtual-keyboard residual; stored transfer-prose cleanup; QA v1.2 cross-journey validation) remains on the Sprint 96 ledger — not a reopen of Course Home as a product.
+- Author workspace organisation of many journeys/resources is a separate concern: [PB-FA-031](#pb-fa-031--workspace-folders).
+- Broader programme-of-study / multi-journey catalogue assembly, LMS integration, tracking, and authentication were never prescribed by this item and are not claimed delivered or required by this reconciliation.
 
-Emerging chain: Outcomes Map designs the journey → identifies the educational jobs → commissions first-class resources where appropriate → Course Home assembles the learner-facing journey → generated resources fill their commissioned positions.
-
-Do not prescribe UI, storage, publishing, URLs, navigation, linking, tracking, LMS integration, authentication, persistence, or the exact representation of an Outcomes Map or of generating from a course position.
+**Product-discovery principle (historical):** A new first-class product still has to be justified by a materially different design process. See [PB-FA-015](#pb-fa-015--additional-first-class-learning-resource-pipelines) (retired as a standing proposal). Sprint 90 commissioning invariant retained: every required Learning Journey element must ultimately be realisable through one or more learner-facing PRISM product outputs ([LEARNING-JOURNEY-FOUNDATIONS.md](../development/sprints/2026-10-05-sprint-90-learning-journey-foundations/LEARNING-JOURNEY-FOUNDATIONS.md)).
 
 ### PB-FA-017 — Assessment Pack first-class product revisit
 
 **Status:** **Complete — Sprint 93 CLOSED — ACCEPTED** ([SPRINT-93-CLOSURE.md](../development/sprints/2026-10-07-sprint-93-assessment-pack-educational-contract/SPRINT-93-CLOSURE.md)). Do **not** reopen.
 
-Revisit Assessment Pack using the evidence-led first-class product design method now established through Learning Journey and Sprint 92 ([PB-FA-015 discovery pattern](#learning-journey-as-a-product-discovery-mechanism)).
+Revisit Assessment Pack using the evidence-led first-class product design method now established through Learning Journey and Sprint 92 (historical discovery pattern recorded under [PB-FA-015](#pb-fa-015--additional-first-class-learning-resource-pipelines) — retired as a standing proposal).
 
 #### Motivation
 
@@ -597,77 +661,36 @@ Accepted first-class Assessment Pack. Close: [S93-D12](../development/sprints/20
 
 ### PB-S-006 — Institutional authentication (University of Nottingham)
 
-Investigate the University's supported route for making PRISM available to authenticated University of Nottingham users.
+**Status:** Retain — **investigation.** **Not sprint-allocated.**
+
+Investigate the University of Nottingham’s supported authentication integration route for making PRISM available to authenticated UoN users — **before selecting an implementation**.
 
 **Working intent:** If you can authenticate with a UoN account, you can use PRISM.
 
 The initial requirement is an institutional identity gate, not a PRISM allow-list, invitation system, approval process, role hierarchy, or administration system. The next step is to find the University's supported integration or application-registration route, not to infer a protocol or implement authentication speculatively.
 
-Keep this item to authentication. Publishing, server-side user-owned persistence, and broader multi-user architecture are related later concerns and are not part of this item. Deployment packaging remains [PB-S-005](#pb-s-005--release--deployment-packaging).
+Keep this item to authentication. Do **not** expand into publishing, server-side user-owned persistence, roles, administration, or broader multi-user architecture. Deployment packaging remains [PB-S-005](#pb-s-005--release--deployment-packaging).
 
 ### PB-FA-015 — Additional first-class learning-resource pipelines
 
-One exploratory question: whether any further first-class Learning Design product is justified.
+**Status:** **Retired as a standing proposal** (2026-11-23). Historical record preserved. This does **not** prohibit future product types.
 
-PRISM currently has four first-class learning-resource / composition products relevant to this item: Expository Resource (understanding through structured explanation), Interactive Resource (engagement with a designed/facilitated experience), Assessment Pack (interpretable evidence for judgement), and **Situated Task** (purposeful learner action in authentic/situated context — **implemented**, Sprint 92). Learning Journey composes progression across experiences. A later redesign of Interactive itself is [PB-FA-019](#pb-fa-019--interactive-v2-educational-and-architectural-discovery), not a new product row here.
+**Retirement (2026-11-23):** The current four Learning Journey–commissionable product types are considered **sufficient for now**:
 
-**Working criterion:** A new first-class product should exist because achieving its educational purpose needs a materially different design process, not because the finished resource has a familiar format. Video, podcast, debate, reflection, comparison, quiz, or worked example may simply be ways of realising an existing product. Do not open a backlog row for every named format.
+1. Expository  
+2. Practice  
+3. Assessment Pack  
+4. Situated Task  
 
-**Sprint 92 (COMPLETE / CLOSED):** [Situated Task First-Class Product](../development/sprints/2026-10-07-sprint-92-situated-learning-activity-first-class-product/SPRINT-92-CLOSURE.md) — product definition and implementation for the recurring situated-activity gap evidenced by post–S91 Learning Journey experiments. Final name **Situated Task** / `product_id` **`situated_task`** (`acceptsCommission: true`). Pipeline: Situation → Activity → Support → Learning Return → Design Page. Gate 8 live E2E **PASS**. Learning Journey can commission Situated Task via shared intake. See [S92-D09](../development/sprints/2026-10-07-sprint-92-situated-learning-activity-first-class-product/decisions.md#s92-d09--product-name-and-identity--situated-task) · [S92-D10](../development/sprints/2026-10-07-sprint-92-situated-learning-activity-first-class-product/decisions.md#s92-d10--close-sprint-92--situated-task-first-class-product-complete).
+Standalone Interactive remains supported for legacy/standalone authoring ([S103-D01](../development/sprints/2026-11-20-sprint-102-learning-journey-owned-outcomes/decisions.md#s103-d01--learning-journey-first-architecture) — accepted **policy**, not implemented product defaults). Future product discovery should be **evidence-led** and reopened only if a genuine educational requirement cannot be met through these products.
 
-**Sprint 90 status/reference (historical):** Learning Journey commissioning established the same educational job under the working label **Independent Task**. Sprint 92 delivered that job under the final product name **Situated Task** — not a separate second product.
+**Historical delivery preserved — Situated Task (Sprint 92 COMPLETE / CLOSED):** [Situated Task First-Class Product](../development/sprints/2026-10-07-sprint-92-situated-learning-activity-first-class-product/SPRINT-92-CLOSURE.md) — `situated_task`; Situation → Activity → Support → Learning Return → Design Page; LJ commissionable. Sprint 90 working label **Independent Task** superseded as delivery name by Situated Task.
 
-Candidates remaining (none of them agreed products; Situated Task is no longer a candidate):
+**Historical exploratory candidates (not agreed products; not standing commitments):** Scenario Resource; Problem Resource; Guided practice / worked example hypothesis. Retain as historical discovery vocabulary only.
 
-- **Situated Task — IMPLEMENTED (Sprint 92).** Label **Situated Task** / `situated_task`. Delivers the Sprint 90 Independent Task educational job: purposeful learner-controlled activity in authentic/situated context with structured record and reconnection. Five-stage predetermined pipeline; LJ commissionable. Durable Record transport remains a separate backlog concern. The Assessment Pack revisit was completed in Sprint 93 (**CLOSED — ACCEPTED**).
-- **Scenario Resource — candidate for experiment.** Purpose: develop judgement, interpretation, and decision-making through a situated, possibly unfolding context. The possible distinction from Interactive is that the central design object is the situation: what the learner can know, what they must decide or interpret, how the situation develops, what is disclosed when, and how debrief works. Relevant to professional judgement (management, clinical, ethics, law, policy, and similar). Experiment only.
-- **Problem Resource — candidate to investigate.** Purpose: organise learning around understanding and resolving a substantive problem (interpretation, what must be learned, attempt, feedback, revision, resolution). The problem might be the architecture, not only an activity inside an Interactive Resource. Not a committed product.
-- **Guided practice / worked example — hypothesis only, weaker than the other two.** A responsibility-fade sequence (model, explain, worked example, scaffolded attempt, fade support, independent performance, feedback) might be a distinct process, or it might already be an Interactive Resource, or Expository plus Interactive. First test: whether the existing workflows can design it convincingly.
-- **Independent Task — historical Sprint 90 working label.** Superseded as the delivery name by **Situated Task** (Sprint 92). Retain only as historical discovery vocabulary; do not treat as a separate unimplemented product.
+**Historical working criterion:** A new first-class product should exist because achieving its educational purpose needs a materially different design process, not because the finished resource has a familiar format. Do not open a backlog row for every named format.
 
-#### Learning Journey as a product-discovery mechanism
-
-PRISM should preferentially discover new first-class educational products from **demonstrated learning-design demand** rather than from feature brainstorming or attempts to complete a predefined taxonomy.
-
-Do not invent a catalogue of resource types in advance. The question remains which PRISM product has the design process appropriate to the educational job.
-
-**Working discovery pattern:**
-
-1. Design real Learning Journeys for materially different educational contexts.
-2. Allow educationally justified experiences that existing first-class products cannot coherently produce to remain explicitly **unsupported**.
-3. Treat unsupported commissions as **evidence** rather than automatically forcing them into the nearest existing product.
-4. Look for recurring educational structure across unsupported commissions.
-5. Determine whether those cases share a coherent educational purpose / centre of gravity that is genuinely distinct from existing products.
-6. Derive learner requirements and authoring responsibilities from that evidence.
-7. Only where the evidence supports a recurring production capability, design a new first-class product: purpose → sibling boundary → learner contract → authoring responsibilities → invariants → predetermined pipeline → structured artefact contract → implementation.
-8. Once implemented, the new product expands the capabilities that future Learning Journeys can commission.
-
-**Feedback loop:**
-
-> Learning Journey discovers educational demand; recurring educational demand can justify new first-class products; new first-class products increase what future Learning Journeys can commission.
-
-**Unsupported commissions as discovery evidence:**
-
-> Unsupported is not necessarily a defect. It can be product-discovery evidence.
-
-A single unsupported commission is weak evidence for a new product. Repeated structurally similar requirements across materially different Learning Journeys provide stronger evidence that PRISM may lack a coherent educational production capability.
-
-**Guard against product proliferation:**
-
-> “Can we imagine a use for this product?” is not sufficient justification for making it first-class. Stronger evidence comes from real Learning Journey designs repeatedly requiring an educational capability that existing products cannot coherently satisfy.
-
-**Illustrative example (not a closed taxonomy):** Post–Sprint 91 Learning Journey experiments independently required situated investigation, evidence gathering and conducting a bounded test (undergraduate Product Ways of Working), and conducting a workplace enquiry (workplace CPD Product Judgement). The recurring pattern was analysed before defining a candidate first-class product (Sprint 92 design work). Those examples must not harden into a permanent subtype catalogue.
-
-**Architectural distinction:**
-
-- Learning Journey does **not** dynamically invent product architecture at runtime.
-- It exposes educational requirements through its design work.
-- Product discovery is a **human / product-development** activity informed by that evidence.
-- Once a capability becomes first-class, its production pipeline remains **predetermined** as part of the product definition (S89-D02).
-
-Unsupported commissions should remain visible rather than becoming invisible non-product activity; every required learning element must ultimately be realisable through one or more learner-facing PRISM product outputs (not necessarily 1:1).
-
-No workflow stages, UI options, product-selector entries, or generic product registry follow from this note alone. Existing Expository, Interactive, Assessment Pack, and Learning Journey architecture stays as it is unless a later sprint explicitly changes them.
+**Historical discovery pattern (preserved for evidence-led reopen):** Prefer demonstrated Learning Journey demand over taxonomy completion; treat unsupported commissions as evidence; guard against product proliferation; product discovery remains a human/product-development activity; once first-class, pipelines stay predetermined (S89-D02).
 
 ---
 
@@ -685,6 +708,10 @@ These IDs are **no longer live planning items**. Historical detail remains in pr
 | **PB-FA-007** | **Retired** — user-controlled storage management; workflow deletion is sufficient practical control |
 | **PB-FA-008** | **Superseded** — Slideshow-as-architecture-test; Presentation remains a lightweight idea only (§3) |
 | **PB-FA-009** | **Merged** into PB-FA-011 Research Synthesis relationship question |
+| **PB-FA-015** | **Retired as a standing proposal** (2026-11-23). Four LJ-commissionable types (Expository, Practice, Assessment Pack, Situated Task) considered sufficient for now; evidence-led reopen only. Historical Situated Task delivery + exploratory candidates preserved in §5 |
+| **PB-FA-019** | **Retired — superseded by Practice and Learning Journey-first architecture** (2026-11-23). Historical entry preserved in §1. Standalone Interactive remains supported. Interaction-surface follow-on: [PB-FA-030](#pb-fa-030--practice-interaction-surfaces) |
+| **PB-FA-029** | **Retired — superseded by the established exemplars corpus** (2026-11-23). Historical Sprint 97 M4 deferral preserved in §1. Do not create `docs/design-patterns/` |
+| **PB-R-011** | **Retired — superseded by Learning Journey-first architecture** (2026-11-23). Historical Expository-vs-Interactive research rationale preserved in §4. Does not create a new LJ-effectiveness evaluation project |
 | **PB-S-001…PB-S-004** | **Retired** from canonical planning (historical suite/UX notes; not current “what next” items) |
 | **PB-R-001** | **Retired** from canonical planning (conversation-attachment store) |
 | **PB-R-002** | **Absorbed** into PB-FA-002 discovery when planned |
@@ -703,6 +730,7 @@ These IDs are **no longer live planning items**. Historical detail remains in pr
 
 ## Related
 
-- Programme pointer: [docs/sprints/NEXT-SPRINT.md](../sprints/NEXT-SPRINT.md)  
+- Programme pointer: [docs/sprints/NEXT-SPRINT.md](../sprints/NEXT-SPRINT.md) — **no open sprint**; Sprint 102 closed; Sprint 103 unopened  
+- Architectural policy: [S103-D01 — Learning Journey-first architecture](../development/sprints/2026-11-20-sprint-102-learning-journey-owned-outcomes/decisions.md#s103-d01--learning-journey-first-architecture) — **Accepted** (not implemented product defaults)  
 - Alpha close: [SPRINT-82-CLOSURE.md](../development/sprints/2026-09-01-sprint-82-maths-entry-and-alpha-completion/SPRINT-82-CLOSURE.md) · [S82-D04](../development/sprints/2026-09-01-sprint-82-maths-entry-and-alpha-completion/decisions.md#s82-d04--alpha-development-complete)  
 - Legacy notes (non-planning): [ideas.md](ideas.md) · [known-issues.md](known-issues.md) · [future-directions.md](future-directions.md)  

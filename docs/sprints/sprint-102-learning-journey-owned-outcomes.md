@@ -35,9 +35,13 @@ Journey-owned and component-specific outcomes; commission-native foundation omis
 
 Assessment Pack / Situated Task runtime and journal verify; cross-component previous-response access; Clear run data confirm; minor prompt/LO authority inconsistencies. See [SPRINT-102-CLOSURE.md](../development/sprints/2026-11-20-sprint-102-learning-journey-owned-outcomes/SPRINT-102-CLOSURE.md).
 
-## Forward policy (not implemented)
+## Forward policy
 
-[S103-D01 — Learning Journey-first architecture](../development/sprints/2026-11-20-sprint-102-learning-journey-owned-outcomes/decisions.md#s103-d01--learning-journey-first-architecture) — **Accepted** as programme direction. Do not implement until separately authorised.
+[S103-D01 — Learning Journey-first architecture](../development/sprints/2026-11-20-sprint-102-learning-journey-owned-outcomes/decisions.md#s103-d01--learning-journey-first-architecture) — **Accepted** as programme direction.
+
+## Successor
+
+[Sprint 103 — Learning Journey Runtime Continuity and Commissioning Fidelity](sprint-103-learning-journey-runtime-continuity-and-commissioning-fidelity.md) — **OPEN** (commissioning alignment + runtime continuity verification).
 
 ## Predecessor
 

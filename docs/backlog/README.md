@@ -4,9 +4,9 @@
 
 **Programme status:** **Alpha development complete** (2026-09-02). Current phase is the **alpha-use period**.
 
-**Open sprint:** None — Sprint 103 has **not** started.  
+**Open sprint:** [Sprint 103 — Learning Journey Runtime Continuity and Commissioning Fidelity](../development/sprints/2026-11-23-sprint-103-learning-journey-runtime-continuity-and-commissioning-fidelity/SPRINT-103-START-HERE.md).  
 **Last closed:** [Sprint 102 — Learning Journey–Owned Outcomes and Commission-Native Component Authoring](../development/sprints/2026-11-20-sprint-102-learning-journey-owned-outcomes/SPRINT-102-CLOSURE.md) — **CLOSED — COMPLETE — ACCEPTED WITH DOCUMENTED QUALIFICATIONS**.  
-**Architectural policy:** [S103-D01 — Learning Journey-first](../development/sprints/2026-11-20-sprint-102-learning-journey-owned-outcomes/decisions.md#s103-d01--learning-journey-first-architecture) — **Accepted** (not implemented product defaults).
+**Architectural policy:** [S103-D01 — Learning Journey-first](../development/sprints/2026-11-20-sprint-102-learning-journey-owned-outcomes/decisions.md#s103-d01--learning-journey-first-architecture) — **Accepted**; Sprint 103 verifies commissioning alignment and runtime continuity (implementation gated).
 
 [PRODUCT-BACKLOG.md](PRODUCT-BACKLOG.md) is the **current planning authority**. It answers what PRISM might deliberately choose to work on next. It does **not** catalogue every historical deferred observation.
 
@@ -31,6 +31,6 @@ Do **not** promote historical sprint architectural-debt ledgers wholesale into t
 
 ## Navigation
 
-- Programme pointer: [NEXT-SPRINT.md](../sprints/NEXT-SPRINT.md) — **no open sprint** · last closed Sprint 102 · Sprint 103 unopened · S103-D01 accepted policy (not implemented defaults)  
+- Programme pointer: [NEXT-SPRINT.md](../sprints/NEXT-SPRINT.md) — **Sprint 103 OPEN** · last closed Sprint 102 · S103-D01 accepted policy  
 - Alpha close: [SPRINT-82-CLOSURE.md](../development/sprints/2026-09-01-sprint-82-maths-entry-and-alpha-completion/SPRINT-82-CLOSURE.md)  
 - Sprint index: [docs/sprints/README.md](../sprints/README.md)  

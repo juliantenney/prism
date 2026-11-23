@@ -3,9 +3,9 @@
 **Canonical location:** `docs/backlog/PRODUCT-BACKLOG.md`  
 **Status:** Active — **alpha-use period** (Alpha development complete, 2026-09-02)  
 **Last updated:** 2026-11-23 (final inter-sprint backlog reconciliation — dispositions for FA-015/016/021/025–027 and FA-002/S-005/FA-018/FA-013/FA-010/M-001/S-006/R-011; prior pass FA-019/020/029/030/031 retained)  
-**Open sprint:** None — Sprint 103 has **not** started.  
+**Open sprint:** [Sprint 103 — Learning Journey Runtime Continuity and Commissioning Fidelity](../development/sprints/2026-11-23-sprint-103-learning-journey-runtime-continuity-and-commissioning-fidelity/SPRINT-103-START-HERE.md) — **OPEN** (103A investigation authorised; implementation gated).  
 **Last closed sprint:** [Sprint 102 — Learning Journey–Owned Outcomes and Commission-Native Component Authoring](../development/sprints/2026-11-20-sprint-102-learning-journey-owned-outcomes/SPRINT-102-CLOSURE.md) — **CLOSED — COMPLETE — ACCEPTED WITH DOCUMENTED QUALIFICATIONS**. Prior: [Sprint 101](../development/sprints/2026-11-19-sprint-101-practice-as-a-learning-journey-component/SPRINT-101-CLOSURE.md) · [Sprint 97](../development/sprints/2026-11-12-sprint-97-learning-journal-and-design-pattern-foundations/SPRINT-97-CLOSURE.md) (PB-FA-028 delivered).  
-**Architectural policy:** [S103-D01 — Learning Journey-first architecture](../development/sprints/2026-11-20-sprint-102-learning-journey-owned-outcomes/decisions.md#s103-d01--learning-journey-first-architecture) — **Accepted** as programme direction; **not** an implemented product default.
+**Architectural policy:** [S103-D01 — Learning Journey-first architecture](../development/sprints/2026-11-20-sprint-102-learning-journey-owned-outcomes/decisions.md#s103-d01--learning-journey-first-architecture) — **Accepted**; Sprint 103 verifies commissioning alignment and runtime continuity.
 
 This file answers: **what might we actually choose to work on next?**
 

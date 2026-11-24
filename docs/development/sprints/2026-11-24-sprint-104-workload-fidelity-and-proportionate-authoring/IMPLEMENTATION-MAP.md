@@ -1,6 +1,6 @@
 # Sprint 104 — Implementation map
 
-**Status:** **OPEN — MILESTONES 1 (`c461770`), 2 (`9db45bf`), & 3 (`53bd50c`) COMMITTED / MILESTONE 4 IMPLEMENTED & VERIFIED**  
+**Status:** **OPEN — MILESTONES 1 (`c461770`), 2 (`9db45bf`), 3 (`53bd50c`), & 4 (`43db3f4`) COMMITTED / MILESTONE 5 IMPLEMENTED & VERIFIED**  
 **Charter:** [SPRINT-104-CHARTER.md](SPRINT-104-CHARTER.md)  
 **Decisions:** [S104-D01](decisions.md#s104-d01--open-sprint-104--workload-fidelity-and-proportionate-authoring) · [S104-D02](decisions.md#s104-d02--architectural-agreement-principles-a-e-and-separately-gated-milestones) · [S104-D03](decisions.md#s104-d03--milestone-2-multi-lo-compatibility-and-milestone-3-contract-reconciliation)  
 **Investigation:** [INITIAL-INVESTIGATION.md](INITIAL-INVESTIGATION.md)
@@ -14,8 +14,8 @@
 M1    Authoritative duration transport only (all 4 products + legacy)   COMMITTED (c461770; manual live pending)
 M2    Practice Episode Plan design authority (AI-authored, validated)   COMMITTED (9db45bf)
 M3    Reconciliation of downstream Practice contracts                   COMMITTED (53bd50c)
-M4    Proportionate Learning Journey commissioning                      IMPLEMENTED & VERIFIED (ready to commit separately)
-M5    Workload estimation corrections                                   NEXT (after M4 commit)
+M4    Proportionate Learning Journey commissioning                      COMMITTED (43db3f4)
+M5    Workload estimation corrections                                   IMPLEMENTED & VERIFIED (uncommitted)
 M6    Live 5-, 15-, and 30-minute Practice sensitivity probes           GATED on M5
 M7    90-min Economics regeneration, comparison, QA & learner runtime   GATED on M6
 ```
@@ -30,8 +30,8 @@ M7    90-min Economics regeneration, comparison, QA & learner runtime   GATED on
 | **M1** | Canonical Step 4 origin (`<<<COMMISSION_DURATIONS_BEGIN>>>` / `allocated_minutes`) → Step 5 Design Page → commission envelope → intake → `deliverySeed` → `resolvedFactors` → effective run context (`Duration: N minutes`) across **Expository, Practice, Assessment Pack, Situated Task**; conflict rejection & component lock; explicit `null`/unavailable legacy handling (no prose parsing); focused tests + consumer audit | **Principle A** | **Committed (`c461770`)** |
 | **M2** | Move Practice Episode Plan from deterministic archetype templates to AI-authored, deterministically validated Episode Plans (Assessment Pack precedent; grammar-preserving; no duration tiers/quotas/beat targets/LO grouping; protect Interactive; assess multi-LO cohesive single activity support) | **Principle B** | **Committed (`9db45bf`)** |
 | **M3** | Reconcile downstream Practice contracts (`DLA`, `GAM`, `Learning Sequence`, `Design Page`, `Guided Review`, `Population Contract`, `Scaffold`, `vNext Assembly/Renderer`) so obligations apply conditionally to EP-selected functions and redundant Interactive prescriptions (mandatory images/tips/summaries/bridges/3-criterion floors/fixed exemplars) are removed without altering standalone Interactive | **Principle C** | **Committed (`53bd50c`)** |
-| **M4** | Proportionate LJ commissioning: distribute functions across journey, exploit prior learning & familiar evidence, honour consequential artefact reuse without inventing adaptation/snapshots, honour Journal-from-purposeful-performance rule, avoid arbitrary component/LO/word-count quotas or duration tiers, surface infeasible commissions cleanly, calibrate all 4 commissioned product families to authoritative duration | **Principle D** | **Implemented & verified** |
-| **M5** | Fix `learning-journey-workload-feasibility-adapter.js` precedence bug, eliminate silent `interactive-workload-feasibility-adapter.js` bypasses, restore cumulative comparison vs authoritative duration, model evidence/decisions/responses/worked examples/feedback/revision, separate familiar/optional load, keep warnings advisory & separate from structural duration compliance | **Principle E** | **Next (after M4 commit)** |
+| **M4** | Proportionate LJ commissioning: distribute functions across journey, exploit prior learning & familiar evidence, honour consequential artefact reuse without inventing adaptation/snapshots, honour Journal-from-purposeful-performance rule, avoid arbitrary component/LO/word-count quotas or duration tiers, surface infeasible commissions cleanly, calibrate all 4 commissioned product families to authoritative duration | **Principle D** | **Committed (`43db3f4`)** |
+| **M5** | Fix `learning-journey-workload-feasibility-adapter.js` precedence bug, eliminate silent `interactive-workload-feasibility-adapter.js` bypasses, restore cumulative comparison vs authoritative duration, model evidence/decisions/responses/worked examples/feedback/revision, separate familiar/new & optional load, keep warnings advisory & separate from structural duration compliance, audit Sprint 101 safeguards & arbitrary criterion caps | **Principle E** | **Implemented & verified (uncommitted)** |
 | **M6** | Live **5-, 15-, and 30-minute** Practice duration sensitivity probes | **Principles A–E** | **Gated on M5 review** |
 | **M7** | Regenerate original 90-min *Correlation and Causation* Economics journey (retaining baseline captures intact), baseline comparison, educational QA & learner-runtime acceptance | **Principles A–E** | **Gated on M6 review** |
 

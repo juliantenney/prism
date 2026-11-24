@@ -1,7 +1,7 @@
 # Sprint 104 — Validation ledger
 
-**Status:** **OPEN — MILESTONES 1 (`c461770`), 2 (`9db45bf`), & 3 (`53bd50c`) COMMITTED / MILESTONE 4 VERIFIED**  
-**Baseline commit:** `1515cd4` (M1 checkpoint: `c461770`; M2 checkpoint: `9db45bf`; M3 checkpoint: `53bd50c`)
+**Status:** **OPEN — MILESTONES 1 (`c461770`), 2 (`9db45bf`), 3 (`53bd50c`), & 4 (`43db3f4`) COMMITTED / MILESTONE 5 VERIFIED (UNCOMMITTED)**  
+**Baseline commit:** `1515cd4` (M1: `c461770`; M2: `9db45bf`; M3: `53bd50c`; M4: `43db3f4`)
 
 ---
 
@@ -103,12 +103,14 @@
 | **Milestone 1 — Authoritative duration transport** | Step 4 origin (`<<<COMMISSION_DURATIONS_BEGIN>>>` / `END`), parent-allocation & sum reconciliation, non-bypass for new authoring (`duration_contract_version: "s104_m1"`), Step 4↔5 reconciliation, zero prose fallback, lossless envelope/intake/family transport across all 4 commissioned products, persistence, delete/recreate, legacy compatibility, component duration lock UI | **Committed (`c461770`)** (automated verified; manual acceptance pending integrated live validation) |
 | **Milestone 2 — Practice Episode Plan design authority** | AI-authored, deterministically validated Practice Episode Plans responsive to purpose, outcomes, authoritative duration, prior learning, and journey context; single cohesive multi-LO activity assessment; no fixed duration tiers or beat targets; standalone/legacy Interactive preserved | **Committed (`9db45bf`)** |
 | **Milestone 3 — Reconciliation of downstream Practice contracts** | Conditional DLA / GAM / Guided Review / Population / Scaffold / Learning Sequence / Design Page obligations keyed to Episode Plan selections; purpose-driven Practice editorial furniture; multi-LO fallback parity; preserved structural/accessibility/material/artefact/renderer invariants; Interactive untouched | **Accepted & committed (`53bd50c`)** |
-| **Milestone 4 — Proportionate Learning Journey commissioning** | Cross-journey pedagogical distribution, genuine learner performance & feedback reasoning, familiar-evidence reuse, progressive artefact reuse without inventing response-aware adaptation or snapshots, Journal-from-purposeful-performance rule, explicit infeasibility surfacing, 4-product duration calibration | **Implemented & focused-verified** |
-| **Milestone 5 — Workload estimation corrections** | Fix `|| product === "practice"` precedence & prose-first duration lookup in `learning-journey-workload-feasibility-adapter.js`; wire cumulative workload against `commissioned_duration_minutes`; explicit unavailable duration status; account for evidence, decisions, constructed responses, worked examples, feedback & revision; advisory warnings only | **Next (after Milestone 4 commit)** |
+| **Milestone 4 — Proportionate Learning Journey commissioning** | Cross-journey pedagogical distribution, genuine learner performance & feedback reasoning, familiar-evidence reuse, progressive artefact reuse without inventing response-aware adaptation or snapshots, Journal-from-purposeful-performance rule, explicit infeasibility surfacing, 4-product duration calibration | **Committed (`43db3f4`)** |
+| **Milestone 5 — Workload estimation corrections** | Fix `\|\| product === "practice"` precedence & prose-first duration lookup in `learning-journey-workload-feasibility-adapter.js`; wire cumulative workload against authoritative duration; explicit unavailable duration status; account for evidence, decisions, constructed responses, worked examples, feedback & revision; familiar/new & optional separation; advisory warnings only; audit Sprint 101 safeguards & arbitrary criterion caps | **Implemented & focused-verified (uncommitted — stopped before commit)** |
+| **Milestone 6 — Practice duration sensitivity probes** | Live authoring runs for equivalent purpose at **5 min**, **15 min**, and **30 min** showing genuine structural & workload scaling with preserved pedagogical completeness | **Not started** (gated on Milestone 5) |
+| **Milestone 7 — 90-minute Economics journey regeneration & runtime acceptance** | Regenerate 90-min journey from original brief without touching pre-intervention baseline captures; compare against untouched baseline; Educational QA + learner-runtime acceptance | **Not started** (gated on Milestone 6) |
 
 ---
 
-## Milestone 4 verification (Proportionate Learning Journey commissioning)
+## Milestone 4 verification (Proportionate Learning Journey commissioning — Committed `43db3f4`)
 
 ### Syntax checks (all 7 modified JS files)
 
@@ -128,5 +130,27 @@
 | ------------- | ------ | ----- |
 | `tests/s104-m4-proportionate-commissioning.test.js` + 18-suite cross-product & LJ continuity/duration regression bundle (`s104-m1`, `s104-m2`, `s104-m3`, `s103-duration-fidelity-guidance`, `s103-artefact-consumer-four-product`, `s94-wp1/wp2`, `s96-m3`, `s96-lj-shared-source-design-page-boundary`, `s85-wp3/wp4`, `s92-slice1/lj-handoff/stage5`, `s93-ap-handoff`, `qa-c06`, `s91-ui-orchestration`, `s91-commissioning-preview`) | **171 / 171 pass** | Verifies cross-journey distribution, achievable performance & feedback reasoning, familiar vs new evidence framing, consequential artefact reuse without runtime adaptation/snapshots, Journal discipline, infeasibility surfacing, zero forbidden quotas/tiers/word caps, and authoritative duration calibration across Practice, Expository, Assessment Pack, and Situated Task without standalone regression |
 | Economics pre-intervention baseline preservation (`git status`) | **Untouched** | Zero modifications to `c01-page.json`, `c01-zip/`, `c02-page.json`, `tests/fixtures/assessment-pack-c06-design-page-d09-scatterplot.json`, or `Downloads`; no live generation run |
-| **Milestone 6 — Practice duration sensitivity probes** | Live authoring runs for equivalent purpose at **5 min**, **15 min**, and **30 min** showing genuine structural & workload scaling with preserved pedagogical completeness | **Not started** (gated on Milestone 5) |
-| **Milestone 7 — 90-minute Economics journey regeneration & runtime acceptance** | Regenerate 90-min journey from original brief without touching pre-intervention baseline captures; compare against untouched baseline; Educational QA + learner-runtime acceptance | **Not started** (gated on Milestone 6) |
+
+---
+
+## Milestone 5 verification (Workload estimation corrections — Uncommitted)
+
+### Syntax checks (all 6 modified/new JS files)
+
+| Check | Outcome |
+| ----- | ------- |
+| `node --check app.js` | **Pass** (exit 0) |
+| `node --check lib/workload-feasibility-estimator.js` | **Pass** (exit 0) |
+| `node --check lib/learning-journey-workload-feasibility-adapter.js` | **Pass** (exit 0) |
+| `node --check lib/interactive-workload-feasibility-adapter.js` | **Pass** (exit 0) |
+| `node --check lib/assessment-pack-workload-feasibility-adapter.js` | **Pass** (exit 0) |
+| `node --check tests/s104-m5-workload-estimation.test.js` | **Pass** (exit 0) |
+
+### Focused automated test suites (`node --test`, observed 2026-11-24)
+
+| Suite / Scope | Result | Notes |
+| ------------- | ------ | ----- |
+| 27-file Milestone 5 & reconciled regression bundle (`s104-m5-workload-estimation`, `s100a`, `s100b1`, `s100b2`, `s100c`, `s103-duration-fidelity-guidance`, `s103-artefact-consumer-four-product`, `s104-m1`..`s104-m4`, 12 `s101*` Practice/Selection/Workload/Control-led suites, `page-partial-capture-validate`, `qa-c06-assessment-pack-fidelity`, `s91-commissioning-preview`, `s91-ui-orchestration`) | **163 / 163 pass** | Verifies Practice math precedence fix, authoritative structured duration precedence over prose, explicit `durationStatus: "unavailable"` reporting instead of silent pass across LJ/Practice/Assessment Pack, cumulative comparison against authoritative duration (`C01`-like synthetic Practice fixture + multi-elicitation AP), deduplicated materials (`required_materials` vs `materials`), familiar vs new vs mixed evidence, structured decisions/worked examples/checklists/feedback/optional revision exclusion, driver identification, non-mutation & structural separation |
+| Additional Sprint 88–96 Assessment Pack & LJ continuity check (`s92-lj-handoff`, `s92-slice1`, `s93-ap-handoff`, `s93-assessment-key-defence`, `s94-assessment-design-page-framing-string`, `s96-assessment-evidence-qualification`, `s96-lj-shared-source-design-page-boundary`, `s88-assessment-pack-publish`) | **52 / 53 pass** | 52 passing across S92–S96 AP/LJ handoff, key defence, framing, qualification, and shared-source contracts; 1 unrelated pre-existing `PB-S-008` exact-string prompt drift (`tests/s88-assessment-pack-publish.test.js:312`) unchanged |
+| Reconciled Sprint 101 safeguards & arbitrary criterion cap audit | **Verified** | Confirmed accessibility (`util-assessment-fieldset`, `<label for>`, `alt_text`/`detailed_description`), independence (`anti_spoiler`, `spoiler_boundary`, unchecked draft restore), evidence fidelity (`requires_exact_data_match`, `evidence_anchors`, `evidence_decision`), and response functionality (`selection_choose`, `single_select`/`multi_select`/`matching`, `assessmentRuntime`) retained; remaining Practice criterion caps recorded under `S104-AD-009` |
+| Economics pre-intervention baseline preservation (`git status`) | **Untouched** | Zero modifications to `c01-page.json`, `c01-zip/`, `c02-page.json`, `tests/fixtures/assessment-pack-c06-design-page-d09-scatterplot.json`, or `Downloads`; no live generation run |

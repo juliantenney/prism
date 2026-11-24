@@ -1,8 +1,8 @@
 # Sprint 104 — Status / work log
 
 **Sprint:** 104 — Workload Fidelity and Proportionate Authoring  
-**Status:** **OPEN — MILESTONES 1 (`c461770`), 2 (`9db45bf`), & 3 (`53bd50c`) COMMITTED / MILESTONE 4 IMPLEMENTED & VERIFIED**  
-**Baseline:** `1515cd4` (M1 checkpoint: `c461770`; M2 checkpoint: `9db45bf`; M3 checkpoint: `53bd50c`)  
+**Status:** **OPEN — MILESTONES 1 (`c461770`), 2 (`9db45bf`), 3 (`53bd50c`), & 4 (`43db3f4`) COMMITTED / MILESTONE 5 IMPLEMENTED & VERIFIED (STOPPED BEFORE COMMIT)**  
+**Baseline:** `1515cd4` (M1: `c461770`; M2: `9db45bf`; M3: `53bd50c`; M4: `43db3f4`)  
 **Primary backlog item:** [PB-FA-025](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-025--duration-fidelity-learner-workload-budgeting)  
 **Opening & agreement:** [S104-D01](decisions.md#s104-d01--open-sprint-104--workload-fidelity-and-proportionate-authoring), [S104-D02](decisions.md#s104-d02--architectural-agreement-principles-a-e-and-seven-gated-milestones)
 
@@ -14,16 +14,34 @@
 | Milestone 1 — Authoritative duration transport | **Complete & committed (`c461770`)** (automated verified; manual acceptance pending integrated live validation) |
 | Milestone 2 — Practice Episode Plan design authority | **Complete & committed (`9db45bf`)** |
 | Milestone 3 — Reconciliation of downstream Practice contracts | **Accepted & committed (`53bd50c`)** |
-| Milestone 4 — Proportionate Learning Journey commissioning | **Implemented & focused-verified (ready to commit separately)** |
-| Milestone 5 — Workload estimation corrections | **Next (after Milestone 4 commit)** |
-| Milestone 6 — Live 5-, 15- and 30-minute Practice sensitivity probes | **Not started** (gated on Milestone 5) |
+| Milestone 4 — Proportionate Learning Journey commissioning | **Complete & committed (`43db3f4`)** |
+| Milestone 5 — Workload estimation corrections | **Implemented & focused-verified (uncommitted — stopped before commit for review)** |
+| Milestone 6 — Live 5-, 15- and 30-minute Practice sensitivity probes | **Not started** (gated on Milestone 5 review) |
 | Milestone 7 — 90-minute Economics journey regeneration, baseline comparison, QA & learner-runtime acceptance | **Not started** (gated on Milestone 6) |
 
 ---
 
 ## Work log
 
-### 2026-11-24 — Milestone 4 implementation (Proportionate Learning Journey commissioning)
+### 2026-11-24 — Milestone 5 implementation (Workload estimation corrections — uncommitted)
+
+- Implemented **Milestone 5** per [S104-D02](decisions.md#s104-d02--architectural-agreement-principles-a-e-and-seven-gated-milestones) Principle E (bounded to confirmed estimation/adapter defects; no new estimation architecture, false precision, or automatic mutations; economics baseline untouched):
+  - **Learning Journey adapter (`lib/learning-journey-workload-feasibility-adapter.js`):**
+    - Fixed the confirmed Practice mathematical-problem precedence bug (`&&(product === "interactive" || product === "practice") && !wordBand`) and guarded `institutional_recommendation` against casual `"recommend"` prose.
+    - Enforced authoritative structured duration priority (`authoritativeDurationsByCommissionId`, `commission.allocated_minutes`, `authoritativeParentDurationMinutes`, `learning_journey.allocated_minutes`) over prose fallback (`Approximate learner time:`), disabling prose fallback whenever structured duration contracts apply (`duration_contract_version: "s104_m1"` / structured durations / `requireAuthoritativeDuration`), surfacing explicit `durationStatus: "unavailable"` advisory notices rather than silent passes, and preserving legacy Sprint 100C compatibility.
+    - Distinguished mixed familiar/revisited vs new datasets without erasing new evidence and preserved all S100C anti-double-counting guards.
+  - **Core estimator (`lib/workload-feasibility-estimator.js`):**
+    - Preserved `SCHEMA_VERSION = "100A.2"` and baseline independence for legacy callers while adding additive bounded signals for `newEvidenceCount` vs `familiarEvidenceCount` (without double-counting `dossier` or primary `readingDemand`), `selectionControlCount` (`decisions`, without double-counting single `mcq`), `workedExampleCount`, multi-surface `constructedResponseCount`, `checklistCriterionCount` scaling on `feedback`, and explicit zero-minute tracking of `optionalSupportCount`.
+    - Exposed `durationStatus` (`"available"` / `"unavailable"`), ordered `demandDrivers`, `summarizeDemandDrivers`, and `assessCumulativeWorkload` for pure cumulative aggregation across units of a single page/pack.
+  - **Practice / Interactive & Assessment Pack adapters + `app.js` integration (`lib/interactive-workload-feasibility-adapter.js`, `lib/assessment-pack-workload-feasibility-adapter.js`, `app.js`):**
+    - Deduplicated `required_materials` and `materials` by `material_id` in `interactive-workload-feasibility-adapter.js` so enriched Practice pages are not double-counted; extracted `data_table`/`dataset`/`representation`, `selection`, `worked_example`, `template`, `checklist` diagnostic criteria, `optional` support, and substantive `page_synthesis` reading cleanly.
+    - Updated both adapters to compare cumulative page/pack demands against authoritative duration (`options.effectiveDurationMinutes` / `total_duration_minutes` / pack `allocated_minutes`), surface explicit `durationStatus: "unavailable"` advisory notices whenever meaningful demands exist without an authoritative duration (fixing the `C01` silent-pass defect), separate optional extensions/revision from required work, and name disproportion drivers cleanly.
+    - Updated `app.js` (`appendInteractiveWorkloadFeasibilityWarnings`, `appendAssessmentPackWorkloadFeasibilityWarnings`, `appendLearningJourneyWorkloadFeasibilityWarnings`, `validateLearningSequencePartialPageCapture`, `validateLearningSequenceCapture`, `validateDesignPagePartialPageCapture`, `validateAssessmentDesignPageCapture`, and `assessment_evidence_elicitation`/`assessment_formative_return` validation) to supply authoritative durations consistently while keeping structural duration validation (`errors`) strictly separate from advisory feasibility (`warnings`).
+  - **Sprint 101 audit & remaining Practice criterion caps (`tests/s104-m5-workload-estimation.test.js`, `ARCHITECTURAL-DEBT.md`):**
+    - Audited reconciled Sprint 101 assertions across `tests/s101*.test.js` (`131 / 131` Sprint 104 M1–M3 + S101 tests passing, `163 / 163` total in 27-file Milestone 5 regression suite), confirming accessibility (`util-assessment-fieldset`, `<label for>`, `alt_text`/`detailed_description`), learner independence (`anti_spoiler`, `spoiler_boundary`, unchecked draft restore), evidence fidelity (`requires_exact_data_match`, `evidence_anchors`, `evidence_decision`), and response functionality (`selection_choose`, `single_select`/`multi_select`/`matching`, `assessmentRuntime`) remain intact.
+    - Recorded remaining arbitrary Practice criterion caps across `ld-practice-presentation-contracts.js`, `ld-dla-page-enrich-contract.js`, `ld-gam-page-enrich-contract.js`, `guided-review-generation-contract.js`, `episode-plan-population-contract.js`, and `gam-output-format.js` under `S104-AD-009` for separate review without expanding Milestone 5 scope.
+
+### 2026-11-24 — Milestone 4 implementation (Proportionate Learning Journey commissioning) — Committed (`43db3f4`)
 
 - Implemented **Milestone 4** per [S104-D02](decisions.md#s104-d02--architectural-agreement-principles-a-e-and-seven-gated-milestones) Principle D (without fixed duration tiers, component quotas, outcome-count caps, or arbitrary word-count formulas; economics baseline untouched):
   - **Learning Journey commissioning guidance (`lib/learning-journey-sibling-prompts.js`, `lib/learning-journey-design-page.js`):**

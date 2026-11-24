@@ -14344,37 +14344,30 @@
   }
 
   /**
-   * Sprint 100B-1 — non-blocking Interactive workload feasibility warnings.
+   * Sprint 100B-1 — non-blocking Interactive / Practice workload feasibility warnings.
    * Never converts findings into capture errors.
    */
-  function appendInteractiveWorkloadFeasibilityWarnings(page, baseline, warningsOut) {
+  function appendInteractiveWorkloadFeasibilityWarnings(page, baseline, warningsOut, optionsOrWf) {
     if (!Array.isArray(warningsOut)) return;
     var adapter = resolveInteractiveWorkloadFeasibilityAdapterLib();
     if (!adapter || typeof adapter.collectInteractiveWorkloadWarnings !== "function") return;
-    var rows = [];
-    try {
-      rows = adapter.collectInteractiveWorkloadWarnings(page, baseline) || [];
-    } catch (_err) {
-      return;
+    var opts = {};
+    if (optionsOrWf && typeof optionsOrWf === "object") {
+      if (optionsOrWf.effectiveDurationMinutes != null) {
+        opts.effectiveDurationMinutes = optionsOrWf.effectiveDurationMinutes;
+      } else if (optionsOrWf.authoritativeDurationMinutes != null) {
+        opts.authoritativeDurationMinutes = optionsOrWf.authoritativeDurationMinutes;
+      } else {
+        var wfDur = resolveEffectiveWorkflowDurationMinutes(optionsOrWf);
+        if (wfDur != null) opts.effectiveDurationMinutes = wfDur;
+      }
+      if (optionsOrWf.requireAuthoritativeDuration === true) {
+        opts.requireAuthoritativeDuration = true;
+      }
     }
-    if (!Array.isArray(rows) || !rows.length) return;
-    rows.forEach(function (row) {
-      var text = String(row || "").trim();
-      if (text) warningsOut.push(text);
-    });
-  }
-
-  /**
-   * Sprint 100B-2 — non-blocking Assessment Pack workload feasibility warnings.
-   * Never converts findings into capture errors.
-   */
-  function appendAssessmentPackWorkloadFeasibilityWarnings(artefact, warningsOut) {
-    if (!Array.isArray(warningsOut)) return;
-    var adapter = resolveAssessmentPackWorkloadFeasibilityAdapterLib();
-    if (!adapter || typeof adapter.collectAssessmentPackWorkloadWarnings !== "function") return;
     var rows = [];
     try {
-      rows = adapter.collectAssessmentPackWorkloadWarnings(artefact) || [];
+      rows = adapter.collectInteractiveWorkloadWarnings(page, baseline, opts) || [];
     } catch (_err) {
       return;
     }
@@ -14389,18 +14382,72 @@
   }
 
   /**
-   * Sprint 100C — non-blocking Learning Journey workload feasibility warnings.
+   * Sprint 100B-2 — non-blocking Assessment Pack workload feasibility warnings.
+   * Never converts findings into capture errors.
+   */
+  function appendAssessmentPackWorkloadFeasibilityWarnings(artefact, warningsOut, optionsOrWf) {
+    if (!Array.isArray(warningsOut)) return;
+    var adapter = resolveAssessmentPackWorkloadFeasibilityAdapterLib();
+    if (!adapter || typeof adapter.collectAssessmentPackWorkloadWarnings !== "function") return;
+    var opts = {};
+    if (optionsOrWf && typeof optionsOrWf === "object") {
+      if (optionsOrWf.effectiveDurationMinutes != null) {
+        opts.effectiveDurationMinutes = optionsOrWf.effectiveDurationMinutes;
+      } else if (optionsOrWf.authoritativeDurationMinutes != null) {
+        opts.authoritativeDurationMinutes = optionsOrWf.authoritativeDurationMinutes;
+      } else {
+        var wfDur = resolveEffectiveWorkflowDurationMinutes(optionsOrWf);
+        if (wfDur != null) opts.effectiveDurationMinutes = wfDur;
+      }
+      if (optionsOrWf.requireAuthoritativeDuration === true) {
+        opts.requireAuthoritativeDuration = true;
+      }
+    }
+    var rows = [];
+    try {
+      rows = adapter.collectAssessmentPackWorkloadWarnings(artefact, opts) || [];
+    } catch (_err) {
+      return;
+    }
+    if (!Array.isArray(rows) || !rows.length) return;
+    var seen = Object.create(null);
+    rows.forEach(function (row) {
+      var text = String(row || "").trim();
+      if (!text || seen[text]) return;
+      seen[text] = true;
+      warningsOut.push(text);
+    });
+  }
+
+  /**
+   * Sprint 100C / 104 M5 — non-blocking Learning Journey workload feasibility warnings.
+   * Uses authoritative structured parent and commission durations before legacy prose fallbacks.
    * Never converts findings into capture errors or changes TIME CHECK arithmetic.
    */
   function appendLearningJourneyWorkloadFeasibilityWarnings(page, wf, warningsOut) {
     if (!Array.isArray(warningsOut)) return;
     var adapter = resolveLearningJourneyWorkloadFeasibilityAdapterLib();
     if (!adapter || typeof adapter.collectLearningJourneyWorkloadWarnings !== "function") return;
+    var authParentMinutes = resolveLearningJourneyAuthoritativeParentDurationMinutes(wf);
+    var requireAuth = isLearningJourneyDurationContractRequired(wf, page);
+    var step4Durations = readLearningJourneyAuthoritativeCommissionDurations(wf);
+    var durationsById =
+      step4Durations &&
+      step4Durations.byCommissionId &&
+      typeof step4Durations.byCommissionId === "object"
+        ? step4Durations.byCommissionId
+        : null;
     var rows = [];
     try {
       rows =
         adapter.collectLearningJourneyWorkloadWarnings(page, {
-          learningTimeEnvelopeMinutes: resolveLearningJourneyLearningTimeEnvelopeMinutes(wf)
+          authoritativeParentDurationMinutes: authParentMinutes,
+          learningTimeEnvelopeMinutes:
+            authParentMinutes != null
+              ? authParentMinutes
+              : resolveLearningJourneyLearningTimeEnvelopeMinutes(wf),
+          authoritativeDurationsByCommissionId: durationsById,
+          requireAuthoritativeDuration: requireAuth
         }) || [];
     } catch (_err) {
       return;
@@ -14816,7 +14863,7 @@
         return { ok: false, errors: ["situated_task_design_page_module_unavailable"] };
       }
       if (workflowRecordIsAssessmentPack(workflow)) {
-        return validateAssessmentDesignPageCapture(parsed);
+        return validateAssessmentDesignPageCapture(parsed, workflow);
       }
       return validateDesignPagePartialPageCapture(parsed, wf);
     }
@@ -15457,7 +15504,12 @@
         return { ok: false, errors: errors, warnings: [] };
       }
       var fullPageWarnings = [];
-      appendInteractiveWorkloadFeasibilityWarnings(parsed, baseline || null, fullPageWarnings);
+      appendInteractiveWorkloadFeasibilityWarnings(
+        parsed,
+        baseline || null,
+        fullPageWarnings,
+        workflow
+      );
       return { ok: true, errors: [], warnings: fullPageWarnings };
     }
     if (parsed.timeline || parsed.activities_used || parsed.activities_omitted || parsed.checks) {
@@ -15548,7 +15600,8 @@
     appendInteractiveWorkloadFeasibilityWarnings(
       parsed,
       options && options.baselinePage ? options.baselinePage : null,
-      warnings
+      warnings,
+      options
     );
     return { ok: true, errors: [], warnings: warnings };
   }
@@ -15673,7 +15726,7 @@
     ].join("\n");
   }
 
-  function validateAssessmentDesignPageCapture(parsed) {
+  function validateAssessmentDesignPageCapture(parsed, wf) {
     if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
       return { ok: false, errors: ["invalid capture object"], warnings: [] };
     }
@@ -15716,7 +15769,7 @@
     }
     // Sprint 100B-2 — advisory only; assessment_evidence elicitations when present.
     var warnings = [];
-    appendAssessmentPackWorkloadFeasibilityWarnings(parsed, warnings);
+    appendAssessmentPackWorkloadFeasibilityWarnings(parsed, warnings, wf);
     return { ok: true, errors: [], warnings: warnings };
   }
 
@@ -15910,7 +15963,17 @@
         });
       }
     }
-    return errors.length ? { ok: false, errors: errors } : { ok: true, errors: [] };
+    if (errors.length) {
+      return { ok: false, errors: errors };
+    }
+    if (Array.isArray(parsed.activities) && parsed.activities.length) {
+      var dpWarnings = [];
+      appendInteractiveWorkloadFeasibilityWarnings(parsed, null, dpWarnings, wf);
+      if (dpWarnings.length) {
+        return { ok: true, errors: [], warnings: dpWarnings };
+      }
+    }
+    return { ok: true, errors: [] };
   }
 
   function validateDesignAssessmentPartialPageCapture(parsed) {
@@ -16018,7 +16081,7 @@
         (isExpositoryResourceWorkflow(workflow) && expositoryPartialShape)
       ) {
         if (workflowRecordIsAssessmentPack(workflow) && stageFromStep === "design_page") {
-          return validateAssessmentDesignPageCapture(parsed);
+          return validateAssessmentDesignPageCapture(parsed, workflow);
         }
         return validateDesignPagePartialPageCapture(parsed, workflow);
       }
@@ -18801,7 +18864,8 @@
             var apWorkloadWarnings = [];
             appendAssessmentPackWorkloadFeasibilityWarnings(
               parsedAssessment,
-              apWorkloadWarnings
+              apWorkloadWarnings,
+              workflow
             );
             return {
               ok: true,

@@ -1,19 +1,19 @@
 # Sprint 104 — Status / work log
 
 **Sprint:** 104 — Workload Fidelity and Proportionate Authoring  
-**Status:** **OPEN — MILESTONE 1 COMMITTED / IMPLEMENTING MILESTONE 2 (PRACTICE EPISODE PLAN DESIGN AUTHORITY)**  
-**Baseline:** `1515cd4`  
+**Status:** **OPEN — MILESTONE 1 COMMITTED (`c461770`) / MILESTONE 2 IMPLEMENTED (STOPPED FOR REVIEW BEFORE COMMIT)**  
+**Baseline:** `1515cd4` (M1 checkpoint: `c461770`)  
 **Primary backlog item:** [PB-FA-025](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-025--duration-fidelity-learner-workload-budgeting)  
 **Opening & agreement:** [S104-D01](decisions.md#s104-d01--open-sprint-104--workload-fidelity-and-proportionate-authoring), [S104-D02](decisions.md#s104-d02--architectural-agreement-principles-a-e-and-seven-gated-milestones)
 
 | Item | State |
 | ---- | ----- |
 | S104-D01 Open sprint | **Accepted** |
-| Phase 104A Read-only investigation & documentation | **Complete** |
+| Phase 104A Read-only investigation & documentation | **Complete (`f3bb47d`)** |
 | S104-D02 Architectural agreement (Principles A–E & Milestones 1–7) | **Accepted** |
-| Milestone 1 — Authoritative duration transport | **Complete & committed checkpoint** (automated verified; manual acceptance pending integrated live validation) |
-| Milestone 2 — Practice Episode Plan design authority | **In progress** |
-| Milestone 3 — Reconciliation of downstream Practice contracts | **Not started** (gated on Milestone 2) |
+| Milestone 1 — Authoritative duration transport | **Complete & committed (`c461770`)** (automated verified; manual acceptance pending integrated live validation) |
+| Milestone 2 — Practice Episode Plan design authority | **Implemented & focused-verified (uncommitted — stopped for review before commit)** |
+| Milestone 3 — Reconciliation of downstream Practice contracts | **Not started** (gated on Milestone 2 review; incompatibilities documented) |
 | Milestone 4 — Proportionate Learning Journey commissioning | **Not started** (gated on Milestone 3) |
 | Milestone 5 — Workload estimation corrections | **Not started** (gated on Milestone 4) |
 | Milestone 6 — Live 5-, 15- and 30-minute Practice sensitivity probes | **Not started** (gated on Milestone 5) |
@@ -22,6 +22,24 @@
 ---
 
 ## Work log
+
+### 2026-11-24 — Milestone 2 implementation (Practice Episode Plan design authority)
+
+- Implemented **Milestone 2** per [S104-D02](decisions.md#s104-d02--architectural-agreement-principles-a-e-and-seven-gated-milestones) Principle B (stopped before commit for review; Milestone 3 left untouched; economics baseline untouched):
+  - **`lib/practice-episode-plan.js` (new UMD module `PRISM_PRACTICE_EPISODE_PLAN`):**
+    - Normalizes authoritative commissioned or upstream outcomes (`resolveAuthoritativePracticeOutcomes`) with canonical ID preservation (`LO1`, `LO2`, ... fallback).
+    - Formats dynamic Episode Plan V1 grammar guidance (`formatPracticeGrammarSummary`) from `lib/episode-plan-v1-vocabulary.js` and `lib/episode-plan-v1-archetype-grammar.js` with **no** duration tiers, activity quotas, or beat-count targets.
+    - Builds AI-authored Practice Episode Plan prompts (`buildPracticeEpisodePlanPromptBody`) supplying authoritative outcomes, `durationMinutes`, purpose, prior learning, journey context, dependencies, shared learner artefact awareness, explicit multi-LO cohesive single-activity permission, and v2 `page` shell schema (`product_id: "practice"`, `page_kind: "practice"`, em-dash DLA placeholders, empty `required_materials`/`materials`).
+    - Deterministically validates AI-authored Practice Episode Plan captures (`validatePracticeEpisodePlanCapture`): v2 `page` shell schema (`lib/page-shell-create.js`), Practice identity, `assembly_state.current_stage === "episode_plan"`, zero invented DLA cognition fields or non-empty `required_materials[]`/`materials[]`, 1:1 `activities[]` ↔ `episode_plans[]` pairing and `episode_plan` agreement, bidirectional `mapped_learning_outcome_ids` ↔ `learning_outcome_ids` sync + conflict rejection, `validateSequenceAgainstGrammar` on every activity (fail-closed if grammar module absent), 100% authoritative outcome coverage (allowing multiple LOs on one cohesive activity), and exact statement fidelity without overwriting.
+  - **`index.html`:** Loaded `lib/episode-plan-v1-archetype-grammar.js` after `lib/episode-plan-v1-vocabulary.js`, and `lib/practice-episode-plan.js` after `lib/episode-plan-dla-integration.js`.
+  - **`app.js`:**
+    - Routed Practice `Design Episode Plan` in `resolveStepPromptText` to `sourceType: "practice_episode_plan"` (`buildPracticeDesignEpisodePlanPromptBody` via `isCommissionContextDeliveryStep`), replacing deterministic `v2_locked` instantiation for Practice while keeping `v2_locked` intact for Interactive.
+    - Updated `isDerivedShellWorkflowStep`, `isWorkflowStepEligibleForWorkflowContextProjection`, and `buildWorkflowStepInstructions` with workflow-aware branching so Practice projects authoritative context (Duration, Audience, Topic, Additional Instruction) cleanly and omits `"Deterministic step (Sprint 56F)"` / PRISM-derived shell embedding.
+    - Removed Practice deterministic archetype derivation and capture overwriting across `applyEpisodePlanCaptureCanonicalEnforcement`, `syncWorkflowRunCapturedOutputToState` (guarding auto-repair with `!isPracticeWorkflow(wf)`), `maybeAutoPopulateDesignEpisodePlanRunCapture`, `deriveDesignEpisodePlanCaptureJson`, `deriveDesignEpisodePlanCaptureJsonFromLearningOutcomes`, `resolvePageShellJsonForDlaCopy`, `tryResolveCanonicalEpisodePlansDeriveFallback`, `resolveEpisodePlansForDlaPopulation`, `parseEpisodePlanOrPageCaptureForStorage`, `formatEpisodePlansCaptureForPromptEmbed`, and `validateEpisodePlanOrPageShellCapture`.
+  - **`lib/ld-practice-presentation-contracts.js`:** Updated `episodePlanLines()` for Milestone 2 design authority while leaving DLA/GAM/LS/DP contract sections untouched for Milestone 3.
+  - **`tests/prism-vm-lib-bootstrap.js`, `tests/qa-lj-no-phantom-run-captures.test.js`, `tests/s104-m2-practice-episode-plan.test.js`:** Wired M2 dependencies into VM bootstrap, aligned the outdated Sprint 102E Practice deterministic-derivation expectation in `qa-lj-no-phantom-run-captures.test.js` (`deriveDesignEpisodePlanCaptureJson === ""` and `sourceType === "practice_episode_plan"` while keeping unstarted Run emptiness), and added 8 focused Milestone 2 tests.
+- **Multi-LO cohesive single activity finding:** Verified empirically across `page-shell-create.js`, `episode-plan-population-contract.js`, `page-gam-enrich.js`, `page-vnext-assemble.js`, and `learner-renderer-vnext` that mapping multiple authoritative LOs onto one cohesive activity (`learning_outcome_ids` / `mapped_learning_outcome_ids`) is supported cleanly (`0` assembly/renderer errors); noted minor `lib/page-dla-enrich.js:336-350` (`resolveLoStatementForActivity`) single-statement fallback for Milestone 3 awareness.
+- **Identified Milestone 3 incompatibilities (untouched):** Documented exact contract, validator, and prompt incompatibilities in [IMPLEMENTATION-MAP.md](IMPLEMENTATION-MAP.md#milestone-3-incompatibilities-identified-during-milestone-2) and [decisions.md](decisions.md#s104-d03--milestone-2-multi-lo-compatibility-and-deferred-milestone-3-incompatibilities).
 
 ### 2026-11-24 — Milestone 1 implementation and architectural documentation update
 

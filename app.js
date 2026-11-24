@@ -6299,7 +6299,9 @@
     var isNormalize = cid === "step_normalize_content" || title === "normalize content";
     var isPurpose =
       cid === "step_interpret_evidence_purpose" || title === "interpret evidence purpose";
+    var isEp = cid === "step_design_episode_plan" || title === "design episode plan";
     if (isGlc || isMk || isDlo) return true;
+    if (isEp && isPracticeWorkflow(wf)) return true;
     if (isPurpose && typeof workflowRecordIsAssessmentPack === "function" && workflowRecordIsAssessmentPack(wf)) {
       return true;
     }
@@ -13235,6 +13237,63 @@
     return null;
   }
 
+  function resolveEpisodePlanV1VocabularyLib() {
+    var roots = [];
+    var w = ldTableFidelityGlobalRoot();
+    if (w) roots.push(w);
+    if (typeof globalThis !== "undefined" && globalThis !== w) roots.push(globalThis);
+    var i;
+    for (i = 0; i < roots.length; i += 1) {
+      if (roots[i] && roots[i].PRISM_EPISODE_PLAN_V1_VOCABULARY) {
+        return roots[i].PRISM_EPISODE_PLAN_V1_VOCABULARY;
+      }
+    }
+    if (typeof require === "function") {
+      try {
+        return require("./lib/episode-plan-v1-vocabulary.js");
+      } catch (_err) {}
+    }
+    return null;
+  }
+
+  function resolveEpisodePlanV1ArchetypeGrammarLib() {
+    var roots = [];
+    var w = ldTableFidelityGlobalRoot();
+    if (w) roots.push(w);
+    if (typeof globalThis !== "undefined" && globalThis !== w) roots.push(globalThis);
+    var i;
+    for (i = 0; i < roots.length; i += 1) {
+      if (roots[i] && roots[i].PRISM_EPISODE_PLAN_V1_ARCHETYPE_GRAMMAR) {
+        return roots[i].PRISM_EPISODE_PLAN_V1_ARCHETYPE_GRAMMAR;
+      }
+    }
+    if (typeof require === "function") {
+      try {
+        return require("./lib/episode-plan-v1-archetype-grammar.js");
+      } catch (_err) {}
+    }
+    return null;
+  }
+
+  function resolvePracticeEpisodePlanLib() {
+    var roots = [];
+    var w = ldTableFidelityGlobalRoot();
+    if (w) roots.push(w);
+    if (typeof globalThis !== "undefined" && globalThis !== w) roots.push(globalThis);
+    var i;
+    for (i = 0; i < roots.length; i += 1) {
+      if (roots[i] && roots[i].PRISM_PRACTICE_EPISODE_PLAN) {
+        return roots[i].PRISM_PRACTICE_EPISODE_PLAN;
+      }
+    }
+    if (typeof require === "function") {
+      try {
+        return require("./lib/practice-episode-plan.js");
+      } catch (_err) {}
+    }
+    return null;
+  }
+
   function resolveAssessmentPackPublishLib() {
     var roots = [];
     var w = ldTableFidelityGlobalRoot();
@@ -15080,12 +15139,15 @@
       String(pageHit.schema_version || "") === "2.0.0" &&
       String(pageHit.artifact_type || "") === "page"
     ) {
-      var shellCheck = validateEpisodePlanOrPageShellCapture(pageHit);
+      var shellCheck = validateEpisodePlanOrPageShellCapture(pageHit, workflow);
       if (shellCheck.ok) {
         try {
           return JSON.stringify(pageHit, null, 2);
         } catch (_) {}
       }
+    }
+    if (workflow && isPracticeWorkflow(workflow) && workflowHasDesignEpisodePlanStep(workflow)) {
+      return "";
     }
     return deriveDesignEpisodePlanCaptureJson(workflow);
   }
@@ -16045,7 +16107,28 @@
     }
   }
 
-  function validateEpisodePlanOrPageShellCapture(parsed) {
+  function resolvePracticeAuthoritativeLearningOutcomesForWorkflow(wf) {
+    var workflow = wf && typeof wf === "object" ? wf : null;
+    if (!workflow) return [];
+    var practiceMod = resolvePracticeEpisodePlanLib();
+    if (!practiceMod || typeof practiceMod.resolveAuthoritativePracticeOutcomes !== "function") {
+      return [];
+    }
+    var ctx = readWorkflowCommissionContext(workflow);
+    var commissionedLos = readCommissionedLearningOutcomes(workflow);
+    var upstreamLo =
+      !ctx.commissionNativeLoBound
+        ? resolveUpstreamWorkflowArtefactFromCaptures("learning_outcomes", {
+            workflow: workflow
+          })
+        : null;
+    return practiceMod.resolveAuthoritativePracticeOutcomes({
+      commissionedLearningOutcomes: commissionedLos,
+      upstreamLearningOutcomes: upstreamLo
+    });
+  }
+
+  function validateEpisodePlanOrPageShellCapture(parsed, wf) {
     if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
       return { ok: false, errors: ["invalid capture object"] };
     }
@@ -16086,15 +16169,53 @@
         v.schema_compliance = "episode_plan_boundary";
       }
     }
+    var workflow =
+      wf !== undefined
+        ? wf && typeof wf === "object"
+          ? wf
+          : null
+        : resolveActiveWorkflowForEpisodePlanDerive(null);
+    var isPracticeTarget = !!(workflow && isPracticeWorkflow(workflow));
+    if (
+      !workflow &&
+      (String(parsed.product_id || "").trim().toLowerCase() === "practice" ||
+        String(parsed.page_kind || "").trim().toLowerCase() === "practice")
+    ) {
+      isPracticeTarget = true;
+    }
     if (String(parsed.schema_version || "") === "2.0.0" && String(parsed.artifact_type || "") === "page") {
       normalizeEpisodePlanValidationFieldsInPlace(parsed);
       var shellMod = resolvePageShellCreateLib();
       if (shellMod && typeof shellMod.alignEpisodePlansActivityIds === "function") {
         shellMod.alignEpisodePlansActivityIds(parsed);
       }
+      if (isPracticeTarget) {
+        var practiceMod = resolvePracticeEpisodePlanLib();
+        if (!practiceMod || typeof practiceMod.validatePracticeEpisodePlanCapture !== "function") {
+          return {
+            ok: false,
+            errors: ["practice-episode-plan module unavailable for Practice validation"]
+          };
+        }
+        return practiceMod.validatePracticeEpisodePlanCapture(parsed, {
+          authoritativeOutcomes: workflow
+            ? resolvePracticeAuthoritativeLearningOutcomesForWorkflow(workflow)
+            : [],
+          pageShellCreateMod: shellMod,
+          grammarMod: resolveEpisodePlanV1ArchetypeGrammarLib()
+        });
+      }
       if (shellMod && typeof shellMod.validatePageShellAgainstVNextSchema === "function") {
         return shellMod.validatePageShellAgainstVNextSchema(parsed);
       }
+    }
+    if (isPracticeTarget) {
+      return {
+        ok: false,
+        errors: [
+          'Practice Design Episode Plan must emit a v2 page artefact (artifact_type "page", schema_version "2.0.0")'
+        ]
+      };
     }
     return validateEpisodePlansCaptureV1(parsed);
   }
@@ -16344,13 +16465,13 @@
     return mod.validateEpisodePlansContainerV1(parsed);
   }
 
-  function isEpisodePlanCaptureV1Valid(rawOrParsed) {
+  function isEpisodePlanCaptureV1Valid(rawOrParsed, wf) {
     var parsed =
       rawOrParsed && typeof rawOrParsed === "object"
         ? rawOrParsed
         : tryParseWorkflowArtefactJson(rawOrParsed);
     if (!parsed) return false;
-    var check = validateEpisodePlanOrPageShellCapture(parsed);
+    var check = validateEpisodePlanOrPageShellCapture(parsed, wf);
     return !!check.ok;
   }
 
@@ -16370,6 +16491,36 @@
       return raw;
     }
     var rawTrim = String(raw || "").trim();
+    if (wf && isPracticeWorkflow(wf)) {
+      if (!rawTrim) {
+        if (stepId && state.workflowRunEpisodePlanValidation) {
+          delete state.workflowRunEpisodePlanValidation[stepId];
+        }
+        return raw;
+      }
+      var practiceParsed = tryParseWorkflowArtefactJson(rawTrim);
+      var practiceCheck = practiceParsed
+        ? validateEpisodePlanOrPageShellCapture(practiceParsed, wf)
+        : { ok: false, errors: ["EP-Practice: invalid JSON"] };
+      if (practiceCheck.ok) {
+        if (stepId && state.workflowRunEpisodePlanValidation) {
+          delete state.workflowRunEpisodePlanValidation[stepId];
+        }
+        try {
+          return JSON.stringify(practiceParsed, null, 2);
+        } catch (_) {
+          return raw;
+        }
+      }
+      if (stepId) {
+        state.workflowRunEpisodePlanValidation = state.workflowRunEpisodePlanValidation || {};
+        state.workflowRunEpisodePlanValidation[stepId] = (practiceCheck.errors || []).join("; ");
+        if (state.workflowRunStepCompleted[stepId]) {
+          delete state.workflowRunStepCompleted[stepId];
+        }
+      }
+      return raw;
+    }
     var derived = deriveDesignEpisodePlanCaptureJson(wf);
     if (!derived) {
       var embeddedLos = resolveLearningOutcomesEmbeddedInEpisodePlanCapture(wf, rawTrim);
@@ -16432,7 +16583,7 @@
     return /### Upstream episode_plans \(authoritative/i.test(String(draftBody || ""));
   }
 
-  function formatEpisodePlansCaptureForPromptEmbed(raw) {
+  function formatEpisodePlansCaptureForPromptEmbed(raw, wf) {
     var trimmed = String(raw || "").trim();
     if (!trimmed) return "";
     var parsed = tryParseWorkflowArtefactJson(trimmed);
@@ -16441,7 +16592,7 @@
         String(parsed.schema_version || "") === "2.0.0" &&
         String(parsed.artifact_type || "") === "page"
       ) {
-        var shellCheck = validateEpisodePlanOrPageShellCapture(parsed);
+        var shellCheck = validateEpisodePlanOrPageShellCapture(parsed, wf);
         if (shellCheck.ok) {
           try {
             return JSON.stringify(parsed, null, 2);
@@ -16583,6 +16734,7 @@
     var mod = resolveEpisodePlanDlaIntegrationLib();
     if (!mod || typeof mod.deriveEpisodePlansFromLearningOutcomes !== "function") return "";
     var workflow = resolveActiveWorkflowForEpisodePlanDerive(wf);
+    if (workflow && isPracticeWorkflow(workflow)) return "";
     var wfOpts = workflow ? { workflow: workflow } : {};
     var learningOutcomes = resolveUpstreamWorkflowArtefactFromCaptures("learning_outcomes", wfOpts);
     if (!learningOutcomes) {
@@ -16673,6 +16825,7 @@
     var normalized = normalizeLearningOutcomesArtefact(learningOutcomes);
     if (!normalized) return "";
     var workflow = resolveActiveWorkflowForEpisodePlanDerive(wf);
+    if (workflow && isPracticeWorkflow(workflow)) return "";
     var episodePlans = mod.deriveEpisodePlansFromLearningOutcomes(normalized);
     var gate =
       typeof mod.assertEpisodePlansContainerGate === "function"
@@ -16708,6 +16861,7 @@
 
   function maybeAutoPopulateDesignEpisodePlanRunCapture(li, wf, stepRow) {
     if (!li || !stepRow || !isWorkflowStepDesignEpisodePlanRow(stepRow)) return;
+    if (wf && isPracticeWorkflow(wf)) return;
     var isRun =
       els.workflowModeRunBtn &&
       els.workflowModeRunBtn.classList.contains("active") &&
@@ -17920,6 +18074,7 @@
 
   function tryResolveCanonicalEpisodePlansDeriveFallback(wf) {
     if (!workflowHasDesignEpisodePlanStep(wf)) return null;
+    if (wf && isPracticeWorkflow(wf)) return null;
     var derivedJson = deriveDesignEpisodePlanCaptureJson(wf);
     if (!derivedJson) return null;
     var parsed = tryParseWorkflowArtefactJson(derivedJson);
@@ -17943,6 +18098,7 @@
       return diagnostic ? { episodePlans: null, reason: "integration_module_missing" } : null;
     }
     var wf = resolveWorkflowForUpstreamArtefacts(options);
+    var isPracticeWf = !!(wf && isPracticeWorkflow(wf));
     var upstreamHit = resolveUpstreamWorkflowArtefactFromCaptures("episode_plans", {
       workflow: wf,
       diagnostic: diagnostic
@@ -17963,6 +18119,19 @@
     var primaryFailReason = "";
     if (episodePlans && Array.isArray(episodePlans.episode_plans) && episodePlans.episode_plans.length) {
       validation = validateEpisodePlansCaptureV1(episodePlans);
+      if (
+        validation.ok &&
+        isPracticeWf &&
+        episodePlansRaw &&
+        typeof episodePlansRaw === "object" &&
+        String(episodePlansRaw.artifact_type || "").toLowerCase() === "page"
+      ) {
+        var practiceShellCheck = validateEpisodePlanOrPageShellCapture(episodePlansRaw, wf);
+        if (!practiceShellCheck.ok) {
+          validation = practiceShellCheck;
+          primaryFailReason = "practice_ep_validation_failed";
+        }
+      }
       if (validation.ok) {
         return diagnostic
           ? {
@@ -17973,8 +18142,18 @@
             }
           : episodePlans;
       }
-      primaryFailReason = "v1_validation_failed";
+      if (!primaryFailReason) primaryFailReason = "v1_validation_failed";
       episodePlans = null;
+      if (isPracticeWf) {
+        return diagnostic
+          ? {
+              episodePlans: null,
+              reason: primaryFailReason,
+              validation: validation,
+              upstream: upstreamHit
+            }
+          : null;
+      }
       var shapeFallbackAfterValidationFail = resolveEpisodePlansFromAnyWorkflowCapture(diagnostic);
       if (diagnostic) {
         if (shapeFallbackAfterValidationFail && shapeFallbackAfterValidationFail.episodePlans) {
@@ -17989,33 +18168,39 @@
       upstreamHit.parse_ok === false
     ) {
       primaryFailReason = "capture_parse_failed";
-      var shapeFallbackAfterParseFail = resolveEpisodePlansFromAnyWorkflowCapture(diagnostic);
-      if (diagnostic) {
-        if (shapeFallbackAfterParseFail && shapeFallbackAfterParseFail.episodePlans) {
+      if (!isPracticeWf) {
+        var shapeFallbackAfterParseFail = resolveEpisodePlansFromAnyWorkflowCapture(diagnostic);
+        if (diagnostic) {
+          if (shapeFallbackAfterParseFail && shapeFallbackAfterParseFail.episodePlans) {
+            return shapeFallbackAfterParseFail;
+          }
+        } else if (shapeFallbackAfterParseFail) {
           return shapeFallbackAfterParseFail;
         }
-      } else if (shapeFallbackAfterParseFail) {
-        return shapeFallbackAfterParseFail;
       }
     } else if (workflowHasDesignEpisodePlanStep(wf)) {
       primaryFailReason =
         upstreamHit && upstreamHit.matched_step_id ? "invalid_or_empty_capture" : "missing_capture";
-      var shapeFallbackWhenMissing = resolveEpisodePlansFromAnyWorkflowCapture(diagnostic);
-      if (diagnostic) {
-        if (shapeFallbackWhenMissing && shapeFallbackWhenMissing.episodePlans) {
+      if (!isPracticeWf) {
+        var shapeFallbackWhenMissing = resolveEpisodePlansFromAnyWorkflowCapture(diagnostic);
+        if (diagnostic) {
+          if (shapeFallbackWhenMissing && shapeFallbackWhenMissing.episodePlans) {
+            return shapeFallbackWhenMissing;
+          }
+        } else if (shapeFallbackWhenMissing) {
           return shapeFallbackWhenMissing;
         }
-      } else if (shapeFallbackWhenMissing) {
-        return shapeFallbackWhenMissing;
       }
     }
-    var shapeFallback = resolveEpisodePlansFromAnyWorkflowCapture(diagnostic);
-    if (diagnostic) {
-      if (shapeFallback && shapeFallback.episodePlans) {
+    if (!isPracticeWf) {
+      var shapeFallback = resolveEpisodePlansFromAnyWorkflowCapture(diagnostic);
+      if (diagnostic) {
+        if (shapeFallback && shapeFallback.episodePlans) {
+          return shapeFallback;
+        }
+      } else if (shapeFallback) {
         return shapeFallback;
       }
-    } else if (shapeFallback) {
-      return shapeFallback;
     }
     var derivedFallback = tryResolveCanonicalEpisodePlansDeriveFallback(wf);
     if (derivedFallback) {
@@ -18048,6 +18233,11 @@
             validation: validation,
             upstream: upstreamHit
           }
+        : null;
+    }
+    if (isPracticeWf) {
+      return diagnostic
+        ? { episodePlans: null, reason: primaryFailReason || "missing_capture" }
         : null;
     }
     var learningOutcomes = resolveUpstreamWorkflowArtefactFromCaptures("learning_outcomes", {
@@ -31323,14 +31513,14 @@
         raw = enforcedRaw;
       } else if (raw) {
         var parsedEpRaw = tryParseWorkflowArtefactJson(raw);
-        var epCheck = validateEpisodePlanOrPageShellCapture(parsedEpRaw);
+        var epCheck = validateEpisodePlanOrPageShellCapture(parsedEpRaw, wf);
         if (!epCheck.ok) {
           var repaired = false;
-          if (isPageEnrichmentV2WorkflowEnabled(wf)) {
+          if (isPageEnrichmentV2WorkflowEnabled(wf) && !isPracticeWorkflow(wf)) {
             var derivedEpShell = deriveDesignEpisodePlanCaptureJson(wf);
             if (derivedEpShell && String(derivedEpShell).trim()) {
               var parsedDerived = tryParseWorkflowArtefactJson(derivedEpShell);
-              var derivedCheck = validateEpisodePlanOrPageShellCapture(parsedDerived);
+              var derivedCheck = validateEpisodePlanOrPageShellCapture(parsedDerived, wf);
               if (derivedCheck.ok) {
                 ta.value = String(derivedEpShell).trim();
                 raw = ta.value;
@@ -38301,14 +38491,100 @@
     return rebuilt;
   }
 
+  function buildPracticeDesignEpisodePlanPromptBody(step, wf) {
+    var wfRec = wf && typeof wf === "object" ? wf : null;
+    var practiceMod = resolvePracticeEpisodePlanLib();
+    var grammarMod = resolveEpisodePlanV1ArchetypeGrammarLib();
+    var vocabMod = resolveEpisodePlanV1VocabularyLib();
+    var ctx = wfRec ? readWorkflowCommissionContext(wfRec) : { seed: {}, initial: {} };
+    var authoritativeOutcomes = wfRec
+      ? resolvePracticeAuthoritativeLearningOutcomesForWorkflow(wfRec)
+      : [];
+    var adjDur =
+      wfRec &&
+      wfRec.adjustments &&
+      wfRec.adjustments.parameters &&
+      wfRec.adjustments.parameters.duration_minutes != null &&
+      wfRec.adjustments.parameters.duration_minutes !== ""
+        ? Number(wfRec.adjustments.parameters.duration_minutes)
+        : null;
+    var durationMinutes =
+      ctx.commissionedDurationMinutes != null
+        ? ctx.commissionedDurationMinutes
+        : adjDur != null && isFinite(adjDur) && adjDur > 0
+          ? Math.round(adjDur)
+          : null;
+    var title = wfRec
+      ? String(
+          (ctx.seed && ctx.seed.topic) ||
+            (ctx.initial && ctx.initial.topic) ||
+            wfRec.name ||
+            ""
+        ).trim()
+      : "";
+    var audience = wfRec
+      ? String(
+          (wfRec.workflowOutputSpec && wfRec.workflowOutputSpec.audience) ||
+            (ctx.seed && ctx.seed.audience) ||
+            (ctx.initial && ctx.initial.audience) ||
+            "Learners"
+        ).trim()
+      : "Learners";
+    var purpose = wfRec
+      ? String(
+          ctx.commissionSpec ||
+            (ctx.seed && (ctx.seed.purpose || ctx.seed.topic)) ||
+            (ctx.initial && (ctx.initial.designIntent || ctx.initial.topic)) ||
+            wfRec.goal ||
+            ""
+        ).trim()
+      : "";
+    var priorLearning = String(
+      (ctx.seed && (ctx.seed.prior_learning || ctx.seed.priorLearning)) ||
+        (ctx.initial && (ctx.initial.priorLearning || ctx.initial.prior_learning)) ||
+        ctx.journeyContext ||
+        (wfRec && wfRec.inputs) ||
+        ""
+    ).trim();
+    if (practiceMod && typeof practiceMod.buildPracticeEpisodePlanPromptBody === "function") {
+      return practiceMod.buildPracticeEpisodePlanPromptBody({
+        title: title,
+        audience: audience,
+        purpose: purpose,
+        priorLearning: priorLearning,
+        journeyContext: ctx.journeyContext || "",
+        dependencies: ctx.commissionDependencies || "",
+        durationMinutes: durationMinutes,
+        authoritativeOutcomes: authoritativeOutcomes,
+        requiredLearnerArtefacts: ctx.requiredLearnerArtefacts || [],
+        commissionNativeLoBound: !!ctx.commissionNativeLoBound,
+        grammarMod: grammarMod,
+        vocabMod: vocabMod
+      });
+    }
+    return "";
+  }
+
   function resolveStepPromptText(step, wf) {
     var sourceType = getStepPromptSourceType(step);
     var wfRec = wf && typeof wf === "object" ? wf : null;
     if (!wfRec && state.selectedWorkflowId) {
       wfRec = findWorkflowById(state.selectedWorkflowId);
     }
-    if (step && isWorkflowStepDesignEpisodePlanRow(step) && isPageEnrichmentV2WorkflowEnabled(wfRec)) {
-      // Sprint 58 hard contract: EP prompt must follow canonical v2 page-shell guidance.
+    var isPracticeEpV2 = !!(
+      step &&
+      isWorkflowStepDesignEpisodePlanRow(step) &&
+      wfRec &&
+      isPracticeWorkflow(wfRec) &&
+      (isPageEnrichmentV2WorkflowEnabled(wfRec) || normalizeWorkflowStepOutputNameKey(step) === "page")
+    );
+    if (
+      step &&
+      isWorkflowStepDesignEpisodePlanRow(step) &&
+      isPageEnrichmentV2WorkflowEnabled(wfRec) &&
+      !isPracticeEpV2
+    ) {
+      // Sprint 58 hard contract: Interactive EP prompt must follow canonical v2 page-shell guidance.
       // Ignore step-local/library bodies that may contain legacy episode_plans-only contracts.
       return {
         sourceType: "v2_locked",
@@ -38338,6 +38614,13 @@
         wfRec,
         deliveryOptions || {}
       );
+    }
+    if (isPracticeEpV2) {
+      return {
+        sourceType: "practice_episode_plan",
+        text: finalizePromptBody(buildPracticeDesignEpisodePlanPromptBody(step, wfRec), {}),
+        error: ""
+      };
     }
     var expositorySiblingBody = resolveExpositorySiblingPromptBodyForStep(step, wfRec);
     if (expositorySiblingBody) {
@@ -40811,14 +41094,15 @@
    * parameters (S80-S2 §7). This is a *projection* rule only — as of S80-S4 it
    * no longer governs Additional Instruction eligibility.
    */
-  function isDerivedShellWorkflowStep(step) {
+  function isDerivedShellWorkflowStep(step, wf) {
     if (!step || typeof step !== "object") return false;
+    if (wf && isPracticeWorkflow(wf)) return false;
     return !!isWorkflowStepDesignEpisodePlanRow(step);
   }
 
-  function isWorkflowStepEligibleForWorkflowContextProjection(step) {
+  function isWorkflowStepEligibleForWorkflowContextProjection(step, wf) {
     if (!step || typeof step !== "object") return false;
-    return !isDerivedShellWorkflowStep(step);
+    return !isDerivedShellWorkflowStep(step, wf);
   }
 
   /**
@@ -41272,7 +41556,7 @@
     // and above the subordinate Additional Instruction block, but it never
     // relaxes an output contract. Deterministic steps are excluded.
     var workflowContextBlockLineCount = 0;
-    if (isWorkflowStepEligibleForWorkflowContextProjection(step)) {
+    if (isWorkflowStepEligibleForWorkflowContextProjection(step, wfForChain)) {
       var effectiveWorkflowContextBlock = buildEffectiveWorkflowContextBlock(wfForChain, step);
       if (effectiveWorkflowContextBlock) {
         lines.push("");
@@ -41283,7 +41567,21 @@
 
     if (isWorkflowStepDesignEpisodePlanRow(step)) {
       lines.push("");
-      if (isPageEnrichmentV2WorkflowEnabled(wfForChain)) {
+      if (wfForChain && isPracticeWorkflow(wfForChain)) {
+        lines.push(
+          "AI-authored Practice Episode Plan (Sprint 104 S104-D02): author the vNext page shell (schema_version 2.0.0) with full pedagogical discretion over activity structure, multi-outcome grouping, frozen archetypes (understand|apply|analyse|evaluate), and grammar-legal FunctionEnum beat sequences."
+        );
+        lines.push(
+          "Copilot output contract: return one pretty-printed fenced JSON page artefact (triple-backtick json fence, 2-space indentation). No prose before the fence. After the closing fence emit exactly one runner footer line: " +
+            exactFooterLine +
+            ". No other text after the footer line."
+        );
+        var practiceShellMod = resolvePageShellCreateLib();
+        if (practiceShellMod && typeof practiceShellMod.buildCanonicalShellShapeSnippet === "function") {
+          lines.push("");
+          lines.push(practiceShellMod.buildCanonicalShellShapeSnippet());
+        }
+      } else if (isPageEnrichmentV2WorkflowEnabled(wfForChain)) {
         lines.push(
           "Deterministic step (Sprint 56F): PRISM derives the vNext page shell (schema_version 2.0.0) from upstream learning_outcomes. Do NOT invent episode plans with an LLM. Archetypes: understand|apply|analyse|evaluate only. Beat functions must use the approved FunctionEnum."
         );
@@ -58818,7 +59116,7 @@
       return parseLearningJourneyDesignPageCaptureForStorage(raw, wf);
     }
     if (stepRow && isWorkflowStepDesignEpisodePlanRow(stepRow)) {
-      return parseEpisodePlanOrPageCaptureForStorage(raw);
+      return parseEpisodePlanOrPageCaptureForStorage(raw, wf);
     }
     if (stepRow && isWorkflowStepGenerateAssessmentItemsRow(stepRow)) {
       return parseGenerateAssessmentItemsOrPageCaptureForStorage(raw);
@@ -58826,7 +59124,9 @@
     return parsePageArtefactCaptureForStorage(raw);
   }
 
-  function parseEpisodePlanOrPageCaptureForStorage(raw) {
+  function parseEpisodePlanOrPageCaptureForStorage(raw, wf) {
+    var workflow = wf && typeof wf === "object" ? wf : null;
+    var isPracticeTarget = !!(workflow && isPracticeWorkflow(workflow));
     var pageCapture = parsePageArtefactCaptureForStorage(raw);
     if (pageCapture.ok) {
       var normalizedParsed = pageCapture.parsed;
@@ -58837,7 +59137,7 @@
       ) {
         shellModForAlign.alignEpisodePlansActivityIds(normalizedParsed);
       }
-      var normalizedCheck = validateEpisodePlanOrPageShellCapture(normalizedParsed);
+      var normalizedCheck = validateEpisodePlanOrPageShellCapture(normalizedParsed, workflow);
       if (normalizedCheck && normalizedCheck.ok) {
         try {
           pageCapture.json = JSON.stringify(normalizedParsed, null, 2);
@@ -58886,7 +59186,14 @@
         !Array.isArray(looseParsed) &&
         String(looseParsed.artifact_type || "").toLowerCase() === "page"
       ) {
-        var shellCheck = validateEpisodePlanOrPageShellCapture(looseParsed);
+        var shellModAlignLoose = resolvePageShellCreateLib();
+        if (
+          shellModAlignLoose &&
+          typeof shellModAlignLoose.alignEpisodePlansActivityIds === "function"
+        ) {
+          shellModAlignLoose.alignEpisodePlansActivityIds(looseParsed);
+        }
+        var shellCheck = validateEpisodePlanOrPageShellCapture(looseParsed, workflow);
         if (shellCheck && shellCheck.ok) {
           try {
             return {
@@ -58897,7 +59204,18 @@
             };
           } catch (_) {}
         }
+        if (isPracticeTarget) {
+          return {
+            ok: false,
+            errors: (shellCheck && shellCheck.errors) || ["Invalid Practice Episode Plan page shell"],
+            message:
+              ((shellCheck && shellCheck.errors) || []).join("; ") ||
+              "Invalid Practice Episode Plan page shell",
+            parsed: looseParsed
+          };
+        }
       }
+      if (isPracticeTarget) continue;
       // Legacy EP container compatibility: convert bare episode_plans capture
       // into canonical v2 page shell for storage in Sprint 58 run mode.
       if (looseParsed && typeof looseParsed === "object" && !Array.isArray(looseParsed)) {
@@ -67211,6 +67529,10 @@
       parseWorkflowRunPageStructureCaptureForStorage;
     prismTestApi.workflowRunCaptureAllowedArtifactTypes = workflowRunCaptureAllowedArtifactTypes;
     prismTestApi.parseEpisodePlanOrPageCaptureForStorage = parseEpisodePlanOrPageCaptureForStorage;
+    prismTestApi.validateEpisodePlanOrPageShellCapture = validateEpisodePlanOrPageShellCapture;
+    prismTestApi.buildPracticeDesignEpisodePlanPromptBody =
+      buildPracticeDesignEpisodePlanPromptBody;
+    prismTestApi.resolvePageShellJsonForDlaCopy = resolvePageShellJsonForDlaCopy;
     prismTestApi.parseGenerateAssessmentItemsOrPageCaptureForStorage =
       parseGenerateAssessmentItemsOrPageCaptureForStorage;
     prismTestApi.workflowHasDesignEpisodePlanStep = workflowHasDesignEpisodePlanStep;
@@ -67445,6 +67767,9 @@
     };
     prismTestApi.getWorkflowRunPageValidationForTest = function () {
       return Object.assign({}, state.workflowRunPageValidation || {});
+    };
+    prismTestApi.getWorkflowRunEpisodePlanValidationForTest = function () {
+      return Object.assign({}, state.workflowRunEpisodePlanValidation || {});
     };
     prismTestApi.resolveWorkflowForUpstreamArtefacts = resolveWorkflowForUpstreamArtefacts;
     prismTestApi.resolveUpstreamWorkflowArtefactFromCaptures = resolveUpstreamWorkflowArtefactFromCaptures;

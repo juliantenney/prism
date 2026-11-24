@@ -67,7 +67,14 @@ const DEFAULT_LIBS = [
   "lib/learning-journey-workflow-hierarchy.js",
   "lib/learning-journey-sibling-prompts.js",
   "lib/situated-task-design-page.js",
-  "lib/situated-task-sibling-prompts.js"
+  "lib/situated-task-sibling-prompts.js",
+  "lib/episode-plan-v1-vocabulary.js",
+  "lib/episode-plan-v1-archetype-grammar.js",
+  "lib/episode-plan-population-contract.js",
+  "lib/episode-plan-v1-templates.js",
+  "lib/episode-plan-v1-validation.js",
+  "lib/page-shell-create.js",
+  "lib/practice-episode-plan.js"
 ];
 
 /**
@@ -143,6 +150,14 @@ function runPrismLibScriptsInSandbox(sandbox, repoRoot, libs, options) {
       "PrismLearningJourneySiblingPrompts",
       "PRISM_SITUATED_TASK_DESIGN_PAGE",
       "PrismSituatedTaskSiblingPrompts",
+      "PRISM_EPISODE_PLAN_V1_VOCABULARY",
+      "PRISM_EPISODE_PLAN_V1_ARCHETYPE_GRAMMAR",
+      "PRISM_EPISODE_PLAN_POPULATION",
+      "PRISM_EPISODE_PLAN_V1_TEMPLATES",
+      "PRISM_EPISODE_PLAN_V1_VALIDATION",
+      "PRISM_PAGE_SHELL_CREATE",
+      "PRISM_EPISODE_PLAN_DLA_INTEGRATION",
+      "PRISM_PRACTICE_EPISODE_PLAN",
       "PRISM_SPRINT38_VISUAL_AFFORDANCES",
       "PRISM_VISUAL_PLANNING_CONTRACT",
       "PRISM_VISUAL_MATERIAL_ROLE_GROUNDING",
@@ -171,6 +186,9 @@ function runPrismLibScriptsInSandbox(sandbox, repoRoot, libs, options) {
   }
   if (!opts.skipFirstClassWorkflowFamilyInject) {
     ensureFirstClassWorkflowFamilyInSandbox(sandbox, root);
+  }
+  if (!opts.skipPracticeEpisodePlanDepsInject) {
+    ensurePracticeEpisodePlanDepsInSandbox(sandbox, root);
   }
 }
 
@@ -347,6 +365,43 @@ function ensureFirstClassWorkflowFamilyInSandbox(sandbox, repoRoot) {
     : sandbox.PRISM_FIRST_CLASS_WORKFLOW_FAMILY;
 }
 
+function ensurePracticeEpisodePlanDepsInSandbox(sandbox, repoRoot) {
+  var root = repoRoot || path.resolve(__dirname, "..");
+  if (!sandbox) return;
+  wireBrowserGlobalThis(sandbox);
+  var deps = [
+    ["PRISM_EPISODE_PLAN_V1_VOCABULARY", "lib/episode-plan-v1-vocabulary.js"],
+    ["PRISM_EPISODE_PLAN_V1_ARCHETYPE_GRAMMAR", "lib/episode-plan-v1-archetype-grammar.js"],
+    ["PRISM_EPISODE_PLAN_POPULATION", "lib/episode-plan-population-contract.js"],
+    ["PRISM_EPISODE_PLAN_V1_TEMPLATES", "lib/episode-plan-v1-templates.js"],
+    ["PRISM_EPISODE_PLAN_V1_VALIDATION", "lib/episode-plan-v1-validation.js"],
+    ["PRISM_PAGE_SHELL_CREATE", "lib/page-shell-create.js"],
+    ["PRISM_PRACTICE_EPISODE_PLAN", "lib/practice-episode-plan.js"]
+  ];
+  deps.forEach(function (pair) {
+    var key = pair[0];
+    var rel = pair[1];
+    var existing =
+      sandbox[key] || (sandbox.window && sandbox.window[key]) || null;
+    if (!existing) {
+      var filePath = path.join(root, rel);
+      if (fs.existsSync(filePath)) {
+        vm.runInContext(fs.readFileSync(filePath, "utf8"), sandbox, {
+          filename: rel
+        });
+      }
+      existing =
+        sandbox[key] || (sandbox.window && sandbox.window[key]) || null;
+    }
+    if (existing) {
+      sandbox[key] = existing;
+      if (sandbox.window) {
+        sandbox.window[key] = existing;
+      }
+    }
+  });
+}
+
 /**
  * D-014 RC1 — canonical app.js vm harness for Node tests that exercise learner export.
  * Creates document/window stubs, loads libs (injects vNext by default), runs app.js.
@@ -434,7 +489,8 @@ function loadPrismAppJsTestApi(options) {
   }
   runPrismLibScriptsInSandbox(sandbox, root, libs, {
     skipLearnerRendererVNextInject: !!opts.skipLearnerRendererVNextInject,
-    skipGamCanonicalAssemblerInject: !!opts.skipGamCanonicalAssemblerInject
+    skipGamCanonicalAssemblerInject: !!opts.skipGamCanonicalAssemblerInject,
+    skipPracticeEpisodePlanDepsInject: !!opts.skipPracticeEpisodePlanDepsInject
   });
   // Use one shared catalogue-store instance for libs + app.js so init() loadWorkflows
   // and later test saves cannot diverge across separate module copies.

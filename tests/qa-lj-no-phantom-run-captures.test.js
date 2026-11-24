@@ -164,7 +164,7 @@ function loadRunHarness(sharedBackend, sharedRunStore) {
   return { loaded, api: loaded.api, catalogueStore, backend };
 }
 
-test("Commission-native Practice Step 1 (Design Episode Plan) is NEVER auto-populated in Run mode, while Copy-prompt derivation remains intact", async () => {
+test("Commission-native Practice Step 1 (Design Episode Plan) is NEVER auto-populated in Run mode, and uses AI-authored prompt without deterministic derivation", async () => {
   const page = makePracticeAndExpositoryPage();
   const { loaded, api } = loadRunHarness();
 
@@ -196,10 +196,13 @@ test("Commission-native Practice Step 1 (Design Episode Plan) is NEVER auto-popu
 
   api.setSelectedWorkflowIdForTest(practiceWf.id);
 
-  // 1. Verify read-only page-shell derivation STILL works (needed for Copy prompt)
+  // 1. Practice Episode Plan is AI-authored (S104-D02): deterministic shell derivation returns empty;
+  //    Copy prompt resolves Practice AI-authored Episode Plan instructions instead.
   const derivedShell = api.deriveDesignEpisodePlanCaptureJson(practiceWf);
-  assert.ok(derivedShell && derivedShell.includes('"artifact_type": "page"'));
-  assert.ok(derivedShell.includes('"schema_version": "2.0.0"'));
+  assert.equal(derivedShell, "", "Practice Episode Plan must not deterministically instantiate archetype templates");
+  const resolvedPrompt = api.resolveStepPromptText(step1, practiceWf);
+  assert.equal(resolvedPrompt.sourceType, "practice_episode_plan");
+  assert.match(resolvedPrompt.text, /AUTHORITATIVE COMMISSIONED LEARNING OUTCOMES/);
 
   // 2. Simulate Run mode viewing Step 1 of the unstarted Practice workflow
   const doc = loaded.window.document;

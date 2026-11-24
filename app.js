@@ -57695,6 +57695,16 @@
           sharedSource: sharedApply || null
         };
       }
+      if (
+        sharedApply.extracted &&
+        sharedApply.extracted.normalizedFromStructured &&
+        parsed.shared_authoritative_material &&
+        typeof parsed.shared_authoritative_material === "object"
+      ) {
+        parsed.shared_authoritative_material.content = String(
+          sharedApply.extracted.content || ""
+        );
+      }
     }
     return {
       ok: true,

@@ -1,24 +1,40 @@
 # Sprint 104 — Status / work log
 
 **Sprint:** 104 — Workload Fidelity and Proportionate Authoring  
-**Status:** **OPEN — PHASE 104A INVESTIGATION COMPLETE (AWAITING AGREEMENT)**  
+**Status:** **OPEN — MILESTONE 1 COMMITTED / IMPLEMENTING MILESTONE 2 (PRACTICE EPISODE PLAN DESIGN AUTHORITY)**  
 **Baseline:** `1515cd4`  
 **Primary backlog item:** [PB-FA-025](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-025--duration-fidelity-learner-workload-budgeting)  
-**Opening:** [S104-D01](decisions.md#s104-d01--open-sprint-104--workload-fidelity-and-proportionate-authoring)
+**Opening & agreement:** [S104-D01](decisions.md#s104-d01--open-sprint-104--workload-fidelity-and-proportionate-authoring), [S104-D02](decisions.md#s104-d02--architectural-agreement-principles-a-e-and-seven-gated-milestones)
 
 | Item | State |
 | ---- | ----- |
 | S104-D01 Open sprint | **Accepted** |
-| 104A Read-only investigation & documentation | **Complete** |
-| S104-D02 Implementation agreement | **Pending review** |
-| 104B Duration transport + commissioning proportionality | **Not started** (gated on S104-D02) |
-| 104C Episode Plan / Practice DLA-GAM-LS-DP scaling + workload estimator fixes | **Not started** (gated on S104-D02) |
-| 104D Duration sensitivity probes (5 / 15 / 30 min) | **Not started** (gated on implementation) |
-| 104E 90-min Economics journey regeneration, baseline comparison, QA & learner-runtime acceptance | **Not started** (gated on implementation) |
+| Phase 104A Read-only investigation & documentation | **Complete** |
+| S104-D02 Architectural agreement (Principles A–E & Milestones 1–7) | **Accepted** |
+| Milestone 1 — Authoritative duration transport | **Complete & committed checkpoint** (automated verified; manual acceptance pending integrated live validation) |
+| Milestone 2 — Practice Episode Plan design authority | **In progress** |
+| Milestone 3 — Reconciliation of downstream Practice contracts | **Not started** (gated on Milestone 2) |
+| Milestone 4 — Proportionate Learning Journey commissioning | **Not started** (gated on Milestone 3) |
+| Milestone 5 — Workload estimation corrections | **Not started** (gated on Milestone 4) |
+| Milestone 6 — Live 5-, 15- and 30-minute Practice sensitivity probes | **Not started** (gated on Milestone 5) |
+| Milestone 7 — 90-minute Economics journey regeneration, baseline comparison, QA & learner-runtime acceptance | **Not started** (gated on Milestone 6) |
 
 ---
 
 ## Work log
+
+### 2026-11-24 — Milestone 1 implementation and architectural documentation update
+
+- Recorded architectural agreement **[S104-D02](decisions.md#s104-d02--architectural-agreement-principles-a-e-and-seven-gated-milestones)** across `decisions.md`, `IMPLEMENTATION-MAP.md`, `VALIDATION.md`, `STATUS.md`, `SPRINT-104-CHARTER.md`, `SPRINT-104-START-HERE.md`, `README.md`, `ARCHITECTURAL-DEBT.md`, `INITIAL-INVESTIGATION.md`, and programme docs (`docs/sprints/sprint-104-workload-fidelity-and-proportionate-authoring.md`, `docs/sprints/NEXT-SPRINT.md`), replacing the draft `S104-D02` heuristics (prose fallback, fixed duration tiers, beat quotas, deterministic LO grouping) with AI design authority, conditional downstream contracts, proportionate commissioning, and the 7-milestone sequence.
+- Implemented **Milestone 1 (Authoritative duration transport only)**:
+  - `lib/learning-journey-sibling-prompts.js`: established Step 4 (`step_journey_commissioning`) as canonical origin with `<<<COMMISSION_DURATIONS_BEGIN>>> ... <<<COMMISSION_DURATIONS_END>>>` structured JSON block and clear conceptual separation of Authoritative allocated duration, Designed duration, and Estimated workload (preserving Sprint 103 guidance wording).
+  - `lib/learning-journey-design-page.js`: added strict structured-integer extraction (`extractCommissionDurationsFromCommissioningText`), Step 5 schema validation (`commissions[].allocated_minutes`, optional `learning_journey.allocated_minutes`), Step 4↔Step 5 reconciliation (`reconcileDesignPageCommissionDurations`) failing closed on conflict and inheriting verbatim when omitted at Design Page, zero prose fallback for legacy pages, author-only inspection metadata (`renderCommissionContractHtml`), and Step 5 prompt alignment.
+  - `lib/first-class-commission-intake.js` & `lib/first-class-workflow-family.js`: added strict integer `allocatedMinutes` validation, fail-closed conflict checking, lossless seeding of `commissioned_duration_minutes`, `duration_minutes`, `commissioned_duration_provenance`, and optional `journey_allocated_minutes` across all 4 commissioned product families (`expository`, `practice`, `assessment_pack`, `situated_task`) plus legacy `interactive`, without altering standalone Create seeds.
+  - `app.js`: wired Step 4 capture extraction (`applyLearningJourneyCommissionDurationsFromCommissionCapture`), Step 5 capture/gate conflict blocking (`reconcileLearningJourneyDesignPageDurations`), single & batch creation authoritative duration handoff, persistence/normalization carry-forward, component-level Adjustments duration lock for LJ-commissioned components (`hasAuthoritativeCommissionedDuration`), and `ADJUSTMENTS_CAPABILITY_RESOLVERS.interactive_duration` inclusion for LJ-commissioned Expository with authoritative duration while keeping standalone Expository and legacy commissions untouched.
+- Verified Milestone 1 closure invariants:
+  - Enforced Step 4 `journey_allocated_minutes` vs parent Learning Journey authoritative allocation (`resolveLearningJourneyAuthoritativeParentDurationMinutes`) and component sum reconciliation (`sum === journey_allocated_minutes`) in `lib/learning-journey-design-page.js` and `app.js` (also fixed `resolveLearningJourneyLearningTimeEnvelopeMinutes` to inspect `workflowBriefResolution.resolvedFactors` / `initialBrief`).
+  - Distinguished genuinely legacy Learning Journeys/commissions from newly authored commissions via `duration_contract_version: "s104_m1"` on `buildLearningJourneyFamily`, `isLearningJourneyDurationContractRequired`, and partial-duration detection so new Step 4, Step 5, and intake paths cannot silently bypass structured duration metadata while legacy compatibility remains preserved.
+- Added focused test suite `tests/s104-m1-duration-transport.test.js` (11 / 11 passing) and verified 158 / 158 assertions across the closure/legacy non-regression bundle (plus 343 / 343 across the broader 34-file Milestone 1 verification sweep). Recorded manual acceptance as **pending integrated live validation** and committed Milestone 1 as a discrete checkpoint.
 
 ### 2026-11-24 — Phase 104A investigation and sprint pack creation
 

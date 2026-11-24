@@ -1,13 +1,13 @@
 # Next sprint — active programme
 
-**Status:** **Sprint 104 OPEN** (Phase 104A investigation complete; awaiting implementation agreement before code/prompt edits). Sprint 103 **CLOSED — COMPLETE — ACCEPTED WITH DOCUMENTED QUALIFICATIONS**.  
-**Updated:** 2026-11-24 (Sprint 104 opened from clean baseline `1515cd4` under `PB-FA-025`)
+**Status:** **Sprint 104 OPEN** (`104A` committed `f3bb47d`; `S104-D02` Principles A–E & 7-milestone sequence agreed; **Milestone 1 duration transport only** authorised now). Sprint 103 **CLOSED — COMPLETE — ACCEPTED WITH DOCUMENTED QUALIFICATIONS**.  
+**Updated:** 2026-11-24 (Sprint 104 `S104-D02` agreed; Milestone 1 authorised)
 
 ---
 
 ## Current programme
 
-**Active sprint:** [Sprint 104 — Workload Fidelity and Proportionate Authoring](sprint-104-workload-fidelity-and-proportionate-authoring.md) — **OPEN — PHASE 104A COMPLETE** · [SPRINT-104-START-HERE.md](../development/sprints/2026-11-24-sprint-104-workload-fidelity-and-proportionate-authoring/SPRINT-104-START-HERE.md) · Primary backlog item: [PB-FA-025](../backlog/PRODUCT-BACKLOG.md#pb-fa-025--duration-fidelity-learner-workload-budgeting)
+**Active sprint:** [Sprint 104 — Workload Fidelity and Proportionate Authoring](sprint-104-workload-fidelity-and-proportionate-authoring.md) — **OPEN — MILESTONE 1 AUTHORISED** · [SPRINT-104-START-HERE.md](../development/sprints/2026-11-24-sprint-104-workload-fidelity-and-proportionate-authoring/SPRINT-104-START-HERE.md) · Primary backlog item: [PB-FA-025](../backlog/PRODUCT-BACKLOG.md#pb-fa-025--duration-fidelity-learner-workload-budgeting)
 
 **Last closed:** [Sprint 103 — Learning Journey Runtime Continuity and Commissioning Fidelity](sprint-103-learning-journey-runtime-continuity-and-commissioning-fidelity.md) — **CLOSED — COMPLETE — ACCEPTED WITH DOCUMENTED QUALIFICATIONS** · [SPRINT-103-CLOSURE.md](../development/sprints/2026-11-23-sprint-103-learning-journey-runtime-continuity-and-commissioning-fidelity/SPRINT-103-CLOSURE.md)
 
@@ -17,15 +17,14 @@
 
 | Item | State |
 | ---- | ----- |
-| Open sprint | **Sprint 104 — Phase 104A investigation complete; awaiting S104-D02 agreement** |
-| Baseline commit | `1515cd4` |
-| Policy | **S103-D01 Learning Journey-first — Accepted** |
+| Open sprint | **Sprint 104 — Milestone 1 (Authoritative duration transport only)** |
+| Baseline commit | `1515cd4` (`104A` committed at `f3bb47d`) |
+| Agreed architecture | **S104-D02 Principles A–E & 7 gated milestones — Accepted** |
 | Excluded from Sprint 104 | `PB-S-008`, `PB-FA-018`, new pedagogical capabilities/interaction types, snapshot persistence, general renderer refactoring, automatic duration rewriting |
 
 ---
 
 ## Immediate next
 
-1. Review root causes and proposed interventions in [INITIAL-INVESTIGATION.md](../development/sprints/2026-11-24-sprint-104-workload-fidelity-and-proportionate-authoring/INITIAL-INVESTIGATION.md) and confirm implementation choices ([S104-D02](../development/sprints/2026-11-24-sprint-104-workload-fidelity-and-proportionate-authoring/decisions.md#s104-d02--proposed-implementation-plan-awaiting-agreement)).
-2. Authorise Phases `104B`–`104C` implementation before editing prompts, contracts, validators, or workload modules.
-3. Retain *Correlation and Causation: Making Sense of Economic Evidence* pre-intervention captures untouched throughout.
+1. Complete and review **Milestone 1** (canonical origin + lossless duration transport across all 4 commissioned product families + legacy non-fallback + focused tests) before committing implementation changes or authorising Milestone 2 ([decisions.md](../development/sprints/2026-11-24-sprint-104-workload-fidelity-and-proportionate-authoring/decisions.md#s104-d02--architectural-agreement-principles-a-e-and-separately-gated-milestones)).
+2. Keep Milestones 2–7 gated and retain *Correlation and Causation: Making Sense of Economic Evidence* pre-intervention captures untouched throughout.

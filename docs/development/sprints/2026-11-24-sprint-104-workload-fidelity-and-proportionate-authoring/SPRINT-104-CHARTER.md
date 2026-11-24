@@ -1,11 +1,11 @@
 # Sprint 104 — Charter
 
 **Sprint:** 104 — Workload Fidelity and Proportionate Authoring  
-**Status:** **OPEN — PHASE 104A INVESTIGATION COMPLETE**  
+**Status:** **OPEN — S104-D02 AGREED; MILESTONE 1 AUTHORISED**  
 **Opened:** 2026-11-24  
-**Baseline:** `1515cd4`  
-**Primary backlog item:** [PB-FA-025](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-025--duration-fidelity-learner-workload-budgeting)  
-**Opening:** [S104-D01](decisions.md#s104-d01--open-sprint-104--workload-fidelity-and-proportionate-authoring)  
+**Baseline:** `1515cd4` (`104A` committed at `f3bb47d`)  
+**Primary backlog item:** [PB-FA-025](../backlog/PRODUCT-BACKLOG.md#pb-fa-025--duration-fidelity-learner-workload-budgeting)  
+**Decisions:** [S104-D01](decisions.md#s104-d01--open-sprint-104--workload-fidelity-and-proportionate-authoring) · [S104-D02](decisions.md#s104-d02--architectural-agreement-principles-a-e-and-separately-gated-milestones)  
 **Map:** [IMPLEMENTATION-MAP.md](IMPLEMENTATION-MAP.md)  
 **Investigation:** [INITIAL-INVESTIGATION.md](INITIAL-INVESTIGATION.md)
 
@@ -35,41 +35,26 @@ Retain the existing journey and captures untouched as the pre-intervention refer
 
 ---
 
-## Design principles
+## Agreed architectural principles ([S104-D02](decisions.md#s104-d02--architectural-agreement-principles-a-e-and-separately-gated-milestones))
 
-1. **Duration is an authoritative design constraint.**
-2. **Short learning experiences can be pedagogically complete.**
-3. **Scale the learning design**, rather than simply shortening its prose.
-4. **Account for** evidence inspection, reasoning, writing, decisions, and feedback engagement.
-5. **Distinguish** familiar material from new material, and optional support from expected study.
-6. **Preserve** educational purpose, constructive alignment, and meaningful learner performance.
+1. **A. Authoritative duration:** Learning Journey owns commissioned component duration (`Step 4` origin → `Design Page` → intake → seeding → run context) across all four commissioned product families, with no prose fallback for legacy commissions, explicit distinction between allocated duration / designed duration / estimated workload, and no unilateral override by component authoring.
+2. **B. Practice Episode Plan design authority:** AI-authored, deterministically validated Episode Plans (Assessment Pack precedent) responding to purpose, outcomes, duration, prior learning, and journey context — no fixed duration tiers, quotas, beat targets, or deterministic LO grouping; standalone Interactive protected.
+3. **C. Conditional pedagogical obligations:** DLA and GAM realise selected pedagogical functions rather than enlarging the design; quality contracts apply conditionally; editorial furniture is optional for Practice; prefer removing redundant prescriptions over adding compensatory exceptions.
+4. **D. Proportionate journey commissioning:** Distribute functions across the journey; exploit prior learning and familiar evidence; avoid arbitrary component/outcome/word-count quotas; keep Journal purposeful without driving extra writing; surface infeasibility rather than mutating parameters.
+5. **E. Workload estimation:** Fix estimator defects and silent bypasses; compare cumulative effort (evidence, decisions, responses, feedback) against authoritative duration; separate familiar/new and expected/optional study; keep warnings advisory and distinct from structural duration compliance.
 
 ---
 
-## Scope & first phase
+## Separately gated milestone programme
 
-### Phase 104A (authorised at opening — investigation only)
-
-Trace `C04` (*Comparing competing economic explanations*, 8 min) through the complete commissioning and authoring pipeline:
-
-- Journey planning and duration allocation
-- Commission scope and Learning Journey Design Page metadata
-- Commission-native intake
-- Design Episode Plan
-- Design Learning Activities
-- Generate Activity Materials
-- Construct Learning Sequence
-- Design Page
-- Existing workload estimation and validation mechanisms
-
-Compare with `C01`, `C03`, and `C05` to establish whether activity proliferation and workload expansion are systemic, and identify prompt instructions, contracts, and validators that support or undermine proportionate authoring.
-
-### Planned post-agreement acceptance (Phases 104B–104E; gated on intervention agreement)
-
-1. Test duration sensitivity using equivalent learning purposes with **5-, 15-, and 30-minute** constraints.
-2. Regenerate the economics journey from its original brief, retaining the authoritative **90-minute** total while allowing PRISM to reconsider component count, allocations, and activity structure.
-3. Compare the regenerated journey against the existing baseline.
-4. Complete educational QA and learner-runtime acceptance.
+1. **104A — Investigation & sprint pack:** **Complete (`f3bb47d`)**.
+2. **Milestone 1 — Authoritative duration transport:** **Authorised now** (stop for review before Milestone 2; do not commit implementation changes prematurely).
+3. **Milestone 2 — Practice Episode Plan design authority:** **Gated on Milestone 1 review**.
+4. **Milestone 3 — Reconciliation of downstream Practice contracts:** **Gated on Milestone 2 review**.
+5. **Milestone 4 — Proportionate Learning Journey commissioning:** **Gated on Milestone 3 review**.
+6. **Milestone 5 — Workload estimation corrections:** **Gated on Milestone 4 review**.
+7. **Milestone 6 — Live 5-, 15-, and 30-minute Practice sensitivity probes:** **Gated on Milestone 5 review**.
+8. **Milestone 7 — Regeneration of 90-minute Economics journey, baseline comparison, QA & learner-runtime acceptance:** **Gated on Milestone 6 review**.
 
 ---
 
@@ -87,6 +72,6 @@ Compare with `C01`, `C03`, and `C05` to establish whether activity proliferation
 
 ## Guardrails
 
-- Do **not** modify authoring prompts, contracts, validators, `app.js`, `lib/`, or tests during `104A` investigation.
-- Do **not** regenerate the economics journey or mutate baseline captures during `104A`.
-- Preserve standalone Interactive and existing non-commissioned workflows without regression.
+- Strictly respect milestone gating: in **Milestone 1**, implement **duration transport only**; do not touch Episode Plan derivation, downstream Practice pedagogical contracts, broader commissioning proportionality, or workload estimators yet.
+- Do **not** regenerate the economics journey or mutate baseline captures during Milestones 1–6.
+- Preserve standalone Interactive and existing legacy/non-commissioned workflows without regression.

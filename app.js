@@ -3473,10 +3473,17 @@
       input.setAttribute("data-field", "adjustmentParameter");
       input.setAttribute("data-adjustment-id", declaration.id);
       input.autocomplete = "off";
-      var explicitValue = Object.prototype.hasOwnProperty.call(explicit, declaration.id)
-        ? explicit[declaration.id]
-        : "";
+      var isLjLockedDuration =
+        declaration.id === ADJUSTMENTS_DURATION_PARAMETER_ID &&
+        hasAuthoritativeCommissionedDuration(wf);
+      var explicitValue =
+        !isLjLockedDuration && Object.prototype.hasOwnProperty.call(explicit, declaration.id)
+          ? explicit[declaration.id]
+          : "";
       input.value = explicitValue == null ? "" : String(explicitValue);
+      if (isLjLockedDuration) {
+        input.disabled = true;
+      }
 
       var commissioned =
         effective.provenance[declaration.id] === "commissioned"
@@ -3491,9 +3498,12 @@
           ? "Auto — " + formatAdjustmentsParameterValueForDisplay(declaration, commissioned)
           : "Auto";
       } else {
-        input.placeholder = commissioned
-          ? "Auto — " + formatAdjustmentsParameterValueForDisplay(declaration, commissioned)
-          : "Auto";
+        input.placeholder = isLjLockedDuration && commissioned
+          ? "Owned by Learning Journey — " +
+            formatAdjustmentsParameterValueForDisplay(declaration, commissioned)
+          : commissioned
+            ? "Auto — " + formatAdjustmentsParameterValueForDisplay(declaration, commissioned)
+            : "Auto";
       }
 
       // A number with a declared unit gets the unit rendered beside the field
@@ -3523,7 +3533,12 @@
         var current = resolveEffectiveRunContext(wf);
         var provenance = current.provenance[declaration.id];
         var value = current.parameters[declaration.id];
-        if (provenance === "adjustment") {
+        if (isLjLockedDuration && value != null && value !== "") {
+          status.textContent =
+            "Owned by parent Learning Journey: " +
+            formatAdjustmentsParameterValueForDisplay(declaration, value) +
+            " (change duration on the Learning Journey instead).";
+        } else if (provenance === "adjustment") {
           status.textContent =
             "Using your value: " + formatAdjustmentsParameterValueForDisplay(declaration, value);
         } else if (provenance === "commissioned") {
@@ -5642,6 +5657,34 @@
       seed.commissioned_learning_outcomes_provenance ||
       initial.commissionedLearningOutcomesProvenance ||
       null;
+    var rawCommissionedDuration =
+      seed.commissioned_duration_minutes != null
+        ? seed.commissioned_duration_minutes
+        : initial.commissionedDurationMinutes != null
+          ? initial.commissionedDurationMinutes
+          : initial.allocatedMinutes;
+    var commissionedDurationMinutes =
+      typeof rawCommissionedDuration === "number" &&
+      isFinite(rawCommissionedDuration) &&
+      rawCommissionedDuration > 0 &&
+      Math.floor(rawCommissionedDuration) === rawCommissionedDuration
+        ? rawCommissionedDuration
+        : null;
+    var commissionedDurationProvenance =
+      seed.commissioned_duration_provenance ||
+      initial.commissionedDurationProvenance ||
+      null;
+    var rawJourneyDuration =
+      seed.journey_allocated_minutes != null
+        ? seed.journey_allocated_minutes
+        : initial.journeyAllocatedMinutes;
+    var journeyAllocatedMinutes =
+      typeof rawJourneyDuration === "number" &&
+      isFinite(rawJourneyDuration) &&
+      rawJourneyDuration > 0 &&
+      Math.floor(rawJourneyDuration) === rawJourneyDuration
+        ? rawJourneyDuration
+        : null;
     return {
       seed: seed,
       initial: initial,
@@ -5653,12 +5696,16 @@
       commissionedLearningOutcomes: commissionedLos,
       commissionedLearningOutcomesProvenance: commissionedLosProvenance,
       commissionNativeLoBound: commissionNativeLoBound,
+      commissionedDurationMinutes: commissionedDurationMinutes,
+      commissionedDurationProvenance: commissionedDurationProvenance,
+      journeyAllocatedMinutes: journeyAllocatedMinutes,
       hasCommissionContext: !!(
         commissionSpec ||
         journeyContext ||
         commissionDependencies ||
         publishedTitleDirectory ||
-        requiredLearnerArtefacts.length
+        requiredLearnerArtefacts.length ||
+        commissionedDurationMinutes != null
       )
     };
   }
@@ -6797,6 +6844,334 @@
       extracted: extracted,
       corrections: extracted.corrections || []
     };
+  }
+
+  function resolveLearningJourneyAuthoritativeParentDurationMinutes(wf) {
+    var workflow = null;
+    if (typeof wf === "string") {
+      var id = String(wf || "").trim();
+      if (id && Array.isArray(state.workflows)) {
+        workflow =
+          state.workflows.find(function (row) {
+            return row && String(row.id || "") === id;
+          }) || null;
+      }
+    } else if (wf && typeof wf === "object") {
+      workflow = wf;
+    }
+    if (!workflow) return null;
+    var brief =
+      workflow.workflowBriefResolution && typeof workflow.workflowBriefResolution === "object"
+        ? workflow.workflowBriefResolution
+        : null;
+    var seed =
+      (brief && brief.resolvedFactors && typeof brief.resolvedFactors === "object"
+        ? brief.resolvedFactors
+        : null) ||
+      (workflow.deliverySeed && typeof workflow.deliverySeed === "object"
+        ? workflow.deliverySeed
+        : null) ||
+      null;
+    var initial =
+      (brief && brief.initialBrief && typeof brief.initialBrief === "object"
+        ? brief.initialBrief
+        : null) ||
+      (workflow.initialBrief && typeof workflow.initialBrief === "object"
+        ? workflow.initialBrief
+        : null) ||
+      null;
+    var adjDur =
+      workflow.adjustments &&
+      workflow.adjustments.parameters &&
+      workflow.adjustments.parameters.duration_minutes;
+    var explicitCandidates = [
+      adjDur,
+      seed && seed.journey_allocated_minutes,
+      seed && seed.allocated_minutes,
+      seed && seed.commissioned_duration_minutes,
+      initial && initial.journeyAllocatedMinutes,
+      initial && initial.allocatedMinutes
+    ];
+    var i;
+    for (i = 0; i < explicitCandidates.length; i += 1) {
+      var whole = resolvePositiveWholeDurationNumber(explicitCandidates[i]);
+      if (whole != null) return whole;
+    }
+    var envMins = resolveLearningJourneyLearningTimeEnvelopeMinutes(workflow);
+    return envMins != null && Number.isFinite(envMins) && envMins > 0 ? Math.round(envMins) : null;
+  }
+
+  function isLearningJourneyDurationContractRequired(wf, parsedPage) {
+    var workflow = null;
+    if (typeof wf === "string") {
+      var id = String(wf || "").trim();
+      if (id && Array.isArray(state.workflows)) {
+        workflow =
+          state.workflows.find(function (row) {
+            return row && String(row.id || "") === id;
+          }) || null;
+      }
+    } else if (wf && typeof wf === "object") {
+      workflow = wf;
+    }
+    if (workflow) {
+      var brief =
+        workflow.workflowBriefResolution && typeof workflow.workflowBriefResolution === "object"
+          ? workflow.workflowBriefResolution
+          : null;
+      var seed =
+        (brief && brief.resolvedFactors && typeof brief.resolvedFactors === "object"
+          ? brief.resolvedFactors
+          : null) ||
+        (workflow.deliverySeed && typeof workflow.deliverySeed === "object"
+          ? workflow.deliverySeed
+          : null) ||
+        null;
+      var initial =
+        (brief && brief.initialBrief && typeof brief.initialBrief === "object"
+          ? brief.initialBrief
+          : null) ||
+        (workflow.initialBrief && typeof workflow.initialBrief === "object"
+          ? workflow.initialBrief
+          : null) ||
+        null;
+      var version = String(
+        (seed && (seed.duration_contract_version || seed.durationContractVersion)) ||
+          (initial && (initial.durationContractVersion || initial.duration_contract_version)) ||
+          workflow.duration_contract_version ||
+          workflow.durationContractVersion ||
+          ""
+      ).trim();
+      if (version) return true;
+      if (
+        (seed && seed.commissioned_component_durations) ||
+        (initial && initial.commissionedComponentDurations)
+      ) {
+        return true;
+      }
+    }
+    if (parsedPage && typeof parsedPage === "object") {
+      var designMod = resolveLearningJourneyDesignPageLib();
+      var lj =
+        parsedPage.learning_journey && typeof parsedPage.learning_journey === "object"
+          ? parsedPage.learning_journey
+          : null;
+      if (lj && (lj.allocated_minutes != null || lj.allocatedMinutes != null)) return true;
+      var comms = Array.isArray(parsedPage.commissions) ? parsedPage.commissions : [];
+      if (
+        designMod &&
+        typeof designMod.readCommissionStructuredAllocatedMinutes === "function" &&
+        comms.some(function (row) {
+          return designMod.readCommissionStructuredAllocatedMinutes(row).present;
+        })
+      ) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /**
+   * Sprint 104 Milestone 1: capture Step 4 (learning_commissions) structured duration block
+   * (<<<COMMISSION_DURATIONS_BEGIN>>> ... <<<COMMISSION_DURATIONS_END>>>).
+   * Newly authored LJ workflows (duration_contract_version) require this block; legacy
+   * workflows without the contract permit soft absence (never parsing prose).
+   * Present-but-malformed or conflicting blocks always fail closed.
+   */
+  function applyLearningJourneyCommissionDurationsFromCommissionCapture(wf, captureText, options) {
+    var opts = options && typeof options === "object" ? options : {};
+    var designMod = resolveLearningJourneyDesignPageLib();
+    if (
+      !designMod ||
+      typeof designMod.extractCommissionDurationsFromCommissioningText !== "function"
+    ) {
+      return {
+        ok: false,
+        code: "learning_journey_design_page_module_unavailable",
+        errors: ["learning_journey_design_page_module_unavailable"]
+      };
+    }
+    var parentAuthoritativeMinutes =
+      opts.parentAuthoritativeMinutes !== undefined
+        ? opts.parentAuthoritativeMinutes
+        : resolveLearningJourneyAuthoritativeParentDurationMinutes(wf);
+    var extracted = designMod.extractCommissionDurationsFromCommissioningText(captureText, {
+      parentAuthoritativeMinutes: parentAuthoritativeMinutes
+    });
+    if (!extracted || !extracted.ok) {
+      if (opts.softMissing && extracted && extracted.kind === "missing") {
+        return {
+          ok: true,
+          code: "commission_durations_absent_soft",
+          written: false,
+          skipped: true,
+          soft: true,
+          extracted: extracted
+        };
+      }
+      return {
+        ok: false,
+        code: (extracted && extracted.kind) || "commission_durations_invalid",
+        errors: (extracted && extracted.errors) || ["commission_durations_invalid"],
+        extracted: extracted || null
+      };
+    }
+    if (!wf || typeof wf !== "object") {
+      return {
+        ok: false,
+        code: "workflow_required",
+        errors: ["workflow_required"],
+        extracted: extracted
+      };
+    }
+    var payload = {
+      authority: "learning_journey_commission",
+      source: "step_journey_commissioning",
+      journeyAllocatedMinutes:
+        extracted.journeyAllocatedMinutes != null ? extracted.journeyAllocatedMinutes : null,
+      commissions: Array.isArray(extracted.commissions) ? extracted.commissions.slice() : [],
+      byCommissionId: Object.assign({}, extracted.byCommissionId || {})
+    };
+    wf.workflowBriefResolution =
+      wf.workflowBriefResolution && typeof wf.workflowBriefResolution === "object"
+        ? wf.workflowBriefResolution
+        : {};
+    wf.workflowBriefResolution.resolvedFactors =
+      wf.workflowBriefResolution.resolvedFactors &&
+      typeof wf.workflowBriefResolution.resolvedFactors === "object"
+        ? wf.workflowBriefResolution.resolvedFactors
+        : {};
+    wf.workflowBriefResolution.initialBrief =
+      wf.workflowBriefResolution.initialBrief &&
+      typeof wf.workflowBriefResolution.initialBrief === "object"
+        ? wf.workflowBriefResolution.initialBrief
+        : {};
+    wf.workflowBriefResolution.resolvedFactors.commissioned_component_durations = payload;
+    wf.workflowBriefResolution.initialBrief.commissionedComponentDurations = JSON.parse(
+      JSON.stringify(payload)
+    );
+    if (typeof saveWorkflows === "function") {
+      try {
+        saveWorkflows();
+      } catch (_err) {}
+    }
+    return {
+      ok: true,
+      code: "commission_durations_applied",
+      written: true,
+      durations: payload,
+      extracted: extracted
+    };
+  }
+
+  function readLearningJourneyAuthoritativeCommissionDurations(workflowOrId) {
+    var wf = null;
+    if (typeof workflowOrId === "string") {
+      var id = String(workflowOrId || "").trim();
+      if (id && Array.isArray(state.workflows)) {
+        wf =
+          state.workflows.find(function (row) {
+            return row && String(row.id || "") === id;
+          }) || null;
+      }
+    } else if (workflowOrId && typeof workflowOrId === "object") {
+      wf = workflowOrId;
+    }
+    if (!wf) return null;
+    var brief =
+      wf.workflowBriefResolution && typeof wf.workflowBriefResolution === "object"
+        ? wf.workflowBriefResolution
+        : null;
+    var seed =
+      brief && brief.resolvedFactors && typeof brief.resolvedFactors === "object"
+        ? brief.resolvedFactors
+        : null;
+    var initial =
+      brief && brief.initialBrief && typeof brief.initialBrief === "object"
+        ? brief.initialBrief
+        : null;
+    var stored =
+      (seed && seed.commissioned_component_durations) ||
+      (initial && initial.commissionedComponentDurations) ||
+      null;
+    if (
+      stored &&
+      typeof stored === "object" &&
+      stored.byCommissionId &&
+      typeof stored.byCommissionId === "object"
+    ) {
+      return stored;
+    }
+    var designMod = resolveLearningJourneyDesignPageLib();
+    if (
+      !designMod ||
+      typeof designMod.extractCommissionDurationsFromCommissioningText !== "function"
+    ) {
+      return null;
+    }
+    var steps = Array.isArray(wf.steps) ? wf.steps : [];
+    var i;
+    for (i = 0; i < steps.length; i += 1) {
+      var step = steps[i];
+      if (!step || !isLearningJourneyCommissioningStep(step)) continue;
+      var sid = String(step.id || "").trim();
+      var raw =
+        (sid &&
+          state.workflowRunCapturedOutputs &&
+          typeof state.workflowRunCapturedOutputs[sid] === "string" &&
+          state.workflowRunCapturedOutputs[sid]) ||
+        (sid &&
+          state.workflowRunCapturedOutputsRaw &&
+          typeof state.workflowRunCapturedOutputsRaw[sid] === "string" &&
+          state.workflowRunCapturedOutputsRaw[sid]) ||
+        "";
+      if (!String(raw || "").trim()) continue;
+      var extracted = designMod.extractCommissionDurationsFromCommissioningText(raw, {
+        parentAuthoritativeMinutes: resolveLearningJourneyAuthoritativeParentDurationMinutes(wf)
+      });
+      if (extracted && extracted.ok) {
+        return {
+          authority: "learning_journey_commission",
+          source: "step_journey_commissioning",
+          journeyAllocatedMinutes:
+            extracted.journeyAllocatedMinutes != null ? extracted.journeyAllocatedMinutes : null,
+          commissions: Array.isArray(extracted.commissions) ? extracted.commissions.slice() : [],
+          byCommissionId: Object.assign({}, extracted.byCommissionId || {})
+        };
+      }
+    }
+    return null;
+  }
+
+  function reconcileLearningJourneyDesignPageDurations(wf, parsedPage, options) {
+    var designMod = resolveLearningJourneyDesignPageLib();
+    if (!designMod) {
+      return {
+        ok: false,
+        errors: ["learning_journey_design_page_module_unavailable"],
+        page: null
+      };
+    }
+    var opts = options && typeof options === "object" ? options : {};
+    var step4Durations =
+      opts.step4Durations !== undefined
+        ? opts.step4Durations
+        : readLearningJourneyAuthoritativeCommissionDurations(wf);
+    if (typeof designMod.reconcileDesignPageCommissionDurations !== "function") {
+      return { ok: true, errors: [], page: parsedPage };
+    }
+    var parentAuthoritativeMinutes =
+      opts.parentAuthoritativeMinutes !== undefined
+        ? opts.parentAuthoritativeMinutes
+        : resolveLearningJourneyAuthoritativeParentDurationMinutes(wf);
+    var requireStructuredDurations =
+      opts.requireStructuredDurations !== undefined
+        ? !!opts.requireStructuredDurations
+        : isLearningJourneyDurationContractRequired(wf, parsedPage);
+    return designMod.reconcileDesignPageCommissionDurations(parsedPage, step4Durations, {
+      parentAuthoritativeMinutes: parentAuthoritativeMinutes,
+      requireStructuredDurations: requireStructuredDurations
+    });
   }
 
   function isLearningJourneyWorkflow(wf) {
@@ -13821,7 +14196,14 @@
       candidates.push(value);
     }
     if (workflow) {
+      var brief =
+        workflow.workflowBriefResolution && typeof workflow.workflowBriefResolution === "object"
+          ? workflow.workflowBriefResolution
+          : null;
       var seed =
+        (brief && brief.resolvedFactors && typeof brief.resolvedFactors === "object"
+          ? brief.resolvedFactors
+          : null) ||
         (workflow.deliverySeed && typeof workflow.deliverySeed === "object"
           ? workflow.deliverySeed
           : null) ||
@@ -13833,9 +14215,17 @@
         pushCandidate(seed.learning_time);
         pushCandidate(seed.learningTime);
       }
-      if (workflow.initialBrief && typeof workflow.initialBrief === "object") {
-        pushCandidate(workflow.initialBrief.learningTime);
-        pushCandidate(workflow.initialBrief.learning_time);
+      var initial =
+        (brief && brief.initialBrief && typeof brief.initialBrief === "object"
+          ? brief.initialBrief
+          : null) ||
+        (workflow.initialBrief && typeof workflow.initialBrief === "object"
+          ? workflow.initialBrief
+          : null) ||
+        null;
+      if (initial) {
+        pushCandidate(initial.learningTime);
+        pushCandidate(initial.learning_time);
       }
       pushCandidate(workflow.learningTime);
       pushCandidate(workflow.learning_time);
@@ -13847,8 +14237,14 @@
         var parsed = adapter.parseLearningTimeEnvelopeMinutes(candidates[i]);
         if (parsed != null) return parsed;
       } else {
-        var n = Number(candidates[i]);
+        var rawCand = candidates[i];
+        var n = Number(rawCand);
         if (Number.isFinite(n) && n > 0) return Math.round(n);
+        var txt = String(rawCand == null ? "" : rawCand).trim();
+        var hm = txt.match(/(\d+(?:\.\d+)?)\s*hours?\b/i);
+        if (hm) return Math.round(Number(hm[1]) * 60);
+        var mm = txt.match(/(\d{1,4})\s*(?:minutes?|mins?|min)\b/i);
+        if (mm) return Math.round(Number(mm[1]));
       }
     }
     return null;
@@ -14294,8 +14690,21 @@
       if (workflowRecordIsLearningJourney(workflow) || isLearningJourneyWorkflow(workflow)) {
         var ljDesignMod = resolveLearningJourneyDesignPageLib();
         if (ljDesignMod && typeof ljDesignMod.validateLearningJourneyDesignPage === "function") {
+          var ljGateBase = ljDesignMod.validateLearningJourneyDesignPage(parsed, {
+            parentAuthoritativeMinutes: resolveLearningJourneyAuthoritativeParentDurationMinutes(workflow),
+            deferMissingToStep4: true
+          });
+          if (ljGateBase && ljGateBase.ok) {
+            var durGateStage = reconcileLearningJourneyDesignPageDurations(workflow, parsed);
+            if (!durGateStage.ok) {
+              ljGateBase = {
+                ok: false,
+                errors: (durGateStage.errors || ["commission_duration_conflict"]).slice()
+              };
+            }
+          }
           return attachLearningJourneyWorkloadWarningsToGate(
-            ljDesignMod.validateLearningJourneyDesignPage(parsed),
+            ljGateBase,
             parsed,
             workflow
           );
@@ -15399,8 +15808,21 @@
     if (workflowRecordIsLearningJourney(workflow) || isLearningJourneyWorkflow(workflow)) {
       var ljMod = resolveLearningJourneyDesignPageLib();
       if (ljMod && typeof ljMod.validateLearningJourneyDesignPage === "function") {
+        var ljDpGateBase = ljMod.validateLearningJourneyDesignPage(parsed, {
+          parentAuthoritativeMinutes: resolveLearningJourneyAuthoritativeParentDurationMinutes(workflow),
+          deferMissingToStep4: true
+        });
+        if (ljDpGateBase && ljDpGateBase.ok) {
+          var durDpGate = reconcileLearningJourneyDesignPageDurations(workflow, parsed);
+          if (!durDpGate.ok) {
+            ljDpGateBase = {
+              ok: false,
+              errors: (durDpGate.errors || ["commission_duration_conflict"]).slice()
+            };
+          }
+        }
         return attachLearningJourneyWorkloadWarningsToGate(
-          ljMod.validateLearningJourneyDesignPage(parsed),
+          ljDpGateBase,
           parsed,
           workflow
         );
@@ -19565,6 +19987,8 @@
       (state.workflowRunGamPageValidation && state.workflowRunGamPageValidation[sid]) ||
       (state.workflowRunLjSharedSourceValidation &&
         state.workflowRunLjSharedSourceValidation[sid]) ||
+      (state.workflowRunLjDurationValidation &&
+        state.workflowRunLjDurationValidation[sid]) ||
       workflowRunLearnerPageFramingGateMessage(sid)
     );
   }
@@ -27170,6 +27594,28 @@
           : Array.isArray(seed.requiredLearnerArtefacts)
             ? seed.requiredLearnerArtefacts.slice()
             : [],
+        allocatedMinutes:
+          seed.allocatedMinutes != null
+            ? seed.allocatedMinutes
+            : envelope.allocatedMinutes != null
+              ? envelope.allocatedMinutes
+              : null,
+        commissionedDurationMinutes:
+          seed.commissionedDurationMinutes != null
+            ? seed.commissionedDurationMinutes
+            : family.deliverySeed && family.deliverySeed.commissioned_duration_minutes != null
+              ? family.deliverySeed.commissioned_duration_minutes
+              : null,
+        commissionedDurationProvenance:
+          (family.deliverySeed && family.deliverySeed.commissioned_duration_provenance) ||
+          seed.commissionedDurationProvenance ||
+          null,
+        journeyAllocatedMinutes:
+          seed.journeyAllocatedMinutes != null
+            ? seed.journeyAllocatedMinutes
+            : envelope.journeyAllocatedMinutes != null
+              ? envelope.journeyAllocatedMinutes
+              : null,
         commissionNativeBound: !!(
           family.commissionNativeBound ||
           seed.commissionNativeBound ||
@@ -27436,10 +27882,19 @@
         ? specificationText
         : commissionTitle;
     var parentSourceContext = readLearningJourneyAuthoritativeSourceContext(sourceWorkflowId);
+    var parentDurations = readLearningJourneyAuthoritativeCommissionDurations(sourceWorkflowId);
+    var parentWfForDur = findWorkflowById(sourceWorkflowId) || pageResolved.workflow || null;
+    var parentAuthoritativeMinutes = resolveLearningJourneyAuthoritativeParentDurationMinutes(parentWfForDur);
+    var requireStructuredDuration =
+      authoritativeProductId !== "interactive" &&
+      isLearningJourneyDurationContractRequired(parentWfForDur, pageResolved.page);
     var envelope = designMod.commissionToIntakeEnvelope(commission, pageResolved.page, {
       sourceJourneyWorkflowId: sourceWorkflowId,
       focus: focus,
-      sourceContext: parentSourceContext
+      sourceContext: parentSourceContext,
+      authoritativeCommissionDurations: parentDurations,
+      parentAuthoritativeMinutes: parentAuthoritativeMinutes,
+      requireStructuredDuration: requireStructuredDuration
     });
     // Authoritative product identity always wins over Preview hints.
     envelope.productId = authoritativeProductId;
@@ -27450,7 +27905,17 @@
       envelope.sourceContext = parentSourceContext;
     }
 
-    var intakeOpts = {};
+    var intakeOpts = {
+      requireStructuredDuration: requireStructuredDuration
+    };
+    if (
+      parentDurations &&
+      parentDurations.byCommissionId &&
+      Object.prototype.hasOwnProperty.call(parentDurations.byCommissionId, commissionId) &&
+      parentDurations.byCommissionId[commissionId] != null
+    ) {
+      intakeOpts.authoritativeAllocatedMinutes = parentDurations.byCommissionId[commissionId];
+    }
     if (authoritativeProductId === "interactive") {
       intakeOpts.ldCreateOutputType = "self_study_resource";
     } else if (authoritativeProductId === "practice") {
@@ -28214,7 +28679,8 @@
         startingPoint: built.identity.startingPoint,
         topic: String(focus || "").trim(),
         learningTime: learningTime,
-        duration: duration
+        duration: duration,
+        durationContractVersion: String(deliverySeed.duration_contract_version || "").trim()
       }),
       askedFactors: [],
       inferredFactors: {},
@@ -30551,6 +31017,8 @@
       (state.workflowRunGamPageValidation && state.workflowRunGamPageValidation[sid]) ||
       (state.workflowRunLjSharedSourceValidation &&
         state.workflowRunLjSharedSourceValidation[sid]) ||
+      (state.workflowRunLjDurationValidation &&
+        state.workflowRunLjDurationValidation[sid]) ||
       gamMaterialsVerificationBlocksAdvance(sid) ||
       workflowRunLearnerPageFramingGateMessage(sid)
     );
@@ -31088,6 +31556,8 @@
     ) {
       state.workflowRunLjSharedSourceValidation =
         state.workflowRunLjSharedSourceValidation || {};
+      state.workflowRunLjDurationValidation =
+        state.workflowRunLjDurationValidation || {};
       var sharedCaptureText = String(
         (state.workflowRunCapturedOutputs && state.workflowRunCapturedOutputs[sid]) ||
           finalizedCapture ||
@@ -31121,6 +31591,29 @@
         } else {
           delete state.workflowRunLjSharedSourceValidation[sid];
         }
+        var dpParsedForDur = tryParseWorkflowArtefactJson(sharedCaptureText);
+        if (dpParsedForDur) {
+          var durDpGate = reconcileLearningJourneyDesignPageDurations(wf, dpParsedForDur);
+          if (!durDpGate || !durDpGate.ok) {
+            state.workflowRunLjDurationValidation[sid] = String(
+              ((durDpGate && durDpGate.errors) || []).join("; ") ||
+                "commission_duration_conflict"
+            );
+            if (state.workflowRunStepCompleted[sid]) {
+              delete state.workflowRunStepCompleted[sid];
+            }
+            state.workflowRunPageValidation = state.workflowRunPageValidation || {};
+            if (!state.workflowRunPageValidation[sid]) {
+              state.workflowRunPageValidation[sid] = String(
+                state.workflowRunLjDurationValidation[sid]
+              );
+            }
+          } else {
+            delete state.workflowRunLjDurationValidation[sid];
+          }
+        } else {
+          delete state.workflowRunLjDurationValidation[sid];
+        }
       } else if (
         isLearningJourneyCommissioningStep(stepRow) &&
         String(sharedCaptureText || "").trim()
@@ -31129,6 +31622,23 @@
           softMissing: true
         });
         delete state.workflowRunLjSharedSourceValidation[sid];
+        var step4DurApply = applyLearningJourneyCommissionDurationsFromCommissionCapture(
+          wf,
+          sharedCaptureText,
+          { softMissing: !isLearningJourneyDurationContractRequired(wf) }
+        );
+        if (step4DurApply && !step4DurApply.ok) {
+          state.workflowRunLjDurationValidation[sid] = String(
+            ((step4DurApply.errors || []).join("; ")) ||
+              step4DurApply.code ||
+              "commission_durations_invalid"
+          );
+          if (state.workflowRunStepCompleted[sid]) {
+            delete state.workflowRunStepCompleted[sid];
+          }
+        } else {
+          delete state.workflowRunLjDurationValidation[sid];
+        }
       }
     }
     updateRunStepOutputStatus(li);
@@ -31164,7 +31674,9 @@
         workflowRunLearnerPageFramingGateMessage(sid) ||
         (state.workflowRunGamFormatValidation && state.workflowRunGamFormatValidation[sid]) ||
         (state.workflowRunLjSharedSourceValidation &&
-          state.workflowRunLjSharedSourceValidation[sid])
+          state.workflowRunLjSharedSourceValidation[sid]) ||
+        (state.workflowRunLjDurationValidation &&
+          state.workflowRunLjDurationValidation[sid])
       );
       var persistedRawNow =
         sid && state.workflowRunCapturedOutputsRaw
@@ -39310,7 +39822,8 @@
       "sourceWorkflowId",
       "sourceCommissionId",
       "authoritativeLearningOutcomes",
-      "scopeAndConstraints"
+      "scopeAndConstraints",
+      "duration_contract_version"
     ];
     keys.forEach(function (key) {
       if (Object.prototype.hasOwnProperty.call(data, key) && data[key] != null) {
@@ -41998,12 +42511,36 @@
    *   - the historical `duration_minutes` step parameter. D3 proved it never
    *     reaches the model, so it is a stale store, not a commissioned record.
    */
+  function resolvePositiveWholeDurationNumber(raw) {
+    if (typeof raw !== "number" || !isFinite(raw) || raw <= 0) return null;
+    if (Math.floor(raw) !== raw) return null;
+    return raw;
+  }
+
+  function hasAuthoritativeCommissionedDuration(wf) {
+    if (!wf || typeof wf !== "object") return false;
+    var resolution = wf.workflowBriefResolution;
+    var factors =
+      resolution && typeof resolution === "object" ? resolution.resolvedFactors : null;
+    if (!factors || typeof factors !== "object") return false;
+    return resolvePositiveWholeDurationNumber(factors.commissioned_duration_minutes) != null;
+  }
+
   function resolveCommissionedWorkflowDurationMinutes(wf) {
     if (!wf || typeof wf !== "object") return null;
     var resolution = wf.workflowBriefResolution;
     if (!resolution || typeof resolution !== "object") return null;
     var factors = resolution.resolvedFactors;
     if (!factors || typeof factors !== "object") return null;
+    var authoritative = resolvePositiveWholeDurationNumber(factors.commissioned_duration_minutes);
+    if (authoritative != null) return authoritative;
+    if (
+      factors.commissioned_duration_provenance &&
+      factors.commissioned_duration_provenance.authority === "learning_journey_commission" &&
+      factors.commissioned_duration_minutes == null
+    ) {
+      return null;
+    }
     var raw = factors.duration_minutes;
     if (raw == null || raw === "") return null;
     var minutes = Number(raw);
@@ -42419,7 +42956,7 @@
       return isExpositoryResourceWorkflow(wf);
     },
     interactive_duration: function (wf) {
-      return !isExpositoryResourceWorkflow(wf);
+      return !isExpositoryResourceWorkflow(wf) || hasAuthoritativeCommissionedDuration(wf);
     }
   };
 
@@ -42652,6 +43189,9 @@
     if (!wf || typeof wf !== "object") return false;
     var id = String(parameterId || "").trim();
     if (!id) return false;
+    if (id === ADJUSTMENTS_DURATION_PARAMETER_ID && hasAuthoritativeCommissionedDuration(wf)) {
+      return false;
+    }
     var declaration = null;
     getAdjustmentsParameterRegistry().forEach(function (row) {
       if (row.id === id) declaration = row;
@@ -42703,7 +43243,10 @@
         out.provenance[id] = "not_applicable";
         return;
       }
-      if (Object.prototype.hasOwnProperty.call(stored, id)) {
+      var ljLockedDuration =
+        id === ADJUSTMENTS_DURATION_PARAMETER_ID &&
+        hasAuthoritativeCommissionedDuration(record);
+      if (!ljLockedDuration && Object.prototype.hasOwnProperty.call(stored, id)) {
         var checked = validateAdjustmentsParameterValue(declaration, stored[id]);
         if (checked.ok) {
           out.parameters[id] = checked.value;
@@ -58181,10 +58724,14 @@
           "Learning Journey Design Page must be the page object itself (artifact_type page, product_id learning_journey), not a wrapper"
       };
     }
+    var dpValOpts = {
+      parentAuthoritativeMinutes: resolveLearningJourneyAuthoritativeParentDurationMinutes(wf),
+      deferMissingToStep4: true
+    };
     var gate =
       typeof designMod.validateLearningJourneyDesignPageForCapture === "function"
-        ? designMod.validateLearningJourneyDesignPageForCapture(parsed)
-        : designMod.validateLearningJourneyDesignPage(parsed);
+        ? designMod.validateLearningJourneyDesignPageForCapture(parsed, dpValOpts)
+        : designMod.validateLearningJourneyDesignPage(parsed, dpValOpts);
     gate = attachLearningJourneyWorkloadWarningsToGate(gate, parsed, wf);
     if (!gate.ok) {
       return {
@@ -58230,6 +58777,22 @@
         parsed.shared_authoritative_material.content = String(
           sharedApply.extracted.content || ""
         );
+      }
+      var durReconcile = reconcileLearningJourneyDesignPageDurations(wf, parsed);
+      if (!durReconcile || !durReconcile.ok) {
+        return {
+          ok: false,
+          errors: (durReconcile && durReconcile.errors) || ["commission_duration_conflict"],
+          warnings: [],
+          message:
+            "Learning Journey Design Page durations conflict with Step 4 COMMISSION_DURATIONS" +
+            (durReconcile && durReconcile.errors && durReconcile.errors.length
+              ? " (" + durReconcile.errors.join("; ") + ")"
+              : ".")
+        };
+      }
+      if (durReconcile.page) {
+        parsed = durReconcile.page;
       }
     }
     return {
@@ -64580,11 +65143,15 @@
           ) {
             var ljDesignMod = resolveLearningJourneyDesignPageLib();
             var ljParsed = tryParseWorkflowArtefactJson(body);
+            var ljValOpts = {
+              parentAuthoritativeMinutes: resolveLearningJourneyAuthoritativeParentDurationMinutes(wf),
+              deferMissingToStep4: true
+            };
             var ljGate =
               ljDesignMod && typeof ljDesignMod.validateLearningJourneyDesignPageForCapture === "function"
-                ? ljDesignMod.validateLearningJourneyDesignPageForCapture(ljParsed)
+                ? ljDesignMod.validateLearningJourneyDesignPageForCapture(ljParsed, ljValOpts)
                 : ljDesignMod && typeof ljDesignMod.validateLearningJourneyDesignPage === "function"
-                  ? ljDesignMod.validateLearningJourneyDesignPage(ljParsed)
+                  ? ljDesignMod.validateLearningJourneyDesignPage(ljParsed, ljValOpts)
                   : { ok: false, errors: ["learning_journey_design_page_module_unavailable"] };
             if (!ljGate.ok) {
               updateRunStepOutputStatus(currentLi);
@@ -64609,6 +65176,22 @@
             applyLearningJourneySharedSourceFromCommissionCapture(wf, body, {
               softMissing: true
             });
+            var step4DurGate = applyLearningJourneyCommissionDurationsFromCommissionCapture(
+              wf,
+              body,
+              { softMissing: !isLearningJourneyDurationContractRequired(wf) }
+            );
+            if (step4DurGate && !step4DurGate.ok) {
+              updateRunStepOutputStatus(currentLi);
+              showToast(
+                "Step 4 COMMISSION_DURATIONS block is malformed" +
+                  (step4DurGate.errors && step4DurGate.errors.length
+                    ? " (" + step4DurGate.errors.join("; ") + ")"
+                    : "."),
+                "error"
+              );
+              return;
+            }
           }
           if (
             stepRow &&
@@ -64627,6 +65210,21 @@
                 "error"
               );
               return;
+            }
+            var dpParsedDurNext = tryParseWorkflowArtefactJson(body);
+            if (dpParsedDurNext) {
+              var dpDurNextGate = reconcileLearningJourneyDesignPageDurations(wf, dpParsedDurNext);
+              if (!dpDurNextGate || !dpDurNextGate.ok) {
+                updateRunStepOutputStatus(currentLi);
+                showToast(
+                  "Learning Journey Design Page allocated_minutes conflicts with Step 4 COMMISSION_DURATIONS" +
+                    (dpDurNextGate && dpDurNextGate.errors && dpDurNextGate.errors.length
+                      ? " (" + dpDurNextGate.errors.join("; ") + ")"
+                      : "."),
+                  "error"
+                );
+                return;
+              }
             }
           }
           if (storesArtefact && workflowRunLearnerPageFramingGateMessage(sid)) {
@@ -66105,6 +66703,19 @@
       applyLearningJourneySharedSourceFromCommissionCapture;
     prismTestApi.applyLearningJourneySharedSourceFromDesignPageCapture =
       applyLearningJourneySharedSourceFromDesignPageCapture;
+    prismTestApi.applyLearningJourneyCommissionDurationsFromCommissionCapture =
+      applyLearningJourneyCommissionDurationsFromCommissionCapture;
+    prismTestApi.readLearningJourneyAuthoritativeCommissionDurations =
+      readLearningJourneyAuthoritativeCommissionDurations;
+    prismTestApi.reconcileLearningJourneyDesignPageDurations =
+      reconcileLearningJourneyDesignPageDurations;
+    prismTestApi.resolveLearningJourneyAuthoritativeParentDurationMinutes =
+      resolveLearningJourneyAuthoritativeParentDurationMinutes;
+    prismTestApi.isLearningJourneyDurationContractRequired =
+      isLearningJourneyDurationContractRequired;
+    prismTestApi.hasAuthoritativeCommissionedDuration =
+      hasAuthoritativeCommissionedDuration;
+    prismTestApi.readWorkflowCommissionContext = readWorkflowCommissionContext;
     prismTestApi.composeLearningJourneyAuthoritativeSharedSourceToken =
       composeLearningJourneyAuthoritativeSharedSourceToken;
     prismTestApi.isLearningJourneyCommissioningStep = isLearningJourneyCommissioningStep;

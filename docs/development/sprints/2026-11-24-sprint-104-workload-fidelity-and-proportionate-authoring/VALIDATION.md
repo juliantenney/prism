@@ -1,6 +1,6 @@
 # Sprint 104 — Validation ledger
 
-**Status:** **OPEN — PHASE 104A BASELINE CAPTURED (NO IMPLEMENTATION RUN YET)**  
+**Status:** **OPEN — S104-D02 AGREED / MILESTONE 1 VERIFIED (AWAITING REVIEW BEFORE MILESTONE 2)**  
 **Baseline commit:** `1515cd4`
 
 ---
@@ -26,10 +26,39 @@
 
 ---
 
-## Planned validation gates (post-agreement implementation)
+## Milestone 1 verification (Authoritative duration transport)
 
-| Gate | Requirement | State |
-| ---- | ----------- | ----- |
-| **104B/C automated suites** | Duration transport, duration-aware EP derivation, Practice DLA/GAM/LS/DP scaling, `guided-review-generation-contract.js` gating, workload adapter precedence fix + dataset/selection/checklist estimation + standalone Interactive non-regression | Pending `S104-D02` |
-| **104D sensitivity probes** | Equivalent learning-purpose Practice runs at **5 min**, **15 min**, and **30 min** demonstrating scaled structure + pedagogical completeness | Pending `104C` |
-| **104E Economics regeneration & runtime** | Regenerated 90-min journey from original brief compared against untouched baseline; Educational QA + learner-runtime acceptance | Pending `104D` |
+### Syntax checks (all 5 modified runtime/prompt modules)
+
+| Check | Outcome |
+| ----- | ------- |
+| `node --check app.js` | **Pass** (exit 0) |
+| `node --check lib/learning-journey-sibling-prompts.js` | **Pass** (exit 0) |
+| `node --check lib/learning-journey-design-page.js` | **Pass** (exit 0) |
+| `node --check lib/first-class-workflow-family.js` | **Pass** (exit 0) |
+| `node --check lib/first-class-commission-intake.js` | **Pass** (exit 0) |
+
+### Focused automated test suites (`node --test`, observed 2026-11-24)
+
+| Suite / Scope | Result | Notes |
+| ------------- | ------ | ----- |
+| `tests/s104-m1-duration-transport.test.js` | **11 / 11 pass** | Step 4 origin & reconciled example; prose/non-integer/missing rejection; Step 4 `journey_allocated_minutes` matching parent LJ duration & component sum reconciliation; newly authored non-bypass vs legacy compatibility; Step 4↔5 reconciliation & conflict fail-closed; lossless batch/single/prompt/persistence/delete-recreate transport across Expository, Practice, Assessment Pack, and Situated Task; 5-min Practice & 12-min LJ-Expository UI rendering; legacy absence without prose fallback; envelope/intake conflict fail-closed; standalone Expository & Interactive non-regression |
+| Focused closure & legacy non-regression re-verification bundle (12 files: `s104-m1`, `s103-duration-fidelity-guidance`, `s100c`, `s94-wp2`, `s96-lj-shared-source-design-page-boundary`, `s91-wp3/wp4/preview`, `qa-lj-*`, `s80-s6`, `s85-wp4`) | **158 / 158 pass** | Confirms Step 4 parent-allocation reconciliation, non-bypass for `duration_contract_version: "s104_m1"`, legacy fixture compatibility, and standalone Expository/Interactive preservation |
+| Core duration, capability, workload & commission-native bundle (12 existing files alongside `s104-m1`: `s80-s6`, `s85-wp4`, `s100a`, `s100b1`, `s100b2`, `s100c`, `s101`, `s102`, `s102e`, `s103-duration-fidelity-guidance`, `s103-artefact-consumer-four-product`, `qa-c06`) | **167 / 167 pass** | Confirms standalone Interactive 10–480 adjustments, standalone Expository `Scope/extent` vs hidden `Duration`, S100 estimator contracts, S101/S102/S102e commission-native LO binding across 4 products, and S103 duration-fidelity guidance |
+| LJ lifecycle, 4-product, continuity & S102e/S103 bundle (21 files: `qa-lj-commission-native-and-lifecycle`, `qa-lj-batch-component-creation`, `s91-wp3/wp4/preview/direct/run-stage/ui-orchestration/status`, `s92-slice1/lj-handoff/stage5`, `s94-wp1/wp2/wp5`, `s102e-clear/journal/gam`, `s103-clear/radio/json-fencing`) | **167 / 167 pass** | Confirms batch creation, single creation, deletion/recreation, continuity gates, Situated Task Stage 5, Expository/Practice/AP runtime & clear-run isolation |
+| **Milestone 1 manual acceptance** | **Pending integrated live validation** | Deferred to integrated live authoring / Milestone 6–7 validation per Milestone 1 closeout instruction |
+| Excluded pre-existing [PB-S-008](../../../backlog/PRODUCT-BACKLOG.md#pb-s-008--full-suite-pre-existing-failures-technical-debt) tests observed separately | Pre-existing failures unchanged | `s91-learning-journey-design-page-acceptance.test.js:76` (test harness omits `lib/learning-journey-shared-source.js`); `s94-learning-journey-wp3-original-brief.test.js:223` (stale Expository GLC brief test); `s88`, `s91-wp1-wp2`, `s92-slice3`, `s94-wp4/wp5`, `s97-m3-t1` observed as pre-existing baseline failures in earlier broad sweeps |
+
+---
+
+## Gated milestone validation plan (Milestones 1–7)
+
+| Milestone | Requirement | State |
+| --------- | ----------- | ----- |
+| **Milestone 1 — Authoritative duration transport** | Step 4 origin (`<<<COMMISSION_DURATIONS_BEGIN>>>` / `END`), parent-allocation & sum reconciliation, non-bypass for new authoring (`duration_contract_version: "s104_m1"`), Step 4↔5 reconciliation, zero prose fallback, lossless envelope/intake/family transport across all 4 commissioned products, persistence, delete/recreate, legacy compatibility, component duration lock UI | **Committed checkpoint (automated verified; manual acceptance pending integrated live validation)** |
+| **Milestone 2 — Practice Episode Plan design authority** | AI-authored, deterministically validated Practice Episode Plans responsive to purpose, outcomes, authoritative duration, prior learning, and journey context; single cohesive multi-LO activity assessment; no fixed duration tiers or beat targets; standalone/legacy Interactive preserved | **Not started** (gated on Milestone 1 review) |
+| **Milestone 3 — Reconciliation of downstream Practice contracts** | Conditional DLA / GAM / Guided Review / Partial Design Page obligations keyed to Episode Plan selections; optional Practice editorial furniture; preserved structural/accessibility/material/artefact invariants | **Not started** (gated on Milestone 2) |
+| **Milestone 4 — Proportionate Learning Journey commissioning** | Cross-journey pedagogical distribution, genuine learner performance & feedback reasoning, familiar-evidence reuse, progressive artefact reuse without Journal-driven extra writing, explicit infeasibility surfacing | **Not started** (gated on Milestone 3) |
+| **Milestone 5 — Workload estimation corrections** | Fix `|| product === "practice"` precedence & prose-first duration lookup in `learning-journey-workload-feasibility-adapter.js`; wire cumulative workload against `commissioned_duration_minutes`; account for evidence, decisions, constructed responses & feedback; advisory warnings only | **Not started** (gated on Milestone 4) |
+| **Milestone 6 — Practice duration sensitivity probes** | Live authoring runs for equivalent purpose at **5 min**, **15 min**, and **30 min** showing genuine structural & workload scaling with preserved pedagogical completeness | **Not started** (gated on Milestone 5) |
+| **Milestone 7 — 90-minute Economics journey regeneration & runtime acceptance** | Regenerate 90-min journey from original brief without touching pre-intervention baseline captures; compare against untouched baseline; Educational QA + learner-runtime acceptance | **Not started** (gated on Milestone 6) |

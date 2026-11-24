@@ -1,27 +1,30 @@
 # Sprint 104 — Workload Fidelity and Proportionate Authoring
 
-**Status:** **OPEN — PHASE 104A INVESTIGATION COMPLETE (AWAITING IMPLEMENTATION AGREEMENT)**  
+**Status:** **OPEN — S104-D02 AGREED; MILESTONE 1 AUTHORISED**  
 **Opened:** 2026-11-24  
-**Baseline:** `1515cd4`  
+**Baseline:** `1515cd4` (`104A` committed at `f3bb47d`)  
 **Primary backlog item:** [PB-FA-025](../backlog/PRODUCT-BACKLOG.md#pb-fa-025--duration-fidelity-learner-workload-budgeting)  
 **Development pack:** [../development/sprints/2026-11-24-sprint-104-workload-fidelity-and-proportionate-authoring/](../development/sprints/2026-11-24-sprint-104-workload-fidelity-and-proportionate-authoring/)  
 **Entry:** [SPRINT-104-START-HERE.md](../development/sprints/2026-11-24-sprint-104-workload-fidelity-and-proportionate-authoring/SPRINT-104-START-HERE.md)  
-**Opening:** [S104-D01](../development/sprints/2026-11-24-sprint-104-workload-fidelity-and-proportionate-authoring/decisions.md#s104-d01--open-sprint-104--workload-fidelity-and-proportionate-authoring)  
+**Decisions:** [S104-D01](../development/sprints/2026-11-24-sprint-104-workload-fidelity-and-proportionate-authoring/decisions.md#s104-d01--open-sprint-104--workload-fidelity-and-proportionate-authoring) · [S104-D02](../development/sprints/2026-11-24-sprint-104-workload-fidelity-and-proportionate-authoring/decisions.md#s104-d02--architectural-agreement-principles-a-e-and-separately-gated-milestones)  
 **Programme pointer:** [NEXT-SPRINT.md](NEXT-SPRINT.md)
 
 ## Mission
 
-Ensure PRISM designs educationally complete learning experiences proportionate to their authoritative study duration, preserving the established pedagogical architecture and educational quality — starting with a read-only pipeline trace of `C04` (*Comparing competing economic explanations*, 8 min) and systemic comparison across the 90-minute Economics reference journey.
+Ensure PRISM designs educationally complete learning experiences proportionate to their authoritative study duration, preserving the established pedagogical architecture and educational quality.
 
-## Phase summary
+## Milestone sequence
 
-| Phase | State |
-| ----- | ----- |
-| 104A Investigation & sprint documentation | **COMPLETE** |
-| 104B Duration transport & commissioning proportionality | Pending `S104-D02` |
-| 104C Duration-scaled EP/DLA/GAM/LS/DP & workload estimator fixes | Pending `S104-D02` |
-| 104D Duration-sensitivity tests (5 / 15 / 30 min) | Pending `104C` |
-| 104E 90-min Economics regeneration, comparison, QA & runtime | Pending `104D` |
+| Milestone | State |
+| --------- | ----- |
+| 104A Investigation & sprint documentation | **Complete (`f3bb47d`)** |
+| Milestone 1 — Authoritative duration transport only | **Authorised now** (stop for review on completion) |
+| Milestone 2 — Practice Episode Plan design authority | Gated on Milestone 1 review |
+| Milestone 3 — Reconciliation of downstream Practice contracts | Gated on Milestone 2 review |
+| Milestone 4 — Proportionate Learning Journey commissioning | Gated on Milestone 3 review |
+| Milestone 5 — Workload estimation corrections | Gated on Milestone 4 review |
+| Milestone 6 — Live 5-, 15-, and 30-minute Practice sensitivity probes | Gated on Milestone 5 review |
+| Milestone 7 — 90-min Economics regeneration, comparison, QA & learner runtime | Gated on Milestone 6 review |
 
 ## Predecessor
 

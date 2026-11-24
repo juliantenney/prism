@@ -1,6 +1,8 @@
 # Sprint 104 — Initial Investigation (Phase 104A): Workload Fidelity & Proportionate Authoring
 
-**Status:** **Complete (read-only investigation — no code, prompts, contracts, or validators altered)**  
+> **Architectural update ([S104-D02](decisions.md#s104-d02--architectural-agreement-principles-a-e-and-separately-gated-milestones)):** The forensic findings in Sections 1–5 are accepted. Proposed implementation heuristics in Sections 6–7 (such as prose-parsing fallbacks, fixed Practice duration tiers, beat-count targets, and deterministic LO grouping) are **superseded** by agreed architectural principles **A–E** and the 7-milestone sequence recorded in [decisions.md](decisions.md#s104-d02--architectural-agreement-principles-a-e-and-separately-gated-milestones) and [IMPLEMENTATION-MAP.md](IMPLEMENTATION-MAP.md).
+
+**Status:** **Complete & accepted (Phase 104A read-only investigation — superseded proposal details recorded in `S104-D02`)**  
 **Date:** 2026-11-24  
 **Baseline commit:** `1515cd4`  
 **Primary backlog item:** [PB-FA-025](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-025--duration-fidelity-learner-workload-budgeting)  

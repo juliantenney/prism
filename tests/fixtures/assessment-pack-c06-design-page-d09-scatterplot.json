@@ -1,0 +1,656 @@
+{
+  "artifact_type": "page",
+  "schema_version": "2.0.0",
+  "product_id": "assessment_pack",
+  "page_kind": "assessment",
+  "title": "Making an independent judgement about economic evidence",
+  "framing": "In this formative assessment, you will examine an unfamiliar economic relationship and independently evaluate a causal claim. You will bring together your understanding of statistical evidence and economic reasoning to produce one integrated judgement. After completing your evaluation, you will have an opportunity to compare your reasoning with explanatory feedback and an example evaluation.",
+  "attempt_instructions": "Allow approximately 15 minutes for this assessment.\n\nSpend the first 11 minutes examining the supplied evidence and writing your independent evaluation. Everything you need for the task is provided. You do not need to consult earlier activities, undertake external research or perform additional statistical calculations.\n\nWrite one coherent evaluation rather than a series of separate answers. Approximately 100–150 words is a useful guide, but the quality of your reasoning matters more than its length.\n\nUse the remaining four minutes to review the feedback, compare it with your evaluation and reconsider your reasoning. You do not need to write a second evaluation.\n\nThis assessment is formative. Its purpose is to help you understand how well you can bring your economic reasoning together independently. It does not contribute to a grade.",
+  "activities": [],
+  "editorial_opening_image": {
+    "decision": "generate",
+    "subject": "A contemporary administrative workplace",
+    "context": "A restrained editorial photograph establishing the professional setting of an economic evaluation concerning vocational training and employee productivity.",
+    "caption_intent": "Provide a neutral visual introduction to the workplace context without suggesting a relationship between training and productivity or contributing evidence to the assessment.",
+    "alt_text": "",
+    "detailed_description": "A wide, landscape-format editorial photograph of a contemporary administrative office, viewed from a natural eye-level perspective. Show a small number of ordinary workstations with computer monitors, keyboards and unobtrusive office furnishings. Use soft natural daylight, balanced composition and a restrained, neutral colour palette. The office should feel credible and understated rather than promotional. Screens should contain no legible information. Do not depict a training session, managerial decisions, employee performance comparisons, productivity measurements, graphs, charts, causal relationships or contrasting employee behaviours. Do not imply that any individual is more experienced, motivated or productive than another. Include no embedded typography, labels, titles, slogans, numerical information, caption panels or explanatory graphics. The image is entirely decorative and must not be presented as a depiction of the eight employees in the synthetic dataset."
+  },
+  "assessment_evidence": {
+    "purpose": {
+      "role": "R2",
+      "visibility_claim": "Make visible the learner's independent capability to integrate statistical interpretation, causal reasoning and evidential judgement in an unfamiliar economic context. The initial constructed performance should provide interpretable evidence of whether the learner can accurately characterise an observed relationship, recognise what a causal claim asserts beyond the observations, generate and explain a plausible competing economic mechanism, evaluate the adequacy of the available evidence, justify a proposal for additional evidence and communicate a coherent, appropriately qualified conclusion. The evidence concerns the learner's demonstrated capability in this particular context, rather than establishing general mastery or certifying readiness for progression.",
+      "stop_rationale": "This formative stop realises Learning Element 8, Making an independent judgement about economic evidence, within developmental phase 5, From supported reasoning to independent judgement. Following earlier experiences that progressively developed statistical interpretation, recognition of causal claims, explanation of competing mechanisms and judgement about additional evidence, learners now need an opportunity to integrate these capabilities without answer-bearing support. The reserved vocational training and employee productivity case, D09 from ECON-CORR-01, provides an unfamiliar context in which to examine independent transfer. A single coherent constructed performance preserves the intellectual demand of deciding how the relevant concepts work together. Separating the initial performance from explanatory feedback makes the learner's independent reasoning distinguishable from reasoning developed through subsequent support.",
+      "forward_intent": "Enable learners to recognise the strengths, omissions and limitations of their independent evaluation and reconsider their reasoning in light of explanatory feedback. Feedback should support more accurate statistical interpretation, better-developed competing explanations, stronger justification of evidential limitations and additional evidence, and conclusions proportionate to the observations. The experience consolidates a conceptual foundation for subsequent formal study of econometrics without introducing formal econometric methods, determining progression or prescribing a subsequent learning pathway.",
+      "assessment_intent": "formative_check",
+      "assessment_depth": "standard",
+      "extent": "short",
+      "epistemic_class": "non_determinate",
+      "count_basis": {
+        "determinate_component_count": 0,
+        "constructed_performance_count": 1,
+        "total_assessed_component_count": 1,
+        "author_fixed_count": true,
+        "rationale": "The commission explicitly requires one coherent independent evaluation, identified as E1. No additional determinate components are necessary. Separate questions testing statistical interpretation, causal direction, confounding or methodological choices would fragment the commissioned performance and could supply conceptual cues that compromise the independence of the evidence. The six achievement dimensions are complementary perspectives on the same performance, not six separate assessment components."
+      },
+      "evidence_rationale": {
+        "approach": "Elicit one integrated, non-determinate constructed performance using the reserved D09 case. Interpret the initial response across six connected achievement dimensions to establish a useful qualitative evidence profile at standard assessment depth. The breadth of evidence comes from the integration of different forms of reasoning within one authentic performance rather than from a larger number of assessment interactions.",
+        "achievement_dimensions": [
+          {
+            "dimension": "Statistical interpretation",
+            "evidence_sought": "Accurate contextual interpretation of the direction, strength and relevant characteristics of the observed relationship, consistent with the supplied scatterplot and Pearson correlation coefficient.",
+            "outcome_alignment": [
+              1
+            ]
+          },
+          {
+            "dimension": "Claim recognition",
+            "evidence_sought": "Recognition that the illustrative causal claim asserts an effect of providing additional vocational training on employee productivity, extending beyond a description of the observed association.",
+            "outcome_alignment": [
+              2
+            ]
+          },
+          {
+            "dimension": "Alternative explanation",
+            "evidence_sought": "Independent generation and sufficient explanation of at least one economically plausible competing mechanism that could account for the observed relationship. The explanation should establish how the proposed mechanism could produce the association rather than merely naming a causal concept.",
+            "outcome_alignment": [
+              2,
+              3
+            ]
+          },
+          {
+            "dimension": "Evidential judgement",
+            "evidence_sought": "Reasoned evaluation of whether the supplied observations establish the causal claim, identifying relevant limitations and distinguishing plausible explanations from established findings.",
+            "outcome_alignment": [
+              2,
+              3
+            ]
+          },
+          {
+            "dimension": "Further evidence",
+            "evidence_sought": "Identification of relevant additional evidence or a more informative comparison, accompanied by an explanation of how it would address an unresolved causal issue and strengthen causal interpretation.",
+            "outcome_alignment": [
+              3
+            ]
+          },
+          {
+            "dimension": "Communication",
+            "evidence_sought": "A coherent, integrated evaluation culminating in an appropriately qualified conclusion that is consistent with the statistical evidence, competing explanations and acknowledged uncertainty.",
+            "outcome_alignment": [
+              3
+            ]
+          }
+        ],
+        "interpretive_principles": [
+          "Interpret the six achievement dimensions as connected aspects of a single economic judgement.",
+          "Distinguish evidence of accurate statistical interpretation from evidence of adequate causal reasoning.",
+          "Recognise economically defensible alternative mechanisms and proposals for additional evidence without requiring predetermined wording or an exhaustive inventory of causal concepts.",
+          "Distinguish an unexplained assertion from a sufficiently developed mechanism or justification.",
+          "Treat omissions as capabilities not demonstrated in this performance, rather than definitive evidence that the learner lacks those capabilities.",
+          "Recognise that a justified conclusion requires more than repeating the general principle that correlation does not establish causation.",
+          "Prioritise explanatory adequacy, coherence and evidential proportionality over response length.",
+          "Do not assign numerical weights, grades, pass thresholds or progression decisions.",
+          "Do not introduce automatic correctness judgements, runtime AI marking or exact-answer matching for the constructed response."
+        ],
+        "response_scope": {
+          "indicative_word_count": {
+            "minimum": 100,
+            "maximum": 150
+          },
+          "word_count_status": "Indicative only",
+          "rationale": "A concise extended response is sufficient to make the connected reasoning visible within the allocated time. Explanatory adequacy rather than compliance with a word limit determines the usefulness of the evidence."
+        }
+      },
+      "source_grounding": {
+        "source_id": "ECON-CORR-01",
+        "dataset_id": "D09",
+        "dataset_title": "Vocational training and employee productivity",
+        "source_status": "Canonical synthetic teaching corpus",
+        "evidence_context": "Eight illustrative employees performing broadly comparable administrative work during the same month.",
+        "observational_unit": "Employee",
+        "sample_size": 8,
+        "variables": [
+          {
+            "id": "training",
+            "label": "Hours of vocational training completed during the month",
+            "unit": "Hours"
+          },
+          {
+            "id": "productivity",
+            "label": "Administrative cases completed per working day",
+            "unit": "Cases per day"
+          }
+        ],
+        "illustrative_causal_claim": "Providing employees with additional vocational training increases their productivity.",
+        "source_integrity_requirements": [
+          "Preserve all eight authoritative observations, variable definitions, units and measurement facts.",
+          "Generate the scatterplot directly from the exact D09 observations.",
+          "Calculate the supplied Pearson correlation coefficient directly from the exact D09 observations and display it to two decimal places.",
+          "Provide an accessible data representation containing the same observations without supplying their interpretation.",
+          "Identify the observations and causal claim as synthetic teaching material rather than authentic empirical research findings.",
+          "Preserve the established facts that both variables are measured during the same month and that training was not randomly allocated.",
+          "Do not introduce additional observations, invented employee characteristics or unsupported causal findings."
+        ]
+      },
+      "independence_conditions": {
+        "before_initial_performance": [
+          "Provide the complete unfamiliar case, exact graphical and accessible tabular evidence, calculated statistical summary, illustrative causal claim and neutral measurement information.",
+          "Provide clear instructions and transparent expectations about the quality of the overall evaluation.",
+          "Retain accessibility support without supplying the statistical or causal interpretation that the learner is expected to generate.",
+          "Do not disclose the author-only reasoning reference, named potential confounders, preferred alternative mechanisms or justified conclusion.",
+          "Do not enumerate the specific unobserved employee characteristics where doing so would cue competing explanations.",
+          "Do not provide a prescribed sequence of causal concepts, worked examples, answer-bearing hints or preliminary determinate questions.",
+          "Do not require consultation of earlier learner responses or Journal entries."
+        ],
+        "after_initial_performance": [
+          "Reveal explanatory feedback only after the learner has produced the initial independent evaluation.",
+          "Use the six connected achievement dimensions to support qualitative reconsideration of the learner's reasoning.",
+          "Include a concise model evaluation grounded in D09 and its author-only reasoning reference.",
+          "Present alternative mechanisms as plausible explanations rather than empirically established findings.",
+          "Recognise defensible reasoning that differs from the model evaluation.",
+          "Allow brief reconsideration without requiring a second separately authored evaluation."
+        ]
+      },
+      "feedback_timing": "per_component",
+      "timing": {
+        "total_minutes": 15,
+        "case_engagement_and_independent_performance_minutes": 11,
+        "feedback_and_reconsideration_minutes": 4,
+        "rationale": "Protect the majority of the available time for independent engagement with the evidence and construction of an integrated evaluation. Reserve the remaining time for explanatory feedback and reconsideration. Do not consume independent performance time with preparatory assessment items or unnecessary reteaching."
+      },
+      "artefact_continuity": {
+        "elicitation_id": "E1",
+        "journal_artefact_id": "C06.E1",
+        "intended_content": "The learner's initial independent constructed-performance response, produced before answer-bearing feedback.",
+        "preservation_requirement": "Preserve the initial independent evaluation as the commissioned learner-authored artefact. Subsequent reconsideration must not replace the initial response as the evidence of independent performance.",
+        "downstream_requirement": "Carry the E1 identifier and C06.E1 artefact mapping into the subsequent assessment design and output specification. Do not commission a separate reflection, revised submission or additional assessment solely to populate the Journal.",
+        "exposure_status": "The initial E1 response is mapped to C06.E1 in the assessment output specification. Actual Journal exposure and preservation of the initial response remain unverified and require confirmation in the delivery implementation."
+      }
+    },
+    "learner_context": {
+      "depends_on_prior_work": false,
+      "bring_forward": [],
+      "educational_dependencies": [
+        {
+          "commission_id": "C01",
+          "published_title": "Interpreting relationships in economic data",
+          "capability_brought_forward": "Interpret scatterplots and supplied Pearson correlation coefficients in economic contexts, including direction, strength, non-linear patterns and sensitivity to unusual observations.",
+          "educational_use": "Apply graphical and numerical interpretation independently to the unfamiliar vocational training and employee productivity evidence.",
+          "requires_prior_learner_artefact": false
+        },
+        {
+          "commission_id": "C02",
+          "published_title": "What does a causal claim actually mean?",
+          "capability_brought_forward": "Distinguish observed statistical association from a causal assertion about what would happen under alternative circumstances.",
+          "educational_use": "Recognise the distinction between the observed employee-level relationship and the claim about providing additional vocational training.",
+          "requires_prior_learner_artefact": false
+        },
+        {
+          "commission_id": "C03",
+          "published_title": "Why might two economic variables be related?",
+          "capability_brought_forward": "Explain how direct causal influence, reverse causal influence and common causal influences could account for observed economic relationships.",
+          "educational_use": "Independently select and apply relevant causal reasoning when generating a plausible competing explanation for the unfamiliar relationship.",
+          "requires_prior_learner_artefact": false
+        },
+        {
+          "commission_id": "C04",
+          "published_title": "Comparing competing economic explanations",
+          "capability_brought_forward": "Generate and compare plausible economic explanations with reduced conceptual scaffolding, distinguishing possible mechanisms from established findings.",
+          "educational_use": "Integrate competing explanations into an independent evaluation without relying on a supplied set of mechanisms.",
+          "requires_prior_learner_artefact": false
+        },
+        {
+          "commission_id": "C05",
+          "published_title": "What evidence would help establish causation?",
+          "capability_brought_forward": "Evaluate the potential contribution and limitations of temporal information, information about possible confounders, more comparable observations, random allocation and additional observations.",
+          "educational_use": "Independently identify and justify additional evidence that would address a relevant unresolved causal issue in the unfamiliar case.",
+          "requires_prior_learner_artefact": false
+        }
+      ],
+      "entry_assumptions": [
+        "Learners have had opportunities to develop the statistical interpretation and causal reasoning capabilities addressed by the five declared predecessor experiences.",
+        "Learners are expected to interpret a supplied Pearson correlation coefficient rather than calculate it themselves.",
+        "Learners are expected to understand the distinction between statistical association and causation and to recognise that multiple mechanisms may account for an observed relationship.",
+        "Learners have encountered introductory approaches to obtaining more informative causal evidence and can reason about their potential contribution without formal econometric methods.",
+        "Learners are expected to select and integrate relevant concepts independently rather than reproduce an earlier worked explanation.",
+        "Prior participation establishes an intended educational foundation, not an assumption that every learner has completed earlier activities or achieved the associated outcomes.",
+        "No particular earlier learner response, Journal entry or learner-authored artefact is required.",
+        "The vocational training and employee productivity case is reserved for this culminating performance and is intended to be unfamiliar.",
+        "The assessment supplies all case-specific evidence necessary for the independent evaluation.",
+        "External research, specialist software, regression, significance testing and formal econometric methods are not prerequisites."
+      ],
+      "dependency_interpretation": "The declared educational dependencies concern the capabilities developed through earlier experiences, not the reuse of particular learner-authored responses. Consequently, depends_on_prior_work is false and bring_forward is empty. No learner-facing instruction to revisit earlier work is required. The assessment is self-contained with respect to its case material while intentionally drawing upon the conceptual development established by the Learning Journey.",
+      "context_verification": "Educational dependencies and entry assumptions are derived from the authoritative commission specification and Learning Journey context. Earlier published resources and individual learner responses have not been independently inspected."
+    },
+    "planned_component_forms": {},
+    "elicitations": [
+      {
+        "elicitation_id": "E1",
+        "order": 1,
+        "evidence_ask": "Independently construct a coherent evaluation of the illustrative causal claim concerning vocational training and employee productivity. Integrate contextualised statistical interpretation, recognition of the causal assertion, explanation of at least one plausible competing economic mechanism, judgement about the adequacy of the supplied evidence, justification of relevant additional evidence and communication of an appropriately qualified conclusion. The performance should make the six connected achievement dimensions visible without decomposing them into separately prompted answers.",
+        "epistemic_class": "non_determinate",
+        "mapped_learning_outcome_ids": [
+          1,
+          2,
+          3
+        ],
+        "stimulus": "Vocational training and employee productivity\n\nThe following synthetic data have been constructed for learning purposes. They do not report findings from an actual empirical study.\n\nEight illustrative employees perform broadly comparable administrative work during the same month. For each employee, two measurements are recorded: hours of vocational training completed during the month and administrative cases completed per working day. Both variables are measured during the same month. Training was not randomly allocated.\n\nThe scatterplot and accompanying data table present the eight employee observations. The Pearson correlation coefficient is r = 0.92.\n\nIllustrative causal claim: Providing employees with additional vocational training increases their productivity.",
+        "representation": {
+          "kind": "data_figure",
+          "figure_type": "scatterplot",
+          "title": "Vocational training and employee productivity",
+          "source_id": "ECON-CORR-01",
+          "dataset_id": "D09",
+          "authoritative_data": {
+            "observational_unit": "Employee",
+            "sample_size": 8,
+            "measurement_context": "Eight illustrative employees performing broadly comparable administrative work during the same month.",
+            "variables": [
+              {
+                "id": "training",
+                "label": "Hours of vocational training completed during the month",
+                "unit": "Hours"
+              },
+              {
+                "id": "productivity",
+                "label": "Administrative cases completed per working day",
+                "unit": "Cases per day"
+              }
+            ],
+            "columns": [
+              "employee_id",
+              "training",
+              "productivity"
+            ],
+            "observations": [
+              [
+                "E01",
+                0,
+                12
+              ],
+              [
+                "E02",
+                2,
+                15
+              ],
+              [
+                "E03",
+                4,
+                13
+              ],
+              [
+                "E04",
+                6,
+                18
+              ],
+              [
+                "E05",
+                8,
+                17
+              ],
+              [
+                "E06",
+                10,
+                21
+              ],
+              [
+                "E07",
+                12,
+                19
+              ],
+              [
+                "E08",
+                14,
+                24
+              ]
+            ]
+          },
+          "plot_specification": {
+            "mark": "point",
+            "x_axis": {
+              "variable_id": "training",
+              "label": "Vocational training completed during the month (hours)",
+              "scale": "linear",
+              "minimum": 0,
+              "maximum": 16,
+              "tick_interval": 2
+            },
+            "y_axis": {
+              "variable_id": "productivity",
+              "label": "Administrative cases completed per working day",
+              "scale": "linear",
+              "minimum": 0,
+              "maximum": 26,
+              "tick_interval": 2
+            },
+            "point_count": 8,
+            "connect_points": false,
+            "show_regression_line": false,
+            "show_directional_arrows": false,
+            "show_interpretive_annotations": false,
+            "show_employee_labels": false
+          },
+          "statistical_summary": {
+            "statistic": "Pearson correlation coefficient",
+            "variable_ids": [
+              "training",
+              "productivity"
+            ],
+            "calculation_basis": "All eight paired observations in D09, without modification or exclusion.",
+            "display_precision": 2,
+            "display_value": 0.92,
+            "display_text": "Pearson correlation coefficient: r = 0.92"
+          },
+          "accessible_equivalent": {
+            "kind": "data_table",
+            "caption": "Vocational training and employee productivity: eight synthetic employee observations.",
+            "column_headers": [
+              "Employee",
+              "Hours of vocational training completed during the month",
+              "Administrative cases completed per working day"
+            ],
+            "rows": [
+              [
+                "E01",
+                0,
+                12
+              ],
+              [
+                "E02",
+                2,
+                15
+              ],
+              [
+                "E03",
+                4,
+                13
+              ],
+              [
+                "E04",
+                6,
+                18
+              ],
+              [
+                "E05",
+                8,
+                17
+              ],
+              [
+                "E06",
+                10,
+                21
+              ],
+              [
+                "E07",
+                12,
+                19
+              ],
+              [
+                "E08",
+                14,
+                24
+              ]
+            ],
+            "alt_text": "Scatterplot showing eight employee observations. The horizontal axis records hours of vocational training completed during the month. The vertical axis records administrative cases completed per working day. All eight paired values are provided in the accompanying data table.",
+            "statistical_summary_text": "Pearson correlation coefficient: r = 0.92",
+            "accessibility_requirements": [
+              "Provide the complete data table as an accessible equivalent to the scatterplot.",
+              "Associate each table cell with its appropriate column header.",
+              "Make the data table available before and throughout the independent response.",
+              "Present the correlation coefficient as accessible text rather than exclusively within the figure.",
+              "Ensure that plotted points, axis labels and tick labels are distinguishable without relying on colour.",
+              "Provide equivalent observations and measurement information through graphical and tabular representations without supplying their interpretation."
+            ]
+          },
+          "must_not_show": [
+            "A supplied interpretation of the direction or strength of the statistical relationship.",
+            "A supplied explanation of the relationship's approximate linearity.",
+            "A regression equation or estimated causal effect.",
+            "A causal interpretation of the correlation coefficient.",
+            "A named potential confounder or preferred competing mechanism.",
+            "A list of specific unobserved employee characteristics.",
+            "An indication of which causal explanation the learner should prefer.",
+            "A justified conclusion about the illustrative causal claim.",
+            "A recommended additional evidence proposal.",
+            "Author-only reasoning references."
+          ]
+        },
+        "delivery": {
+          "kind": "constructed_performance",
+          "prompt": {
+            "title": "Making an independent judgement about economic evidence",
+            "context": "Consider the evidence about vocational training and employee productivity and the claim that providing employees with additional vocational training increases their productivity.",
+            "task": "Write an independent evaluation of how far the supplied evidence supports the causal claim. Explain your interpretation of the observed relationship and what the claim asserts. Develop at least one plausible competing explanation for the observations, consider what additional evidence would help evaluate the claim and explain why it would be useful. Bring your reasoning together in a justified conclusion.",
+            "response_expectation": "Your evaluation should demonstrate statistical interpretation, claim recognition, alternative explanation, evidential judgement, further evidence and communication as connected aspects of one judgement. Use the supplied evidence accurately, explain your reasoning and ensure that your conclusion reflects what the evidence warrants.",
+            "suggested_length": "Approximately 100–150 words. The quality and completeness of your reasoning matter more than the word count.",
+            "indicative_time": "Approximately 11 minutes to examine the evidence and write your evaluation."
+          },
+          "response_workspace": {
+            "intention": "One sustained, independently constructed written evaluation of an economic causal claim.",
+            "guidance": "Write one connected evaluation in your own words. Explain the reasoning behind your judgement rather than presenting a list of separate answers."
+          }
+        },
+        "formative_return": {
+          "materials": [
+            {
+              "material_id": "E1.FR01",
+              "body": "Reviewing your independent evaluation\n\nCompare your evaluation with the following explanation of what makes an economic judgement well supported. These are connected qualities of your overall evaluation, not six separately marked answers.\n\nStatistical interpretation\n\nThe scatterplot and Pearson correlation coefficient of 0.92 indicate a strong positive, approximately linear relationship. Employees who completed more vocational training generally completed more administrative cases per working day in this illustrative sample. The relationship is not exact: employees with more training did not invariably complete more cases. The coefficient describes the strength and direction of the linear association; it does not measure the productivity gain caused by training.\n\nClaim recognition\n\nThe claim goes beyond describing differences between employees. It asserts that providing additional training would increase productivity compared with what would otherwise happen. Observing that employees with more training tend to be more productive does not establish what would happen if an employee received additional training.\n\nAlternative explanation\n\nTraining could improve relevant knowledge and skills, enabling employees to complete more cases. However, more productive employees might also be selected for additional training because managers expect greater returns from investing in them. This would provide a possible reverse causal explanation. Alternatively, motivation could influence both participation in training and the number of cases completed, providing a possible common causal influence. These mechanisms could coexist. A well-developed alternative explanation shows how the proposed mechanism could produce the observed relationship, rather than simply naming reverse causality or a confounding variable. Other economically plausible mechanisms are equally appropriate when their reasoning is sufficiently explained.\n\nEvidential judgement\n\nTraining and productivity were measured during the same month, so the observations do not establish which relevant changes occurred first. Training was not randomly allocated, and the dataset does not provide information about previous productivity, prior experience, motivation, managerial decisions or differences in case complexity. Consequently, the observed differences between employees cannot confidently be attributed to training alone. The strong association is compatible with a beneficial effect of training, but it does not establish that effect. Equally, the evidence does not establish that training has no effect.\n\nFurther evidence\n\nUseful additional evidence should address a specific uncertainty. Previous productivity records could help investigate whether employees who undertook more training were already more productive. Information about how training opportunities were allocated could help assess whether selection influenced the observed relationship. A suitably designed study that randomly allocated additional training opportunities and compared subsequent productivity could reduce systematic pre-existing differences between groups and provide a more informative causal comparison. Such a study would still require appropriate implementation and measurement. Other proposals are defensible if you explain how they would help distinguish competing explanations. Collecting more observations of the same two variables might improve the descriptive evidence but would not, by itself, resolve the causal uncertainty.\n\nCommunication\n\nA convincing conclusion connects the statistical evidence, plausible explanations and limitations of the observations. It acknowledges the strength of the observed relationship without treating that strength as proof of causation. It also explains why the proposed additional evidence would make a causal interpretation more credible. Your wording need not match the examples above; what matters is whether your reasoning supports your conclusion."
+            },
+            {
+              "material_id": "E1.FR02",
+              "body": "An example of an integrated evaluation\n\nThe scatterplot and correlation coefficient of 0.92 show a strong positive, approximately linear association: employees completing more training generally complete more cases per day. However, the claim asserts that providing additional training would itself increase productivity. Training could improve relevant skills, but more productive employees might be selected for further training. Motivation could also influence both training participation and productivity. Because both variables were measured during the same month and training was not randomly allocated, the observations cannot distinguish these explanations. Previous productivity records could help establish whether employees undertaking more training were already more productive. Randomly allocating additional training opportunities and comparing subsequent productivity could reduce systematic pre-existing differences between groups. The evidence is therefore consistent with a beneficial effect of training, but does not establish that effect.\n\nThis is one defensible evaluation, not the only acceptable response. Your evaluation may develop different plausible mechanisms or propose different additional evidence while reaching a similarly well-justified judgement."
+            }
+          ],
+          "forward_orientation": "Return to your initial evaluation and identify the aspect of your reasoning that would benefit most from improvement. Consider whether your interpretation was accurate, whether your competing explanation showed how the observed relationship could arise, and whether your proposed additional evidence addressed a specific uncertainty. Reconsider your conclusion in light of these connections. You do not need to write another evaluation.",
+          "revision": {
+            "offered": false
+          }
+        }
+      }
+    ],
+    "pack_forward_orientation": "When you encounter another economic causal claim, apply the same integrated approach: interpret the observed evidence accurately, distinguish what is observed from what is being claimed, consider plausible competing explanations and identify evidence that would help distinguish them. Aim to make the strength of your conclusion proportionate to the strength of the evidence. These habits provide a foundation for later study of how economists investigate causal relationships more formally.",
+    "output_specification": {
+      "specification_id": "C06.E1",
+      "artefact_title": "Independent evaluation of an economic causal claim",
+      "audience": "The learner",
+      "purpose": "Retain the learner's initial independent evaluation of the vocational training and employee productivity evidence, preserving the performance produced before explanatory feedback.",
+      "action_label": "View my independent evaluation",
+      "missing_response_text": "Your independent evaluation is not yet available.",
+      "sections": [
+        {
+          "section_id": "C06.E1-E1",
+          "order": 1,
+          "heading": "My independent evaluation",
+          "contributions": [
+            {
+              "contribution_id": "C06.E1-E1-response",
+              "label": "My independent evaluation",
+              "elicitation_id": "E1",
+              "response_part": "response_text"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "delivery_preferences": {
+    "feedback_timing": "per_component"
+  },
+  "design_validation": {
+    "page_structure": {
+      "schema_version": "2.0.0",
+      "product_id": "assessment_pack",
+      "page_kind": "assessment",
+      "activities_empty": true,
+      "assessment_evidence_present": true,
+      "editorial_opening_image_decision_present": true,
+      "attempt_instructions_is_string": true,
+      "framing_is_string": true,
+      "pack_forward_orientation_is_string": true,
+      "assessment_components_duplicated_outside_assessment_evidence": false,
+      "interactive_learning_sections_present": false,
+      "knowledge_summary_present": false,
+      "study_tips_present": false,
+      "additional_closing_section_present": false
+    },
+    "educational_fidelity": {
+      "learning_element": 8,
+      "developmental_phase": 5,
+      "developmental_phase_title": "From supported reasoning to independent judgement",
+      "assessment_role": "R2",
+      "assessment_intent": "formative_check",
+      "evidence_purpose_preserved": true,
+      "learner_context_preserved": true,
+      "bring_forward_preserved": true,
+      "entry_assumptions_preserved": true,
+      "elicitation_id_preserved": "E1",
+      "epistemic_class_preserved": "non_determinate",
+      "determinate_item_count": 0,
+      "constructed_performance_count": 1,
+      "additional_elicitation_count": 0,
+      "initial_task_wording_preserved": true,
+      "initial_stimulus_preserved": true,
+      "formative_return_wording_preserved": true,
+      "elicitation_forward_orientation_preserved": true,
+      "pack_forward_orientation_preserved": true,
+      "achievement_dimensions_preserved": [
+        "Statistical interpretation",
+        "Claim recognition",
+        "Alternative explanation",
+        "Evidential judgement",
+        "Further evidence",
+        "Communication"
+      ],
+      "achievement_dimensions_treated_as_connected": true,
+      "independent_integrated_performance_preserved": true,
+      "prior_learner_artefacts_required": false,
+      "external_research_required": false,
+      "specialist_software_required": false,
+      "formal_econometric_methods_required": false,
+      "automatic_marking_present": false,
+      "runtime_ai_judgement_present": false,
+      "summative_grading_present": false,
+      "progression_gate_present": false,
+      "pathway_control_present": false
+    },
+    "source_integrity": {
+      "source_id": "ECON-CORR-01",
+      "dataset_id": "D09",
+      "observation_count": 8,
+      "all_authoritative_observations_preserved": true,
+      "variable_definitions_preserved": true,
+      "measurement_context_preserved": true,
+      "same_month_measurement_preserved": true,
+      "non_random_allocation_fact_preserved": true,
+      "synthetic_status_explicit": true,
+      "illustrative_causal_claim_preserved": true,
+      "pearson_calculation": {
+        "sample_size": 8,
+        "sum_x": 56,
+        "sum_y": 139,
+        "sum_x_squared": 560,
+        "sum_y_squared": 2529,
+        "sum_xy": 1100,
+        "centred_cross_product": 127,
+        "centred_x_sum_of_squares": 168,
+        "centred_y_sum_of_squares": 113.875,
+        "exact_expression": "127 / sqrt(168 * 113.875)",
+        "display_precision": 2,
+        "display_value": 0.92
+      },
+      "graphical_and_tabular_observations_identical": true,
+      "additional_observations_introduced": false,
+      "unsupported_empirical_findings_introduced": false,
+      "unsupported_causal_effect_asserted": false
+    },
+    "independence_and_disclosure": {
+      "pre_performance_evidence_is_neutral": true,
+      "pre_performance_named_confounders_present": false,
+      "pre_performance_preferred_mechanisms_present": false,
+      "pre_performance_justified_conclusion_present": false,
+      "pre_performance_model_evaluation_present": false,
+      "pre_performance_answer_bearing_hints_present": false,
+      "formative_return_disclosure_requirement": "Disclose E1.FR01, E1.FR02, the elicitation forward orientation and the pack forward orientation only after the learner has produced the initial independent E1 response.",
+      "author_only_metadata_visibility_requirement": "Do not render purpose, evidence_ask, educational dependency descriptions, design validation, representation production constraints or other author-only metadata as learner-facing assessment content.",
+      "disclosure_enforcement_status": "Specified but not verified in a running delivery implementation."
+    },
+    "editorial_opening_image_validation": {
+      "decision": "generate",
+      "educational_function": "Decorative contextual orientation only.",
+      "assessment_stimulus": false,
+      "essential_information_present": false,
+      "answer_bearing_content_permitted": false,
+      "embedded_text_permitted": false,
+      "alt_text_empty": true,
+      "visible_caption_required": false,
+      "figure_number_required": false,
+      "production_status": "Commission specified. Image generation and visual validation have not occurred within the Design Page stage.",
+      "fallback_requirement": "If the editorial opening image cannot be generated or validated without introducing assessment cues, omit it from the published page without an empty placeholder or visible production brief."
+    },
+    "journal_artefact_continuity": {
+      "declared_artefact_id": "C06.E1",
+      "source_elicitation_id": "E1",
+      "source_response_part": "response_text",
+      "response_stage": "initial_independent_performance",
+      "output_specification_present": true,
+      "additional_learner_authored_artefact_introduced": false,
+      "separate_reflection_required": false,
+      "revised_submission_required": false,
+      "initial_response_preservation_required": true,
+      "exposure_status": "The Design Page specifies the mapping of E1 to C06.E1. Actual exposure of the declared Journal artefact cannot be confirmed at this stage.",
+      "implementation_requirement": "Verify that the delivery implementation exposes the initial independent E1 response as C06.E1 and does not replace it with subsequent reconsideration or generated feedback. If the implementation cannot expose this response, report the limitation explicitly rather than creating another assessment or reflection."
+    },
+    "timing": {
+      "total_minutes": 15,
+      "case_engagement_and_independent_performance_minutes": 11,
+      "feedback_and_reconsideration_minutes": 4,
+      "timing_is_indicative": true,
+      "learner_testing_completed": false
+    },
+    "synthesis_decisions": [
+      "Retain the established R2 evidence purpose and the single non-determinate E1 constructed performance.",
+      "Keep all assessment stimulus, representation and formative-return material within the existing elicitation rather than duplicating it in activities or introductory content.",
+      "Provide concise learner-facing framing and attempt instructions that establish the purpose, independence conditions and indicative timing without revealing causal interpretations.",
+      "Commission a neutral decorative workplace image because the professional setting can be established visually without supplying evidence or suggesting a causal mechanism.",
+      "Include assessment_evidence.output_specification because the authoritative commission explicitly requires preservation of the initial E1 response as Journal artefact C06.E1, notwithstanding the generic instruction that structured learner output is normally omitted.",
+      "Use the closed output specification fields and response_part response_text to map the existing constructed performance without inventing another learner response.",
+      "Preserve the authored formative-return materials and forward orientations without introducing a new model answer, additional assessment or mandatory revision.",
+      "Retain the established per_component feedback preference, which in this single-component pack means feedback follows the initial E1 performance.",
+      "Retain the verified two-decimal correlation coefficient of 0.92. Omit the previously supplied excessive-precision decimal from the component representation and provide the exact calculation basis in author-only validation metadata.",
+      "Remove the historical evidence-purpose stage boundary from the synthesised purpose because its deferred authoring tasks have now been completed in Stages 2 and 3. This is an administrative synthesis decision rather than a change to the educational purpose."
+    ],
+    "implementation_limitations": [
+      "This artefact is a structured Assessment Pack Design Page, not a rendered or deployed assessment.",
+      "The scatterplot is specified through the exact D09 observations and plotting parameters. Its final rendered appearance has not been produced or visually verified.",
+      "The accessible data table and alternative text are fully specified, but their eventual implementation has not been tested with assistive technologies.",
+      "The editorial opening image is commissioned but has not been generated or checked for unintended assessment cues.",
+      "The separation of learner-facing content from author-only metadata and the post-performance disclosure of feedback require verification in the delivery implementation.",
+      "The mapping to C06.E1 is specified, but actual Journal exposure and preservation of the initial response remain unverified.",
+      "The four-minute feedback and reconsideration allocation is an authoring estimate and has not been validated through learner testing.",
+      "Earlier published Learning Journey resources and individual learner responses have not been independently inspected.",
+      "The output specification section mapping uses the existing E1 identifier and the required response_text response part. Compatibility with the eventual delivery implementation must be confirmed."
+    ],
+    "completion_status": {
+      "assessment_design_page_complete": true,
+      "evidence_purpose_synthesised": true,
+      "learner_context_synthesised": true,
+      "evidence_elicitation_synthesised": true,
+      "epistemic_class_unchanged": true,
+      "formative_return_synthesised": true,
+      "pack_forward_orientation_synthesised": true,
+      "editorial_opening_image_decision_complete": true,
+      "journal_artefact_mapping_specified": true,
+      "rendering_and_delivery_validation_complete": false,
+      "ready_for_downstream_production": true
+    }
+  },
+  "metadata": {
+    "workflow_id": "246003a4-d52c-4369-b613-381e8623b17a",
+    "commission_id": "C06",
+    "page_id": "learner-page--c06",
+    "workflow_name": "Evaluating an economic causal claim independently"
+  },
+  "workflow_id": "246003a4-d52c-4369-b613-381e8623b17a",
+  "commission_id": "C06",
+  "page_id": "learner-page--c06",
+  "constraints_applied": {}
+}

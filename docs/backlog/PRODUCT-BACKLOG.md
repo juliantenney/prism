@@ -2,7 +2,7 @@
 
 **Canonical location:** `docs/backlog/PRODUCT-BACKLOG.md`  
 **Status:** Active — **alpha-use period** (Alpha development complete, 2026-09-02)  
-**Last updated:** 2026-11-24 (Sprint 103 closed — feature freeze until Connect More; PB-FA-018/020/021 updated with C01 statistical-representation findings)  
+**Last updated:** 2026-11-24 (Sprint 103 closed — feature freeze until Connect More; PB-FA-018/020/021 updated with C01 statistical-representation findings; PB-FA-018 C06 cross-reference and coefficient-validation deferral; PB-S-008 full-suite failure debt recorded)  
 **Open sprint:** **None** — feature freeze until Connect More (Wed 2 Dec 12:00): create Learning Journeys → test → fix demonstrated defects → verify.  
 **Last closed sprint:** [Sprint 103 — Learning Journey Runtime Continuity and Commissioning Fidelity](../development/sprints/2026-11-23-sprint-103-learning-journey-runtime-continuity-and-commissioning-fidelity/SPRINT-103-CLOSURE.md) — **CLOSED — COMPLETE — ACCEPTED WITH DOCUMENTED QUALIFICATIONS**. Prior: [Sprint 102](../development/sprints/2026-11-20-sprint-102-learning-journey-owned-outcomes/SPRINT-102-CLOSURE.md) · [Sprint 101](../development/sprints/2026-11-19-sprint-101-practice-as-a-learning-journey-component/SPRINT-101-CLOSURE.md) · [Sprint 97](../development/sprints/2026-11-12-sprint-97-learning-journal-and-design-pattern-foundations/SPRINT-97-CLOSURE.md) (PB-FA-028 delivered).  
 **Architectural policy:** [S103-D01 — Learning Journey-first architecture](../development/sprints/2026-11-20-sprint-102-learning-journey-owned-outcomes/decisions.md#s103-d01--learning-journey-first-architecture) — **Accepted**; commissioning alignment verified in Sprint 103.
@@ -228,7 +228,11 @@ Potential applications include:
 - Accessible descriptions that do not compromise independent interpretation (A1-M5, A2-M5, A2-M7).
 - No regression in C02 Expository rendering (`tests/qa-c02-expository-structured-rendering.test.js`) or in existing Practice functionality.
 
-**Readiness:** Proposed from the 2026-10-08 charting audit; Practice added among potentially supported products 2026-11-23; C01 statistical-representation investigation recorded 2026-11-24 (approach proposed, design decisions open). Approach not yet chosen — **not sprint-allocated**. **Deferred until after Connect More.**
+**C06 Assessment Pack cross-reference (2026-11-24).** An Assessment Pack elicitation carried an authored scatterplot (dataset D09: eight observations, axis bindings, accessible data table, alt text and an r summary) in `elicitation.representation` that never reached the learner. A narrow interim correction now publishes it (`assessment-evidence-hydration.js` and `render-assessment-evidence.js`, reusing a shell-free `renderScatterplotEvidence` split out of `expository-structured-materials.js`, with Expository output unchanged). It maps only through the authored `plot_specification.*.variable_id` bindings, parses nothing from prose and fails closed if the table, observations, declared sample size or axis bindings disagree. This is a second consumer of the figure extraction in step 1 above (design decision 6 is therefore partly exercised) and a concrete acceptance case: the authored alt text states the variables and axes but no interpretation, which supports decision 3. Regression: `tests/qa-c06-assessment-evidence-and-artefact.test.js`.
+
+**Deferred under this item: generic statistical-coefficient validation.** The C06 coefficient (r = 0.92, recomputed as 0.9182 from D09) was verified in that test only. Recomputing a declared statistic from the authoritative observations at publish time (Pearson r and other summaries, `display_precision` and rounding, `calculation_basis`, variable bindings) is **not** implemented and belongs to the shared deterministic representation work, so it is designed once for all representation types rather than special-cased for scatterplots.
+
+**Readiness:** Proposed from the 2026-10-08 charting audit; Practice added among potentially supported products 2026-11-23; C01 statistical-representation investigation recorded 2026-11-24 (approach proposed, design decisions open); C06 interim Assessment Pack scatterplot publication and coefficient-validation deferral recorded 2026-11-24. Approach not yet chosen — **not sprint-allocated**. **Deferred until after Connect More.**
 
 ### PB-FA-019 — Interactive V2: educational solution design and interaction surfaces
 
@@ -516,6 +520,19 @@ This calibration remains about exercising depth, count, and form-selection defau
 The 517 failures were not 517 product bugs. Remediation fixed harness gaps (GAM assembler + first-class family inject; DOM stubs; sections→activities test convert), retired superseded HTML/golden/prompt archaeology, and updated stale current-contract asserts. **No production `app.js` / `lib/` changes.** Suspected “A” Expository KS and Assessment Pack publish failures were harness/identity gaps, not renderer defects.
 
 **Outcome:** Broad suite green; first-class still 339/339; confidence restored without restoring obsolete architecture.
+
+### PB-S-008 — Full-suite pre-existing failures (technical debt)
+
+**Status:** **Open — recorded 2026-11-24, not investigated, not sprint-allocated.** Deferred until after Connect More unless a failure is found to mask a real defect.
+
+**Record:** [PB-S-008-full-suite-failure-baseline-2026-11-24.md](../development/governance/PB-S-008-full-suite-failure-baseline-2026-11-24.md) (complete list by file)  
+**Prior work:** [PB-S-007](#pb-s-007--broad-suite-rendererpage-render-failure-reconciliation) cleared the 517-failure estate in October; failures have re-accumulated since Sprints 95–103.
+
+Running `node --test --test-concurrency=4 tests/*.test.js` at committed HEAD (`2b572ec`) fails **86 of 4956** tests; **84 are stable across three runs** in 52 test files (largest groups: `s75-run-capture-migration` 10, `mathjax-delimiter-preservation` 9, `sprint-70-slice-8d-file-picker-browser-e2e` 4). They exist independently of the C06 Assessment Pack changes (none introduced there). Two further tests fail only while the committed vNext browser bundle is stale against source and pass after a rebuild: a release-hygiene check, not a defect.
+
+**Not yet classified.** Each failure needs triage as stale assertion, environment/harness (IndexedDB, file-picker and browser E2E), or genuine defect, using the PB-S-007 method. Do not weaken tests to pass; escalate any genuine defect separately.
+
+**Operational note:** several `s96` browser tests regenerate Sprint 96 evidence PNGs as a side effect of running; revert them unless a refresh is intended.
 ---
 
 ## 3. Lightweight future product ideas

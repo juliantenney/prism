@@ -5992,6 +5992,15 @@
       seed.constraints || initial.scopeConstraints || (wf && wf.scopeAndConstraints) || ""
     ).trim();
     if (constraints) parts.push("CONSTRAINTS / ADDITIONAL CONTEXT\n" + constraints);
+    if (ctx.commissionedDurationMinutes != null) {
+      parts.push(
+        "ALLOCATED DURATION\nAuthoritative commissioned duration: " +
+          ctx.commissionedDurationMinutes +
+          " minutes. Calibrate reading, evidence inspection, reasoning, learner action, constructed responses, and feedback engagement to fit the authoritative " +
+          ctx.commissionedDurationMinutes +
+          "-minute budget cleanly — leveraging prior journey learning rather than re-teaching established concepts, without fixed duration tiers, component quotas, outcome caps, or word-count formulas."
+      );
+    }
     if (ctx.commissionSpec) {
       parts.push("COMMISSION SPECIFICATION\n" + ctx.commissionSpec);
     }
@@ -6037,7 +6046,17 @@
       "Treat COMMISSION SPECIFICATION, LEARNING JOURNEY CONTEXT, and EDUCATIONAL DEPENDENCIES as authoritative educational context for this commissioned component. Preserve this stage's own responsibilities and required output format.",
       "",
       "Educational purpose. Treat COMMISSION SPECIFICATION as the authoritative description of this component's educational job and constraints.",
-      "",
+      ""
+    ];
+    if (ctx.commissionedDurationMinutes != null) {
+      lines.push(
+        "Authoritative commissioned duration. Calibrate reading, evidence inspection, reasoning, learner action, constructed responses, and feedback engagement to fit the authoritative " +
+          ctx.commissionedDurationMinutes +
+          "-minute budget cleanly — leveraging prior journey learning rather than re-teaching established concepts, without fixed duration tiers, component quotas, outcome caps, or word-count formulas.",
+        ""
+      );
+    }
+    lines.push(
       "Established scenario facts. Treat established facts in LEARNING JOURNEY CONTEXT as authoritative continuity constraints. Preserve relevant setting and participants, the problem or decision, named alternatives or options, constraints, and terminology. New evidence, developments, and perspectives are permitted. New evidence may challenge earlier judgements or change the relative merits of established options. Do not silently replace established scenario facts or substitute different options. Where the context explicitly states that there is no recurring scenario, do not invent one.",
       "",
       "Relationship to source material. Use supplied source material and upstream artefacts for their intended evidential and educational purposes. Where generic topic, source-material, or grounding instructions conflict with established journey facts, preserve the authoritative continuity constraints. Do not discard relevant evidence merely because it challenges an earlier judgement. Do not silently rewrite evidence to make it agree with an established scenario. Where an apparent contradiction cannot be reconciled without inventing facts, avoid inventing a resolution.",
@@ -6049,7 +6068,7 @@
       "Educational dependencies. Treat EDUCATIONAL DEPENDENCIES as references to relevant predecessor commissions or experiences. They do not establish that previous outputs have been inspected. Do not invent dependencies from journey order alone. Identifiers in EDUCATIONAL DEPENDENCIES are structured metadata only.",
       "",
       composeLearnerFacingCrossResourceReferenceConstraint(!!ctx.publishedTitleDirectory)
-    ];
+    );
     if (sharedSource) {
       lines.push(
         "",

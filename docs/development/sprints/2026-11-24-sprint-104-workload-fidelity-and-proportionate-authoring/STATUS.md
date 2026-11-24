@@ -1,8 +1,8 @@
 # Sprint 104 — Status / work log
 
 **Sprint:** 104 — Workload Fidelity and Proportionate Authoring  
-**Status:** **OPEN — MILESTONES 1 (`c461770`) & 2 (`9db45bf`) COMMITTED / MILESTONE 3 IMPLEMENTED (STOPPED FOR REVIEW BEFORE COMMIT)**  
-**Baseline:** `1515cd4` (M1 checkpoint: `c461770`; M2 checkpoint: `9db45bf`)  
+**Status:** **OPEN — MILESTONES 1 (`c461770`), 2 (`9db45bf`), & 3 (`53bd50c`) COMMITTED / MILESTONE 4 IMPLEMENTED & VERIFIED**  
+**Baseline:** `1515cd4` (M1 checkpoint: `c461770`; M2 checkpoint: `9db45bf`; M3 checkpoint: `53bd50c`)  
 **Primary backlog item:** [PB-FA-025](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-025--duration-fidelity-learner-workload-budgeting)  
 **Opening & agreement:** [S104-D01](decisions.md#s104-d01--open-sprint-104--workload-fidelity-and-proportionate-authoring), [S104-D02](decisions.md#s104-d02--architectural-agreement-principles-a-e-and-seven-gated-milestones)
 
@@ -13,9 +13,9 @@
 | S104-D02 Architectural agreement (Principles A–E & Milestones 1–7) | **Accepted** |
 | Milestone 1 — Authoritative duration transport | **Complete & committed (`c461770`)** (automated verified; manual acceptance pending integrated live validation) |
 | Milestone 2 — Practice Episode Plan design authority | **Complete & committed (`9db45bf`)** |
-| Milestone 3 — Reconciliation of downstream Practice contracts | **Implemented & focused-verified (uncommitted — stopped for review before commit)** |
-| Milestone 4 — Proportionate Learning Journey commissioning | **Not started** (gated on Milestone 3 review) |
-| Milestone 5 — Workload estimation corrections | **Not started** (gated on Milestone 4) |
+| Milestone 3 — Reconciliation of downstream Practice contracts | **Accepted & committed (`53bd50c`)** |
+| Milestone 4 — Proportionate Learning Journey commissioning | **Implemented & focused-verified (ready to commit separately)** |
+| Milestone 5 — Workload estimation corrections | **Next (after Milestone 4 commit)** |
 | Milestone 6 — Live 5-, 15- and 30-minute Practice sensitivity probes | **Not started** (gated on Milestone 5) |
 | Milestone 7 — 90-minute Economics journey regeneration, baseline comparison, QA & learner-runtime acceptance | **Not started** (gated on Milestone 6) |
 
@@ -23,7 +23,18 @@
 
 ## Work log
 
-### 2026-11-24 — Milestone 3 implementation (Downstream Practice contract reconciliation)
+### 2026-11-24 — Milestone 4 implementation (Proportionate Learning Journey commissioning)
+
+- Implemented **Milestone 4** per [S104-D02](decisions.md#s104-d02--architectural-agreement-principles-a-e-and-seven-gated-milestones) Principle D (without fixed duration tiers, component quotas, outcome-count caps, or arbitrary word-count formulas; economics baseline untouched):
+  - **Learning Journey commissioning guidance (`lib/learning-journey-sibling-prompts.js`, `lib/learning-journey-design-page.js`):**
+    - Updated `learning_requirements`, `learning_progression`, `learning_elements`, `learning_commissions`, `buildLearningJourneyDesignPagePrompt()`, and `buildLearningJourneyDesignPageCopyInstructions()` so commissioning distributes pedagogical functions across the journey rather than repeating explanation/modelling/practice/review inside every component, charges familiar revisited evidence more lightly than unfamiliar first-pass inspection, accounts for reading, evidence inspection, reasoning, constructed responses, and feedback engagement within authoritative `allocated_minutes`, strengthens consequential reuse of learner artefacts without inventing response-aware runtime adaptation or earlier/pre-feedback snapshots (`s96-m3` compliant), keeps Journal contributions as purposeful consequences of learning rather than extra writing obligations (`"Do not mandate a journal."` preserved), and surfaces irreconcilable outcome/time conflicts explicitly rather than silently mutating durations or outcomes.
+  - **Duration-informed design calibration across all four commissioned product families (`app.js`, `lib/expository-sibling-prompts.js`, `lib/first-class-workflow-family.js`, `lib/situated-task-sibling-prompts.js`):**
+    - Updated `composeCommissionedContextHonourInstruction` and `composeCommissionedOriginalBrief` in `app.js` so whenever `commissionedDurationMinutes != null`, every commissioned component receives explicit authoritative duration calibration (`ALLOCATED DURATION` + `Authoritative commissioned duration`), leveraging prior journey learning rather than re-teaching established concepts without fixed duration tiers, quotas, outcome caps, or word-count formulas (standalone workflows unaffected).
+    - Updated `lib/expository-sibling-prompts.js` (`EJP`, `XD`, `XM`), `lib/first-class-workflow-family.js` (`buildAssessmentPackPrompts` across `purpose`, `elicitation`, `formative`), and `lib/situated-task-sibling-prompts.js` (`situation`, `activity`, `support`, `learning_return`) to calibrate learner engagement against authoritative workflow `Duration` when supplied (alongside Practice's M2/M3 calibration).
+  - **Focused tests (`tests/s104-m4-proportionate-commissioning.test.js`):**
+    - Verified Steps 1–5 proportionate commissioning guidance, infeasibility surfacing, Journal/snapshot/no-tier boundaries, and commissioned duration calibration across all four product families (`171 / 171` tests passing across 19 focused suites).
+
+### 2026-11-24 — Milestone 3 implementation (Downstream Practice contract reconciliation) — Committed (`53bd50c`)
 
 - Implemented **Milestone 3** per [S104-D02](decisions.md#s104-d02--architectural-agreement-principles-a-e-and-seven-gated-milestones) Principle C and [S104-D03](decisions.md#s104-d03--milestone-2-multi-lo-compatibility-and-milestone-3-contract-reconciliation) (stopped before commit for review; Milestones 4–5 and live generation untouched; Economics baseline untouched):
   - **Conditional DLA cognition, scaffolding, material obligations & multi-LO prose (`lib/page-dla-enrich.js`, `lib/ld-dla-page-enrich-contract.js`, `lib/ld-guided-learning-scaffold.js`, `lib/episode-plan-population-contract.js`, `lib/episode-plan-dla-integration.js`, `lib/dla-diagnostic-review.js`, `app.js`):**

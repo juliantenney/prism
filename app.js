@@ -11606,6 +11606,9 @@
     var options = {};
     var baseline = tryParseWorkflowArtefactJson(resolvePageShellJsonForDlaCopy(workflow) || "");
     if (baseline) options.baseline = baseline;
+    if (workflow && isPracticeWorkflow(workflow)) {
+      options.practiceProduct = true;
+    }
     if (resolveFacilitatedDeliveryForWorkflow(workflow, context)) {
       options.facilitatedDelivery = true;
     }
@@ -11617,6 +11620,18 @@
     var minutes = resolveEffectiveWorkflowDurationMinutes(workflow);
     if (minutes != null) {
       options.effectiveDurationMinutes = minutes;
+    }
+    if (workflow && isPracticeWorkflow(workflow)) {
+      options.practiceProduct = true;
+      var baselineJson =
+        resolveGamEnrichedPageJsonForLearningSequenceCopy(workflow) ||
+        resolveDlaEnrichedPageJsonForGamCopy(workflow) ||
+        resolvePageShellJsonForDlaCopy(workflow) ||
+        "";
+      var baselinePage = tryParseWorkflowArtefactJson(baselineJson);
+      if (baselinePage && typeof baselinePage === "object") {
+        options.baselinePage = baselinePage;
+      }
     }
     return options;
   }
@@ -15031,7 +15046,7 @@
     }).page;
   }
 
-  function repairDlaPartialPageCaptureForValidation(parsed, baseline) {
+  function repairDlaPartialPageCaptureForValidation(parsed, baseline, wf) {
     var dlaMod = resolvePageDlaEnrichLib();
     if (
       !dlaMod ||
@@ -15042,7 +15057,8 @@
       return parsed;
     }
     return dlaMod.repairDlaPartialShellPlaceholderFields(parsed, {
-      baseline: baseline || null
+      baseline: baseline || null,
+      practiceProduct: !!(wf && isPracticeWorkflow(wf))
     }).page;
   }
 
@@ -15066,7 +15082,8 @@
       return raw;
     }
     var repairResult = dlaMod.repairDlaPartialShellPlaceholderFields(parsed, {
-      baseline: baseline || null
+      baseline: baseline || null,
+      practiceProduct: !!(workflow && isPracticeWorkflow(workflow))
     });
     if (!repairResult.repairApplied) {
       return raw;
@@ -15093,7 +15110,7 @@
       if (partialMode && resolvePartialPageCaptureStageFromStep(step) === "dla") {
         var resolvedDlaPartial = resolveDlaPartialCaptureForValidation(parsed, baseline || null);
         return dlaMod.validateDlaPartialPageCapture(
-          repairDlaPartialPageCaptureForValidation(resolvedDlaPartial, baseline || null),
+          repairDlaPartialPageCaptureForValidation(resolvedDlaPartial, baseline || null, workflow),
           buildDlaPartialValidationOptions(workflow, buildWorkflowStepIdentityContextFromRow(step))
         );
       }
@@ -15105,7 +15122,7 @@
       ) {
         var resolvedDlaByStage = resolveDlaPartialCaptureForValidation(parsed, baseline || null);
         return dlaMod.validateDlaPartialPageCapture(
-          repairDlaPartialPageCaptureForValidation(resolvedDlaByStage, baseline || null),
+          repairDlaPartialPageCaptureForValidation(resolvedDlaByStage, baseline || null, workflow),
           buildDlaPartialValidationOptions(workflow, buildWorkflowStepIdentityContextFromRow(step))
         );
       }
@@ -15243,11 +15260,12 @@
     return deriveDesignLearningActivitiesCaptureJson(workflow);
   }
 
-  function buildGamV2CopilotSchemaInstructions() {
+  function buildGamV2CopilotSchemaInstructions(wf) {
     var contractMod = resolveLdGamPageEnrichContractLib();
+    var practiceOpt = wf && isPracticeWorkflow(wf) ? { practiceProduct: true } : undefined;
     var contract =
       contractMod && typeof contractMod.buildGamPageEnrichContractBlock === "function"
-        ? contractMod.buildGamPageEnrichContractBlock()
+        ? contractMod.buildGamPageEnrichContractBlock(practiceOpt)
         : "";
     var canonical =
       contractMod && typeof contractMod.buildCanonicalGamMaterialShapeSnippet === "function"
@@ -15309,8 +15327,8 @@
     );
   }
 
-  function buildLearningSequenceV2CopyAuthoringBrief() {
-    return [
+  function buildLearningSequenceV2CopyAuthoringBrief(wf) {
+    var baseLines = [
       "Output contract: return a partial page artefact only (not a full-page replay).",
       'Required envelope: artifact_type "page", schema_version "2.0.0", assembly_state.current_stage "learning_sequence", and assembly_state.enriched_by including "learning_sequence".',
       "Required payload: learning_sequence object (ordered_activity_ids/timeline and sequence-owned navigation fields as needed).",
@@ -15318,7 +15336,15 @@
       "Use Copilot conversation context for upstream instructional content; PRISM does not embed stored prior step outputs in this mode.",
       "Forbidden: activities[], materials[], shell fields (title/audience/page_profile/learning_outcomes/episode_plans), page_synthesis, and full-page replay.",
       "Do not reconstruct or preserve non-owned stage fields."
-    ].join("\n");
+    ];
+    if (wf && isPracticeWorkflow(wf)) {
+      baseLines.splice(
+        4,
+        0,
+        "Practice Episode Plan preservation (S104-M3): preserve the authored Episode Plan's activities[] count, activity_id sequence, and beat structure without inventing extra activities, consolidation stops, or timing expansion. Keep total_duration_minutes and timeline durations aligned with the authoritative workflow duration."
+      );
+    }
+    return baseLines.join("\n");
   }
 
   function buildUpstreamGamPageEmbedSectionForLearningSequenceCopy(wf) {
@@ -15421,6 +15447,58 @@
     return { ok: false, errors: ["unrecognized Learning Sequence capture shape"] };
   }
 
+  function appendPracticeLearningSequencePreservationErrors(parsed, options, errors) {
+    var opts = options && typeof options === "object" ? options : {};
+    if (opts.practiceProduct !== true) return;
+    var baselinePage =
+      opts.baselinePage && typeof opts.baselinePage === "object" ? opts.baselinePage : null;
+    if (!baselinePage || !Array.isArray(baselinePage.activities) || !baselinePage.activities.length) {
+      return;
+    }
+    var seq =
+      parsed &&
+      parsed.learning_sequence &&
+      typeof parsed.learning_sequence === "object" &&
+      !Array.isArray(parsed.learning_sequence)
+        ? parsed.learning_sequence
+        : null;
+    if (!seq) return;
+    var baseIds = baselinePage.activities
+      .map(function (row) {
+        return String((row && row.activity_id) || "").trim();
+      })
+      .filter(Boolean);
+    if (!baseIds.length) return;
+    if (Array.isArray(seq.ordered_activity_ids)) {
+      var orderedIds = seq.ordered_activity_ids
+        .map(function (id) {
+          return String(id || "").trim();
+        })
+        .filter(Boolean);
+      if (orderedIds.join("|") !== baseIds.join("|")) {
+        errors.push(
+          "learning_sequence.ordered_activity_ids must preserve Episode Plan activities (" +
+            baseIds.join(", ") +
+            ") without omitting, expanding, or reordering"
+        );
+      }
+    }
+    if (Array.isArray(seq.timeline) && seq.timeline.length) {
+      var timelineIds = seq.timeline
+        .map(function (entry) {
+          return String((entry && entry.activity_id) || "").trim();
+        })
+        .filter(Boolean);
+      if (timelineIds.length && timelineIds.join("|") !== baseIds.join("|")) {
+        errors.push(
+          "learning_sequence.timeline must preserve Episode Plan activities (" +
+            baseIds.join(", ") +
+            ") without expanding or dropping activities"
+        );
+      }
+    }
+  }
+
   function validateLearningSequencePartialPageCapture(parsed, options) {
     if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
       return { ok: false, errors: ["invalid capture object"], warnings: [] };
@@ -15443,6 +15521,7 @@
       errors.push("learning_sequence object required");
     }
     appendLearningSequenceDurationComplianceErrors(parsed, options, errors);
+    appendPracticeLearningSequencePreservationErrors(parsed, options, errors);
     if (errors.length) {
       return { ok: false, errors: errors, warnings: [] };
     }
@@ -15693,27 +15772,34 @@
         parsed.editorial_opening_image && typeof parsed.editorial_opening_image === "object"
           ? parsed.editorial_opening_image
           : null;
-      var practiceEditorialDecision = String(
-        (practiceEditorial && practiceEditorial.decision) || ""
-      )
-        .trim()
-        .toLowerCase();
-      if (!practiceEditorial) {
+      if (parsed.editorial_opening_image != null && !practiceEditorial) {
         errors.push(
-          'Practice Design Page requires editorial_opening_image with decision "generate"'
+          "Practice Design Page editorial_opening_image must be an object when present"
         );
-      } else if (practiceEditorialDecision !== "generate") {
-        errors.push(
-          'Practice Design Page editorial_opening_image.decision must be "generate" (skip is not permitted)'
-        );
-      } else {
-        ["subject", "context", "caption_intent", "detailed_description"].forEach(function (field) {
-          if (!String((practiceEditorial && practiceEditorial[field]) || "").trim()) {
-            errors.push(
-              "Practice Design Page editorial_opening_image." + field + " is required"
-            );
-          }
-        });
+      } else if (practiceEditorial) {
+        var practiceEditorialDecision = String(practiceEditorial.decision || "")
+          .trim()
+          .toLowerCase();
+        if (
+          practiceEditorialDecision !== "generate" &&
+          practiceEditorialDecision !== "skip"
+        ) {
+          errors.push(
+            'Practice Design Page editorial_opening_image.decision must be "generate" or "skip" when present'
+          );
+        } else if (practiceEditorialDecision === "generate") {
+          ["subject", "context", "caption_intent", "detailed_description"].forEach(function (field) {
+            if (!String((practiceEditorial && practiceEditorial[field]) || "").trim()) {
+              errors.push(
+                "Practice Design Page editorial_opening_image." + field + " is required"
+              );
+            }
+          });
+        } else if (!String(practiceEditorial.skip_reason || "").trim()) {
+          errors.push(
+            'Practice Design Page editorial_opening_image.skip_reason is required when decision is "skip"'
+          );
+        }
       }
     }
     var vpcMod =
@@ -16074,13 +16160,14 @@
         ? asm.PROFILES.STUDIO_V2_PARTIAL
         : asm.PROFILES.STUDIO_V2_NONPARTIAL,
       partialMode: partialMode,
+      practiceProduct: isPracticeWorkflow(workflow),
       upstreamDlaPageJson: upstreamJson,
       authoritativeSharedSourceText: resolveAuthoritativeSharedSourceTextForGamPrompt(workflow),
       adapters: {
         // Live contract/shape adapter preserves guided-review VM resolution parity.
         // Pre-emit gate: assembler buildSectionPreEmitGate owns insertion (S79-T-006).
         buildOutputContractAndShape: function () {
-          return buildGamV2CopilotSchemaInstructions();
+          return buildGamV2CopilotSchemaInstructions(workflow);
         }
       }
     });
@@ -18339,7 +18426,8 @@
       typeof mod.validateLearningActivitiesPopulationContract === "function"
         ? mod.validateLearningActivitiesPopulationContract(
             applied.learning_activities,
-            episodePlans
+            episodePlans,
+            wf && isPracticeWorkflow(wf) ? { practiceProduct: true } : undefined
           )
         : { ok: true, errors: [] };
     if (stepId) {
@@ -22580,10 +22668,29 @@
   }
 
   function shouldValidateLearnerPageDlaFramingOnCapture(stepContext, resolved, base) {
+    if (isPracticeStepContextOrActiveWorkflow(stepContext)) {
+      return false;
+    }
     return shouldApplyLearnerPagePedagogicFramingScaffold(stepContext, resolved, base);
   }
 
+  function isPracticeStepContextOrActiveWorkflow(stepContext) {
+    if (
+      stepContext &&
+      (stepContext.practiceProduct === true ||
+        String(stepContext.product || "").trim().toLowerCase() === "practice" ||
+        String(stepContext.promptRoute || "").trim().toLowerCase() === "practice")
+    ) {
+      return true;
+    }
+    var wf = resolveWorkflowForUpstreamArtefacts({});
+    return !!(wf && isPracticeWorkflow(wf));
+  }
+
   function shouldEnforceGuidedLearningScaffoldOnDlaCapture(stepContext) {
+    if (isPracticeStepContextOrActiveWorkflow(stepContext)) {
+      return false;
+    }
     return !!(
       stepContext &&
       (isWorkflowStepDesignLearningActivities(stepContext) ||
@@ -41237,6 +41344,7 @@
     var assembled = asm.assembleGamCanonicalPrompt({
       profile: profile,
       partialMode: partialMode,
+      practiceProduct: isPracticeWorkflow(workflow),
       pageEnrichmentV2: true,
       dlaPage: dlaPage,
       upstreamDlaPageJson: upstreamJson,
@@ -41255,7 +41363,7 @@
         // Live contract/shape adapter preserves guided-review VM resolution parity.
         // Pre-emit gate: assembler buildSectionPreEmitGate owns insertion (S79-T-006).
         buildOutputContractAndShape: function () {
-          return buildGamV2CopilotSchemaInstructions();
+          return buildGamV2CopilotSchemaInstructions(workflow);
         },
         pipelineOpening: getPipelineExecutionOpeningDirective(),
         pipelineCompletion: getPipelineExecutionCompletionDirective()
@@ -41740,6 +41848,11 @@
         lines.push(
           "Instructional sequencing: when activities rely on prediction, investigation, construction or revision, order learner_study_flow so an independent attempt precedes complete formal explanation/feedback, then revision where intended. Do not flatten prediction-led designs into explanation-first study flow. Preserve direct-instruction sequences when that is the upstream pedagogy."
         );
+        if (wfForChain && isPracticeWorkflow(wfForChain)) {
+          lines.push(
+            "Practice Episode Plan and duration fidelity (S104-M3): preserve the authored Practice Episode Plan's activities[] count, activity_id sequence, and beat structure without adding extra activities, transition ceremony, consolidation stops, or timing expansion. Keep total_duration_minutes and sum of timeline activity durations aligned with the authoritative workflow duration."
+          );
+        }
         var gamPageEmbedForLs = buildUpstreamGamPageEmbedSectionForLearningSequenceCopy(wfForChain);
         if (gamPageEmbedForLs) {
           lines.push(gamPageEmbedForLs);
@@ -41811,16 +41924,16 @@
         );
       } else if (isPracticeWorkflow(wfForChain)) {
         lines.push(
-          "Practice Design Page partial output mode: return a partial page artefact with product_id \"practice\", page_kind \"practice\", title, optional brief page_synthesis, visual_affordance_schema_version \"38.4\", activities_visual_review[], visual_affordances[], editorial_opening_image decision, optional sections[], and assembly_state."
+          "Practice Design Page partial output mode: return a partial page artefact with product_id \"practice\", page_kind \"practice\", title, optional purpose-driven page_synthesis, visual_affordance_schema_version \"38.4\", activities_visual_review[], visual_affordances[], optional purpose-driven editorial_opening_image decision, optional sections[], and assembly_state."
         );
         lines.push(
           "PRISM does not embed stored prior step outputs in this mode. Use Copilot conversation context for upstream Practice continuity."
         );
         lines.push(
-          "Always emit editorial_opening_image at page root with decision \"generate\" and a suitable editorial brief (subject, context, caption_intent, alt_text, detailed_description). It is required for every newly authored Practice Design Page. Commission a decorative, text-free opening scene that establishes context and visual identity for the Practice stop as a whole (no text overlays, labels, titles, slogans or banners in the image); set alt_text to \"\"; do not reveal worked solutions, classifications, or answers learners must develop; do not place it in visual_affordances[]. Do not use skip and do not omit the field. Empty instructional visual_affordances [] remains valid and does not remove this requirement."
+          "Purpose-driven editorial_opening_image (Practice): optional at page root. Emit decision \"generate\" (subject, context, caption_intent, alt_text \"\", detailed_description; decorative and text-free, no overlays, labels, titles, slogans, banners, or spoilers) when an opening contextual visual adds genuine orienting value, OR emit decision \"skip\" with a concise skip_reason, OR omit editorial_opening_image cleanly when unneeded. Do not place it in visual_affordances[]."
         );
         lines.push(
-          "Retain concise, skippable Overview, Learning purpose and Knowledge summary so learners can re-enter after a break. Keep them lean. Do not remove orientation fields to save workload — economy belongs in response production. Study tips remain omit-by-default. Do not change learner-facing learning outcomes for workload economy."
+          "Purpose-driven page_synthesis (Practice): overview, learning_purpose, knowledge_summary, and study_tips are all optional and purpose-driven — omit any element that is unnecessary given prior learning, journey framing, or the activity apparatus (page_synthesis: {} and partial omissions are valid). Never rewrite learning outcomes or enlarge the Episode Plan."
         );
         lines.push(
           "Copilot output contract: return one complete pretty-printed fenced JSON partial page artefact (triple-backtick json fence, 2-space indentation). Include only Design Page owned fields — do not replay the full upstream page. No prose before the fence. After the closing fence emit exactly one runner footer line: " +
@@ -41828,7 +41941,7 @@
             ". No other text after the footer line."
         );
         lines.push(
-          "Practice Design Page constraints: modify only Design Page owned fields (title, page_synthesis, visual_affordance_schema_version, activities_visual_review, visual_affordances, editorial_opening_image, optional sections[], assembly_state). Author a concise learner-facing title. editorial_opening_image is required with decision \"generate\". Every visual_affordances[] row must include affordance_id plus the shared Sprint 38 required children for that visual_decision (generate|defer|skip). Use only recognised visual_slot values. Prefer purposeful conceptual/mathematical imagery with anti_spoiler controls when warranted; emit visual_affordances [] when none are justified. Do not regenerate activities, materials, learning_outcomes, episode_plans, or learning_sequence."
+          "Practice Design Page constraints: modify only Design Page owned fields (title, optional page_synthesis, visual_affordance_schema_version, activities_visual_review, visual_affordances, optional editorial_opening_image, optional sections[], assembly_state). Author a concise learner-facing title. Every visual_affordances[] row must include affordance_id plus the shared Sprint 38 required children for that visual_decision (generate|defer|skip). Use only recognised visual_slot values. Prefer purposeful conceptual/mathematical imagery with anti_spoiler controls when warranted; emit visual_affordances [] when none are justified. Do not regenerate activities, materials, learning_outcomes, episode_plans, or learning_sequence."
         );
       } else if (workflowRecordIsAssessmentPack(wfForChain)) {
         lines.push(
@@ -42061,7 +42174,7 @@
           error: ""
         }
       : lsV2CopyStep
-      ? { text: buildLearningSequenceV2CopyAuthoringBrief(), sourceType: "ls_v2_copy_brief", error: "" }
+      ? { text: buildLearningSequenceV2CopyAuthoringBrief(wfForChain), sourceType: "ls_v2_copy_brief", error: "" }
       : resolveStepPromptText(step, wfForPrompt);
     var promptBody = resolvedPrompt && resolvedPrompt.text ? String(resolvedPrompt.text) : "";
     if (

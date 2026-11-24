@@ -42,8 +42,7 @@ function interactiveWf() {
 }
 
 test("101E progressive: contract version and heuristic markers", () => {
-  // Version advanced to discipline-first; progressive heuristic retained in DLA block.
-  assert.match(practiceContracts.CONTRACT_VERSION, /101[EFG]-/);
+  assert.match(practiceContracts.CONTRACT_VERSION, /104M3-PRACTICE-RECONCILED-V1/);
   const dla = practiceContracts.buildPracticePresentationContractBlock("dla");
   assert.match(dla, /Progressive interaction demand/);
   assert.match(dla, /NOT a mandatory five-stage template/i);

@@ -59,24 +59,21 @@ function gamStep() {
   };
 }
 
-test("101G: Practice contract version marks control-led justification", () => {
-  assert.match(practiceContracts.CONTRACT_VERSION, /101G-CONTROL-LED-JUSTIFICATION/);
+test("101G / 104M3: Practice contract version marks reconciled Practice contracts", () => {
+  assert.match(practiceContracts.CONTRACT_VERSION, /104M3-PRACTICE-RECONCILED-V1/);
 });
 
-test("101G: Practice DLA guidance prefers control-led reasoning with concise justification", () => {
+test("101G / 104M3: Practice DLA guidance offers optional control-led reasoning without fixed exemplars or minimum criterion counts", () => {
   const dla = practiceContracts.buildPracticePresentationContractBlock("dla");
   assert.match(dla, /control-led reasoning with concise justification/i);
   assert.match(dla, /Minimise typing, not thinking/i);
   assert.match(dla, /ONE concise independent justification/i);
   assert.match(dla, /connected decisions|decision chain|connected selection/i);
   assert.match(dla, /not a restatement of (the )?selected/i);
-  assert.match(dla, /A2-style/i);
-  assert.match(dla, /A3-style/i);
-  assert.match(dla, /inverse change in the multiplier/i);
-  assert.match(dla, /constrained extrema disappear/i);
+  assert.doesNotMatch(dla, /A2-style|A3-style|inverse change in the multiplier|constrained extrema disappear/i);
   assert.match(dla, /Do not impose this pattern universally/i);
   assert.match(dla, /Practice workload economy/);
-  assert.match(dla, /typically 2–3/);
+  assert.match(dla, /no arbitrary minimum criterion count/i);
   assert.match(dla, /hard max 4/);
 });
 

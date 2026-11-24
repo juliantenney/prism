@@ -552,7 +552,7 @@ test("matching selection material renders labelled selects", () => {
 });
 
 test("Practice contracts commission selection materials; Interactive unchanged", () => {
-  assert.match(practiceContracts.CONTRACT_VERSION, /101[EFG]-/);
+  assert.match(practiceContracts.CONTRACT_VERSION, /104M3-PRACTICE-RECONCILED-V1/);
   const dla = practiceContracts.buildPracticePresentationContractBlock("dla");
   assert.match(dla, /selection\.form "single_select"/);
   assert.match(dla, /selection\.form "multi_select"/);

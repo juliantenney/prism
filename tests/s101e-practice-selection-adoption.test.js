@@ -295,7 +295,7 @@ test("101E adoption: C3 A1-style DLA with selection_choose validates", () => {
 });
 
 test("101E adoption: Practice contracts prefer selection for discrete claim judgements", () => {
-  assert.match(practiceContracts.CONTRACT_VERSION, /101[EFG]-/);
+  assert.match(practiceContracts.CONTRACT_VERSION, /104M3-PRACTICE-RECONCILED-V1/);
   const dla = practiceContracts.buildPracticePresentationContractBlock("dla");
   assert.match(dla, /response_kind: "selection_choose"/);
   assert.match(dla, /prefer material_type "selection"/i);

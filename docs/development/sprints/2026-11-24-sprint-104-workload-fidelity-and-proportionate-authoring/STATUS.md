@@ -1,8 +1,8 @@
 # Sprint 104 — Status / work log
 
 **Sprint:** 104 — Workload Fidelity and Proportionate Authoring  
-**Status:** **OPEN — MILESTONE 1 COMMITTED (`c461770`) / MILESTONE 2 IMPLEMENTED (STOPPED FOR REVIEW BEFORE COMMIT)**  
-**Baseline:** `1515cd4` (M1 checkpoint: `c461770`)  
+**Status:** **OPEN — MILESTONES 1 (`c461770`) & 2 (`9db45bf`) COMMITTED / MILESTONE 3 IMPLEMENTED (STOPPED FOR REVIEW BEFORE COMMIT)**  
+**Baseline:** `1515cd4` (M1 checkpoint: `c461770`; M2 checkpoint: `9db45bf`)  
 **Primary backlog item:** [PB-FA-025](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-025--duration-fidelity-learner-workload-budgeting)  
 **Opening & agreement:** [S104-D01](decisions.md#s104-d01--open-sprint-104--workload-fidelity-and-proportionate-authoring), [S104-D02](decisions.md#s104-d02--architectural-agreement-principles-a-e-and-seven-gated-milestones)
 
@@ -12,9 +12,9 @@
 | Phase 104A Read-only investigation & documentation | **Complete (`f3bb47d`)** |
 | S104-D02 Architectural agreement (Principles A–E & Milestones 1–7) | **Accepted** |
 | Milestone 1 — Authoritative duration transport | **Complete & committed (`c461770`)** (automated verified; manual acceptance pending integrated live validation) |
-| Milestone 2 — Practice Episode Plan design authority | **Implemented & focused-verified (uncommitted — stopped for review before commit)** |
-| Milestone 3 — Reconciliation of downstream Practice contracts | **Not started** (gated on Milestone 2 review; incompatibilities documented) |
-| Milestone 4 — Proportionate Learning Journey commissioning | **Not started** (gated on Milestone 3) |
+| Milestone 2 — Practice Episode Plan design authority | **Complete & committed (`9db45bf`)** |
+| Milestone 3 — Reconciliation of downstream Practice contracts | **Implemented & focused-verified (uncommitted — stopped for review before commit)** |
+| Milestone 4 — Proportionate Learning Journey commissioning | **Not started** (gated on Milestone 3 review) |
 | Milestone 5 — Workload estimation corrections | **Not started** (gated on Milestone 4) |
 | Milestone 6 — Live 5-, 15- and 30-minute Practice sensitivity probes | **Not started** (gated on Milestone 5) |
 | Milestone 7 — 90-minute Economics journey regeneration, baseline comparison, QA & learner-runtime acceptance | **Not started** (gated on Milestone 6) |
@@ -22,6 +22,25 @@
 ---
 
 ## Work log
+
+### 2026-11-24 — Milestone 3 implementation (Downstream Practice contract reconciliation)
+
+- Implemented **Milestone 3** per [S104-D02](decisions.md#s104-d02--architectural-agreement-principles-a-e-and-seven-gated-milestones) Principle C and [S104-D03](decisions.md#s104-d03--milestone-2-multi-lo-compatibility-and-milestone-3-contract-reconciliation) (stopped before commit for review; Milestones 4–5 and live generation untouched; Economics baseline untouched):
+  - **Conditional DLA cognition, scaffolding, material obligations & multi-LO prose (`lib/page-dla-enrich.js`, `lib/ld-dla-page-enrich-contract.js`, `lib/ld-guided-learning-scaffold.js`, `lib/episode-plan-population-contract.js`, `lib/episode-plan-dla-integration.js`, `lib/dla-diagnostic-review.js`, `app.js`):**
+    - Updated `resolveLoStatementForActivity` in `lib/page-dla-enrich.js` to gather all distinct mapped outcome statements (`learning_outcome_ids` / `mapped_learning_outcome_ids` / `mapped_learning_outcomes`) and join multi-LO fallback prose coherently instead of privileging only the first mapped outcome.
+    - Scoped Practice DLA enrichment, placeholder repair, and validation (`options.practiceProduct` / `isPracticeLearnerPage`) so `activity_preamble`, cognition fields, hints, worked examples, and `intellectual_coherence_bridge` are conditional on authored Episode Plan beats, valid activities without dedicated materials (`required_materials: []`) are permitted when appropriate, and material obligations arising from selected material-bearing beats, evidence providers, or response surfaces are preserved without unconditional material-count floors.
+    - Reconciled `lib/ld-dla-page-enrich-contract.js` (`practiceProduct: true` gates), `lib/ld-guided-learning-scaffold.js` (bypassed Interactive word-count floors and mandatory preamble/bridge/cognition fabrication on Practice), `lib/episode-plan-population-contract.js` (`FUNCTION_SPECS.verification` removes hardcoded `"3–4"` criterion floor; `practiceProduct: true` permits valid self-contained Practice activities without `AC-09`/`AC-01`/`AC-07`/`M-02` collapse while keeping ordering `M-03` and beat-bound material obligations intact), `lib/episode-plan-dla-integration.js`, `lib/dla-diagnostic-review.js` (permits Practice hybrid `selection` + open-response activities to cover open response surfaces without forcing `checklist` review onto determinate `selection` rows), and `app.js` (`shouldEnforceGuidedLearningScaffoldOnDlaCapture`, `shouldValidateLearnerPageDlaFramingOnCapture`, `repairDlaPartialPageCaptureForValidation`, `applyDlaPartialShellPlaceholderRepairToCapture`, `buildDlaPartialValidationOptions`, `applyEpisodePlanPopulationEnforcementToDlaCapture`). Interactive defaults remain unchanged.
+  - **Verification, guided-review, and Practice GAM reconciliation (`lib/guided-review-generation-contract.js`, `lib/ld-gam-page-enrich-contract.js`, `lib/gam-canonical-assembler.js`, `lib/page-gam-enrich.js`, `app.js`):**
+    - Added `practiceProduct` options to `guided-review-generation-contract.js` so Practice guided-review checklists support function-proportionate criteria (accepting 1–2 focused criteria cleanly, hard max 4, no arbitrary minimum criterion count) while preserving Interactive's strict `3–4` depth rules.
+    - Updated `ld-gam-page-enrich-contract.js`, `gam-canonical-assembler.js`, `page-gam-enrich.js`, and `app.js` (`buildGamV2CopilotSchemaInstructions(wf)`, `applyGamPageEnrichPromptBlockToDraft`, `buildGamV2CopyPrompt`) to remove Interactive workbook-depth mandates (`LD-GAM-INSTRUCTIONAL-DEPTH-CONTRACT`) and unconditional `S78-D04` `### Page learner-resource closure` packaging on Practice, while accepting `materials: []` when `required_materials: []` and enforcing 1:1 coverage whenever materials are commissioned. Interactive `s79-t-002` golden baselines remain untouched.
+  - **Practice contract cleanup, Learning Sequence preservation & purpose-driven Design Page (`lib/ld-practice-presentation-contracts.js`, `app.js`):**
+    - Advanced `CONTRACT_VERSION` to `"104M3-PRACTICE-RECONCILED-V1"`, removed hardcoded `A2-style`/`A3-style`/`A4-style` fixed-design exemplars, replaced fixed criterion-count minimums with proportionate criteria without arbitrary floors, preserved anti-inflation / discipline-first / selection rules, required Learning Sequence to preserve Episode Plan structure and authoritative duration without timing expansion, and made all Practice Design Page editorial furniture (`overview`, `learning_purpose`, `knowledge_summary`, `study_tips`, `editorial_opening_image`) optional and purpose-driven.
+    - Updated `app.js` (`buildLearningSequencePartialValidationOptions`, `validateLearningSequencePartialPageCapture`, `buildLearningSequenceV2CopyAuthoringBrief`, `validateDesignPagePartialPageCapture`, `buildWorkflowStepInstructions`) so Practice Learning Sequence enforces `ordered_activity_ids` / `timeline` preservation + authoritative duration compliance, and Practice Design Page permits `editorial_opening_image` `"generate"`, `"skip"` (with `skip_reason`), or omission alongside `page_synthesis: {}` / partial omissions while keeping Interactive Design Page strictness unchanged.
+  - **Assembly & vNext learner renderer survival (`lib/page-vnext-assemble.js`, `lib/learner-renderer-vnext/archetype-canonical-binding.js`, `lib/learner-renderer-vnext/build-activity-model.js`, `lib/learner-renderer-vnext-browser.js`):**
+    - Stripped leftover `"—"` shell placeholders on omitted optional Practice activity fields during DLA assembly and activity model normalization, ensured grammar-legal lean/custom Episode Plan beat sequences bind `taskSteps` and `expected_output` cleanly without crashes (`UNASSIGNED_TASK_STEP` / `UNASSIGNED_EXPECTED_OUTPUT`), and rebuilt `lib/learner-renderer-vnext-browser.js` via `npm run build:learner-renderer-vnext-browser`.
+  - **Focused tests & Sprint 101 assertion reconciliation (`tests/s104-m3-downstream-practice-reconciliation.test.js`, `tests/s101*.test.js`):**
+    - Added comprehensive end-to-end fixture suite `tests/s104-m3-downstream-practice-reconciliation.test.js` exercising both lean (`required_materials: []` / `materials: []`, omitted preamble/bridge/opening, `page_synthesis: {}`, 10-min LS) and richer multi-LO/multi-beat Practice Episode Plans through DLA → GAM → LS → DP → `assembleVNextPageFromPartials` → `buildPageModel` → `renderLearnerPageHtml` → `learnerPackage.buildLearnerPackage`, plus Interactive non-regression guards.
+    - Updated superseded Sprint 101 Practice test assertions (`CONTRACT_VERSION`, removed `A2-style`/`A3-style`/`A4-style` exemplars, removed unconditional `typically 2–3` criteria, removed mandatory `editorial_opening_image: REQUIRED` / `skip` rejection, and removed unconditional `retain concise, skippable Overview` assertions).
 
 ### 2026-11-24 — Milestone 2 implementation (Practice Episode Plan design authority)
 
@@ -39,7 +58,7 @@
   - **`lib/ld-practice-presentation-contracts.js`:** Updated `episodePlanLines()` for Milestone 2 design authority while leaving DLA/GAM/LS/DP contract sections untouched for Milestone 3.
   - **`tests/prism-vm-lib-bootstrap.js`, `tests/qa-lj-no-phantom-run-captures.test.js`, `tests/s104-m2-practice-episode-plan.test.js`:** Wired M2 dependencies into VM bootstrap, aligned the outdated Sprint 102E Practice deterministic-derivation expectation in `qa-lj-no-phantom-run-captures.test.js` (`deriveDesignEpisodePlanCaptureJson === ""` and `sourceType === "practice_episode_plan"` while keeping unstarted Run emptiness), and added 8 focused Milestone 2 tests.
 - **Multi-LO cohesive single activity finding:** Verified empirically across `page-shell-create.js`, `episode-plan-population-contract.js`, `page-gam-enrich.js`, `page-vnext-assemble.js`, and `learner-renderer-vnext` that mapping multiple authoritative LOs onto one cohesive activity (`learning_outcome_ids` / `mapped_learning_outcome_ids`) is supported cleanly (`0` assembly/renderer errors); noted minor `lib/page-dla-enrich.js:336-350` (`resolveLoStatementForActivity`) single-statement fallback for Milestone 3 awareness.
-- **Identified Milestone 3 incompatibilities (untouched):** Documented exact contract, validator, and prompt incompatibilities in [IMPLEMENTATION-MAP.md](IMPLEMENTATION-MAP.md#milestone-3-incompatibilities-identified-during-milestone-2) and [decisions.md](decisions.md#s104-d03--milestone-2-multi-lo-compatibility-and-deferred-milestone-3-incompatibilities).
+- **Identified Milestone 3 incompatibilities (untouched in M2; reconciled in M3):** Documented exact contract, validator, and prompt incompatibilities in [IMPLEMENTATION-MAP.md](IMPLEMENTATION-MAP.md#milestone-3-incompatibilities-identified-during-milestone-2-reconciled-in-milestone-3--uncommitted) and [decisions.md](decisions.md#s104-d03--milestone-2-multi-lo-compatibility-and-milestone-3-contract-reconciliation).
 
 ### 2026-11-24 — Milestone 1 implementation and architectural documentation update
 

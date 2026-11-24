@@ -42,7 +42,7 @@ function interactiveWf() {
 }
 
 test("101E discipline-first: contract version and core markers", () => {
-  assert.match(practiceContracts.CONTRACT_VERSION, /101[EFG]-/);
+  assert.match(practiceContracts.CONTRACT_VERSION, /104M3-PRACTICE-RECONCILED-V1/);
   const dla = practiceContracts.buildPracticePresentationContractBlock("dla");
   assert.match(dla, /Discipline-first principle/);
   assert.match(dla, /doing the discipline/i);
@@ -90,7 +90,7 @@ test("101E discipline-first: Practice DLA/GAM receive guidance; Interactive does
   assert.match(practiceDla, /LD-PRACTICE-PRESENTATION-CONTRACTS \(auto-applied\)/i);
   assert.match(practiceDla, /Discipline-first principle/);
   assert.match(practiceDla, /Learner-facing language/);
-  assert.match(practiceDla, /101[EFG]-/);
+  assert.match(practiceDla, /104M3-PRACTICE-RECONCILED-V1/);
 
   const practiceGam = api.applyWorkflowStepRuntimePromptAugmentations(
     "Generate Practice materials.\n",

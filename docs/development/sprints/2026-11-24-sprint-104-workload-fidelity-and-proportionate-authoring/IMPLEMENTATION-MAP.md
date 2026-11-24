@@ -1,8 +1,8 @@
 # Sprint 104 — Implementation map
 
-**Status:** **OPEN — MILESTONE 1 COMMITTED (`c461770`) / MILESTONE 2 IMPLEMENTED (STOPPED FOR REVIEW BEFORE COMMIT)**  
+**Status:** **OPEN — MILESTONES 1 (`c461770`) & 2 (`9db45bf`) COMMITTED / MILESTONE 3 IMPLEMENTED (STOPPED FOR REVIEW BEFORE COMMIT)**  
 **Charter:** [SPRINT-104-CHARTER.md](SPRINT-104-CHARTER.md)  
-**Decisions:** [S104-D01](decisions.md#s104-d01--open-sprint-104--workload-fidelity-and-proportionate-authoring) · [S104-D02](decisions.md#s104-d02--architectural-agreement-principles-a-e-and-separately-gated-milestones) · [S104-D03](decisions.md#s104-d03--milestone-2-multi-lo-compatibility-and-deferred-milestone-3-incompatibilities)  
+**Decisions:** [S104-D01](decisions.md#s104-d01--open-sprint-104--workload-fidelity-and-proportionate-authoring) · [S104-D02](decisions.md#s104-d02--architectural-agreement-principles-a-e-and-separately-gated-milestones) · [S104-D03](decisions.md#s104-d03--milestone-2-multi-lo-compatibility-and-milestone-3-contract-reconciliation)  
 **Investigation:** [INITIAL-INVESTIGATION.md](INITIAL-INVESTIGATION.md)
 
 ---
@@ -12,8 +12,8 @@
 ```text
 104A  Investigation, C04 trace, C01/C03/C05 comparison, audit           COMPLETE (f3bb47d)
 M1    Authoritative duration transport only (all 4 products + legacy)   COMMITTED (c461770; manual live pending)
-M2    Practice Episode Plan design authority (AI-authored, validated)   IMPLEMENTED (uncommitted -> STOP FOR REVIEW)
-M3    Reconciliation of downstream Practice contracts                   GATED on M2 review (incompatibilities logged)
+M2    Practice Episode Plan design authority (AI-authored, validated)   COMMITTED (9db45bf)
+M3    Reconciliation of downstream Practice contracts                   IMPLEMENTED (uncommitted -> STOP FOR REVIEW)
 M4    Proportionate Learning Journey commissioning                      GATED on M3 review
 M5    Workload estimation corrections                                   GATED on M4 review
 M6    Live 5-, 15-, and 30-minute Practice sensitivity probes           GATED on M5 review
@@ -28,8 +28,8 @@ M7    90-min Economics regeneration, comparison, QA & learner runtime   GATED on
 | --------- | ----- | ------------------- | ----- |
 | **104A** | Pipeline trace (`C04`), systemic check (`C01`, `C03`, `C05`), contracts/validators audit | Read-only baseline | **Complete (`f3bb47d`)** |
 | **M1** | Canonical Step 4 origin (`<<<COMMISSION_DURATIONS_BEGIN>>>` / `allocated_minutes`) → Step 5 Design Page → commission envelope → intake → `deliverySeed` → `resolvedFactors` → effective run context (`Duration: N minutes`) across **Expository, Practice, Assessment Pack, Situated Task**; conflict rejection & component lock; explicit `null`/unavailable legacy handling (no prose parsing); focused tests + consumer audit | **Principle A** | **Committed (`c461770`)** |
-| **M2** | Move Practice Episode Plan from deterministic archetype templates to AI-authored, deterministically validated Episode Plans (Assessment Pack precedent; grammar-preserving; no duration tiers/quotas/beat targets/LO grouping; protect Interactive; assess multi-LO cohesive single activity support) | **Principle B** | **Implemented (stopped for review)** |
-| **M3** | Reconcile downstream Practice contracts (`DLA`, `GAM`, `Learning Sequence`, `Design Page`) so obligations apply conditionally to EP-selected functions and redundant Interactive prescriptions (mandatory images/tips/summaries/3-criterion floors) are removed without altering standalone Interactive | **Principle C** | **Gated on M2 review** |
+| **M2** | Move Practice Episode Plan from deterministic archetype templates to AI-authored, deterministically validated Episode Plans (Assessment Pack precedent; grammar-preserving; no duration tiers/quotas/beat targets/LO grouping; protect Interactive; assess multi-LO cohesive single activity support) | **Principle B** | **Committed (`9db45bf`)** |
+| **M3** | Reconcile downstream Practice contracts (`DLA`, `GAM`, `Learning Sequence`, `Design Page`, `Guided Review`, `Population Contract`, `Scaffold`, `vNext Assembly/Renderer`) so obligations apply conditionally to EP-selected functions and redundant Interactive prescriptions (mandatory images/tips/summaries/bridges/3-criterion floors/fixed exemplars) are removed without altering standalone Interactive | **Principle C** | **Implemented (stopped for review)** |
 | **M4** | Proportionate LJ commissioning: distribute functions across journey, exploit prior learning & familiar evidence, honour Journal-from-purposeful-performance rule, avoid arbitrary component/LO/word-count quotas, surface infeasible commissions cleanly | **Principle D** | **Gated on M3 review** |
 | **M5** | Fix `learning-journey-workload-feasibility-adapter.js` precedence bug, eliminate silent `interactive-workload-feasibility-adapter.js` bypasses, restore cumulative comparison vs authoritative duration, model evidence/decisions/responses/feedback, separate familiar/optional load, keep warnings advisory | **Principle E** | **Gated on M4 review** |
 | **M6** | Live **5-, 15-, and 30-minute** Practice duration sensitivity probes | **Principles A–E** | **Gated on M5 review** |
@@ -63,9 +63,9 @@ M7    90-min Economics regeneration, comparison, QA & learner runtime   GATED on
   - Practice deterministic shell instantiation, auto-population, and capture overwriting are disabled in `applyEpisodePlanCaptureCanonicalEnforcement`, `syncWorkflowRunCapturedOutputToState` (auto-repair guarded by `!isPracticeWorkflow(wf)`), `maybeAutoPopulateDesignEpisodePlanRunCapture`, `deriveDesignEpisodePlanCaptureJson`, `deriveDesignEpisodePlanCaptureJsonFromLearningOutcomes`, `resolvePageShellJsonForDlaCopy`, `tryResolveCanonicalEpisodePlansDeriveFallback`, `resolveEpisodePlansForDlaPopulation`, and `parseEpisodePlanOrPageCaptureForStorage`.
 - **Multi-LO cohesive single activity compatibility:** Confirmed supported across `page-shell-create.js`, `episode-plan-population-contract.js`, `page-gam-enrich.js`, `page-vnext-assemble.js` (`assembleVNextPageFromPartials`), and `learner-renderer-vnext` (`validateInput` passes with `errors: []`, `warnings: []` while preserving `activities[0].learning_outcome_ids` and `episode_plans[0].mapped_learning_outcome_ids`).
 
-## Milestone 3 incompatibilities identified during Milestone 2
+## Milestone 3 incompatibilities identified during Milestone 2 (Reconciled in Milestone 3 — uncommitted)
 
-All items below were verified directly in code/execution and intentionally **left untouched** in Milestone 2:
+All five Milestone 2 incompatibilities below are reconciled in Milestone 3 (`STATUS.md`, `VALIDATION.md`, and `S104-D03`):
 
 1. **`lib/page-dla-enrich.js` & `app.js` unconditional cognition/scaffold/material mandates:**
    - `lib/page-dla-enrich.js:1106`, `:1462–1550`, `:2004–2280` (`DLA_OWNED_COGNITION_FIELDS`, `validateDlaEnrichedPage`) fail validation on lean Practice pages that omit `intellectual_coherence_bridge` (`activities[0].intellectual_coherence_bridge must be enriched (not placeholder em dash)`) and require `required_materials.length >= 1`.

@@ -59,23 +59,21 @@ function gamStep() {
   };
 }
 
-test("101F: Practice presentation version and workload economy markers", () => {
-  assert.match(practiceContracts.CONTRACT_VERSION, /101[FG]-/);
+test("101F / 104M3: Practice presentation version and workload economy markers", () => {
+  assert.match(practiceContracts.CONTRACT_VERSION, /104M3-PRACTICE-RECONCILED-V1/);
   const dla = practiceContracts.buildPracticePresentationContractBlock("dla");
   const gam = practiceContracts.buildPracticePresentationContractBlock("gam");
   const dp = practiceContracts.buildPracticePresentationContractBlock("design_page");
 
   assert.match(dla, /Practice workload economy/);
   assert.match(dla, /Minimise typing, not thinking|minimise typing, not thinking/i);
-  assert.match(dla, /Improved mathematical defence/);
   assert.match(dla, /Proportionate criteria/);
-  assert.match(dla, /typically 2–3/);
+  assert.match(dla, /no arbitrary minimum criterion count/i);
   assert.match(gam, /Do not invent transfer_prompt/);
   assert.match(gam, /Practice workload economy/);
   assert.match(gam, /hard max 4/);
-  assert.match(dp, /retain concise, skippable Overview/i);
-  assert.match(dp, /Knowledge summary/);
-  assert.doesNotMatch(dp, /Knowledge summary.*NOT mandatory/i);
+  assert.match(dp, /Purpose-driven editorial furniture/i);
+  assert.match(dp, /overview, learning_purpose, knowledge_summary, study_tips/i);
 });
 
 test("101F: DLA assemble with practiceProduct softens mandates; Interactive defaults retained", () => {
@@ -154,7 +152,7 @@ test("101F: Practice DLA runtime prompt has gated shared contract + Practice ove
   assert.match(practiceDla, /Practice workload gate|Practice-gated/);
   assert.match(practiceDla, /LD-PRACTICE-PRESENTATION-CONTRACTS \(auto-applied\)/i);
   assert.match(practiceDla, /Practice workload economy/);
-  assert.match(practiceDla, /Improved mathematical defence/);
+  assert.match(practiceDla, /fulfil the authored Episode Plan without enlarging it/i);
   assert.doesNotMatch(practiceDla, /DLA-WB-01/);
   assert.doesNotMatch(
     practiceDla,
@@ -223,13 +221,11 @@ test("101F: Assessment Pack route unchanged by Practice workload gates", () => {
   assert.doesNotMatch(draft, /Practice workload gate/);
 });
 
-test("101F: A4-style integrated defence example is present for Practice authors", () => {
+test("104M3: A4-style fixed exemplar blueprint is removed while coherent response surface principle remains", () => {
   const dla = practiceContracts.buildPracticePresentationContractBlock("dla");
-  assert.match(dla, /A4-style economy/i);
-  assert.match(dla, /Improved mathematical defence/);
-  assert.match(dla, /My initial judgement/);
-  assert.match(dla, /Peer feedback/);
-  assert.match(dla, /single coherent explanation/);
+  assert.doesNotMatch(dla, /A4-style economy|Improved mathematical defence/i);
+  assert.match(dla, /Prefer one coherent response surface/i);
+  assert.match(dla, /Do not impose rigid numerical quotas/i);
 });
 
 test("101F: Practice DLA capture does not fail-closed without diagnostic_review; Interactive still does", () => {

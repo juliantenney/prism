@@ -113,8 +113,8 @@ test("LJ commissioning sibling prompt prefers Practice for activity", () => {
 test("Practice presentation contracts expose Practice DP shape", () => {
   const block = practiceContracts.buildPracticePresentationContractBlock();
   assert.match(block, /page_kind "practice"/);
-  assert.match(block, /retain concise, skippable Overview/i);
-  assert.match(block, /Knowledge summary/);
+  assert.match(block, /Purpose-driven editorial furniture/i);
+  assert.match(block, /page_synthesis: \{\} or partial omissions are valid/i);
   assert.match(block, /Do NOT impose a universal attempt-before-explanation rule/);
   const shape = practiceContracts.buildCanonicalPracticeDesignPageShapeSnippet();
   assert.match(shape, /"product_id": "practice"/);

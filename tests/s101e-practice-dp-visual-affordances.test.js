@@ -181,8 +181,8 @@ test("101E: Practice presentation contract points at shared Sprint 38 VA + forbi
   assert.match(block, /Sprint 38 visual-affordance authoring contract/i);
   assert.match(block, /materials-entry/);
   assert.match(block, /Never invent slots such as materials-after-feedback/i);
-  assert.match(block, /retain concise, skippable Overview/i);
-  assert.match(block, /Knowledge summary/);
+  assert.match(block, /Purpose-driven editorial furniture/i);
+  assert.match(block, /page_synthesis: \{\} or partial omissions are valid/i);
   const shape = practiceContracts.buildCanonicalPracticeDesignPageShapeSnippet();
   assert.match(shape, /visual_affordance_schema_version": "38.4"/);
   assert.match(shape, /"visual_affordances": \[\]/);
@@ -235,8 +235,8 @@ test("101E: Practice Design Page runtime augmentation includes Sprint 38 VA auth
 
   assert.doesNotMatch(augmented, /LD-DESIGN-PAGE-PARTIAL-CONTRACT \(auto-applied\)/i);
   assert.doesNotMatch(augmented, /page_synthesis\.knowledge_summary is mandatory/i);
-  assert.match(augmented, /retain concise, skippable Overview/i);
-  assert.match(augmented, /Knowledge summary/);
+  assert.match(augmented, /Purpose-driven editorial furniture/i);
+  assert.match(augmented, /page_synthesis: \{\} or partial omissions are valid/i);
 });
 
 test("101E: Practice non-Design-Page steps do not receive Sprint 38 VA contract", () => {
@@ -457,29 +457,38 @@ test("101E: valid Practice plan yields graphics jobs without Interactive KS mand
   assert.match(html, /data-brief-select-id=/);
 });
 
-test("101E: Practice Design Page rejects editorial skip and requires generate fields", () => {
+test("101E / 104M3: Practice Design Page permits purpose-driven editorial skip/omission and validates generate/skip fields", () => {
   const { api } = boot();
-  const skipped = practicePageEnvelope([], {
+  const skippedWithReason = practicePageEnvelope([], {
     editorial_opening_image: {
       decision: "skip",
       skip_reason: "Journey framing already provides orientation."
     }
   });
-  const skipGate = api.validateDesignPagePartialPageCapture(skipped, practiceDesignPageWf());
-  assert.equal(skipGate.ok, false);
+  const skipOkGate = api.validateDesignPagePartialPageCapture(skippedWithReason, practiceDesignPageWf());
+  assert.equal(skipOkGate.ok, true, (skipOkGate.errors || []).join("; "));
+
+  const skippedWithoutReason = practicePageEnvelope([], {
+    editorial_opening_image: { decision: "skip" }
+  });
+  const skipBadGate = api.validateDesignPagePartialPageCapture(skippedWithoutReason, practiceDesignPageWf());
+  assert.equal(skipBadGate.ok, false);
   assert.ok(
-    skipGate.errors.some((msg) =>
-      /editorial_opening_image\.decision must be "generate"/i.test(String(msg))
-    ),
-    skipGate.errors.join("; ")
+    skipBadGate.errors.some((msg) => /editorial_opening_image\.skip_reason/i.test(String(msg))),
+    skipBadGate.errors.join("; ")
   );
+
+  const omitted = practicePageEnvelope([]);
+  delete omitted.editorial_opening_image;
+  const omittedGate = api.validateDesignPagePartialPageCapture(omitted, practiceDesignPageWf());
+  assert.equal(omittedGate.ok, true, (omittedGate.errors || []).join("; "));
 
   const generated = practicePageEnvelope([]);
   const okGate = api.validateDesignPagePartialPageCapture(generated, practiceDesignPageWf());
   assert.equal(okGate.ok, true, (okGate.errors || []).join("; "));
 });
 
-test("101E: Practice Design Page prompt requires editorial generate", () => {
+test("101E / 104M3: Practice Design Page prompt marks editorial furniture purpose-driven", () => {
   const { api } = boot();
   const augmented = api.applyWorkflowStepRuntimePromptAugmentations(
     "Assemble Practice Design Page partial JSON.\n",
@@ -488,15 +497,15 @@ test("101E: Practice Design Page prompt requires editorial generate", () => {
     {}
   );
   assert.match(augmented, /LD-PRACTICE-PRESENTATION-CONTRACTS \(auto-applied\)/i);
-  assert.match(augmented, /editorial_opening_image: REQUIRED/);
-  assert.match(augmented, /Do not use decision "skip"/);
-  assert.doesNotMatch(augmented, /editorial_opening_image is optional for Practice/i);
+  assert.match(augmented, /editorial_opening_image: optional and purpose-driven/i);
+  assert.doesNotMatch(augmented, /editorial_opening_image: REQUIRED/);
+  assert.doesNotMatch(augmented, /Do not use decision "skip"/);
 
   const block = practiceContracts.buildPracticePresentationContractBlock("design_page");
-  assert.match(block, /editorial_opening_image: REQUIRED/);
-  assert.match(block, /Do not use decision "skip"/);
+  assert.match(block, /editorial_opening_image: optional and purpose-driven/i);
+  assert.doesNotMatch(block, /editorial_opening_image: REQUIRED/);
   const shape = practiceContracts.buildCanonicalPracticeDesignPageShapeSnippet();
-  assert.match(shape, /"editorial_opening_image": \{ "decision": "generate"/);
+  assert.match(shape, /"page_synthesis": \{\}/);
 
   const wf = Object.assign({ id: "wf-practice-editorial-copy", steps: [designPageStep()] }, practiceDesignPageWf());
   wf.steps[0] = Object.assign({}, designPageStep(), {
@@ -508,8 +517,8 @@ test("101E: Practice Design Page prompt requires editorial generate", () => {
   const instr = api.buildWorkflowStepInstructions(wf.steps[0], 0, null);
   assert.match(
     instr,
-    /Always emit editorial_opening_image at page root with decision "generate"/i
+    /Purpose-driven editorial_opening_image \(Practice\): optional at page root/i
   );
-  assert.match(instr, /Do not use skip and do not omit the field/i);
-  assert.match(instr, /editorial_opening_image is required with decision "generate"/);
+  assert.match(instr, /Purpose-driven page_synthesis \(Practice\)/i);
+  assert.doesNotMatch(instr, /Always emit editorial_opening_image/i);
 });

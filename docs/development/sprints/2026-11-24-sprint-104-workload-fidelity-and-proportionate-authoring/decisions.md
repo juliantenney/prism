@@ -97,10 +97,10 @@
 
 ---
 
-## S104-D03 — Milestone 2 Multi-LO Compatibility and Deferred Milestone 3 Incompatibilities
+## S104-D03 — Milestone 2 Multi-LO Compatibility and Milestone 3 Contract Reconciliation
 
 **Date:** 2026-11-24  
-**Status:** **Recorded during Milestone 2 implementation (pending M2 review)**
+**Status:** **Milestone 2 committed (`9db45bf`); Milestone 3 reconciled (stopped for review before commit)**
 
 ### 1. Multi-outcome cohesive single-activity finding (Milestone 2)
 
@@ -108,13 +108,13 @@
 - `lib/practice-episode-plan.js` explicitly permits multi-LO cohesive single activities in both `buildPracticeEpisodePlanPromptBody` and `validatePracticeEpisodePlanCapture`, while enforcing 100% outcome coverage, exact statement fidelity, and bidirectional sync between `episode_plans[].mapped_learning_outcome_ids` and `activities[].learning_outcome_ids`. No outcomes are grouped or discarded deterministically.
 - One minor single-LO assumption exists in `lib/page-dla-enrich.js:336–350` (`resolveLoStatementForActivity`), which reads only the first non-empty mapped LO statement for deterministic fallback prose; this does not alter captured or model-authored multi-LO bindings and is flagged for Milestone 3 awareness.
 
-### 2. Deferred Milestone 3 downstream incompatibilities (not altered in Milestone 2)
+### 2. Milestone 3 downstream reconciliation summary (implemented — pending review)
 
-Milestone 3 (Principle C — conditional pedagogical obligations) must reconcile the following verified incompatibilities without altering standalone Interactive behaviour:
+Milestone 3 reconciled all five deferred incompatibilities under Principle C without altering standalone Interactive behaviour:
 
-1. **Mandatory DLA cognition/bridge/material obligations** (`lib/page-dla-enrich.js:1106`, `:1462–1550`, `:2004–2280`; `app.js:22691–22800` `applyGuidedLearningScaffoldRepairToDlaCapture`, `applyDlaEnrichedPageHardValidationToCapture`): `validateDlaEnrichedPage` rejects lean Practice activities lacking `intellectual_coherence_bridge`, and both DLA enrichment and runtime capture repair/validation unconditionally require full cognition fields and non-empty `required_materials[]`.
-2. **Population contract unconditional material/criteria rules** (`lib/episode-plan-population-contract.js:27–135` `FUNCTION_SPECS`, `:581–590` `AC-02`, `:653–668` `AC-09`): `FUNCTION_SPECS.verification` hardcodes `3–4 quality dimensions (max 5)` and `AC-09` requires a distinct material row for every beat whose spec includes `"material"`.
-3. **Guided-review 3-criterion floor & GAM closure packaging** (`lib/guided-review-generation-contract.js:291, 306`; `lib/ld-gam-page-enrich-contract.js:58, 108–120`): mandate `3–4` criteria (`< 3` flagged as instructional FAIL, conflicting with Practice `2–3` criteria / optional checklists) and universal `### Page learner-resource closure` packaging for `study_tips`.
-4. **GAM non-empty material enforcement** (`lib/page-gam-enrich.js:1453–1458, 1584–1591, 1819–1824`): fails when any activity omits `required_materials[]` or `materials[]`.
-5. **Practice Design Page & exemplar prescriptions** (`lib/ld-practice-presentation-contracts.js:140–143, 285–289`; `lib/ld-design-page-partial-contract.js:83–120`; `app.js:15692–15725, 41812–41832`): still prescribe hardcoded `A2-style`/`A3-style`/`A4-style` exemplars, non-skippable `Overview`/`Learning purpose`/`Knowledge summary`, and mandatory `editorial_opening_image.decision === "generate"` (rejecting `"skip"` or omission).
+1. **Conditional DLA cognition, bridge & material obligations + multi-LO fallback (`lib/page-dla-enrich.js`, `lib/ld-dla-page-enrich-contract.js`, `lib/ld-guided-learning-scaffold.js`, `lib/dla-diagnostic-review.js`, `app.js`):** Scoped Practice cognition/bridge/preamble obligations to selected Episode Plan beats, enabled valid zero-dedicated-material Practice activities (`required_materials: []`) while preserving material obligations from selected material-bearing beats/evidence/response surfaces, allowed Practice hybrid `selection` + open-response activities to point `diagnostic_review.covers_response_material_ids` at open response surfaces, bypassed Interactive guided-learning scaffold prose/word-floor enforcement on Practice captures, and updated `resolveLoStatementForActivity` to join all distinct mapped LO statements.
+2. **Population contract reconciliation (`lib/episode-plan-population-contract.js`, `lib/episode-plan-dla-integration.js`):** Removed the `"3–4 quality dimensions"` minimum floor in `FUNCTION_SPECS.verification` and permitted valid self-contained Practice activities (`options.practiceProduct === true`) without `AC-09`/`AC-01`/`AC-07`/`M-02` collapse while retaining ordering (`M-03`) and beat-bound material obligations.
+3. **Guided-review & GAM reconciliation (`lib/guided-review-generation-contract.js`, `lib/ld-gam-page-enrich-contract.js`, `lib/gam-canonical-assembler.js`, `lib/page-gam-enrich.js`, `app.js`):** Reconciled Practice guided-review criteria to function-proportionate counts without arbitrary minimum floors (hard max 4; Interactive `3–4` unchanged), removed Interactive `LD-GAM-INSTRUCTIONAL-DEPTH-CONTRACT` and unconditional `S78-D04` closure packaging on Practice, and enabled valid `materials: []` when `required_materials: []` while preserving 1:1 coverage when materials are present.
+4. **Practice presentation contracts, LS preservation & purpose-driven Design Page (`lib/ld-practice-presentation-contracts.js`, `app.js`):** Removed fixed `A2-style`/`A3-style`/`A4-style` exemplars, enforced Episode Plan activity/duration preservation in Practice Learning Sequence, and made Practice `editorial_opening_image` (`"generate"` / `"skip"` with `skip_reason` / omitted) and `page_synthesis` (`overview`, `learning_purpose`, `knowledge_summary`, `study_tips`) purpose-driven.
+5. **Assembly & vNext renderer survival (`lib/page-vnext-assemble.js`, `lib/learner-renderer-vnext/archetype-canonical-binding.js`, `lib/learner-renderer-vnext/build-activity-model.js`, `lib/learner-renderer-vnext-browser.js`):** Stripped `"—"` shell placeholders on omitted optional Practice fields and guaranteed clean fallback binding for lean/custom grammar-legal beat sequences (`UNASSIGNED_TASK_STEP` / `UNASSIGNED_EXPECTED_OUTPUT` avoided).
 

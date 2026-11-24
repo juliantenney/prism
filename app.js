@@ -199,6 +199,8 @@
     workflowDesignResult: null,
     /** Authoritative LJ page for Preview create-product (identity only on buttons). */
     learningJourneyCommissioningPreviewContext: null,
+    /** Re-entrancy guard for Learning Journey batch component creation. */
+    ljBatchCommissioningInProgress: false,
     /** Sprint 91: My Workflows disclosure for Learning Journey parents (UI-only). */
     learningJourneyListExpandedById: {},
     /** @deprecated S75-D25: Create no longer twins Draft/Refined; kept null for compatibility. */
@@ -670,6 +672,11 @@
     els.utilitiesOutputViewVideoBtn = document.getElementById("utilitiesOutputViewVideoBtn");
     els.utilitiesOutputViewResourcesBtn = document.getElementById("utilitiesOutputViewResourcesBtn");
     els.utilitiesOutputWorkspace = document.getElementById("utilitiesOutputWorkspace");
+    els.utilitiesLjCommissionBatchBar = document.getElementById("utilitiesLjCommissionBatchBar");
+    els.utilitiesLjCommissionBatchStatus = document.getElementById(
+      "utilitiesLjCommissionBatchStatus"
+    );
+    els.utilitiesLjCommissionBatchBtn = document.getElementById("utilitiesLjCommissionBatchBtn");
     els.utilitiesVisualJobsPanel = document.getElementById("utilitiesVisualJobsPanel");
     els.utilitiesPipelineDetailsHost = document.getElementById("utilitiesPipelineDetailsHost");
     els.utilitiesCopyAnnounce = document.getElementById("utilitiesCopyAnnounce");
@@ -16287,9 +16294,18 @@
     if (!isRun) return;
     var outArea = li.querySelector('[data-field="runStepOutput"]');
     if (!outArea) return;
+    var existing = String(outArea.value || "").trim();
+    if (!existing) {
+      // Commission-native LO binding supplies design input, never executable step completion.
+      // Do not auto-populate or persist Step 1 (Design Episode Plan) on unstarted
+      // commission-native workflows.
+      var commissionCtx = readWorkflowCommissionContext(wf);
+      if (commissionCtx && commissionCtx.commissionNativeLoBound) {
+        return;
+      }
+    }
     var derived = deriveDesignEpisodePlanCaptureJson(wf);
     if (!derived) return;
-    var existing = String(outArea.value || "").trim();
     if (existing) {
       if (episodePlanCaptureJsonEquivalent(existing, derived)) return;
       // On step navigation, auto-repair stale/invalid EP captures to canonical v2 shell.
@@ -27285,8 +27301,10 @@
    * Preview button → authoritative commission → shared intake → ordinary product workflow.
    * Action attributes are identity hints only; commission body is never taken from HTML.
    */
-  function initialiseFirstClassProductFromLearningJourneyCommission(actionHint) {
+  function initialiseFirstClassProductFromLearningJourneyCommission(actionHint, options) {
     var hint = actionHint && typeof actionHint === "object" ? actionHint : {};
+    var opts = options && typeof options === "object" ? options : {};
+    var suppressUiHandoff = !!opts.suppressUiHandoff;
     var commissionId = String(hint.commissionId || hint.commission_id || "").trim();
     var hintedProductId = String(hint.productId || hint.product_id || "")
       .trim()
@@ -27475,7 +27493,10 @@
       ).trim();
     if (!workflowName) workflowName = "Commissioned " + authoritativeProductId;
     if (els.wfDesignName) els.wfDesignName.value = workflowName;
-    if (els.wfDesignIntent && !String(els.wfDesignIntent.value || "").trim()) {
+    if (
+      els.wfDesignIntent &&
+      (suppressUiHandoff || !String(els.wfDesignIntent.value || "").trim())
+    ) {
       els.wfDesignIntent.value = workflowName;
     }
 
@@ -27526,11 +27547,422 @@
       };
     }
 
-    var saveOutcome = handleSaveDesignedWorkflow();
-    if (saveOutcome && typeof saveOutcome.then === "function") {
+    var saveOutcome = handleSaveDesignedWorkflow(
+      suppressUiHandoff ? { suppressUiHandoff: true } : undefined
+    );
+    if (suppressUiHandoff && saveOutcome && typeof saveOutcome.then === "function") {
       return saveOutcome.then(buildCreatedCommissionResult);
     }
-    return buildCreatedCommissionResult(saveOutcome);
+    return buildCreatedCommissionResult(
+      saveOutcome && typeof saveOutcome.then === "function" ? { ok: true } : saveOutcome
+    );
+  }
+
+  /**
+   * Derive supported/created/outstanding commission counts for a Learning Journey page
+   * using the authoritative commission-to-workflow association.
+   */
+  function computeLearningJourneyBatchCommissionSummary(page, sourceWorkflowId) {
+    var empty = {
+      applicable: false,
+      sourceWorkflowId: String(sourceWorkflowId || "").trim(),
+      totalSupported: 0,
+      createdCount: 0,
+      remainingCount: 0,
+      unsupportedCount: 0,
+      outstandingCommissions: [],
+      createdCommissions: [],
+      unsupportedCommissions: [],
+      statusText: "",
+      buttonLabel: "",
+      showButton: false
+    };
+    if (!page || typeof page !== "object" || !Array.isArray(page.commissions)) return empty;
+    var ljDesignMod = resolveLearningJourneyDesignPageLib();
+    if (
+      !ljDesignMod ||
+      typeof ljDesignMod.isLearningJourneyDesignPage !== "function" ||
+      !ljDesignMod.isLearningJourneyDesignPage(page)
+    ) {
+      return empty;
+    }
+    var familyMod = getFirstClassWorkflowFamilyMod();
+    var statusMod = resolveLearningJourneyCommissionProductionStatusLib();
+    var wid = String(sourceWorkflowId || "").trim();
+
+    var ordered = page.commissions
+      .map(function (commission, index) {
+        var orderNum = Number(commission && commission.order);
+        return {
+          commission: commission,
+          index: index,
+          sortOrder: Number.isFinite(orderNum) && orderNum > 0 ? orderNum : index + 1
+        };
+      })
+      .sort(function (a, b) {
+        if (a.sortOrder !== b.sortOrder) return a.sortOrder - b.sortOrder;
+        return a.index - b.index;
+      })
+      .map(function (entry) {
+        return entry.commission;
+      });
+
+    var outstanding = [];
+    var created = [];
+    var unsupported = [];
+
+    ordered.forEach(function (commission) {
+      if (!commission || typeof commission !== "object") return;
+      var cid = String(commission.commission_id || commission.commissionId || "").trim();
+      var productId = String(commission.product_id || commission.productId || "")
+        .trim()
+        .toLowerCase();
+      var status = String(commission.status || "").trim().toLowerCase();
+      if (!status) status = productId ? "supported" : "unsupported";
+      var accepts =
+        familyMod && typeof familyMod.productAcceptsCommission === "function"
+          ? familyMod.productAcceptsCommission(productId)
+          : !!productId;
+      var isSupported = status !== "unsupported" && !!productId && accepts && !!cid;
+      if (!isSupported) {
+        unsupported.push(commission);
+        return;
+      }
+      var matches =
+        statusMod && typeof statusMod.findConstituentWorkflows === "function"
+          ? statusMod.findConstituentWorkflows(state.workflows || [], wid, cid)
+          : [];
+      if (matches.length >= 1) {
+        created.push(commission);
+      } else {
+        outstanding.push(commission);
+      }
+    });
+
+    var totalSupported = created.length + outstanding.length;
+    if (totalSupported === 0) {
+      return Object.assign({}, empty, {
+        unsupportedCount: unsupported.length,
+        unsupportedCommissions: unsupported
+      });
+    }
+
+    var remainingCount = outstanding.length;
+    var createdCount = created.length;
+    var statusText = "";
+    var buttonLabel = "";
+    if (remainingCount === 0) {
+      statusText = "All " + totalSupported + " components created";
+      buttonLabel = "";
+    } else if (createdCount === 0) {
+      statusText = "0 of " + totalSupported + " components created";
+      buttonLabel = "Create all components (" + totalSupported + ")";
+    } else {
+      statusText = createdCount + " of " + totalSupported + " components created";
+      buttonLabel = "Create remaining components (" + remainingCount + ")";
+    }
+    if (unsupported.length > 0) {
+      statusText += " (" + unsupported.length + " unsupported)";
+    }
+
+    return {
+      applicable: true,
+      sourceWorkflowId: wid,
+      totalSupported: totalSupported,
+      createdCount: createdCount,
+      remainingCount: remainingCount,
+      unsupportedCount: unsupported.length,
+      outstandingCommissions: outstanding,
+      createdCommissions: created,
+      unsupportedCommissions: unsupported,
+      statusText: statusText,
+      buttonLabel: buttonLabel,
+      showButton: remainingCount > 0
+    };
+  }
+
+  function syncUtilitiesLjCommissionBatchBar() {
+    var bar = els.utilitiesLjCommissionBatchBar;
+    var statusEl = els.utilitiesLjCommissionBatchStatus;
+    var btn = els.utilitiesLjCommissionBatchBtn;
+    if (!bar) return null;
+    if (!isLearningJourneyCommissioningPreviewActive()) {
+      bar.classList.add("hidden");
+      if (btn) {
+        btn.classList.add("hidden");
+        btn.disabled = true;
+      }
+      return null;
+    }
+    var ctx = state.learningJourneyCommissioningPreviewContext;
+    var summary = computeLearningJourneyBatchCommissionSummary(
+      ctx && ctx.page,
+      (ctx && ctx.sourceWorkflowId) || state.selectedWorkflowId || ""
+    );
+    if (!summary || !summary.applicable) {
+      bar.classList.add("hidden");
+      if (btn) {
+        btn.classList.add("hidden");
+        btn.disabled = true;
+      }
+      return summary;
+    }
+    bar.classList.remove("hidden");
+    if (statusEl) {
+      statusEl.textContent = summary.statusText;
+    }
+    if (btn) {
+      if (summary.showButton) {
+        btn.classList.remove("hidden");
+        btn.disabled = !!state.ljBatchCommissioningInProgress;
+        btn.textContent = state.ljBatchCommissioningInProgress
+          ? "Creating components…"
+          : summary.buttonLabel;
+      } else {
+        btn.classList.add("hidden");
+        btn.disabled = true;
+        btn.textContent = "";
+      }
+    }
+    return summary;
+  }
+
+  /**
+   * Batch-create all outstanding supported component workflows for the active Learning Journey
+   * by reusing initialiseFirstClassProductFromLearningJourneyCommission in commission order.
+   */
+  function handleLearningJourneyBatchCreateComponentsAction(options) {
+    var opts = options && typeof options === "object" ? options : {};
+    if (state.ljBatchCommissioningInProgress) {
+      return Promise.resolve({
+        ok: false,
+        code: "batch_in_progress",
+        created: [],
+        skipped: [],
+        failed: []
+      });
+    }
+
+    var ctx = state.learningJourneyCommissioningPreviewContext;
+    var sourceWorkflowId = String(
+      opts.sourceWorkflowId ||
+        (ctx && ctx.sourceWorkflowId) ||
+        state.selectedWorkflowId ||
+        ""
+    ).trim();
+    var page = opts.page || (ctx && ctx.page) || null;
+    if (!page) {
+      var resolvedPage = resolveAuthoritativeLearningJourneyPageForCommission(
+        sourceWorkflowId,
+        ""
+      );
+      if (resolvedPage && resolvedPage.ok && resolvedPage.page) {
+        page = resolvedPage.page;
+        if (!sourceWorkflowId && resolvedPage.sourceWorkflowId) {
+          sourceWorkflowId = String(resolvedPage.sourceWorkflowId || "").trim();
+        }
+      }
+    }
+    var summary = computeLearningJourneyBatchCommissionSummary(page, sourceWorkflowId);
+    if (!summary || !summary.applicable) {
+      syncUtilitiesLjCommissionBatchBar();
+      return Promise.resolve({
+        ok: false,
+        code: "learning_journey_commissions_unavailable",
+        created: [],
+        skipped: [],
+        failed: []
+      });
+    }
+    if (summary.remainingCount === 0) {
+      syncUtilitiesLjCommissionBatchBar();
+      return Promise.resolve({
+        ok: true,
+        code: "nothing_to_create",
+        sourceWorkflowId: sourceWorkflowId,
+        created: [],
+        skipped: summary.createdCommissions.map(function (c) {
+          return String(c.commission_id || c.commissionId || "").trim();
+        }),
+        failed: [],
+        unsupportedCount: summary.unsupportedCount,
+        firstCreatedWorkflowId: ""
+      });
+    }
+
+    state.ljBatchCommissioningInProgress = true;
+    syncUtilitiesLjCommissionBatchBar();
+
+    var created = [];
+    var skipped = [];
+    var failed = [];
+    var queue = summary.outstandingCommissions.slice();
+
+    function processNext(index) {
+      if (index >= queue.length) {
+        return Promise.resolve();
+      }
+      var commission = queue[index];
+      var cid = String(commission.commission_id || commission.commissionId || "").trim();
+      var pid = String(commission.product_id || commission.productId || "")
+        .trim()
+        .toLowerCase();
+      var sid = String(commission.section_id || commission.sectionId || "").trim();
+      var hint = {
+        commissionId: cid,
+        sectionId: sid,
+        productId: pid,
+        sourceWorkflowId: sourceWorkflowId
+      };
+      var stepOutcome;
+      try {
+        stepOutcome = initialiseFirstClassProductFromLearningJourneyCommission(hint, {
+          suppressUiHandoff: true
+        });
+      } catch (err) {
+        stepOutcome = {
+          ok: false,
+          code: "commission_exception",
+          reason: err && err.message ? String(err.message) : "unknown_error"
+        };
+      }
+      return Promise.resolve(stepOutcome)
+        .then(function (res) {
+          if (res && res.ok && res.workflow) {
+            created.push({
+              commissionId: cid,
+              productId: res.productId || pid,
+              workflow: res.workflow,
+              workflowId: String(res.workflow.id || "").trim()
+            });
+          } else if (res && res.code === "commission_already_commissioned") {
+            skipped.push(cid);
+          } else {
+            failed.push({
+              commissionId: cid,
+              productId: pid,
+              code: (res && res.code) || "commission_create_failed",
+              reason: (res && res.reason) || ""
+            });
+          }
+          return processNext(index + 1);
+        })
+        .catch(function (err) {
+          failed.push({
+            commissionId: cid,
+            productId: pid,
+            code: "commission_exception",
+            reason: err && err.message ? String(err.message) : "unknown_error"
+          });
+          return processNext(index + 1);
+        });
+    }
+
+    return processNext(0).then(function () {
+      state.ljBatchCommissioningInProgress = false;
+      try {
+        renderWorkflowList();
+        renderLibraryList();
+      } catch (_renderErr) {}
+      syncUtilitiesLjCommissionBatchBar();
+
+      var firstCreatedWorkflowId =
+        created.length > 0 && created[0].workflowId ? created[0].workflowId : "";
+      var failedIds = failed.map(function (f) {
+        return f.commissionId;
+      });
+
+      if (created.length > 0 && failed.length === 0) {
+        var successMsg =
+          "Created " +
+          created.length +
+          " component workflow" +
+          (created.length === 1 ? "" : "s") +
+          ".";
+        if (summary.unsupportedCount > 0) {
+          successMsg +=
+            " " +
+            summary.unsupportedCount +
+            " unsupported commission" +
+            (summary.unsupportedCount === 1 ? " was" : "s were") +
+            " not created.";
+        }
+        showToast(successMsg, "success");
+        appendWorkflowDesignLog(
+          "assistant",
+          "Batch-created " +
+            created.length +
+            " Learning Journey component workflow(s): " +
+            created
+              .map(function (item) {
+                return item.commissionId + " (" + item.workflowId + ")";
+              })
+              .join(", ") +
+            "."
+        );
+        try {
+          if (sourceWorkflowId) expandLearningJourneyParentInWorkflowList(sourceWorkflowId);
+          switchTab("workflows");
+          if (firstCreatedWorkflowId) {
+            selectWorkflow(firstCreatedWorkflowId);
+            setWorkflowMode("run");
+          }
+        } catch (_navErr) {}
+        return {
+          ok: true,
+          partial: false,
+          code: "batch_created",
+          sourceWorkflowId: sourceWorkflowId,
+          created: created,
+          skipped: skipped,
+          failed: failed,
+          unsupportedCount: summary.unsupportedCount,
+          firstCreatedWorkflowId: firstCreatedWorkflowId
+        };
+      }
+
+      if (created.length > 0 && failed.length > 0) {
+        showToast(
+          "Created " +
+            created.length +
+            " of " +
+            (created.length + failed.length) +
+            " remaining components; " +
+            failed.length +
+            " failed (" +
+            failedIds.join(", ") +
+            "). You can retry the remaining components.",
+          "warning"
+        );
+        return {
+          ok: false,
+          partial: true,
+          code: "batch_partial_failure",
+          sourceWorkflowId: sourceWorkflowId,
+          created: created,
+          skipped: skipped,
+          failed: failed,
+          unsupportedCount: summary.unsupportedCount,
+          firstCreatedWorkflowId: firstCreatedWorkflowId
+        };
+      }
+
+      showToast(
+        "Could not create remaining components (" + failedIds.join(", ") + ").",
+        "error"
+      );
+      return {
+        ok: false,
+        partial: false,
+        code: "batch_failed",
+        sourceWorkflowId: sourceWorkflowId,
+        created: created,
+        skipped: skipped,
+        failed: failed,
+        unsupportedCount: summary.unsupportedCount,
+        firstCreatedWorkflowId: ""
+      };
+    });
   }
 
   function handleLearningJourneyPreviewCreateProductAction(actionHint) {
@@ -31491,7 +31923,8 @@
   function utilitiesCaptureFingerprint(wf) {
     var workflow = wf && typeof wf === "object" ? wf : null;
     if (!workflow) return "";
-    var chunks = [String(workflow.id || ""), String(workflow.updatedAt || "")];
+    var wfId = String(workflow.id || "").trim();
+    var chunks = [wfId, String(workflow.updatedAt || "")];
     var steps = Array.isArray(workflow.steps) ? workflow.steps : [];
     steps.forEach(function (step) {
       var sid = String((step && step.id) || "");
@@ -31505,6 +31938,27 @@
           : "";
       chunks.push(sid + ":" + cheapUtilitiesTextSignature(finalText) + ":" + cheapUtilitiesTextSignature(rawText));
     });
+    // Learning Journey commissioning preview depends on the live constituent workflow collection.
+    // Include current constituents so creating/deleting a component immediately invalidates cached HTML.
+    if (
+      wfId &&
+      (workflowRecordIsLearningJourney(workflow) || isLearningJourneyWorkflow(workflow))
+    ) {
+      var constituentTokens = (Array.isArray(state.workflows) ? state.workflows : [])
+        .filter(function (row) {
+          if (!row || typeof row !== "object") return false;
+          return String(row.sourceWorkflowId || row.source_workflow_id || "").trim() === wfId;
+        })
+        .map(function (row) {
+          var cid = String(row.sourceCommissionId || row.source_commission_id || "").trim();
+          var id = String(row.id || "").trim();
+          var updated = String(row.updatedAt || "");
+          var stepCount = Array.isArray(row.steps) ? row.steps.length : 0;
+          return cid + ":" + id + ":" + updated + ":" + stepCount;
+        })
+        .sort();
+      chunks.push("lj-constituents=" + constituentTokens.join(","));
+    }
     return chunks.join("|");
   }
 
@@ -39178,12 +39632,48 @@
       ? collectExclusiveRelatedPromptIds(workflowsToDelete, remainingWorkflows)
       : [];
 
+    var affectedParentJourneyIds = {};
+    workflowsToDelete.forEach(function (row) {
+      var parentId = String(
+        (row && (row.sourceWorkflowId || row.source_workflow_id)) || ""
+      ).trim();
+      if (parentId) affectedParentJourneyIds[parentId] = true;
+    });
+
     deleteIds.forEach(function (id) {
       clearPersistedWorkflowRunStateForWorkflow(id);
       pruneWorkflowSessionStateForDeletedWorkflow(id);
     });
     state.workflows = remainingWorkflows;
     state.selectedWorkflowId = null;
+
+    // Invalidate cached Authoring preview state for any deleted workflow or parent Learning Journey
+    // whose constituent was deleted, so returning to Authoring always recomputes Create/Open controls
+    // and batch counts from the live workflow collection.
+    var authoringSession = utilitiesAuthoringSession();
+    var cachedSourceId = String(
+      (authoringSession && authoringSession.sourceWorkflowId) || ""
+    ).trim();
+    var previewCtxSourceId = String(
+      (state.learningJourneyCommissioningPreviewContext &&
+        state.learningJourneyCommissioningPreviewContext.sourceWorkflowId) ||
+        ""
+    ).trim();
+    if (
+      (cachedSourceId && (deleteIdSet[cachedSourceId] || affectedParentJourneyIds[cachedSourceId])) ||
+      (previewCtxSourceId &&
+        (deleteIdSet[previewCtxSourceId] || affectedParentJourneyIds[previewCtxSourceId]))
+    ) {
+      if (authoringSession) {
+        authoringSession.assemblyKey = "";
+      }
+      state.utilitiesLastHtml = "";
+      if (previewCtxSourceId && deleteIdSet[previewCtxSourceId]) {
+        state.learningJourneyCommissioningPreviewContext = null;
+      }
+    }
+    syncUtilitiesLjCommissionBatchBar();
+
     try {
       var saveOutcome = saveWorkflows();
       if (saveOutcome && typeof saveOutcome.then === "function") {
@@ -43372,9 +43862,13 @@
       });
   }
 
-  function handleSaveDesignedWorkflow() {
+  function handleSaveDesignedWorkflow(saveOptions) {
+    var saveOpts = saveOptions && typeof saveOptions === "object" ? saveOptions : {};
+    var suppressUiHandoff = !!saveOpts.suppressUiHandoff;
     try {
-      setWorkflowDesignStatusBadge("Saving…", "badge badge-muted");
+      if (!suppressUiHandoff) {
+        setWorkflowDesignStatusBadge("Saving…", "badge badge-muted");
+      }
     // S75-D25: Save the single proposed Create graph (no Draft/Refined selection).
     var design = state.workflowDesignResult || null;
 
@@ -43692,8 +44186,10 @@
       try {
         console.error("[PRISM] handleSaveDesignedWorkflow failed", err);
       } catch (_e) {}
-      showToast("Could not save workflow: " + (err && err.message ? err.message : "unknown error"), "error");
-      setWorkflowDesignStatusBadge("Error", "badge badge-danger");
+      if (!suppressUiHandoff) {
+        showToast("Could not save workflow: " + (err && err.message ? err.message : "unknown error"), "error");
+        setWorkflowDesignStatusBadge("Error", "badge badge-danger");
+      }
       return {
         ok: false,
         code: "save_exception",
@@ -43710,22 +44206,26 @@
         if (!row || !removeId) return true;
         return String(row.id) !== removeId;
       });
-      try {
-        renderWorkflowList();
-        renderLibraryList();
-      } catch (_renderErr) {}
+      if (!suppressUiHandoff) {
+        try {
+          renderWorkflowList();
+          renderLibraryList();
+        } catch (_renderErr) {}
+      }
     }
 
     function finishDesignedWorkflowPersistFailure(saveResult) {
       rollbackUnpersistedDesignedWorkflow();
-      var quota =
-        !!(saveResult && (saveResult.quota || saveResult.reason === "quota_exceeded")) ||
-        (saveResult && String(saveResult.reason || "").indexOf("catalogue") !== -1);
-      var message = quota
-        ? "Could not save workflow: browser storage is full. Free space or remove unused workflows, then try again."
-        : "Could not save workflow: persistence failed.";
-      showToast(message, "error");
-      setWorkflowDesignStatusBadge("Error", "badge badge-danger");
+      if (!suppressUiHandoff) {
+        var quota =
+          !!(saveResult && (saveResult.quota || saveResult.reason === "quota_exceeded")) ||
+          (saveResult && String(saveResult.reason || "").indexOf("catalogue") !== -1);
+        var message = quota
+          ? "Could not save workflow: browser storage is full. Free space or remove unused workflows, then try again."
+          : "Could not save workflow: persistence failed.";
+        showToast(message, "error");
+        setWorkflowDesignStatusBadge("Error", "badge badge-danger");
+      }
       return {
         ok: false,
         code: "persist_failed",
@@ -43735,6 +44235,9 @@
     }
 
     function finishDesignedWorkflowPersistSuccessUi() {
+      if (suppressUiHandoff) {
+        return { ok: true, workflow: wf, workflowId: wfId };
+      }
       try {
         renderWorkflowList();
         renderLibraryList();
@@ -45207,6 +45710,13 @@
   }
 
   function utilityProtectSupportedMathDelimiters(text, options) {
+    var mathApi =
+      (typeof globalThis !== "undefined" && globalThis.PRISM_MATH_DELIMITER_PROTECTION) ||
+      (typeof window !== "undefined" && window.PRISM_MATH_DELIMITER_PROTECTION) ||
+      null;
+    if (mathApi && typeof mathApi.protectSupportedMathDelimiters === "function") {
+      return mathApi.protectSupportedMathDelimiters(text, options);
+    }
     var raw = String(text == null ? "" : text);
     if (!raw) return { text: "", tokens: [] };
     var cfg = options && typeof options === "object" ? options : {};
@@ -45232,6 +45742,13 @@
   }
 
   function utilityRestoreProtectedMathDelimiters(htmlText, tokens, options) {
+    var mathApi =
+      (typeof globalThis !== "undefined" && globalThis.PRISM_MATH_DELIMITER_PROTECTION) ||
+      (typeof window !== "undefined" && window.PRISM_MATH_DELIMITER_PROTECTION) ||
+      null;
+    if (mathApi && typeof mathApi.restoreProtectedMathDelimiters === "function") {
+      return mathApi.restoreProtectedMathDelimiters(htmlText, tokens, options, utilityEscapeHtml);
+    }
     var htmlOut = String(htmlText == null ? "" : htmlText);
     var saved = Array.isArray(tokens) ? tokens : [];
     var cfg = options && typeof options === "object" ? options : {};
@@ -45240,8 +45757,12 @@
       var mathEsc = utilityEscapeHtml(String(mathText == null ? "" : mathText));
       function replaceToken(token) {
         var tokenEsc = utilityEscapeHtml(token);
-        htmlOut = htmlOut.replace(new RegExp(tokenEsc, "g"), mathEsc);
-        htmlOut = htmlOut.replace(new RegExp(token, "g"), mathEsc);
+        htmlOut = htmlOut.replace(new RegExp(tokenEsc, "g"), function () {
+          return mathEsc;
+        });
+        htmlOut = htmlOut.replace(new RegExp(token, "g"), function () {
+          return mathEsc;
+        });
       }
       if (kind === "inline" || kind === "both") {
         replaceToken("@@PRISMMATHINLINE" + idx + "@@");
@@ -55199,21 +55720,16 @@
       root +
       ' .util-exposition-equation code{font-size:1em;background:transparent;padding:0;border:0}' +
       root +
-      // Expository table breakout (layout only): same principle as Interactive
-      // util-material-table-block — left-aligned with prose, expands right into
-      // available viewport width. overflow-x is a narrow/fallback only.
-      // Does not adopt Interactive min-width:34rem / cell floors / filled headers.
-      ' .util-exposition-table-breakout,' +
-      root +
+      // Ordinary Expository tables stay within the 70ch reading column with responsive
+      // overflow-x fallback; only genuinely wide tables receive .util-exposition-table-breakout.
       ' .util-exposition-table-scroll,' +
       root +
       ' .util-exposition-explanation > .util-table-scroll,' +
       root +
       ' .util-exposition-material > .util-table-scroll{' +
-      '--learner-breakout-left:max(var(--learner-page-gutter),calc((100vw - var(--learner-reading-width)) / 2));' +
       'display:block;' +
-      'width:min(75rem,calc(100vw - var(--learner-breakout-left) - var(--learner-page-gutter)));' +
-      'max-width:none;' +
+      'width:100%;' +
+      'max-width:100%;' +
       'margin-left:0;' +
       'margin-right:0;' +
       'margin-top:var(--learner-space-3);' +
@@ -55226,6 +55742,16 @@
       'overflow-x:auto;' +
       '-webkit-overflow-scrolling:touch' +
       '}' +
+      root +
+      ' .util-exposition-table-breakout{' +
+      '--learner-breakout-left:max(var(--learner-page-gutter),calc((100vw - var(--learner-reading-width)) / 2));' +
+      'width:min(75rem,calc(100vw - var(--learner-breakout-left) - var(--learner-page-gutter)));' +
+      'max-width:none' +
+      '}' +
+      root +
+      ' .util-exposition-source-note,' +
+      root +
+      ' .util-scatterplot-source-note{margin:var(--learner-space-2) 0 0;font-size:var(--learner-text-sm);line-height:1.5;color:#4b5563}' +
       root +
       ' table,' +
       root +
@@ -59540,6 +60066,7 @@
     if (els.utilitiesOutputViewBar) {
       els.utilitiesOutputViewBar.classList.toggle("hidden", !hasPage);
     }
+    syncUtilitiesLjCommissionBatchBar();
   }
 
   function showUtilitiesOutputPanel() {
@@ -60841,6 +61368,7 @@
       legacyUnified.setAttribute("hidden", "hidden");
       legacyUnified.disabled = true;
     }
+    syncUtilitiesLjCommissionBatchBar();
   }
 
   function setUtilitiesDownloadControlsDisabled(disabled) {
@@ -63702,6 +64230,12 @@
       });
     }
     syncUtilitiesUnifiedJourneyDownloadControl();
+    if (els.utilitiesLjCommissionBatchBtn) {
+      els.utilitiesLjCommissionBatchBtn.addEventListener("click", function (event) {
+        event.preventDefault();
+        handleLearningJourneyBatchCreateComponentsAction();
+      });
+    }
     if (els.utilitiesOpenTabBtn) {
       els.utilitiesOpenTabBtn.addEventListener("click", handleUtilitiesOpenInNewTab);
     }
@@ -65256,6 +65790,21 @@
     prismTestApi.getLearningJourneyCommissioningPreviewContextForTest = function () {
       return state.learningJourneyCommissioningPreviewContext;
     };
+    prismTestApi.computeLearningJourneyBatchCommissionSummaryForTest =
+      computeLearningJourneyBatchCommissionSummary;
+    prismTestApi.syncUtilitiesLjCommissionBatchBarForTest = syncUtilitiesLjCommissionBatchBar;
+    prismTestApi.handleLearningJourneyBatchCreateComponentsActionForTest =
+      handleLearningJourneyBatchCreateComponentsAction;
+    prismTestApi.initialiseFirstClassProductFromLearningJourneyCommissionForTest =
+      initialiseFirstClassProductFromLearningJourneyCommission;
+    prismTestApi.handleLearningJourneyPreviewCreateProductActionForTest =
+      handleLearningJourneyPreviewCreateProductAction;
+    prismTestApi.getSelectedWorkflowIdForTest = function () {
+      return state.selectedWorkflowId || "";
+    };
+    prismTestApi.getLearningJourneyListExpandedByIdForTest = function () {
+      return Object.assign({}, state.learningJourneyListExpandedById || {});
+    };
     prismTestApi.saveWorkflowRunStateStoreForTest = function (store) {
       return saveWorkflowRunStateStore(store && typeof store === "object" ? store : {}, {
         source: "saveWorkflowRunStateStoreForTest"
@@ -66055,6 +66604,8 @@
       parseGenerateAssessmentItemsOrPageCaptureForStorage;
     prismTestApi.workflowHasDesignEpisodePlanStep = workflowHasDesignEpisodePlanStep;
     prismTestApi.deriveDesignEpisodePlanCaptureJson = deriveDesignEpisodePlanCaptureJson;
+    prismTestApi.maybeAutoPopulateDesignEpisodePlanRunCaptureForTest =
+      maybeAutoPopulateDesignEpisodePlanRunCapture;
     prismTestApi.deriveDesignEpisodePlanCaptureJsonFromLearningOutcomes =
       deriveDesignEpisodePlanCaptureJsonFromLearningOutcomes;
     prismTestApi.resolveLearningOutcomesEmbeddedInEpisodePlanCapture =

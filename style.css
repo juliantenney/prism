@@ -3019,6 +3019,28 @@ textarea:focus {
   }
 }
 
+.utilities-lj-commission-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 12px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border-subtle);
+  background: var(--surface-subtle, #f8fafc);
+  font-size: 0.875rem;
+}
+
+.utilities-lj-commission-bar.hidden,
+.utilities-lj-commission-bar .hidden {
+  display: none;
+}
+
+.utilities-lj-commission-bar__status {
+  color: var(--text-secondary, #334155);
+  font-weight: 500;
+}
+
 .utilities-output-workspace {
   background: #fff;
 }

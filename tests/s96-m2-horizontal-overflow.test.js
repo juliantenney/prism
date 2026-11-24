@@ -279,14 +279,15 @@ test(
         assert.ok(localScroll.scrollLeft >= 40);
       }
 
-      await page.locator("#ws-ov").fill("overflow draft");
-      await page.locator("#ws-ov").blur();
+      // Shell namespaces resource-local IDs as lj-<commission>--<id> (since ae9b42e).
+      await page.locator("#lj-c1--ws-ov").fill("overflow draft");
+      await page.locator("#lj-c1--ws-ov").blur();
       await page.waitForTimeout(500);
       await page.locator('[data-lj-nav-id="overview"]').click();
       await page.waitForFunction(() => window.__PRISM_LJ_SHELL__.currentId === "overview");
       await page.locator('[data-lj-nav-id="c1"]').click();
       await page.waitForFunction(() => window.__PRISM_LJ_SHELL__.currentId === "c1");
-      assert.equal(await page.locator("#ws-ov").inputValue(), "overflow draft");
+      assert.equal(await page.locator("#lj-c1--ws-ov").inputValue(), "overflow draft");
     } finally {
       await browser.close();
       staticServer.server.close();

@@ -1,0 +1,27 @@
+# Sprint 104 — Architectural defects and risks (carry-in & 104A findings)
+
+**Sprint status:** **OPEN — PHASE 104A COMPLETE**  
+**Baseline:** `1515cd4`
+
+---
+
+## Proportionality & pipeline defects discovered in Phase 104A
+
+| ID | Location | Finding | State |
+| -- | -------- | ------- | ----- |
+| **S104-AD-001** | `lib/learning-journey-design-page.js` (`commissions[]`, `commissionToIntakeEnvelope`), `lib/first-class-commission-intake.js`, `lib/first-class-workflow-family.js` (`practice`), `app.js` (`resolveCommissionedWorkflowDurationMinutes`) | Authoritative component duration exists only in `specification_text` prose (`Approximate learner time`); intake and `deliverySeed` omit `duration_minutes`, so `resolvedFactors.duration_minutes` is `undefined`, `resolveEffectiveWorkflowDurationMinutes` returns `null`, `AUTHORITATIVE WORKFLOW PARAMETERS` omits Duration, and `appendLearningSequenceDurationComplianceErrors` is bypassed on LJ-commissioned components. (Extends `S100-AD-006`.) | **Open — root cause #1** |
+| **S104-AD-002** | `lib/episode-plan-v1-templates.js` (`deriveEpisodePlansFromLearningOutcomes`), `app.js` (`deriveDesignEpisodePlanCaptureJson`, `applyEpisodePlanCaptureCanonicalEnforcement`) | `step_design_episode_plan` is `deterministic_derive` and ignores duration and product type. Every `learning_outcomes[]` entry becomes 1 full Interactive Activity using fixed 12–15 beat `ARCHETYPE_TEMPLATES` (`understand` 12, `apply` 12, `analyse` 13, `evaluate` 15), overriding both grammar optionality (`card(0,1)` in `lib/episode-plan-v1-archetype-grammar.js`) and Practice's own prompt instruction to omit Interactive ceremony. | **Open — root cause #2** |
+| **S104-AD-003** | `lib/episode-plan-population-contract.js`, `lib/episode-plan-dla-integration.js`, `lib/ld-practice-presentation-contracts.js` (`101G`), `domain-learning-design-step-patterns.md` | DLA is strictly population-locked to EP beats (`material` beats become mandatory `required_materials[]`), while `ld-practice-presentation-contracts.js` has zero duration-scaling rules and prescribes a full control-led justification stack (worked model + guided chain + independent chain + datasets + template + sample output + checklist + closure) for every activity. | **Open — root cause #3** |
+| **S104-AD-004** | `lib/guided-review-generation-contract.js:285–307`, `lib/ld-gam-page-enrich-contract.js:56–61`, `lib/episode-plan-population-contract.js:115` | Un-gated GAM contract mandates `"3–4 criteria"` and declares `"< 3 criteria ... is an instructional FAIL"` without checking `practiceProduct` or duration — directly contradicting Practice (`"typically 2–3 criteria"`), bypassing `page-gam-enrich.js` (`GUIDED_CRITERIA_MIN = 2`), and forcing 6+ criteria (12–18 expected/repair items) across any 2-activity Practice page. | **Open — root cause #4** |
+| **S104-AD-005** | `lib/gam-canonical-assembler.js:251`, `lib/ld-gam-page-enrich-contract.js:104–106`, `lib/ld-design-page-partial-contract.js` | Un-gated `S78-D04` (`Page learner-resource closure`), inline `LD-GAM-INSTRUCTIONAL-DEPTH-CONTRACT`, mandatory `knowledge_summary`, and mandatory `editorial_opening_image` (`decision: "generate"`) enforce full-workbook overhead on even 5–8 min Practice pages, contradicting Practice `designPageLines` (`"Study tips / closing essays: omit by default"`). | **Open — root cause #5** |
+| **S104-AD-006** | `lib/learning-journey-sibling-prompts.js` | Commissioning planning lacks component viability / workload budgets tying component count, `COMPONENT_LEARNING_OUTCOMES` count, constructed-response footprint, and Learning Journal producers to allocated minutes; defaults favour multi-artefact constructed-text elicitation (`journal.enabled: true`). | **Open — root cause #6** |
+| **S104-AD-007** | `lib/learning-journey-workload-feasibility-adapter.js:182–186` | Operator-precedence bug `(regex && product === "interactive") || product === "practice"` unconditionally classifies every Practice commission as `"mathematical_problem"`, giving even non-mathematical Practice commissions an automatic `10–18 min` production floor. | **Open — confirmed bug** |
+| **S104-AD-008** | `lib/workload-feasibility-estimator.js`, `lib/interactive-workload-feasibility-adapter.js` | Interactive/Practice workload checking silently emits `warnings: []` when `duration_minutes` is absent on activities/sequence (proven on `C01`), does not check cumulative page effort vs commissioned budget, lacks signals for `data_table` inspection, `selection` decision chains, `checklist` items, or long worked models/sample outputs, and misfires keyword heuristics (`"recommend"` → `institutional_recommendation`/`dossier`; `"revisit"` → whole-activity `familiar` when unseen datasets exist). | **Open — root cause #7** |
+
+---
+
+## Excluded / protected boundaries (do not pull into Sprint 104)
+
+- **PB-S-008** (86 pre-existing full-suite test failures recorded in [PB-S-008-full-suite-failure-baseline-2026-11-24.md](../../../development/governance/PB-S-008-full-suite-failure-baseline-2026-11-24.md)) — explicitly **out of scope**.
+- **PB-FA-018** (shared statistical visualisation architecture), **new interaction types**, **snapshot persistence**, **general renderer refactoring**, **new pedagogical capabilities**, and **automatic changes to authoritative durations** — explicitly **excluded non-goals**.
+- **Pre-intervention Economics baseline** — retain existing journey and captures untouched.

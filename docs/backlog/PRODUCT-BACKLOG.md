@@ -2,7 +2,7 @@
 
 **Canonical location:** `docs/backlog/PRODUCT-BACKLOG.md`  
 **Status:** Active — **alpha-use period** (Alpha development complete, 2026-09-02)  
-**Last updated:** 2026-11-23 (Sprint 103 closed — feature freeze until Connect More)  
+**Last updated:** 2026-11-24 (Sprint 103 closed — feature freeze until Connect More; PB-FA-018/020/021 updated with C01 statistical-representation findings)  
 **Open sprint:** **None** — feature freeze until Connect More (Wed 2 Dec 12:00): create Learning Journeys → test → fix demonstrated defects → verify.  
 **Last closed sprint:** [Sprint 103 — Learning Journey Runtime Continuity and Commissioning Fidelity](../development/sprints/2026-11-23-sprint-103-learning-journey-runtime-continuity-and-commissioning-fidelity/SPRINT-103-CLOSURE.md) — **CLOSED — COMPLETE — ACCEPTED WITH DOCUMENTED QUALIFICATIONS**. Prior: [Sprint 102](../development/sprints/2026-11-20-sprint-102-learning-journey-owned-outcomes/SPRINT-102-CLOSURE.md) · [Sprint 101](../development/sprints/2026-11-19-sprint-101-practice-as-a-learning-journey-component/SPRINT-101-CLOSURE.md) · [Sprint 97](../development/sprints/2026-11-12-sprint-97-learning-journal-and-design-pattern-foundations/SPRINT-97-CLOSURE.md) (PB-FA-028 delivered).  
 **Architectural policy:** [S103-D01 — Learning Journey-first architecture](../development/sprints/2026-11-20-sprint-102-learning-journey-owned-outcomes/decisions.md#s103-d01--learning-journey-first-architecture) — **Accepted**; commissioning alignment verified in Sprint 103.
@@ -83,7 +83,7 @@ Establish a repeatable path from active development to a **known-good stable rel
 
 ### PB-FA-018 — Shared data and mathematical visualisation
 
-**Status:** Open — linked to [PB-FA-020](#pb-fa-020--precision-graphics-and-structured-visual-specifications). **Not sprint-allocated.**  
+**Status:** Open — linked to [PB-FA-020](#pb-fa-020--precision-graphics-and-structured-visual-specifications) and [PB-FA-021](#pb-fa-021--expository-editorial-integration-and-publication-quality). **Not sprint-allocated.** Statistical-representation (scatterplot) investigation recorded below; **deferred until after Connect More**.  
 **Scope:** Cross-product platform capability. Does **not** change Sprint 93’s Assessment Pack educational contract.
 
 Establish a shared, accessible, **deterministic** visualisation capability available to all PRISM products, supporting authored data, charts, plotting, and learner-responsive interactions.
@@ -137,7 +137,98 @@ Potential applications include:
 
 **Out of scope:** A comprehensive statistical analysis package; arbitrary generated JavaScript; changes to Sprint 93’s educational contract; merging into PB-FA-020.
 
-**Readiness:** Proposed from the 2026-10-08 charting audit; Practice added among potentially supported products 2026-11-23. Approach not yet chosen — **not sprint-allocated**.
+#### Shared deterministic statistical representations — C01 investigation (2026-11-24)
+
+**Classification:** Future architectural enhancement. **Not a production defect.** **Deferred until after Connect More (Wed 2 Dec 12:00)**; the feature freeze applies. Cross-references: [PB-FA-020](#pb-fa-020--precision-graphics-and-structured-visual-specifications) (precision graphics and validated specifications) and [PB-FA-021](#pb-fa-021--expository-editorial-integration-and-publication-quality) (editorial integration and intra-section representation placement).
+
+**Context and motivation.** During the November 2026 Learning Journey QA exercise, *C01 — Interpreting relationships in economic data* scored **88/100**. Its principal educational limitation is that five economic datasets are presented as **character-based scatterplots**, although both learning outcomes (LO1 interpret scatterplots by direction, strength, form and variation; LO2 interpret supplied Pearson coefficients alongside graphical evidence) depend directly on reading graphical evidence. *C02 — What does a causal claim actually mean?* showed that deterministic SVG scatterplots rendered from structured specifications are accurate and contribute to its improvement from **69/100 to 90/100** after publishing corrections. The objective is a **shared, product-independent** capability to commission, author, validate and render accurate disciplinary representations. It must not become a Practice-specific scatterplot feature.
+
+**Findings (investigation completed 2026-11-24; code references are to commit `acbe401`, line numbers approximate).**
+
+1. **Origin of the C01 plots.** The plots are authored Markdown text, not failed graphical output. Each is a fenced ```` ```text ```` block inside a Markdown `body` string (`body_format: "markdown"`) of a `data_table` or `worked_example` material. They render as `<div class="util-fenced-text"><pre>…</pre></div>` (`lib/learner-renderer-vnext/render-html-utils.js` ~231) with no role, name or description, so assistive technology reads a stream of `●`, `|` and `-` characters. The semantic Markdown tables beside each plot are the only accessible equivalent. The Design Page contains **no** `scatterplot`, `x_axis`, `y_axis`, `observations` or `accessible_description` keys. `required_materials[].specification` and `evidence_requirement` are prose only.
+2. **Practice has no structured scatterplot authoring contract.** No Practice, GAM or Design Page contract in `lib/` mentions scatterplots. `buildMaterialModel` (`lib/learner-renderer-vnext/parse-material.js` ~582) JSON-stringifies object bodies; `renderMaterialBody` (`render-material.js` ~390) renders `data_table` through Markdown with `wrapTables`, and `worked_example` through plain Markdown. `validate-input.js` does not constrain material body shape, so extra keys are accepted. There are two precedents for structured Practice payloads: `checklist` (object body with `body_format: "json"`) and `selection` (sibling `selection` object on the material).
+3. **Expository has a working deterministic renderer.** In `lib/learner-renderer-vnext/expository-structured-materials.js`: `buildExpositionStructuredMaterial` (~1278) detects the shape through `extractScatterplotSpec` (~3697, duck-typed: an object body with `scatterplot`, or `x_axis`/`y_axis`, plus at least two `observations`/`points`), `normalizeScatterplotAxis`, `normalizeScatterplotMaterial` (type `expository_structured_scatterplot`) and `renderScatterplot` (~3888). `renderExpositionStructuredMaterial` (~4123) is the only exported renderer entry point. It is wired solely into Expository (`build-page-model.js` ~72, `render-page.js` ~279). Spec shape: `{ title, context, source_note, scatterplot: { title, x_axis: { label, minimum, maximum, tick_interval, scale }, y_axis: {…}, observations: [{ label, x, y }], caption, accessible_description }, table }`. Behaviour: inline SVG, separate equally prominent points, **no trend or regression line**, per-point `<title>` of the form `label: (x, y)`, `<desc>` only from an authored `accessible_description` (the renderer never synthesises interpretive text), optional companion table. Regression coverage: `tests/qa-c02-expository-structured-rendering.test.js` (M01 education/earnings, M04 prices/sales; two SVGs asserted in standalone and unified Learning Journey packages).
+4. **Existing C01 content cannot be upgraded automatically.** The observations and axis labels exist only in the Markdown tables and in the plots' own text. Axis ranges, ticks, scale intent and the H09 emphasis exist nowhere as structured data. Deriving a specification from the tables or the character plots would be heuristic inference, which this item **excludes**. Upgrading C01 therefore requires newly authored specifications (regeneration, or hand-authored fixtures).
+5. **Renderer gaps for C01.**
+   - All points render identically, so the additional household H09 cannot be distinguished without a per-observation emphasis or series and a key.
+   - With no explicit axis `minimum`/`maximum`, points sit on the plot edges, so authors must supply padded ranges. Explicit ranges are also what gives **identical scales** across related plots.
+   - `renderScatterplot` emits Expository-named shell markup (`materialShellOpen`, `util-exposition-scatterplot`), so Practice needs a figure-only function.
+   - Caption, context and source-note styles are scoped to the Expository publishing CSS (`app.js` `getUtilityExpositoryPublishingCss`). The SVG itself is inline-styled and is unaffected.
+6. **Placement limitation (see [PB-FA-021](#pb-fa-021--expository-editorial-integration-and-publication-quality)).** A2-M3 and A2-M7 each interleave heading, plot, table and coefficient for two datasets within one material. A single sibling payload cannot be interleaved with body sections. This is the same missing-anchor limitation found in Expository: a material carries no authored intra-section position.
+7. **Accessible-description risk is an authoring risk, not a renderer one.** Because the renderer only emits authored descriptions, leakage arises only if an author writes pattern language. Any rule that depends on judging wording as neutral would be a text heuristic. See the description policy below.
+
+**C01 acceptance reference.**
+
+- **Identifiers:** workflow `cc3cfb04-c02e-41c2-9691-90afa4f97350`; commission `C01`; page `learner-page--c01`; workflow name *Interpreting relationships in economic data*; Design Page schema `2.0.0`; source corpus `ECON-CORR-01` (synthetic teaching evidence). The plot instances are in `activities[].materials[]` (`A1-M*`, `A2-M*`).
+- **Fixture locations:** the assembled Design Page JSON and the learner package (`interpreting-relationships-in-economic-data (4).zip`, containing `learner-page.html`; nine `<pre>` plots confirmed) were supplied during QA and are **not stored in the repository**. Retain or recreate them as a committed fixture when implementation is scheduled. The C02 reference fixture is `buildC02AssembledPage` in `tests/qa-c02-expository-structured-rendering.test.js`. Related QA suites: `tests/qa-practice-workspace-sequencing.test.js`, `tests/qa-disclosure-and-table-presentation.test.js`, `tests/s87-expository-wide-table-overflow.test.js`.
+- **Plot inventory (9 instances, 7 materials, 5 datasets):**
+
+| Material | Type | Dataset(s) | Plots | Pedagogical function |
+|---|---|---|---|---|
+| A1-M2 | worked_example | D01 | 1 | Worked interpretation (patterns may be explained) |
+| A1-M3 | data_table | D02 | 1 | Guided evidence before A1-M4 (feedback after attempt) |
+| A1-M5 | data_table | D03 | 1 | **Independent operand**; withhold interpretation until A1-M6/M7 complete |
+| A2-M2 | worked_example | D01 | 1 | Worked; learner predicts sign and strength before the coefficient is revealed |
+| A2-M3 | data_table | D02 + D03 | 2 | Guided comparison with supplied coefficients (r = −0.94, −0.04) |
+| A2-M5 | data_table | D04 | 1 | **Independent operand**; the U-shape must not be disclosed |
+| A2-M7 | data_table | D01 + D05 | 2 | **Independent operand**; identical scales; H09 emphasised |
+
+- **Authoritative datasets (observation, x, y):**
+  - **D01** *Household disposable income vs consumption expenditure* (GBP per month; 8 households): H01 (1500, 1400), H02 (2000, 1900), H03 (2500, 1800), H04 (3000, 2300), H05 (3500, 2200), H06 (4000, 2700), H07 (4500, 2600), H08 (5000, 3100). Supplied r = 0.96.
+  - **D02** *Retail price per item (GBP) vs weekly quantity sold (items)*, 7 outlets: R01 (2, 120), R02 (2.5, 110), R03 (3, 115), R04 (3.5, 95), R05 (4, 85), R06 (4.5, 90), R07 (5, 75). Supplied r = −0.94.
+  - **D03** *Standard delivery charge (GBP) vs weekly orders (orders)*, 7 retailers: O01 (1, 100), O02 (2, 120), O03 (3, 90), O04 (4, 110), O05 (5, 130), O06 (6, 80), O07 (7, 110). Supplied r = −0.04.
+  - **D04** *Monthly production (thousands of units) vs average production cost (GBP per unit)*, 7 factories: F01 (10, 14), F02 (20, 9), F03 (30, 6), F04 (40, 5), F05 (50, 6), F06 (60, 9), F07 (70, 14). Supplied r = 0.00.
+  - **D05** is D01 plus H09 (5500, 1200), 9 households. Supplied r = 0.35. A2-M7 requires D01 and D05 to share identical axes (the current character plots both span income 1500–5500 and expenditure 1200–3100). The coefficients are supplied authored values; the renderer must not compute or infer them.
+- **Current learner journey references that depend on the plots:** `task_material_decision.task_input_material_ids`, `evidence_decision.provider_material_ids`, `practice_independence.attempt_operand_material_ids`, and the A1-S06/S07 and A2-S05/S06/S07 study-flow steps. Splitting a bundled material changes these references.
+
+**Future requirements.**
+
+- Shared structured representation contracts across product types, not tied to Practice or Expository.
+- Deterministic rendering from authoritative data, without generative image production.
+- Exact observation fidelity; explicit axis ranges, units, ticks and labels.
+- Consistent scales across related representations to support comparative reasoning.
+- Selective point emphasis and meaningful graphical annotations.
+- Semantic companion data tables without unnecessary duplication.
+- Explicit authored placement within the instructional or explanatory sequence (dependent on the [PB-FA-021](#pb-fa-021--expository-editorial-integration-and-publication-quality) anchor decision).
+- Responsive presentation and functional accessibility.
+- Backward compatibility with existing authored and published resources; the character-plot fallback must keep rendering.
+- Extensibility to other disciplinary representations in mathematics, economics, engineering, geography and the sciences.
+
+**Accessible-description principle.** Descriptions follow pedagogical function. Worked examples may explain patterns. Independent interpretation tasks must provide access to the evidence without revealing the interpretation learners are expected to construct. Pre-attempt guided evidence and prediction steps (A1-M3, A2-M2) should likewise be non-revealing; this classification is a design decision still to be confirmed. Avoid heuristic parsing of character-based plots, Markdown tables or explanatory prose.
+
+**Unresolved design decisions.**
+
+1. **Carrier for the specification.** Options: a sibling payload on the material, mirroring `selection` and using the Expository spec shape unchanged (recommended in the investigation), or an object body with `body_format: "json"` as `checklist` does.
+2. **Bundled materials (A2-M3, A2-M7).** Options: split into one material per dataset at regeneration (changes IDs and the references listed above); render grouped figures above the body (loses interleaving); or add an anchor token (a real contract addition shared with PB-FA-021).
+3. **Description policy.** Options: a description generated only from the structured spec (variables, units, axis ranges, observation count, pointer to the table), which cannot describe a pattern; or no `<desc>` on independent operands, relying on the semantic table. Whether authored descriptions are permitted for worked examples must also be decided. Neutrality must not be judged by wording heuristics.
+4. **Point emphasis.** A per-observation emphasis or series field with a key (needed for H09), and the wider annotation vocabulary.
+5. **Companion tables.** Render the table from the structured data (single source of truth) rather than authoring it twice. Cross-checking an authored Markdown table against the payload is excluded because it would require parsing Markdown tables.
+6. **Shared module boundary.** Extract a figure-only function and spec normaliser from the Expository module into a product-neutral module, keeping Expository output unchanged.
+7. **Producer guidance.** GAM and Design Page guidance to emit the payload and omit the character plot, and the validation required (explicit axes mandatory, minimum observations, identical-scale constraints for related plots).
+8. **Handling of existing published resources.** Backward-compatibility policy for resources that carry fenced character plots.
+
+**Proposed implementation approach (provisional).**
+
+1. Extract a figure-only scatterplot function and spec normaliser from `expository-structured-materials.js`, protected by the existing C02 tests.
+2. Add a Practice hook in `buildMaterialModel` and `renderMaterialBody` for `data_table` and `worked_example`, with a hand-authored C01 acceptance fixture.
+3. Add per-point emphasis and key, consistent-scale authoring and the spec-only neutral description.
+4. Add the authoring contract, producer guidance and validation.
+5. Add placement once the PB-FA-021 anchor decision is made.
+6. Later: further representation types (function plots, histograms, bar charts, distributions, maps, engineering diagrams) on the same shared contract.
+
+**Provisional estimate (to be re-validated).** About **3–4 engineering days** for the initial scatterplot capability: figure extraction about 0.5 day; Practice hook and tests 0.5–1 day; H09 emphasis about 0.5 day; neutral default description about 0.25 day; Practice-scoped CSS and bundle rebuild about 0.25 day; producer guidance about 1 day. The **authoring contract and producer changes carry most of the risk.**
+
+**Acceptance fixture (concrete references: the economics Learning Journey and C01).** A future implementation should demonstrate:
+
+- Accurate conventional scatterplots for all nine existing plot instances.
+- Preservation of all five authoritative datasets.
+- Identical scales for the original (D01) and extended (D05) household datasets.
+- Distinct emphasis of the additional H09 observation.
+- Appropriate representation placement.
+- Accessible descriptions that do not compromise independent interpretation (A1-M5, A2-M5, A2-M7).
+- No regression in C02 Expository rendering (`tests/qa-c02-expository-structured-rendering.test.js`) or in existing Practice functionality.
+
+**Readiness:** Proposed from the 2026-10-08 charting audit; Practice added among potentially supported products 2026-11-23; C01 statistical-representation investigation recorded 2026-11-24 (approach proposed, design decisions open). Approach not yet chosen — **not sprint-allocated**. **Deferred until after Connect More.**
 
 ### PB-FA-019 — Interactive V2: educational solution design and interaction surfaces
 
@@ -189,6 +280,8 @@ Author explicit visual structure — nodes, relationships, labels, visual conven
 
 **Related:** Charting and deterministic diagramming, including concept maps, relationship diagrams, and learner-responsive visualisations across products, belong to [PB-FA-018](#pb-fa-018--shared-data-and-mathematical-visualisation). This item supplies structured authorship and precision-graphics investigation; it does not absorb general charting into a single implementation programme.
 
+**C01 cross-reference (2026-11-24):** The C01 scatterplot investigation supplies a concrete data-bound case for this item's validation requirement: exact observation fidelity, explicit axes, units and ticks, consistent scales across related plots, and no inference of a specification from character plots, Markdown tables or prose. Findings, datasets and acceptance fixture are recorded under [PB-FA-018](#pb-fa-018--shared-data-and-mathematical-visualisation) (*Shared deterministic statistical representations*). They are not duplicated here.
+
 **Readiness:** Proposed 2026-10-08; scope strengthened 2026-11-23 for precision-aware technical/scientific graphics. Approach not yet chosen — **not sprint-allocated**. Capability investigation only — no implementation commitment.
 
 ### PB-FA-021 — Expository editorial integration and publication quality
@@ -210,7 +303,7 @@ Author and publish Expository resources with a coherent editorial hierarchy, so 
 - Legitimate accessible descriptions and alternative representations are preserved, with appropriate presentation rather than indiscriminate removal.
 - Learner-facing output feels like a deliberately edited educational publication.
 
-**Deferred requirement (2026-11-24) — intra-section placement:** The revised *What does a causal claim actually mean?* (C02) resource improved from 69/100 to 90/100 under QA. The remaining weakness is that supporting representations (tables, figures, and similar materials) are appended to their section rather than placed at the point where the explanatory prose needs them. Investigation found the cause is **specification-level, not a renderer defect**: the Expository materials contract (`materials_commission[]` and `materials[]` in `lib/expository-contracts.js`) carries `section_id` only, with no anchor or position field. `lib/page-vnext-assemble.js` attaches materials by section, `render-page.js` places them before or after the whole exposition block, and the visual-affordance placement layer only offers `section-after-content`. Resolving this requires a bounded contract extension (an explicit, authored intra-section anchor) and must not be implemented as a universal materials-before-prose rule or by text-matching heuristics. Accepted at 90/100 and deferred pending a decision on this contract extension.
+**Deferred requirement (2026-11-24) — intra-section placement:** The revised *What does a causal claim actually mean?* (C02) resource improved from 69/100 to 90/100 under QA. The remaining weakness is that supporting representations (tables, figures, and similar materials) are appended to their section rather than placed at the point where the explanatory prose needs them. Investigation found the cause is **specification-level, not a renderer defect**: the Expository materials contract (`materials_commission[]` and `materials[]` in `lib/expository-contracts.js`) carries `section_id` only, with no anchor or position field. `lib/page-vnext-assemble.js` attaches materials by section, `render-page.js` places them before or after the whole exposition block, and the visual-affordance placement layer only offers `section-after-content`. Resolving this requires a bounded contract extension (an explicit, authored intra-section anchor) and must not be implemented as a universal materials-before-prose rule or by text-matching heuristics. Accepted at 90/100 and deferred pending a decision on this contract extension. **Dependency (2026-11-24):** the same missing anchor blocks interleaving multiple representations with explanatory prose inside one Practice material (C01 A2-M3 and A2-M7). The anchor decision should be taken once for both products; see [PB-FA-018](#pb-fa-018--shared-data-and-mathematical-visualisation) (*Shared deterministic statistical representations*, unresolved decision 2).
 
 **Evidence:** Benchmark v1.2: 84/100. Representation 76, Information Architecture 78, Typography/Hierarchy 78. No production cap. Strong educational foundations should be preserved.
 

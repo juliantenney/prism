@@ -1,9 +1,9 @@
 # Sprint 105 — Status / work log
 
 **Sprint:** 105 — Learning Journey Progressive Capture and Assembly  
-**Status:** **OPEN — MILESTONE 1 COMMITTED (`4b698db`); MILESTONE 2 IMPLEMENTED & FOCUSED-VERIFIED (STOPPED FOR REVIEW)**  
+**Status:** **OPEN — MILESTONES 1–2 COMMITTED (`4b698db`, `09cfbfc`); MILESTONE 3 IMPLEMENTED & FOCUSED-VERIFIED (STOPPED FOR REVIEW)**  
 **Opened:** 2026-11-25  
-**Baseline:** `4b698db` (Sprint 105 M1 committed on top of Sprint 104 M1–M5 `f1f1269`)  
+**Baseline:** `09cfbfc` (Sprint 105 M2 committed on top of M1 `4b698db` and Sprint 104 M1–M5 `f1f1269`)  
 **Priority:** Takes priority **before Connect More** (Wed 2 Dec 12:00)  
 **Decisions:** [S105-D01](decisions.md#s105-d01--open-sprint-105--learning-journey-progressive-capture-and-assembly) · [S105-D02 (Accepted)](decisions.md#s105-d02--stage-authority-progressive-capture-and-deterministic-assembly-contract)
 
@@ -13,13 +13,34 @@
 | Programme pointers & dependencies updated | **Complete** (`NEXT-SPRINT.md`, `docs/sprints/README.md`, `sprint-104-*.md`, `sprint-105-*.md`, `PRODUCT-BACKLOG.md`, `docs/backlog/README.md`) |
 | **Phase 105A** — Initial investigation & sprint documentation | **Approved** (`S105-D02` accepted with 9 refinements) |
 | **Milestone 1** — Stage contracts, deterministic LJ assembler, workflow versioning & legacy separation | **Approved & committed (`4b698db`)** |
-| **Milestone 2** — Economical Stage 1–5 prompts, Step 5 runner-guidance fix & continuity guidance reconciliation | **Implemented & focused-verified (uncommitted — stopped for review)** |
-| **Milestone 3** — Run orchestration, stage validation, invalidation, reload persistence, clear-run & workflow duplication | **Gated on Milestone 2 review** |
+| **Milestone 2** — Economical Stage 1–5 prompts, Step 5 runner-guidance fix & continuity guidance reconciliation | **Approved & committed (`09cfbfc`)** |
+| **Milestone 3** — Run orchestration, stage validation, invalidation, reload persistence, clear-run & workflow duplication | **Implemented & focused-verified (uncommitted — stopped for review)** |
 | **Milestone 4** — Focused regression verification, live clean Economics LJ validation & handback to Sprint 104 M6–M7 | **Gated on Milestone 3 review** |
 
 ---
 
 ## Work log
+
+### 2026-11-25 — Milestone 2 committed (`09cfbfc`); Milestone 3 implemented & focused-verified (stopped before commit / M4)
+
+- Committed Milestone 2 at `09cfbfc` (`Sprint 105 M2: economical LJ Stage 1-5 prompts, authoritative handoff, Step 5 leak fix, and continuity reconciliation`).
+- Implemented **Milestone 3** (progressive LJ run orchestration, per-stage capture validation/acceptance, persistence, deterministic assembly routing, upstream invalidation, stale-write protection, reload hydration, origin-aware clear-run, clean workflow duplication, and strict progressive/legacy separation):
+  - **Compact inter-stage handoff sufficiency (`lib/learning-journey-assemble.js` — `buildAuthoritativeStageHandoffSection`):** Audited every receiving stage (Stages 2–5) so consequential author edits to accepted structured captures flow authoritatively without relying on superseded conversational context and without duplicating full commission specs or shared source:
+    - Stage 2 receives Stage 1 `body_of_knowledge`, `learning_outcomes.learner_level`, and `learning_outcomes.scope`.
+    - Stage 3 receives Stage 1 `body_of_knowledge` & `constraints_and_tradeoffs`, Stage 2 `journey_structure.rationale` & `constituent_journeys`, and each phase's `scaffolding_and_evidence` & `dependencies`.
+    - Stage 4 receives Stage 1 `learner_profile`, `constraints_and_tradeoffs`, `journal_orientation`, Stage 2 `developmental_arc` & `journal_note`, and each Stage 3 element's `knowledge_focus`, `scaffolding_and_feedback`, and `dependencies`.
+    - Stage 5 receives Stage 1 `learner_profile` & numbered `learning_outcomes` statements (editorial orientation), Stage 4 `continuity` summary, compact mapped Stage 3 `educational_job` focus cues per commission, and Stage 4 `journal.decision_basis` + per-entry concise `framing` cue — strictly excluding `specification_text`, `journey_context_text`, `<<<COMPONENT_LEARNING_OUTCOMES_BEGIN>>>`, and `shared_authoritative_material`.
+  - **Prompt/validator schema catch (`lib/learning-journey-sibling-prompts.js`):** Aligned Stage 4 JSON example `"dependencies": ""` (string) to match M1 validator & immutable final LJ DP contract.
+  - **Progressive LJ lifecycle & orchestration (`app.js`):**
+    - Enabled progressive LJ workflows on PRISM's established capture/assembly hooks (`isPartialPageOutputWorkflowEnabled`, `isWorkflowStepRunCaptureProducer` for Steps 1–5, `workflowRunCaptureAllowedArtifactTypes` allowing `"learning_journey_stage"`, `resolveStrictJsonWorkflowStepKind` guarding thin Stage 5 partials from legacy monolithic validation collision, `parseWorkflowRunPageStructureCaptureForStorage`, `readAcceptedLearningJourneyPageFromWorkflow`, and `resolvePageForRenderOrAssembly`). Legacy pre-105 LJ workflows retain chat Steps 1–4 and monolithic Step 5 acceptance untouched.
+    - Added `parseAndValidateProgressiveLearningJourneyStageCapture` enforcing single-JSON stage validation, rejecting monolithic LJ Design Page captures on progressive workflows (`monolithic_capture_rejected_for_progressive_workflow`), requiring all strictly earlier stages to be valid & current, checking Stage 4 derived-stat contradictions (`validateLearningJourneyDesignPageDerivedStatConsistency`), and deterministically assembling & validating Stage 5 via `assembleLearningJourneyPageFromPartials` + `validateLearningJourneyDesignPageForCapture` + workload feasibility warnings.
+    - Added `collectAcceptedProgressiveLearningJourneyStageCaptures` (wired into `collectLearningJourneyStoredStageCapturesForWorkflow`) so invalidated or blocking-error captures can never feed downstream handoffs or final assembly.
+    - Added `invalidateDownstreamLearningJourneyStages` & `clearCachedLearningJourneyAssembledSnapshotForWorkflow`: editing, replacing, clearing, or invalidating Stage `k` clears downstream captures in live state, DOM textareas, session unsaved backups, and explicitly deletes downstream step keys from durable `prism_workflow_runstate_v1` (`capturedOutputs`, `capturedOutputsRaw`, `captureRefs`, `stepCompleted`) so `ABSENT≠DELETE` merge cannot resurrect them; advances workflow clear epoch & invalidates async persist chains so stale in-flight persistence writes abort cleanly; tracks staleness only for previously-captured downstream steps; clears cached assembled snapshots & status evidence cache; and clears run-derived Stage 4 metadata while strictly preserving brief-provided `source_context`.
+    - Added origin-aware source/metadata lifecycle (`isLearningJourneySourceContextBriefProvided`, `readLearningJourneyBriefProvidedSourceContext`, `clearLearningJourneyRunDerivedMetadata`, `persistLearningJourneyRunDerivedStage4Metadata`) and resolved **`S105-AD-004`**: `clearWorkflowRunCaptureState` and `handleDuplicateWorkflow` cleanly strip `commissioned_component_durations`, run-generated `source_context`, `stageCaptures`, and cached assembled snapshots while preserving `original_brief`, brief-provided `source_context`, and `progressive_capture_version`.
+    - Added `revalidateProgressiveLearningJourneyCapturesAfterHydration` invoked on both `hydrateWorkflowRunCapturePayloadsForWorkflow` and `restoreWorkflowRunStateForWorkflow` so reload restores all 5 valid stages identically, fails closed on corrupted/missing stages, and produces zero phantom captures.
+    - Stamped `progressive_capture_version` & `outputSpec` explicitly onto newly created LJ workflows in Create flows.
+  - **`tests/s105-m3-lifecycle-and-orchestration.test.js`:** Added 6 focused M3 tests covering 5-stage progressive capture/assembly & monolithic rejection, authoritative edited handoffs & upstream invalidation, reload persistence & fail-closed corruption handling, origin-aware clear-run & clean workflow duplication (`S105-AD-004`), legacy pre-105 LJ compatibility, and stale async persistence write abort / non-resurrection (`ABSENT≠DELETE`).
+- Verified **127 / 127** passing assertions across 14 focused M3 + lifecycle/clear-run/phantom/LJ/Expository/Interactive suites plus **19 / 19** passing assertions across Sprint 104 M2–M5 safeguard suites (`node --check` exit 0 on all touched files). Stopped for review before committing M3 or starting M4. No live generation yet.
 
 ### 2026-11-25 — Milestone 1 committed (`4b698db`); Milestone 2 implemented & focused-verified (stopped before commit / M3)
 

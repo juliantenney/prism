@@ -6576,21 +6576,315 @@
     }
   }
 
-  function collectLearningJourneyStoredStageCapturesForWorkflow(wf) {
-    var out = {};
-    if (!wf || typeof wf !== "object") return out;
+  var LJ_PROGRESSIVE_STAGE_ORDER = [
+    "learning_requirements",
+    "learning_progression",
+    "learning_elements",
+    "learning_commissions",
+    "design_page"
+  ];
+
+  function resolveProgressiveLearningJourneyStageForStep(step, wf) {
+    if (!step || typeof step !== "object") return "";
+    if (!isProgressiveLearningJourneyWorkflowActive(wf)) return "";
     var siblingLib = resolveLearningJourneySiblingPromptsLib();
+    if (!siblingLib || typeof siblingLib.resolveStageFromStepIdentity !== "function") {
+      return "";
+    }
+    var stage = String(siblingLib.resolveStageFromStepIdentity(step) || "").trim().toLowerCase();
+    return LJ_PROGRESSIVE_STAGE_ORDER.indexOf(stage) !== -1 ? stage : "";
+  }
+
+  function isLearningJourneySourceContextBriefProvided(wf) {
+    if (!wf || typeof wf !== "object") return false;
+    var brief =
+      wf.workflowBriefResolution && typeof wf.workflowBriefResolution === "object"
+        ? wf.workflowBriefResolution
+        : null;
+    var rf =
+      brief && brief.resolvedFactors && typeof brief.resolvedFactors === "object"
+        ? brief.resolvedFactors
+        : {};
+    var initial =
+      brief && brief.initialBrief && typeof brief.initialBrief === "object"
+        ? brief.initialBrief
+        : {};
+    var seed = wf.deliverySeed && typeof wf.deliverySeed === "object" ? wf.deliverySeed : {};
+    var origin = String(
+      rf.source_context_origin || seed.source_context_origin || wf.source_context_origin || ""
+    )
+      .trim()
+      .toLowerCase();
+    if (origin === "brief_provided") return true;
+    if (origin === "run_generated") return false;
+    var fromInitial = String(
+      initial.sourceContext || initial.source_context || initial.inputs || ""
+    ).trim();
+    if (fromInitial) return true;
+    var fromArtefacts = String(wf.artefacts || "").trim();
+    if (fromArtefacts) return true;
+    return false;
+  }
+
+  function readLearningJourneyBriefProvidedSourceContext(wf) {
+    if (!wf || typeof wf !== "object") return "";
+    if (!isLearningJourneySourceContextBriefProvided(wf)) return "";
+    var brief =
+      wf.workflowBriefResolution && typeof wf.workflowBriefResolution === "object"
+        ? wf.workflowBriefResolution
+        : null;
+    var rf =
+      brief && brief.resolvedFactors && typeof brief.resolvedFactors === "object"
+        ? brief.resolvedFactors
+        : {};
+    var initial =
+      brief && brief.initialBrief && typeof brief.initialBrief === "object"
+        ? brief.initialBrief
+        : {};
+    var seed = wf.deliverySeed && typeof wf.deliverySeed === "object" ? wf.deliverySeed : {};
+    var cand = String(
+      initial.sourceContext ||
+        initial.source_context ||
+        initial.inputs ||
+        rf.source_context ||
+        seed.source_context ||
+        wf.artefacts ||
+        ""
+    ).trim();
+    return cand;
+  }
+
+  function clearLearningJourneyRunDerivedMetadata(wf, options) {
+    if (!wf || typeof wf !== "object") return { ok: false, cleared: false };
+    var opts = options && typeof options === "object" ? options : {};
+    var briefProvided = isLearningJourneySourceContextBriefProvided(wf);
+    var changed = false;
+    if (wf.workflowBriefResolution && typeof wf.workflowBriefResolution === "object") {
+      var rf = wf.workflowBriefResolution.resolvedFactors;
+      var ib = wf.workflowBriefResolution.initialBrief;
+      if (rf && typeof rf === "object") {
+        if (Object.prototype.hasOwnProperty.call(rf, "commissioned_component_durations")) {
+          delete rf.commissioned_component_durations;
+          changed = true;
+        }
+        if (!briefProvided) {
+          if (Object.prototype.hasOwnProperty.call(rf, "source_context") && String(rf.source_context || "").trim()) {
+            delete rf.source_context;
+            changed = true;
+          }
+          if (String(rf.source_context_origin || "").trim().toLowerCase() === "run_generated") {
+            delete rf.source_context_origin;
+            changed = true;
+          }
+        }
+      }
+      if (ib && typeof ib === "object") {
+        if (Object.prototype.hasOwnProperty.call(ib, "commissionedComponentDurations")) {
+          delete ib.commissionedComponentDurations;
+          changed = true;
+        }
+        if (!briefProvided && String(ib.sourceContextOrigin || "").trim().toLowerCase() === "run_generated") {
+          delete ib.sourceContext;
+          delete ib.source_context;
+          delete ib.sourceContextOrigin;
+          changed = true;
+        }
+      }
+    }
+    if (wf.deliverySeed && typeof wf.deliverySeed === "object") {
+      if (Object.prototype.hasOwnProperty.call(wf.deliverySeed, "commissioned_component_durations")) {
+        delete wf.deliverySeed.commissioned_component_durations;
+        changed = true;
+      }
+      if (!briefProvided) {
+        if (
+          Object.prototype.hasOwnProperty.call(wf.deliverySeed, "source_context") &&
+          String(wf.deliverySeed.source_context || "").trim()
+        ) {
+          delete wf.deliverySeed.source_context;
+          changed = true;
+        }
+        if (
+          String(wf.deliverySeed.source_context_origin || "").trim().toLowerCase() === "run_generated"
+        ) {
+          delete wf.deliverySeed.source_context_origin;
+          changed = true;
+        }
+      }
+    }
+    if (changed && opts.save !== false && typeof saveWorkflows === "function") {
+      try {
+        saveWorkflows();
+      } catch (_saveErr) {}
+    }
+    return {
+      ok: true,
+      cleared: changed,
+      briefSourcePreserved: briefProvided
+    };
+  }
+
+  function persistLearningJourneyRunDerivedStage4Metadata(wf, stage4Obj, stage1Obj) {
+    if (!wf || typeof wf !== "object" || !stage4Obj || typeof stage4Obj !== "object") {
+      return { ok: false, written: false };
+    }
+    var comms = Array.isArray(stage4Obj.commissions) ? stage4Obj.commissions : [];
+    var byId = {};
+    var rows = [];
+    comms.forEach(function (c) {
+      if (!c || typeof c !== "object") return;
+      var cid = String(c.commission_id || "").trim();
+      var mins = Number(c.allocated_minutes);
+      if (!cid || !Number.isInteger(mins) || mins <= 0) return;
+      byId[cid] = mins;
+      rows.push({
+        commission_id: cid,
+        section_id: String(c.section_id || "").trim(),
+        title: String(c.title || "").trim(),
+        allocated_minutes: mins
+      });
+    });
+    var journeyMins =
+      stage1Obj &&
+      Number.isInteger(Number(stage1Obj.journey_allocated_minutes)) &&
+      Number(stage1Obj.journey_allocated_minutes) > 0
+        ? Number(stage1Obj.journey_allocated_minutes)
+        : resolveLearningJourneyAuthoritativeParentDurationMinutes(wf);
+    var durPayload = {
+      authority: "learning_journey_commission",
+      source: "step_journey_commissioning",
+      origin: "run_derived",
+      journeyAllocatedMinutes: journeyMins != null ? journeyMins : null,
+      commissions: rows,
+      byCommissionId: byId
+    };
+    wf.workflowBriefResolution =
+      wf.workflowBriefResolution && typeof wf.workflowBriefResolution === "object"
+        ? wf.workflowBriefResolution
+        : {};
+    wf.workflowBriefResolution.resolvedFactors =
+      wf.workflowBriefResolution.resolvedFactors &&
+      typeof wf.workflowBriefResolution.resolvedFactors === "object"
+        ? wf.workflowBriefResolution.resolvedFactors
+        : {};
+    wf.workflowBriefResolution.initialBrief =
+      wf.workflowBriefResolution.initialBrief &&
+      typeof wf.workflowBriefResolution.initialBrief === "object"
+        ? wf.workflowBriefResolution.initialBrief
+        : {};
+    wf.workflowBriefResolution.resolvedFactors.commissioned_component_durations = durPayload;
+    wf.workflowBriefResolution.initialBrief.commissionedComponentDurations = JSON.parse(
+      JSON.stringify(durPayload)
+    );
+    var briefProvided = isLearningJourneySourceContextBriefProvided(wf);
+    var sharedMat =
+      stage4Obj.shared_authoritative_material &&
+      typeof stage4Obj.shared_authoritative_material === "object"
+        ? stage4Obj.shared_authoritative_material
+        : null;
+    if (!briefProvided && sharedMat) {
+      var st = String(sharedMat.status || "").trim().toLowerCase();
+      var content = String(sharedMat.content || "").trim();
+      if (st === "generated" && content) {
+        wf.workflowBriefResolution.resolvedFactors.source_context = content;
+        wf.workflowBriefResolution.resolvedFactors.source_context_origin = "run_generated";
+        if (wf.deliverySeed && typeof wf.deliverySeed === "object") {
+          wf.deliverySeed.source_context = content;
+          wf.deliverySeed.source_context_origin = "run_generated";
+        }
+      } else if (st === "none") {
+        delete wf.workflowBriefResolution.resolvedFactors.source_context;
+        if (
+          String(wf.workflowBriefResolution.resolvedFactors.source_context_origin || "")
+            .trim()
+            .toLowerCase() === "run_generated"
+        ) {
+          delete wf.workflowBriefResolution.resolvedFactors.source_context_origin;
+        }
+        if (wf.deliverySeed && typeof wf.deliverySeed === "object") {
+          delete wf.deliverySeed.source_context;
+          if (
+            String(wf.deliverySeed.source_context_origin || "").trim().toLowerCase() ===
+            "run_generated"
+          ) {
+            delete wf.deliverySeed.source_context_origin;
+          }
+        }
+      }
+    }
+    if (typeof saveWorkflows === "function") {
+      try {
+        saveWorkflows();
+      } catch (_saveErr) {}
+    }
+    return { ok: true, written: true, briefSourcePreserved: briefProvided };
+  }
+
+  function extractLearningJourneyProgressiveStageJson(raw) {
+    var text = String(raw || "").trim();
+    if (!text) return { ok: false, errors: ["empty_capture"], message: "Capture is empty." };
+    var stripped =
+      typeof sanitizePrismRunCapturedOutput === "function"
+        ? sanitizePrismRunCapturedOutput(text).trim()
+        : text;
+    var candidate = stripped || text;
+    var fenceMatches = candidate.match(/```(?:json)?\s*([\s\S]*?)```/gi);
+    if (fenceMatches && fenceMatches.length > 1) {
+      return {
+        ok: false,
+        errors: ["multiple_fenced_blocks"],
+        message: "Expected exactly one fenced JSON object."
+      };
+    }
+    if (fenceMatches && fenceMatches.length === 1) {
+      var inner = fenceMatches[0].match(/```(?:json)?\s*([\s\S]*?)```/i);
+      candidate = inner && inner[1] ? String(inner[1]).trim() : candidate;
+    }
+    try {
+      var parsed = JSON.parse(candidate);
+      if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
+        return {
+          ok: false,
+          errors: ["json_root_must_be_object"],
+          message: "Stage capture must be a single JSON object."
+        };
+      }
+      return { ok: true, parsed: parsed, json: JSON.stringify(parsed, null, 2) };
+    } catch (err) {
+      return {
+        ok: false,
+        errors: ["invalid_json"],
+        message: "Invalid JSON: " + String((err && err.message) || err || "parse error")
+      };
+    }
+  }
+
+  function collectAcceptedProgressiveLearningJourneyStageCaptures(wf, options) {
+    var out = {};
+    var stepIdByStage = {};
+    var rawByStage = {};
+    if (!wf || typeof wf !== "object") {
+      return { captures: out, stepIdByStage: stepIdByStage, rawByStage: rawByStage };
+    }
+    var opts = options && typeof options === "object" ? options : {};
+    var includeDesignPage = opts.includeDesignPage === true;
+    var externalCaptures = opts.captures && typeof opts.captures === "object" ? opts.captures : null;
+    var externalRaw =
+      opts.capturesRaw && typeof opts.capturesRaw === "object" ? opts.capturesRaw : null;
+    var ignoreLiveInvalidation = !!externalCaptures || opts.ignoreLiveInvalidation === true;
+    var siblingLib = resolveLearningJourneySiblingPromptsLib();
+    var steps = Array.isArray(wf.steps) ? wf.steps : [];
     var preloaded =
-      wf.stageCaptures && typeof wf.stageCaptures === "object"
+      !externalCaptures && wf.stageCaptures && typeof wf.stageCaptures === "object"
         ? wf.stageCaptures
         : null;
     if (preloaded) {
       Object.keys(preloaded).forEach(function (k) {
+        if (!includeDesignPage && k === "design_page") return;
         var parsedPre = parseLearningJourneyStageJsonLoose(preloaded[k]);
         if (parsedPre) out[k] = parsedPre;
       });
     }
-    var steps = Array.isArray(wf.steps) ? wf.steps : [];
     var i;
     for (i = 0; i < steps.length; i += 1) {
       var s = steps[i];
@@ -6599,24 +6893,497 @@
         siblingLib && typeof siblingLib.resolveStageFromStepIdentity === "function"
           ? siblingLib.resolveStageFromStepIdentity(s)
           : "";
-      if (!stage || stage === "design_page") continue;
+      if (!stage) continue;
+      if (!includeDesignPage && stage === "design_page") continue;
+      var sid = String(s.id || "").trim();
+      if (sid) stepIdByStage[stage] = sid;
+      if (!ignoreLiveInvalidation && sid) {
+        if (
+          (state.workflowRunLjInvalidatedSteps && state.workflowRunLjInvalidatedSteps[sid]) ||
+          (state.workflowRunLjStageValidation && state.workflowRunLjStageValidation[sid]) ||
+          (stage === "design_page" &&
+            state.workflowRunPageValidation &&
+            state.workflowRunPageValidation[sid])
+        ) {
+          delete out[stage];
+          continue;
+        }
+      }
       var raw = "";
-      if (s.id && typeof readWorkflowRunCaptureTextForStepId === "function") {
+      if (externalCaptures || externalRaw) {
+        if (sid && externalRaw && externalRaw[sid]) raw = String(externalRaw[sid]);
+        if (!raw && sid && externalCaptures && externalCaptures[sid]) {
+          raw = String(externalCaptures[sid]);
+        }
+      } else if (sid && typeof readWorkflowRunCaptureTextForStepId === "function") {
         try {
-          raw = readWorkflowRunCaptureTextForStepId(s.id);
+          raw = readWorkflowRunCaptureTextForStepId(sid);
         } catch (_readErr) {
           raw = "";
         }
       }
-      if (!raw && s.capturedOutput) {
+      if (!raw && !externalCaptures && s.capturedOutput) {
         raw = String(s.capturedOutput);
       }
-      var parsed = parseLearningJourneyStageJsonLoose(raw);
-      if (parsed) {
-        out[stage] = parsed;
+      if (String(raw || "").trim()) {
+        rawByStage[stage] = String(raw);
+        var ext = extractLearningJourneyProgressiveStageJson(raw);
+        if (ext.ok && ext.parsed) {
+          out[stage] = ext.parsed;
+        } else {
+          delete out[stage];
+        }
       }
     }
-    return out;
+    return { captures: out, stepIdByStage: stepIdByStage, rawByStage: rawByStage };
+  }
+
+  function collectLearningJourneyStoredStageCapturesForWorkflow(wf) {
+    return collectAcceptedProgressiveLearningJourneyStageCaptures(wf, {
+      includeDesignPage: false
+    }).captures;
+  }
+
+  function clearCachedLearningJourneyAssembledSnapshotForWorkflow(workflowId) {
+    var wid = String(workflowId || "").trim();
+    if (
+      state.utilitiesOutputWorkspace &&
+      typeof state.utilitiesOutputWorkspace === "object"
+    ) {
+      state.utilitiesOutputWorkspace.assembledPageSnapshot = null;
+    }
+    if (wid && typeof writeWorkflowListStatusEvidenceCache === "function") {
+      try {
+        var prev =
+          typeof readWorkflowListStatusEvidenceCache === "function"
+            ? readWorkflowListStatusEvidenceCache(wid) || {}
+            : {};
+        writeWorkflowListStatusEvidenceCache(wid, {
+          authoritativeAssembledPage: null,
+          workflowResourceRefs: Array.isArray(prev.workflowResourceRefs)
+            ? prev.workflowResourceRefs
+            : [],
+          assetsByBriefId:
+            prev.assetsByBriefId && typeof prev.assetsByBriefId === "object"
+              ? prev.assetsByBriefId
+              : {}
+        });
+      } catch (_cacheErr) {}
+    }
+  }
+
+  function invalidateDownstreamLearningJourneyStages(wf, fromStageIndex, options) {
+    if (!wf || typeof wf !== "object" || !isProgressiveLearningJourneyWorkflowActive(wf)) {
+      return { ok: false, invalidatedStepIds: [] };
+    }
+    var opts = options && typeof options === "object" ? options : {};
+    var idx = Number(fromStageIndex);
+    if (!isFinite(idx) || idx < 0) return { ok: false, invalidatedStepIds: [] };
+    var wid = String(wf.id || "").trim();
+    var steps = Array.isArray(wf.steps) ? wf.steps : [];
+    var sourceStageName = LJ_PROGRESSIVE_STAGE_ORDER[idx] || "upstream";
+    var downstreamStepIds = [];
+    var i;
+    for (i = 0; i < steps.length; i += 1) {
+      var st = steps[i];
+      if (!st || !st.id) continue;
+      var stStage = resolveProgressiveLearningJourneyStageForStep(st, wf);
+      var stIdx = LJ_PROGRESSIVE_STAGE_ORDER.indexOf(stStage);
+      if (stIdx > idx) {
+        downstreamStepIds.push(String(st.id).trim());
+      }
+    }
+    if (wid && downstreamStepIds.length) {
+      // Protect against stale in-flight async writes landing after invalidation.
+      if (typeof bumpWorkflowRunClearEpoch === "function") {
+        bumpWorkflowRunClearEpoch(wid);
+      }
+      if (typeof invalidateWorkflowRunCapturePersistChains === "function") {
+        invalidateWorkflowRunCapturePersistChains(wid);
+      }
+    }
+    state.workflowRunLjInvalidatedSteps = state.workflowRunLjInvalidatedSteps || {};
+    state.workflowRunLjStageValidation = state.workflowRunLjStageValidation || {};
+    var store = wid && typeof loadWorkflowRunStateStore === "function" ? loadWorkflowRunStateStore() : null;
+    var rec = store && wid && store[wid] && typeof store[wid] === "object" ? store[wid] : null;
+    var storeMutated = false;
+    var liSteps = typeof getWorkflowStepElements === "function" ? getWorkflowStepElements() : [];
+    downstreamStepIds.forEach(function (dsid) {
+      if (!dsid) return;
+      var hadDownstreamState = !!(
+        (state.workflowRunCapturedOutputs && String(state.workflowRunCapturedOutputs[dsid] || "").trim()) ||
+        (state.workflowRunCapturedOutputsRaw && String(state.workflowRunCapturedOutputsRaw[dsid] || "").trim()) ||
+        (state.workflowRunCaptureRefs && state.workflowRunCaptureRefs[dsid]) ||
+        (state.workflowRunStepCompleted && state.workflowRunStepCompleted[dsid]) ||
+        (rec &&
+          ((rec.capturedOutputs && rec.capturedOutputs[dsid]) ||
+            (rec.capturedOutputsRaw && rec.capturedOutputsRaw[dsid]) ||
+            (rec.captureRefs && rec.captureRefs[dsid]) ||
+            (rec.stepCompleted && rec.stepCompleted[dsid])))
+      );
+      if (state.workflowRunCapturedOutputs) delete state.workflowRunCapturedOutputs[dsid];
+      if (state.workflowRunCapturedOutputsRaw) delete state.workflowRunCapturedOutputsRaw[dsid];
+      if (state.workflowRunCaptureRefs) delete state.workflowRunCaptureRefs[dsid];
+      if (state.workflowRunStepCompleted) delete state.workflowRunStepCompleted[dsid];
+      if (state.workflowRunPageValidation) delete state.workflowRunPageValidation[dsid];
+      if (state.workflowRunStrictJsonValidation) delete state.workflowRunStrictJsonValidation[dsid];
+      if (state.workflowRunLjStageValidation) delete state.workflowRunLjStageValidation[dsid];
+      if (state.workflowRunLjSharedSourceValidation) {
+        delete state.workflowRunLjSharedSourceValidation[dsid];
+      }
+      if (state.workflowRunLjDurationValidation) delete state.workflowRunLjDurationValidation[dsid];
+      if (state.workflowRunWorkloadFeasibilityWarnings) {
+        delete state.workflowRunWorkloadFeasibilityWarnings[dsid];
+      }
+      if (hadDownstreamState) {
+        state.workflowRunLjInvalidatedSteps[dsid] =
+          "Upstream stage " + sourceStageName + " changed; re-run this step.";
+      } else {
+        delete state.workflowRunLjInvalidatedSteps[dsid];
+      }
+      if (opts.clearDom !== false && liSteps.length) {
+        var li =
+          liSteps.find(function (node) {
+            return String(node.getAttribute("data-step-id") || "").trim() === dsid;
+          }) || null;
+        if (li) {
+          var ta = li.querySelector('[data-field="runStepOutput"]');
+          if (ta && ta.value) ta.value = "";
+          if (typeof updateRunStepOutputStatus === "function") {
+            updateRunStepOutputStatus(li);
+          }
+        }
+      }
+      if (rec) {
+        if (rec.capturedOutputs && Object.prototype.hasOwnProperty.call(rec.capturedOutputs, dsid)) {
+          delete rec.capturedOutputs[dsid];
+          storeMutated = true;
+        }
+        if (
+          rec.capturedOutputsRaw &&
+          Object.prototype.hasOwnProperty.call(rec.capturedOutputsRaw, dsid)
+        ) {
+          delete rec.capturedOutputsRaw[dsid];
+          storeMutated = true;
+        }
+        if (rec.captureRefs && Object.prototype.hasOwnProperty.call(rec.captureRefs, dsid)) {
+          delete rec.captureRefs[dsid];
+          storeMutated = true;
+        }
+        if (rec.stepCompleted && Object.prototype.hasOwnProperty.call(rec.stepCompleted, dsid)) {
+          delete rec.stepCompleted[dsid];
+          storeMutated = true;
+        }
+      }
+    });
+    if (wf.stageCaptures && typeof wf.stageCaptures === "object") {
+      for (i = idx + 1; i < LJ_PROGRESSIVE_STAGE_ORDER.length; i += 1) {
+        delete wf.stageCaptures[LJ_PROGRESSIVE_STAGE_ORDER[i]];
+      }
+    }
+    if (storeMutated && wid && typeof saveWorkflowRunStateStore === "function") {
+      try {
+        saveWorkflowRunStateStore(store, {
+          source: "invalidateDownstreamLearningJourneyStages",
+          workflowId: wid
+        });
+      } catch (_storeErr) {}
+    }
+    if (wid && typeof clearUnsavedWorkflowRunCapture === "function" && downstreamStepIds.length) {
+      // Clear any unsaved session backup entries that could resurrect invalidated steps on reload.
+      try {
+        if (state.workflowRunUnsavedByWorkflow && state.workflowRunUnsavedByWorkflow[wid]) {
+          downstreamStepIds.forEach(function (dsid) {
+            delete state.workflowRunUnsavedByWorkflow[wid][dsid];
+          });
+        }
+      } catch (_unsavedErr) {}
+    }
+    clearCachedLearningJourneyAssembledSnapshotForWorkflow(wid);
+    if (idx < 3 || opts.clearRunDerivedMetadata === true) {
+      clearLearningJourneyRunDerivedMetadata(wf, { save: opts.save !== false });
+    }
+    return {
+      ok: true,
+      invalidatedStepIds: downstreamStepIds,
+      sourceStage: sourceStageName
+    };
+  }
+
+  function parseAndValidateProgressiveLearningJourneyStageCapture(raw, stepRow, wf, options) {
+    var opts = options && typeof options === "object" ? options : {};
+    var assembleLib = resolveLearningJourneyAssembleLib();
+    if (!assembleLib) {
+      return {
+        ok: false,
+        code: "lj_assemble_module_unavailable",
+        errors: ["lj_assemble_module_unavailable"],
+        message: "Learning Journey progressive assembler module is unavailable."
+      };
+    }
+    var stage = resolveProgressiveLearningJourneyStageForStep(stepRow, wf);
+    if (!stage) {
+      return {
+        ok: false,
+        code: "not_progressive_lj_stage",
+        errors: ["not_progressive_lj_stage"],
+        message: "Step is not a progressive Learning Journey stage."
+      };
+    }
+    var extracted = extractLearningJourneyProgressiveStageJson(raw);
+    if (!extracted.ok) {
+      return {
+        ok: false,
+        code: (extracted.errors && extracted.errors[0]) || "invalid_json",
+        errors: extracted.errors || ["invalid_json"],
+        message: extracted.message || "Invalid JSON stage capture."
+      };
+    }
+    var parsed = extracted.parsed;
+    if (
+      stage === "design_page" &&
+      typeof assembleLib.isMonolithicLearningJourneyDesignPageShape === "function" &&
+      assembleLib.isMonolithicLearningJourneyDesignPageShape(parsed)
+    ) {
+      return {
+        ok: false,
+        code: "monolithic_capture_rejected_for_progressive_workflow",
+        errors: ["monolithic_capture_rejected_for_progressive_workflow"],
+        message:
+          "Progressive Learning Journey Step 5 requires the thin Stage 5 partial only — monolithic Design Page captures are rejected."
+      };
+    }
+    var stageIdx = LJ_PROGRESSIVE_STAGE_ORDER.indexOf(stage);
+    var collected = collectAcceptedProgressiveLearningJourneyStageCaptures(wf, {
+      includeDesignPage: false,
+      captures: opts.captures,
+      capturesRaw: opts.capturesRaw,
+      ignoreLiveInvalidation: opts.ignoreLiveInvalidation
+    });
+    var upstream = collected.captures || {};
+    var parentMinutes = resolveLearningJourneyAuthoritativeParentDurationMinutes(wf);
+    var briefSource = readLearningJourneyBriefProvidedSourceContext(wf);
+
+    // Enforce mandatory valid upstream chain before accepting any downstream stage.
+    var reqIdx;
+    for (reqIdx = 0; reqIdx < stageIdx; reqIdx += 1) {
+      var reqStage = LJ_PROGRESSIVE_STAGE_ORDER[reqIdx];
+      if (!upstream[reqStage]) {
+        return {
+          ok: false,
+          code: "missing_or_invalid_upstream_stage:" + reqStage,
+          errors: ["missing_or_invalid_upstream_stage:" + reqStage],
+          message:
+            "Stage " +
+            stage +
+            " requires a valid, current accepted capture for upstream stage " +
+            reqStage +
+            "."
+        };
+      }
+    }
+
+    var gate = null;
+    if (stage === "learning_requirements") {
+      gate = assembleLib.validateLearningJourneyRequirementsPartial(parsed, {
+        parentAuthoritativeMinutes: parentMinutes
+      });
+    } else if (stage === "learning_progression") {
+      gate = assembleLib.validateLearningJourneyProgressionPartial(parsed, {
+        stage1: upstream.learning_requirements
+      });
+    } else if (stage === "learning_elements") {
+      gate = assembleLib.validateLearningJourneyElementsPartial(parsed, {
+        stage2: upstream.learning_progression
+      });
+    } else if (stage === "learning_commissions") {
+      gate = assembleLib.validateLearningJourneyCommissionsPartial(parsed, {
+        stage1: upstream.learning_requirements,
+        stage3: upstream.learning_elements,
+        briefProvidedSourceContext: briefSource,
+        parentAuthoritativeMinutes: parentMinutes
+      });
+      if (gate && gate.ok) {
+        var sharedLibS4 = resolveLearningJourneySharedSourceLib();
+        var s4Mat =
+          parsed.shared_authoritative_material &&
+          typeof parsed.shared_authoritative_material === "object"
+            ? parsed.shared_authoritative_material
+            : null;
+        if (
+          sharedLibS4 &&
+          s4Mat &&
+          String(s4Mat.status || "").trim().toLowerCase() === "generated" &&
+          String(s4Mat.content || "").trim() &&
+          typeof sharedLibS4.collectContradictoryDerivedStatisticErrors === "function"
+        ) {
+          var s4San =
+            typeof sharedLibS4.sanitizeDerivedStatisticsInSharedMaterial === "function"
+              ? sharedLibS4.sanitizeDerivedStatisticsInSharedMaterial(s4Mat.content)
+              : { text: s4Mat.content, corrections: [] };
+          var s4Contra = sharedLibS4.collectContradictoryDerivedStatisticErrors(
+            { commissions: parsed.commissions || [] },
+            s4Mat.content,
+            { precomputedSharedSanitize: s4San }
+          );
+          if (s4Contra && s4Contra.length) {
+            return {
+              ok: false,
+              code: "contradictory_derived_statistics",
+              errors: s4Contra,
+              message:
+                "Stage 4 shared_authoritative_material has contradictory derived statistics: " +
+                s4Contra.join("; ")
+            };
+          }
+          if (s4San && s4San.text && s4San.text !== s4Mat.content) {
+            parsed.shared_authoritative_material.content = s4San.text;
+          }
+        }
+      }
+    } else if (stage === "design_page") {
+      gate = assembleLib.validateLearningJourneyDesignPagePartial(parsed, {
+        stage4: upstream.learning_commissions
+      });
+      if (gate && gate.ok) {
+        var assembledRes = assembleLib.assembleLearningJourneyPageFromPartials(
+          {
+            learning_requirements: upstream.learning_requirements,
+            learning_progression: upstream.learning_progression,
+            learning_elements: upstream.learning_elements,
+            learning_commissions: upstream.learning_commissions,
+            design_page: parsed
+          },
+          {
+            briefProvidedSourceContext: briefSource,
+            parentAuthoritativeMinutes: parentMinutes
+          }
+        );
+        if (!assembledRes || !assembledRes.ok || !assembledRes.page) {
+          var asmErrs = (assembledRes && assembledRes.errors) || ["lj_progressive_assembly_failed"];
+          return {
+            ok: false,
+            code: (assembledRes && assembledRes.code) || asmErrs[0] || "lj_progressive_assembly_failed",
+            errors: asmErrs,
+            message: "Learning Journey deterministic assembly failed: " + asmErrs.join("; ")
+          };
+        }
+        var designMod = resolveLearningJourneyDesignPageLib();
+        var dpGate = { ok: true, errors: [], warnings: [] };
+        if (designMod && typeof designMod.validateLearningJourneyDesignPageForCapture === "function") {
+          dpGate = designMod.validateLearningJourneyDesignPageForCapture(assembledRes.page, {
+            parentAuthoritativeMinutes: parentMinutes
+          });
+        }
+        dpGate = attachLearningJourneyWorkloadWarningsToGate(dpGate, assembledRes.page, wf);
+        if (!dpGate || !dpGate.ok) {
+          var dpErrs = (dpGate && dpGate.errors) || ["invalid_assembled_learning_journey_page"];
+          return {
+            ok: false,
+            code: dpErrs[0] || "invalid_assembled_learning_journey_page",
+            errors: dpErrs,
+            message: "Assembled Learning Journey Design Page invalid: " + dpErrs.join("; ")
+          };
+        }
+        return {
+          ok: true,
+          stage: stage,
+          parsed: parsed,
+          assembledPage: assembledRes.page,
+          warnings: Array.isArray(dpGate.warnings) ? dpGate.warnings.slice() : [],
+          json: JSON.stringify(parsed, null, 2)
+        };
+      }
+    }
+
+    if (!gate || !gate.ok) {
+      var gateErrs = (gate && gate.errors) || ["invalid_learning_journey_stage"];
+      return {
+        ok: false,
+        code: (gate && gate.code) || gateErrs[0] || "invalid_learning_journey_stage",
+        errors: gateErrs,
+        message: "Stage " + stage + " validation failed: " + gateErrs.join("; ")
+      };
+    }
+
+    return {
+      ok: true,
+      stage: stage,
+      parsed: parsed,
+      upstream: upstream,
+      warnings: [],
+      json: JSON.stringify(parsed, null, 2)
+    };
+  }
+
+  function revalidateProgressiveLearningJourneyCapturesAfterHydration(workflowId, options) {
+    var wid = String(workflowId || "").trim();
+    if (!wid) return { ok: false, skipped: true };
+    var wf = findWorkflowById(wid);
+    if (!wf || !isProgressiveLearningJourneyWorkflowActive(wf)) {
+      return { ok: true, skipped: true };
+    }
+    var opts = options && typeof options === "object" ? options : {};
+    state.workflowRunLjStageValidation = state.workflowRunLjStageValidation || {};
+    state.workflowRunLjInvalidatedSteps = state.workflowRunLjInvalidatedSteps || {};
+    state.workflowRunPageValidation = state.workflowRunPageValidation || {};
+    var steps = Array.isArray(wf.steps) ? wf.steps : [];
+    var stepByStage = {};
+    steps.forEach(function (st) {
+      var sg = resolveProgressiveLearningJourneyStageForStep(st, wf);
+      if (sg && st && st.id) stepByStage[sg] = st;
+    });
+    var priorValid = true;
+    var results = {};
+    LJ_PROGRESSIVE_STAGE_ORDER.forEach(function (stage) {
+      var st = stepByStage[stage];
+      if (!st || !st.id) return;
+      var sid = String(st.id).trim();
+      var raw =
+        (opts.capturesRaw && opts.capturesRaw[sid]) ||
+        (opts.captures && opts.captures[sid]) ||
+        (state.workflowRunCapturedOutputsRaw && state.workflowRunCapturedOutputsRaw[sid]) ||
+        (state.workflowRunCapturedOutputs && state.workflowRunCapturedOutputs[sid]) ||
+        "";
+      if (!String(raw || "").trim()) {
+        delete state.workflowRunLjStageValidation[sid];
+        if (stage === "design_page") delete state.workflowRunPageValidation[sid];
+        priorValid = false;
+        results[stage] = { ok: false, empty: true };
+        return;
+      }
+      if (!priorValid) {
+        state.workflowRunLjStageValidation[sid] =
+          "Upstream stage missing or invalid; re-validate after fixing earlier stages.";
+        if (stage === "design_page") {
+          state.workflowRunPageValidation[sid] = state.workflowRunLjStageValidation[sid];
+        }
+        if (state.workflowRunStepCompleted) delete state.workflowRunStepCompleted[sid];
+        results[stage] = { ok: false, blockedByUpstream: true };
+        return;
+      }
+      var check = parseAndValidateProgressiveLearningJourneyStageCapture(raw, st, wf, {
+        captures: opts.captures,
+        capturesRaw: opts.capturesRaw
+      });
+      if (!check.ok) {
+        state.workflowRunLjStageValidation[sid] = String(
+          check.message || (check.errors || []).join("; ") || "Invalid stage capture"
+        );
+        if (stage === "design_page") {
+          state.workflowRunPageValidation[sid] = state.workflowRunLjStageValidation[sid];
+        }
+        if (state.workflowRunStepCompleted) delete state.workflowRunStepCompleted[sid];
+        priorValid = false;
+        results[stage] = { ok: false, errors: check.errors || [] };
+      } else {
+        delete state.workflowRunLjStageValidation[sid];
+        delete state.workflowRunLjInvalidatedSteps[sid];
+        if (stage === "design_page") delete state.workflowRunPageValidation[sid];
+        results[stage] = { ok: true };
+      }
+    });
+    return { ok: priorValid, results: results };
   }
 
   function composeLearningJourneyAuthoritativeStageHandoffToken(wf, stepRow) {
@@ -6992,10 +7759,20 @@
         return readLearningJourneyLockedSourceContextSlot(row);
       }
     });
-    if (applied && applied.written && typeof saveWorkflows === "function") {
-      try {
-        saveWorkflows();
-      } catch (_err) {}
+    if (applied && applied.written) {
+      if (
+        wf.workflowBriefResolution &&
+        wf.workflowBriefResolution.resolvedFactors &&
+        typeof wf.workflowBriefResolution.resolvedFactors === "object" &&
+        !isLearningJourneySourceContextBriefProvided(wf)
+      ) {
+        wf.workflowBriefResolution.resolvedFactors.source_context_origin = "run_generated";
+      }
+      if (typeof saveWorkflows === "function") {
+        try {
+          saveWorkflows();
+        } catch (_err) {}
+      }
     }
     return {
       ok: true,
@@ -7990,6 +8767,139 @@
     }
     var workflow = wf && typeof wf === "object" ? wf : resolveWorkflowForUpstreamArtefacts({});
     var opts = options && typeof options === "object" ? options : {};
+    if (isProgressiveLearningJourneyWorkflowActive(workflow)) {
+      var assembleLib = resolveLearningJourneyAssembleLib();
+      if (
+        !assembleLib ||
+        typeof assembleLib.assembleLearningJourneyPageFromPartials !== "function"
+      ) {
+        return { ok: false, code: "lj_assemble_module_unavailable", callsModel: true };
+      }
+      var collected = collectAcceptedProgressiveLearningJourneyStageCaptures(workflow, {
+        includeDesignPage: true,
+        captures: opts.captures,
+        capturesRaw: opts.capturesRaw
+      });
+      var stagePartials = collected.captures || {};
+      var stageStepIds = collected.stepIdByStage || {};
+      var useLiveStateGuards = !opts.captures && !opts.capturesRaw;
+      var missingStages = [];
+      var staleStages = [];
+      var sIdx;
+      for (sIdx = 0; sIdx < LJ_PROGRESSIVE_STAGE_ORDER.length; sIdx += 1) {
+        var stName = LJ_PROGRESSIVE_STAGE_ORDER[sIdx];
+        var stSid = stageStepIds[stName] || "";
+        if (
+          useLiveStateGuards &&
+          stSid &&
+          state.workflowRunLjInvalidatedSteps &&
+          state.workflowRunLjInvalidatedSteps[stSid]
+        ) {
+          staleStages.push(stName);
+          continue;
+        }
+        if (
+          useLiveStateGuards &&
+          stSid &&
+          ((state.workflowRunLjStageValidation && state.workflowRunLjStageValidation[stSid]) ||
+            (stName === "design_page" &&
+              state.workflowRunPageValidation &&
+              state.workflowRunPageValidation[stSid]))
+        ) {
+          return {
+            ok: false,
+            code: "invalid_progressive_stage:" + stName,
+            errors: ["invalid_progressive_stage:" + stName],
+            callsModel: true,
+            progressive: true
+          };
+        }
+        if (!stagePartials[stName]) {
+          missingStages.push(stName);
+        }
+      }
+      if (staleStages.length) {
+        return {
+          ok: false,
+          code: "stale_progressive_stages:" + staleStages.join(","),
+          errors: staleStages.map(function (n) {
+            return "stale_stage:" + n;
+          }),
+          callsModel: true,
+          progressive: true
+        };
+      }
+      if (
+        stagePartials.design_page &&
+        typeof assembleLib.isMonolithicLearningJourneyDesignPageShape === "function" &&
+        assembleLib.isMonolithicLearningJourneyDesignPageShape(stagePartials.design_page)
+      ) {
+        return {
+          ok: false,
+          code: "monolithic_capture_rejected_for_progressive_workflow",
+          errors: ["monolithic_capture_rejected_for_progressive_workflow"],
+          callsModel: true,
+          progressive: true
+        };
+      }
+      if (missingStages.length) {
+        return {
+          ok: false,
+          code: "missing_progressive_stages:" + missingStages.join(","),
+          errors: missingStages.map(function (n) {
+            return "missing_stage:" + n;
+          }),
+          callsModel: true,
+          progressive: true
+        };
+      }
+      var parentMinProg = resolveLearningJourneyAuthoritativeParentDurationMinutes(workflow);
+      var briefSourceProg = readLearningJourneyBriefProvidedSourceContext(workflow);
+      var assembledProg = assembleLib.assembleLearningJourneyPageFromPartials(stagePartials, {
+        briefProvidedSourceContext: briefSourceProg,
+        parentAuthoritativeMinutes: parentMinProg
+      });
+      if (!assembledProg || !assembledProg.ok || !assembledProg.page) {
+        return {
+          ok: false,
+          code: (assembledProg && assembledProg.code) || "lj_progressive_assembly_failed",
+          errors: (assembledProg && assembledProg.errors) || ["lj_progressive_assembly_failed"],
+          callsModel: true,
+          progressive: true
+        };
+      }
+      var finalGate =
+        typeof designMod.validateLearningJourneyDesignPageForCapture === "function"
+          ? designMod.validateLearningJourneyDesignPageForCapture(assembledProg.page, {
+              parentAuthoritativeMinutes: parentMinProg
+            })
+          : designMod.validateLearningJourneyDesignPage(assembledProg.page, {
+              parentAuthoritativeMinutes: parentMinProg
+            });
+      finalGate = attachLearningJourneyWorkloadWarningsToGate(
+        finalGate,
+        assembledProg.page,
+        workflow
+      );
+      if (!finalGate || !finalGate.ok) {
+        return {
+          ok: false,
+          code: "invalid_learning_journey_page",
+          errors: (finalGate && finalGate.errors) || ["invalid_learning_journey_page"],
+          callsModel: true,
+          progressive: true
+        };
+      }
+      return {
+        ok: true,
+        page: assembledProg.page,
+        callsModel: true,
+        progressive: true,
+        assembledFromStages: true,
+        warnings: Array.isArray(finalGate.warnings) ? finalGate.warnings.slice() : [],
+        text: JSON.stringify(assembledProg.page, null, 2)
+      };
+    }
     var raw = "";
     if (typeof readWorkflowStepCaptureByCanonicalId === "function") {
       raw = readWorkflowStepCaptureByCanonicalId(workflow, "step_design_page", {
@@ -11319,6 +12229,9 @@
   }
 
   function isWorkflowStepRunCaptureProducer(step, wf) {
+    if (resolveProgressiveLearningJourneyStageForStep(step, wf)) {
+      return true;
+    }
     var outputName = String((step && step.outputName) || "")
       .trim()
       .toLowerCase()
@@ -11345,6 +12258,14 @@
       .replace(/\s+/g, "_");
     var allowed = [];
     if (outputName) allowed.push(outputName);
+    if (
+      outputName === "learning_requirements" ||
+      outputName === "learning_progression" ||
+      outputName === "learning_elements" ||
+      outputName === "learning_commissions"
+    ) {
+      allowed.push("learning_journey_stage");
+    }
     // Learning Journey Design Page is an ordinary shared page (artifact_type "page")
     // even when the step output name remains learning_journey_page.
     if (
@@ -13044,6 +13965,22 @@
     var page = parsed && typeof parsed === "object" && !Array.isArray(parsed) ? parsed : null;
     var workflowEarly = wf && typeof wf === "object" ? wf : resolveWorkflowForUpstreamArtefacts({});
     if (workflowRecordIsLearningJourney(workflowEarly) || isLearningJourneyWorkflow(workflowEarly)) {
+      var earlyLjOpts = options && typeof options === "object" ? options : {};
+      if (isProgressiveLearningJourneyWorkflowActive(workflowEarly)) {
+        // Strict progressive mode: always require all 5 valid, current stage captures
+        // and assemble deterministically (never allow monolithic bypass or stale stages).
+        var fromProgressive = readAcceptedLearningJourneyPageFromWorkflow(workflowEarly, {
+          captures: earlyLjOpts.captures,
+          capturesRaw: earlyLjOpts.capturesRaw
+        });
+        if (fromProgressive && fromProgressive.ok && fromProgressive.page) {
+          return fromProgressive.page;
+        }
+        throw new Error(
+          "Learning Journey Design Page required" +
+            (fromProgressive && fromProgressive.code ? ": " + fromProgressive.code : "")
+        );
+      }
       var designModEarly = resolveLearningJourneyDesignPageLib();
       if (
         page &&
@@ -13059,7 +13996,6 @@
               : "")
         );
       }
-      var earlyLjOpts = options && typeof options === "object" ? options : {};
       var fromCapture = readAcceptedLearningJourneyPageFromWorkflow(workflowEarly, {
         captures: earlyLjOpts.captures,
         capturesRaw: earlyLjOpts.capturesRaw
@@ -14229,6 +15165,9 @@
   }
 
   function isPartialPageOutputWorkflowEnabled(wf) {
+    if (isProgressiveLearningJourneyWorkflowActive(wf)) {
+      return true;
+    }
     if (isExpositoryResourceWorkflow(wf) && isPageEnrichmentV2WorkflowEnabled(wf)) {
       return true;
     }
@@ -18874,6 +19813,9 @@
           stepCanonicalTitle: step.title || "",
           stepTitle: step.title || ""
         }));
+    if (resolveProgressiveLearningJourneyStageForStep(step, wf)) {
+      return "";
+    }
     if (
       isPartialPageOutputWorkflowEnabled(wf) &&
       (canonicalId === "step_design_assessment" || canonicalId === "step_generate_assessment_items")
@@ -20506,6 +21448,10 @@
         state.workflowRunLjSharedSourceValidation[sid]) ||
       (state.workflowRunLjDurationValidation &&
         state.workflowRunLjDurationValidation[sid]) ||
+      (state.workflowRunLjStageValidation &&
+        state.workflowRunLjStageValidation[sid]) ||
+      (state.workflowRunLjInvalidatedSteps &&
+        state.workflowRunLjInvalidatedSteps[sid]) ||
       workflowRunLearnerPageFramingGateMessage(sid)
     );
   }
@@ -29205,6 +30151,12 @@
       steps: built.steps,
       firstClassLocal: true,
       firstClassIdentity: built.identity,
+      outputSpec: built.outputSpec ? JSON.parse(JSON.stringify(built.outputSpec)) : null,
+      progressiveCaptureVersion: String(
+        deliverySeed.progressive_capture_version ||
+          (built.outputSpec && built.outputSpec.progressiveCaptureVersion) ||
+          ""
+      ).trim(),
       callsModel: false
     };
     state.workflowBriefResolved = {
@@ -31306,6 +32258,10 @@
     state.workflowRunGamSuitabilityReviewValidation = {};
     state.workflowRunGamVerificationCheck = {};
     state.workflowRunGamVerificationPages = {};
+    state.workflowRunLjSharedSourceValidation = {};
+    state.workflowRunLjDurationValidation = {};
+    state.workflowRunLjStageValidation = {};
+    state.workflowRunLjInvalidatedSteps = {};
   }
 
   function clearWorkflowRunCaptureState(options) {
@@ -31315,6 +32271,17 @@
       bumpWorkflowRunClearEpoch(wid);
       invalidateWorkflowRunCapturePersistChains(wid);
       clearUnsavedWorkflowRunCapture(wid);
+      clearCachedLearningJourneyAssembledSnapshotForWorkflow(wid);
+      var wfForClear = findWorkflowById(wid);
+      if (
+        wfForClear &&
+        (isLearningJourneyWorkflow(wfForClear) || workflowRecordIsLearningJourney(wfForClear))
+      ) {
+        if (wfForClear.stageCaptures && typeof wfForClear.stageCaptures === "object") {
+          delete wfForClear.stageCaptures;
+        }
+        clearLearningJourneyRunDerivedMetadata(wfForClear, { save: opts.persist !== false });
+      }
     }
     if (workflowRunAutosaveToastTimer) {
       window.clearTimeout(workflowRunAutosaveToastTimer);
@@ -31555,6 +32522,10 @@
         state.workflowRunLjSharedSourceValidation[sid]) ||
       (state.workflowRunLjDurationValidation &&
         state.workflowRunLjDurationValidation[sid]) ||
+      (state.workflowRunLjStageValidation &&
+        state.workflowRunLjStageValidation[sid]) ||
+      (state.workflowRunLjInvalidatedSteps &&
+        state.workflowRunLjInvalidatedSteps[sid]) ||
       gamMaterialsVerificationBlocksAdvance(sid) ||
       workflowRunLearnerPageFramingGateMessage(sid)
     );
@@ -32083,8 +33054,11 @@
     ) {
       recomposeWorkflowPageCapturesFromUpstream();
     }
-    // Phase 2 durable boundary: Learning Journey Design Page capture (Steps 1–4 are chat-context).
-    // Optional soft path: if Commissioning text is pasted into Run, persist markers when present.
+    // Learning Journey capture lifecycle:
+    // - Progressive LJ (s105_v1): strict per-stage JSON validation, upstream change invalidation,
+    //   run-derived Stage 4 metadata persistence, deterministic final assembly, and zero persistence
+    //   of invalid captures.
+    // - Legacy LJ: preserve existing chat-context Steps 1-4 + monolithic Step 5 Design Page contract.
     if (
       wf &&
       stepRow &&
@@ -32094,6 +33068,139 @@
         state.workflowRunLjSharedSourceValidation || {};
       state.workflowRunLjDurationValidation =
         state.workflowRunLjDurationValidation || {};
+      state.workflowRunLjStageValidation =
+        state.workflowRunLjStageValidation || {};
+      state.workflowRunLjInvalidatedSteps =
+        state.workflowRunLjInvalidatedSteps || {};
+      var progressiveLjStage = resolveProgressiveLearningJourneyStageForStep(stepRow, wf);
+      if (progressiveLjStage) {
+        var progStageIdx = LJ_PROGRESSIVE_STAGE_ORDER.indexOf(progressiveLjStage);
+        var progRawText = String(raw || "");
+        var progCaptureChanged =
+          !workflowRunCaptureJsonSemanticallyEquivalent(prevStoredRaw, progRawText) ||
+          !workflowRunCaptureJsonSemanticallyEquivalent(prevStoredFinal, finalizedCapture);
+        if (!String(progRawText || "").trim()) {
+          delete state.workflowRunLjStageValidation[sid];
+          delete state.workflowRunLjSharedSourceValidation[sid];
+          delete state.workflowRunLjDurationValidation[sid];
+          if (progressiveLjStage === "design_page" && state.workflowRunPageValidation) {
+            delete state.workflowRunPageValidation[sid];
+          }
+          if (state.workflowRunStepCompleted && state.workflowRunStepCompleted[sid]) {
+            delete state.workflowRunStepCompleted[sid];
+          }
+          if (state.workflowRunCaptureRefs && state.workflowRunCaptureRefs[sid]) {
+            delete state.workflowRunCaptureRefs[sid];
+          }
+          if (wf.stageCaptures && typeof wf.stageCaptures === "object") {
+            delete wf.stageCaptures[progressiveLjStage];
+          }
+          if (progCaptureChanged || String(prevStoredRaw || "").trim()) {
+            // Remove cleared step from durable store so reload cannot resurrect it.
+            var widClr = String(wf.id || "").trim();
+            if (widClr && typeof loadWorkflowRunStateStore === "function") {
+              var stClr = loadWorkflowRunStateStore();
+              var recClr = stClr && stClr[widClr] ? stClr[widClr] : null;
+              if (recClr) {
+                if (recClr.capturedOutputs) delete recClr.capturedOutputs[sid];
+                if (recClr.capturedOutputsRaw) delete recClr.capturedOutputsRaw[sid];
+                if (recClr.captureRefs) delete recClr.captureRefs[sid];
+                if (recClr.stepCompleted) delete recClr.stepCompleted[sid];
+                if (typeof saveWorkflowRunStateStore === "function") {
+                  try {
+                    saveWorkflowRunStateStore(stClr, {
+                      source: "progressiveLjStageCleared",
+                      workflowId: widClr
+                    });
+                  } catch (_eClr) {}
+                }
+              }
+            }
+            if (progStageIdx < 4) {
+              invalidateDownstreamLearningJourneyStages(wf, progStageIdx, {
+                clearRunDerivedMetadata: true
+              });
+            } else {
+              clearCachedLearningJourneyAssembledSnapshotForWorkflow(wf.id);
+            }
+          }
+        } else {
+          var progGate = parseAndValidateProgressiveLearningJourneyStageCapture(
+            progRawText,
+            stepRow,
+            wf
+          );
+          if (!progGate || !progGate.ok) {
+            var progErrMsg = String(
+              (progGate && (progGate.message || (progGate.errors || []).join("; "))) ||
+                "Invalid Learning Journey stage capture."
+            );
+            state.workflowRunLjStageValidation[sid] = progErrMsg;
+            if (progressiveLjStage === "design_page") {
+              state.workflowRunPageValidation = state.workflowRunPageValidation || {};
+              state.workflowRunPageValidation[sid] = progErrMsg;
+            }
+            if (state.workflowRunStepCompleted && state.workflowRunStepCompleted[sid]) {
+              delete state.workflowRunStepCompleted[sid];
+            }
+            if (state.workflowRunCaptureRefs && state.workflowRunCaptureRefs[sid]) {
+              delete state.workflowRunCaptureRefs[sid];
+            }
+            if (wf.stageCaptures && typeof wf.stageCaptures === "object") {
+              delete wf.stageCaptures[progressiveLjStage];
+            }
+            // Invalidate downstream stages and cached assembled snapshot whenever an upstream
+            // stage becomes invalid so stale accepted artefacts can never survive.
+            if (progStageIdx < 4) {
+              invalidateDownstreamLearningJourneyStages(wf, progStageIdx, {
+                clearRunDerivedMetadata: true
+              });
+            } else {
+              clearCachedLearningJourneyAssembledSnapshotForWorkflow(wf.id);
+            }
+          } else {
+            delete state.workflowRunLjStageValidation[sid];
+            delete state.workflowRunLjInvalidatedSteps[sid];
+            delete state.workflowRunLjSharedSourceValidation[sid];
+            delete state.workflowRunLjDurationValidation[sid];
+            if (state.workflowRunStrictJsonValidation) {
+              delete state.workflowRunStrictJsonValidation[sid];
+            }
+            if (progressiveLjStage === "design_page" && state.workflowRunPageValidation) {
+              delete state.workflowRunPageValidation[sid];
+            }
+            if (progGate.json && progGate.json !== raw) {
+              ta.value = progGate.json;
+              raw = progGate.json;
+              finalizedCapture = progGate.json;
+              state.workflowRunCapturedOutputsRaw[sid] = progGate.json;
+              state.workflowRunCapturedOutputs[sid] = progGate.json;
+            }
+            if (progStageIdx < 4 && progCaptureChanged && String(prevStoredRaw || "").trim()) {
+              invalidateDownstreamLearningJourneyStages(wf, progStageIdx, {
+                clearRunDerivedMetadata: progStageIdx < 3
+              });
+            }
+            if (progressiveLjStage === "learning_commissions") {
+              persistLearningJourneyRunDerivedStage4Metadata(
+                wf,
+                progGate.parsed,
+                progGate.upstream && progGate.upstream.learning_requirements
+              );
+            }
+            if (progressiveLjStage === "design_page") {
+              var progWarnings = Array.isArray(progGate.warnings) ? progGate.warnings : [];
+              if (progWarnings.length) {
+                state.workflowRunWorkloadFeasibilityWarnings =
+                  state.workflowRunWorkloadFeasibilityWarnings || {};
+                state.workflowRunWorkloadFeasibilityWarnings[sid] = progWarnings.join("\n\n");
+              } else if (state.workflowRunWorkloadFeasibilityWarnings) {
+                delete state.workflowRunWorkloadFeasibilityWarnings[sid];
+              }
+            }
+          }
+        }
+      } else {
       var sharedCaptureText = String(
         (state.workflowRunCapturedOutputs && state.workflowRunCapturedOutputs[sid]) ||
           finalizedCapture ||
@@ -32176,6 +33283,7 @@
           delete state.workflowRunLjDurationValidation[sid];
         }
       }
+      }
     }
     updateRunStepOutputStatus(li);
     var liveFinalNow =
@@ -32212,7 +33320,11 @@
         (state.workflowRunLjSharedSourceValidation &&
           state.workflowRunLjSharedSourceValidation[sid]) ||
         (state.workflowRunLjDurationValidation &&
-          state.workflowRunLjDurationValidation[sid])
+          state.workflowRunLjDurationValidation[sid]) ||
+        (state.workflowRunLjStageValidation &&
+          state.workflowRunLjStageValidation[sid]) ||
+        (state.workflowRunLjInvalidatedSteps &&
+          state.workflowRunLjInvalidatedSteps[sid])
       );
       var persistedRawNow =
         sid && state.workflowRunCapturedOutputsRaw
@@ -32238,12 +33350,14 @@
       if (isWorkflowRunCapturePayloadEmpty(persistedRawNow, persistedFinalNow)) {
         return;
       }
-      // Learning Journey Design Page: never durable-persist a capture that failed
-      // shared-source / page validation (contradictory stats must not become "accepted").
+      // Learning Journey Design Page (legacy) and progressive LJ Stages 1-5:
+      // never durable-persist a capture that failed validation (invalid or stale captures
+      // must never become accepted or survive browser reload).
       var ljDesignPageBlocked =
         hasBlockingValidationError &&
         stepRow &&
-        isWorkflowStepDesignPageRow(stepRow) &&
+        (isWorkflowStepDesignPageRow(stepRow) ||
+          !!resolveProgressiveLearningJourneyStageForStep(stepRow, wf)) &&
         (isLearningJourneyWorkflow(wf) || workflowRecordIsLearningJourney(wf));
       var shouldPersist =
         (captureChanged || !captureDurablyCurrent) &&
@@ -32395,6 +33509,10 @@
       sid && state.workflowRunGamFormatValidation
         ? state.workflowRunGamFormatValidation[sid]
         : "";
+    var ljStageErr =
+      sid && state.workflowRunLjStageValidation ? state.workflowRunLjStageValidation[sid] : "";
+    var ljInvalidatedMsg =
+      sid && state.workflowRunLjInvalidatedSteps ? state.workflowRunLjInvalidatedSteps[sid] : "";
     var gamSuitabilityErr =
       sid && state.workflowRunGamSuitabilityReviewValidation
         ? state.workflowRunGamSuitabilityReviewValidation[sid]
@@ -32420,7 +33538,8 @@
         pageErr ||
         materialsClosureErr ||
         learnerFramingErr ||
-        gamFormatErr
+        gamFormatErr ||
+        ljStageErr
       ) && body.length > 0;
     var blockingMessage = String(
       strictErr ||
@@ -32429,6 +33548,7 @@
       materialsClosureErr ||
       learnerFramingErr ||
       gamFormatErr ||
+      ljStageErr ||
       ""
     ).trim();
     var text = "";
@@ -32436,6 +33556,8 @@
       text = blockingMessage
         ? "This result has validation errors: " + blockingMessage
         : "This result has validation errors.";
+    } else if (ljInvalidatedMsg && !body.length) {
+      text = String(ljInvalidatedMsg);
     } else if (gamVerificationPending) {
       text = gamVerificationView.stepStatusText || GAM_VERIFICATION_COPY.pendingStatus;
     } else {
@@ -37087,6 +38209,7 @@
       // Re-apply session unsaved backups after ref hydration so a failed durable
       // write is not overwritten by an older IndexedDB payload on refresh.
       restoreUnsavedWorkflowRunCapturesIntoState(wid, { preferUnsaved: true });
+      revalidateProgressiveLearningJourneyCapturesAfterHydration(wid);
       state.workflowRunCaptureHydrationByWorkflow[wid] = {
         pending: false,
         hydrated: hydratedCount,
@@ -37882,6 +39005,11 @@
     state.workflowRunStrictJsonValidation = {};
     state.workflowRunPageValidation = {};
     state.workflowRunEpisodePlanValidation = {};
+    state.workflowRunLjStageValidation = {};
+    state.workflowRunLjInvalidatedSteps = {};
+    state.workflowRunLjSharedSourceValidation = {};
+    state.workflowRunLjDurationValidation = {};
+    revalidateProgressiveLearningJourneyCapturesAfterHydration(wid);
     var sessionRunIndex = state.workflowRunSessionIndexByWorkflow[wid];
     state.currentWorkflowRunIndex =
       typeof sessionRunIndex === "number" &&
@@ -40663,6 +41791,7 @@
     clone.steps = (clone.steps || []).map(function (step) {
       var s = Object.assign({}, step);
       s.id = oldToNew[step.id] || s.id;
+      delete s.capturedOutput;
       s.inputBindings = normalizeStepInputBindings(step.inputBindings || []).map(function (b) {
         if (b.kind !== "internal") return b;
         return {
@@ -40673,6 +41802,14 @@
       });
       return s;
     });
+    if (clone.stageCaptures && typeof clone.stageCaptures === "object") {
+      delete clone.stageCaptures;
+    }
+    if (isLearningJourneyWorkflow(clone) || workflowRecordIsLearningJourney(clone)) {
+      // Sprint 105 M3 (S105-AD-004): strip run-derived LJ durations and run-generated
+      // source_context on duplicate while preserving original brief and brief-provided source.
+      clearLearningJourneyRunDerivedMetadata(clone, { save: false });
+    }
     var dupNormWarnings = [];
     clone = normalizeWorkflowForV1(clone, dupNormWarnings);
     state.workflows.push(clone);
@@ -45364,6 +46501,12 @@
       }
       if (design.authoritativeLearningOutcomes) {
         wf.authoritativeLearningOutcomes = design.authoritativeLearningOutcomes;
+      }
+      if (design.progressiveCaptureVersion) {
+        wf.progressive_capture_version = String(design.progressiveCaptureVersion).trim();
+      }
+      if (design.outputSpec && typeof design.outputSpec === "object") {
+        wf.outputSpec = JSON.parse(JSON.stringify(design.outputSpec));
       }
     }
     if (
@@ -59491,6 +60634,9 @@
       isWorkflowStepDesignPageRow(stepRow) &&
       (isLearningJourneyWorkflow(wf) || workflowRecordIsLearningJourney(wf))
     ) {
+      if (isProgressiveLearningJourneyWorkflowActive(wf)) {
+        return parseAndValidateProgressiveLearningJourneyStageCapture(raw, stepRow, wf);
+      }
       return parseLearningJourneyDesignPageCaptureForStorage(raw, wf);
     }
     if (stepRow && isWorkflowStepDesignEpisodePlanRow(stepRow)) {
@@ -67431,6 +68577,30 @@
     prismTestApi.isCommissionNativePlanningStep = isCommissionNativePlanningStep;
     prismTestApi.composeCommissionNativePlanningBlocks = composeCommissionNativePlanningBlocks;
     prismTestApi.workflowRecordIsLearningJourney = workflowRecordIsLearningJourney;
+    prismTestApi.isProgressiveLearningJourneyWorkflowActive =
+      isProgressiveLearningJourneyWorkflowActive;
+    prismTestApi.isPartialPageOutputWorkflowEnabled = isPartialPageOutputWorkflowEnabled;
+    prismTestApi.isWorkflowStepRunCaptureProducer = isWorkflowStepRunCaptureProducer;
+    prismTestApi.parseAndValidateProgressiveLearningJourneyStageCapture =
+      parseAndValidateProgressiveLearningJourneyStageCapture;
+    prismTestApi.invalidateDownstreamLearningJourneyStages =
+      invalidateDownstreamLearningJourneyStages;
+    prismTestApi.clearLearningJourneyRunDerivedMetadata = clearLearningJourneyRunDerivedMetadata;
+    prismTestApi.isLearningJourneySourceContextBriefProvided =
+      isLearningJourneySourceContextBriefProvided;
+    prismTestApi.readLearningJourneyBriefProvidedSourceContext =
+      readLearningJourneyBriefProvidedSourceContext;
+    prismTestApi.revalidateProgressiveLearningJourneyCapturesAfterHydration =
+      revalidateProgressiveLearningJourneyCapturesAfterHydration;
+    prismTestApi.syncWorkflowRunCapturedOutputToState = syncWorkflowRunCapturedOutputToState;
+    prismTestApi.clearWorkflowRunCaptureState = clearWorkflowRunCaptureState;
+    prismTestApi.executeClearWorkflowRunData = executeClearWorkflowRunData;
+    prismTestApi.handleDuplicateWorkflow = handleDuplicateWorkflow;
+    prismTestApi.restoreWorkflowRunStateForWorkflow = restoreWorkflowRunStateForWorkflow;
+    prismTestApi.hydrateWorkflowRunCapturePayloadsForWorkflow =
+      hydrateWorkflowRunCapturePayloadsForWorkflow;
+    prismTestApi.workflowRunStepHasBlockingCaptureErrors = workflowRunStepHasBlockingCaptureErrors;
+    prismTestApi.isWorkflowRunStepCaptureReadyForAdvance = isWorkflowRunStepCaptureReadyForAdvance;
     prismTestApi.workflowHasSprint58PagePipelineSteps = workflowHasSprint58PagePipelineSteps;
     prismTestApi.recomposeWorkflowPageCapturesFromUpstream =
       recomposeWorkflowPageCapturesFromUpstream;

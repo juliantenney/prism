@@ -1,8 +1,8 @@
 # Sprint 105 — Validation Plan
 
 **Sprint:** 105 — Learning Journey Progressive Capture and Assembly  
-**Status:** **MILESTONE 1 COMMITTED (`4b698db`); MILESTONE 2 FOCUSED-VERIFIED (STOPPED FOR REVIEW)**  
-**Baseline:** `4b698db`
+**Status:** **MILESTONES 1–2 COMMITTED (`4b698db`, `09cfbfc`); MILESTONE 3 FOCUSED-VERIFIED (STOPPED FOR REVIEW)**  
+**Baseline:** `09cfbfc`
 
 ---
 
@@ -47,16 +47,27 @@
 | Non-LJ product family design-page suites (`s94-assessment-design-page-framing-string`, `s92-situated-task-slice1-family-design-page`, `s85-expository-design-page-visual-affordances`, `s85-expository-design-page-capture-shape`) | **37 / 37 pass** | Assessment Pack, Situated Task, and Expository product families unaffected |
 | **Focused Milestone 2 total** | **100 / 100 pass** | Zero regressions across LJ and non-LJ product families; no live generation yet |
 
-### Milestone 3 gate — Run orchestration, invalidation, reload persistence, clear-run, duplication & legacy compatibility
-- **Syntax checks:** `node --check app.js`.
-- **Focused automated suite (`tests/s105-m3-lifecycle-and-orchestration.test.js`):**
-  - **Progressive capture & deterministic assembly in `app.js`:** Pasting valid Stage 1–5 partials stores each step cleanly, validates on paste, assembles deterministically via `readAcceptedLearningJourneyPageFromWorkflow` and `resolvePageForRenderOrAssembly`, and feeds batch/single component creation and unified publish.
-  - **Stage invalidation:** Editing or replacing Stage 1, 2, 3, or 4 invalidates downstream readiness/cached assembled page snapshots and clears stale run-derived durations / run-generated shared source without deleting brief-provided `source_context`.
-  - **Reload persistence:** Simulated IndexedDB save → reload hydration restores all 5 stage captures and re-assembles the identical final LJ Design Page cleanly.
-  - **Clear run data:** `clearWorkflowRunCaptureState` clears all stage captures, validation states, cached assembled page, and run-generated `deliverySeed` fields while preserving the original brief and brief-provided `source_context`; no phantom captures remain.
-  - **Workflow duplication:** `handleDuplicateWorkflow` creates a clean duplicate with remapped step IDs, preserved brief & brief-provided `source_context`, and zero leaked captures, run-generated `source_context`, or `commissioned_component_durations`.
-  - **Legacy monolithic LJ compatibility:** Pre-Sprint 105 workflows without `progressive_capture_version` containing monolithic Step 5 `learning_journey_page` JSON continue to read, validate, preview, commission, and publish identically.
-  - Non-regression on `tests/qa-lj-no-phantom-run-captures.test.js`, `tests/qa-lj-batch-component-creation.test.js`, `tests/qa-lj-commission-native-and-lifecycle.test.js`, `tests/s96-lj-shared-source-design-page-boundary.test.js`, `tests/s102e-clear*.test.js`, `tests/s103-clear*.test.js`, and Expository/Practice/Interactive partial-page tests.
+### Milestone 3 gate — Run orchestration, invalidation, reload persistence, clear-run, duplication & legacy compatibility (**Verified 2026-11-25**)
+
+| Check / Suite | Result | Verified Scope |
+| ------------- | ------ | -------------- |
+| `node --check` on `lib/learning-journey-assemble.js`, `lib/learning-journey-sibling-prompts.js`, `app.js`, `tests/s105-m2-prompts-and-continuity.test.js`, `tests/s105-m3-lifecycle-and-orchestration.test.js` | **Pass** (exit 0) | All touched JS files syntax clean |
+| `tests/s105-m3-lifecycle-and-orchestration.test.js` | **6 / 6 pass** | 5-stage progressive capture, validation, persistence & deterministic assembly requiring all 5 stages and rejecting monolithic bypass; authoritative author-edit propagation through compact Stages 2–5 handoffs (Stage 5 receives editorial cues without specs/source) + upstream invalidation clearing downstream stages & run-derived metadata while preserving brief-provided source; reload persistence restoring all 5 stages identically, failing closed on corrupted Stage 3, and zero phantom captures on empty reload; origin-aware clear-run & clean workflow duplication (`S105-AD-004`) for both run-generated and brief-provided source; legacy pre-105 LJ monolithic Step 5 compatibility; stale async persistence write abort & durable `ABSENT≠DELETE` purge preventing resurrection on reload |
+| `tests/s105-m2-prompts-and-continuity.test.js` | **5 / 5 pass** | M2 progressive prompts, strengthened handoff assertions, Step 5 runner-guidance fix & continuity reconciliation |
+| `tests/s105-m1-lj-assembly.test.js` | **8 / 8 pass** | M1 stage contracts, deterministic assembler & legacy separation |
+| `tests/qa-lj-no-phantom-run-captures.test.js` | **2 / 2 pass** | Zero phantom run captures across commission creation & switching |
+| `tests/qa-lj-batch-component-creation.test.js` | **6 / 6 pass** | LJ single & batch component creation non-regression |
+| `tests/qa-lj-commission-native-and-lifecycle.test.js` | **3 / 3 pass** | Commission-native creation & deletion lifecycle non-regression |
+| `tests/s96-lj-shared-source-design-page-boundary.test.js` | **19 / 19 pass** | Shared source write-once & derived-stat contradiction boundary |
+| `tests/s94-learning-journey-wp2-continuity-validation.test.js` | **20 / 20 pass** | Continuity validation & author inspection / learner export safety |
+| `tests/s91-learning-journey-design-page-run-stage.test.js` | **4 / 4 pass** | LJ Design Page run-stage routing & Interactive isolation |
+| `tests/s103-clear-run-learner-runtime-isolation.test.js` | **7 / 7 pass** | Clear run data learner-runtime isolation non-regression |
+| `tests/s102e-clear-run-data-practice-child.test.js` | **3 / 3 pass** | Clear run data Practice child & stale persist abort non-regression |
+| `tests/page-vnext-assemble.test.js` | **32 / 32 pass** | Interactive & Practice partial-page assembly non-regression |
+| `tests/s85-expository-assembled-learner-page-sections.test.js` | **6 / 6 pass** | Expository progressive assembly non-regression |
+| `tests/s104-m5-workload-estimation.test.js` | **6 / 6 pass** | Authoritative durations & workload feasibility adapter non-regression |
+| Sprint 104 M2–M4 safeguards (`s104-m2-practice-episode-plan`, `s104-m3-downstream-practice-reconciliation`, `s104-m4-proportionate-commissioning`) | **13 / 13 pass** | Sprint 104 Practice & proportionate commissioning safeguards intact |
+| **Focused Milestone 3 total** | **140 / 140 unique tests pass** (`127/127` + `13/13` M2–M4; `19/19` M2–M5) | Zero regressions across LJ lifecycle, clear-run, duplication, Interactive, Practice, Expository, and Sprint 104 safeguards; no live generation yet |
 
 ### Milestone 4 gate — Live clean Economics LJ validation & Sprint 104 handback
 - **Live validation (fresh workflow; original baseline & incomplete Sprint 104 run preserved untouched):**

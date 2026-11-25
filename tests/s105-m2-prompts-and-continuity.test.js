@@ -443,12 +443,14 @@ test("S105 M2: authoritative stage handoff projects minimal anchors, honours aut
 
   const h3 = ljAssemble.buildAuthoritativeStageHandoffSection("learning_elements", captures);
   assert.match(h3, /P1 \(30 min\)/);
-  assert.match(h3, /P2 \(60 min\)/);
+  assert.match(h3, /P2 \(60 min, depends on P1\)/);
+  assert.match(h3, /Marginal cost; Opportunity cost; Externalities/);
   assert.doesNotMatch(h3, /EDITED_OUTCOME_ONE/);
 
   const h4 = ljAssemble.buildAuthoritativeStageHandoffSection("learning_commissions", captures);
   assert.match(h4, /1\. EDITED_OUTCOME_ONE/);
-  assert.match(h4, /E2 \[P2, 30 min, journal_producer_candidate\]/);
+  assert.match(h4, /E2 \[P2, 30 min, depends on E1, journal_producer_candidate\]/);
+  assert.match(h4, /Focus: Marginal benefit and ridership elasticity/);
 
   const h5 = ljAssemble.buildAuthoritativeStageHandoffSection("design_page", captures);
   assert.match(h5, /order 1 \| comm_1 -> section_id: "exp_1"/);

@@ -1,29 +1,38 @@
 # Sprint 104 — Status / work log
 
 **Sprint:** 104 — Workload Fidelity and Proportionate Authoring  
-**Status:** **OPEN — MILESTONES 1 (`c461770`), 2 (`9db45bf`), 3 (`53bd50c`), & 4 (`43db3f4`) COMMITTED / MILESTONE 5 IMPLEMENTED & VERIFIED (STOPPED BEFORE COMMIT)**  
-**Baseline:** `1515cd4` (M1: `c461770`; M2: `9db45bf`; M3: `53bd50c`; M4: `43db3f4`)  
+**Status:** **SUSPENDED AT LIVE ACCEPTANCE** — Milestones 1–5 complete and committed (`c461770`, `9db45bf`, `53bd50c`, `43db3f4`, `f1f1269`); suspended pending [Sprint 105 — Learning Journey Progressive Capture and Assembly](../2026-11-25-sprint-105-learning-journey-progressive-capture-and-assembly/SPRINT-105-START-HERE.md)  
+**Baseline:** `1515cd4` (M1: `c461770`; M2: `9db45bf`; M3: `53bd50c`; M4: `43db3f4`; M5: `f1f1269`)  
 **Primary backlog item:** [PB-FA-025](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-025--duration-fidelity-learner-workload-budgeting)  
-**Opening & agreement:** [S104-D01](decisions.md#s104-d01--open-sprint-104--workload-fidelity-and-proportionate-authoring), [S104-D02](decisions.md#s104-d02--architectural-agreement-principles-a-e-and-seven-gated-milestones)
+**Opening & decisions:** [S104-D01](decisions.md#s104-d01--open-sprint-104--workload-fidelity-and-proportionate-authoring), [S104-D02](decisions.md#s104-d02--architectural-agreement-principles-a-e-and-seven-gated-milestones), [S104-D03](decisions.md#s104-d03--milestone-2-multi-lo-compatibility-and-milestone-3-contract-reconciliation), [S104-D04](decisions.md#s104-d04--suspend-sprint-104-at-live-acceptance-pending-sprint-105)
 
 | Item | State |
 | ---- | ----- |
 | S104-D01 Open sprint | **Accepted** |
 | Phase 104A Read-only investigation & documentation | **Complete (`f3bb47d`)** |
 | S104-D02 Architectural agreement (Principles A–E & Milestones 1–7) | **Accepted** |
-| Milestone 1 — Authoritative duration transport | **Complete & committed (`c461770`)** (automated verified; manual acceptance pending integrated live validation) |
+| Milestone 1 — Authoritative duration transport | **Complete & committed (`c461770`)** (automated verified; manual live acceptance preserved for resumption) |
 | Milestone 2 — Practice Episode Plan design authority | **Complete & committed (`9db45bf`)** |
-| Milestone 3 — Reconciliation of downstream Practice contracts | **Accepted & committed (`53bd50c`)** |
+| Milestone 3 — Reconciliation of downstream Practice contracts | **Complete & committed (`53bd50c`)** |
 | Milestone 4 — Proportionate Learning Journey commissioning | **Complete & committed (`43db3f4`)** |
-| Milestone 5 — Workload estimation corrections | **Implemented & focused-verified (uncommitted — stopped before commit for review)** |
-| Milestone 6 — Live 5-, 15- and 30-minute Practice sensitivity probes | **Not started** (gated on Milestone 5 review) |
-| Milestone 7 — 90-minute Economics journey regeneration, baseline comparison, QA & learner-runtime acceptance | **Not started** (gated on Milestone 6) |
+| Milestone 5 — Workload estimation corrections | **Complete & committed (`f1f1269`)** |
+| S104-D04 Suspend Sprint 104 at live acceptance | **Accepted (2026-11-25)** — blocked by LJ Step 5 output-length failure after ~14,000-word Step 4; Sprint 105 opened |
+| Milestone 6 — Live 5-, 15- and 30-minute Practice sensitivity probes | **Preserved — suspended pending Sprint 105** |
+| Milestone 7 — 90-minute Economics journey regeneration, baseline comparison, QA & learner-runtime acceptance | **Preserved — suspended pending Sprint 105** |
 
 ---
 
 ## Work log
 
-### 2026-11-24 — Milestone 5 implementation (Workload estimation corrections — uncommitted)
+### 2026-11-25 — Sprint 104 suspended at live acceptance (`S104-D04`)
+
+- Milestone 5 committed at `f1f1269` (`Sprint 104 M5: workload estimation corrections and authoritative duration integration`). All Sprint 104 implementation milestones (**M1–M5**) are complete, verified, and preserved in `main`.
+- During live regeneration of the 90-minute *Correlation and Causation: Making Sense of Economic Evidence* Learning Journey, Step 4 (`Commissioning`) generated approximately **14,000 words** in conversational context and Step 5 (`Design Page`) subsequently failed to produce the complete Design Page JSON, citing output-length limitations.
+- Per [S104-D04](decisions.md#s104-d04--suspend-sprint-104-at-live-acceptance-pending-sprint-105), Sprint 104 is **suspended at live acceptance** (not closed) while **[Sprint 105 — Learning Journey Progressive Capture and Assembly](../2026-11-25-sprint-105-learning-journey-progressive-capture-and-assembly/SPRINT-105-START-HERE.md)** resolves the monolithic Step 5 capture architecture.
+- All outstanding Sprint 104 validation obligations (**Milestone 1** manual live acceptance, **Milestone 6** live 5-/15-/30-minute Practice sensitivity probes, and **Milestone 7** 90-minute Economics regeneration, baseline comparison, QA, and learner-runtime acceptance) remain preserved and resume once Sprint 105 delivers progressive LJ capture and deterministic assembly.
+- Both the original pre-intervention Economics baseline and the current incomplete regeneration are preserved untouched.
+
+### 2026-11-24 — Milestone 5 implementation (Workload estimation corrections — committed `f1f1269`)
 
 - Implemented **Milestone 5** per [S104-D02](decisions.md#s104-d02--architectural-agreement-principles-a-e-and-seven-gated-milestones) Principle E (bounded to confirmed estimation/adapter defects; no new estimation architecture, false precision, or automatic mutations; economics baseline untouched):
   - **Learning Journey adapter (`lib/learning-journey-workload-feasibility-adapter.js`):**

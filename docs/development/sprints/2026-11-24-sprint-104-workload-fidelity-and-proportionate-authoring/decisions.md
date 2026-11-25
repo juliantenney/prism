@@ -118,3 +118,25 @@ Milestone 3 reconciled all five deferred incompatibilities under Principle C wit
 4. **Practice presentation contracts, LS preservation & purpose-driven Design Page (`lib/ld-practice-presentation-contracts.js`, `app.js`):** Removed fixed `A2-style`/`A3-style`/`A4-style` exemplars, enforced Episode Plan activity/duration preservation in Practice Learning Sequence, and made Practice `editorial_opening_image` (`"generate"` / `"skip"` with `skip_reason` / omitted) and `page_synthesis` (`overview`, `learning_purpose`, `knowledge_summary`, `study_tips`) purpose-driven.
 5. **Assembly & vNext renderer survival (`lib/page-vnext-assemble.js`, `lib/learner-renderer-vnext/archetype-canonical-binding.js`, `lib/learner-renderer-vnext/build-activity-model.js`, `lib/learner-renderer-vnext-browser.js`):** Stripped `"—"` shell placeholders on omitted optional Practice fields and guaranteed clean fallback binding for lean/custom grammar-legal beat sequences (`UNASSIGNED_TASK_STEP` / `UNASSIGNED_EXPECTED_OUTPUT` avoided).
 
+---
+
+## S104-D04 — Suspend Sprint 104 at Live Acceptance Pending Sprint 105
+
+**Date:** 2026-11-25  
+**Status:** **Accepted**  
+**Committed implementation baseline:** `f1f1269` (M1 `c461770`, M2 `9db45bf`, M3 `53bd50c`, M4 `43db3f4`, M5 `f1f1269`)
+
+**Context:**  
+Sprint 104 implementation milestones 1–5 are complete, verified against focused automated suites, and committed through `f1f1269`. During live validation regeneration of the 90-minute *Correlation and Causation: Making Sense of Economic Evidence* Learning Journey, Step 4 (`Commissioning`) generated approximately 14,000 words in conversational context and Step 5 (`Design Page`) subsequently failed to produce the complete Design Page JSON, citing output-length limitations. This exposed the same monolithic-final-capture architectural limitation previously resolved for Interactive via progressive structured capture and deterministic assembly.
+
+**Decision:**
+
+1. **Suspend Sprint 104 at live acceptance** (do **not** close Sprint 104). Preserve all committed implementation (`c461770`–`f1f1269`) and all outstanding validation requirements:
+   - Milestone 1 manual integrated live acceptance;
+   - Milestone 6 — live 5-, 15-, and 30-minute Practice sensitivity probes;
+   - Milestone 7 — 90-minute Economics Learning Journey regeneration, baseline comparison against the preserved pre-intervention captures, educational QA, and learner-runtime acceptance.
+2. **Open [Sprint 105 — Learning Journey Progressive Capture and Assembly](../2026-11-25-sprint-105-learning-journey-progressive-capture-and-assembly/SPRINT-105-START-HERE.md)** as the active priority sprint ahead of Connect More (Wed 2 Dec 12:00).
+3. **Preserve artefacts untouched:** Retain both the original pre-intervention Economics baseline (`c01-page.json`, `c01-zip/`, `c02-page.json`, `tests/fixtures/assessment-pack-c06-design-page-d09-scatterplot.json`, and external parent/component baseline captures) and the current incomplete regeneration without alteration.
+4. **Resumption criterion:** Resume Sprint 104 live acceptance (Milestones 6–7 + M1 integrated live acceptance) once Sprint 105 delivers progressive Learning Journey capture and deterministic assembly.
+
+

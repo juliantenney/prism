@@ -61,6 +61,7 @@ const DEFAULT_LIBS = [
   "lib/first-class-commission-intake.js",
   "lib/learning-journey-shared-source.js",
   "lib/learning-journey-design-page.js",
+  "lib/learning-journey-assemble.js",
   "lib/learning-journey-commission-production-status.js",
   "lib/learning-journey-unified-shell.js",
   "lib/learning-journey-learner-package.js",

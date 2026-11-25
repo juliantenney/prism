@@ -68,7 +68,7 @@ function mockProductionStatus(result) {
   };
 }
 
-test("product labels use authoritative metadata and fall back to Type unknown", () => {
+test("product labels use authoritative metadata and fall back to Custom", () => {
   assert.equal(
     presentation.resolveWorkflowListProductLabel(
       { product: "interactive", name: "Anything" },
@@ -123,7 +123,7 @@ test("product labels use authoritative metadata and fall back to Type unknown", 
       { name: "Mysterious Untitled Pack" },
       { familyMod: family }
     ),
-    "Type unknown"
+    "Custom"
   );
 });
 

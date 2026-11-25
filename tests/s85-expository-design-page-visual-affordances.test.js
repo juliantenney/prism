@@ -487,3 +487,63 @@ test("6: Interactive activity generate affordance still validates unchanged", ()
   assert.ok(sprint38.SCOPES.indexOf("page") !== -1);
   assert.ok(sprint38.SCOPES.indexOf("section") !== -1);
 });
+
+test("7: Expository Design Page prompt lists full controlled vocabularies and distinguishes native SVG scatterplots from unrealised image-pipeline figures", () => {
+  const handoff = require("../lib/expository-xm-illustration-handoff.js");
+  const dpTemplate = sibling.resolveTemplate("design_page");
+  const dpPrompt = dpTemplate && dpTemplate.body ? dpTemplate.body : String(dpTemplate || "");
+
+  // Every permitted purpose and preferred_representation token is explicitly listed in the prompt
+  sprint38.PURPOSES.forEach((p) => {
+    assert.ok(dpPrompt.includes(p), `DP prompt must list purpose token "${p}"`);
+  });
+  sprint38.REPRESENTATIONS.forEach((rep) => {
+    assert.ok(dpPrompt.includes(rep), `DP prompt must list preferred_representation token "${rep}"`);
+  });
+
+  // Explicit distinction between natively rendered deterministic scatterplots and unrealised image-pipeline graphics
+  assert.ok(/rendered natively by PRISM's deterministic inline SVG renderer/i.test(dpPrompt));
+  assert.ok(/Do NOT emit visual_decision:"generate" in visual_affordances\[\] for structured scatterplots/i.test(dpPrompt));
+
+  // Validator remains strict: "scatterplot" is NOT silently added to image-pipeline REPRESENTATIONS
+  assert.equal(sprint38.REPRESENTATIONS.includes("scatterplot"), false);
+
+  // Handoff module does not misclassify structured XM scatterplots as unrealised image-pipeline illustrations
+  const nativeScatterplotMaterial = {
+    material_id: "M01",
+    kind: "scatterplot",
+    body: {
+      scatterplot: {
+        x_axis: { label: "Investment (%)", minimum: 10, maximum: 32, tick_interval: 2 },
+        y_axis: { label: "Growth (%)", minimum: 0, maximum: 5, tick_interval: 1 },
+        observations: [
+          { label: "A1", x: 12, y: 0.8 },
+          { label: "A2", x: 14, y: 1.6 }
+        ]
+      }
+    }
+  };
+  assert.equal(
+    handoff.isUnrealizedIllustrationSpecification(nativeScatterplotMaterial),
+    false,
+    "structured XM scatterplot must not be flagged as an unrealised image-pipeline illustration"
+  );
+
+  // Annotated number-line commissions remain recognised as unrealised image-pipeline graphics
+  const numberLineMaterial = {
+    material_id: "M02",
+    kind: "annotated_number_line",
+    body: {
+      number_line: {
+        start: -1,
+        end: 1,
+        ticks: [-1, -0.5, 0, 0.5, 1]
+      }
+    }
+  };
+  assert.equal(
+    handoff.isUnrealizedIllustrationSpecification(numberLineMaterial),
+    true,
+    "annotated number-line commission remains an unrealised image-pipeline graphic"
+  );
+});

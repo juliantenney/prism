@@ -755,3 +755,384 @@ test("S105 M3: stale persistence writes abort after upstream invalidation and in
     }
   }
 });
+
+test("S105 M4 live-acceptance regression: progressive Stage 4 Run Next uses structured commissions[].allocated_minutes (no legacy COMMISSION_DURATIONS block), rejects invalid durations consistently, and preserves legacy contract", async () => {
+  const fs = require("node:fs");
+  const path = require("node:path");
+  const vm = require("node:vm");
+  const {
+    runPrismLibScriptsInSandbox,
+    injectLearnerRendererVNextInSandbox
+  } = require("./prism-vm-lib-bootstrap.js");
+
+  const root = path.resolve(__dirname, "..");
+  const elementStore = new Map();
+  const capturedToasts = [];
+  let nextClickHandler = null;
+  let activeStepLis = [];
+
+  let workflowStepsEl = null;
+
+  function makeInteractiveStub(id) {
+    const el = createPrismVmElementStub();
+    el.id = id;
+    if (id === "workflowNextStepBtn") {
+      el.addEventListener = (ev, fn) => {
+        if (ev === "click") nextClickHandler = fn;
+      };
+    } else if (id === "workflowSteps") {
+      workflowStepsEl = el;
+      el.children = activeStepLis;
+    } else if (id === "toastContainer") {
+      el.appendChild = (node) => {
+        const childText = (node && Array.isArray(node.children) ? node.children : [])
+          .map((c) => String((c && c.textContent) || ""))
+          .join(" ")
+          .trim();
+        capturedToasts.push({
+          text: childText || String((node && node.textContent) || ""),
+          className: String((node && node.className) || "")
+        });
+      };
+    }
+    return el;
+  }
+
+  function setActiveStepLis(list) {
+    activeStepLis = list.map((li) => {
+      li.classList = Object.assign({}, li.classList, {
+        contains: (c) => c === "workflow-step"
+      });
+      return li;
+    });
+    if (workflowStepsEl) workflowStepsEl.children = activeStepLis;
+  }
+
+  const documentStub = {
+    readyState: "complete",
+    addEventListener: () => {},
+    createElement: () => {
+      const node = createPrismVmElementStub();
+      node.children = [];
+      node.appendChild = (ch) => {
+        node.children.push(ch);
+        return ch;
+      };
+      return node;
+    },
+    getElementById: (id) => {
+      if (!elementStore.has(id)) elementStore.set(id, makeInteractiveStub(id));
+      return elementStore.get(id);
+    },
+    querySelector: () => createPrismVmElementStub(),
+    querySelectorAll: () => [],
+    body: { appendChild: () => {}, removeChild: () => {} }
+  };
+  const lsData = new Map();
+  const windowStub = {
+    document: documentStub,
+    setTimeout,
+    clearTimeout,
+    addEventListener: () => {},
+    removeEventListener: () => {},
+    location: { hash: "", pathname: "/", hostname: "localhost", href: "http://localhost/" },
+    __PRISM_TEST_HARNESS__: true,
+    _: { debounce: (fn) => fn },
+    Utils: { debounce: (fn) => fn },
+    localStorage: {
+      getItem: (k) => (lsData.has(k) ? lsData.get(k) : null),
+      setItem: (k, v) => lsData.set(k, String(v)),
+      removeItem: (k) => lsData.delete(k)
+    },
+    URL: { createObjectURL: () => "blob:test", revokeObjectURL: () => {} },
+    Blob: function Blob() {},
+    Library: {
+      importPromptsFromEntries: () => Promise.resolve({ added: 0, updated: 0, skipped: 0 }),
+      getAllPrompts: () => Promise.resolve([])
+    }
+  };
+  const sandbox = {
+    console,
+    setTimeout,
+    clearTimeout,
+    Promise,
+    JSON,
+    Math,
+    Date,
+    RegExp,
+    Array,
+    Object,
+    String,
+    Number,
+    Boolean,
+    Error,
+    Map,
+    Set,
+    URLSearchParams,
+    navigator: {},
+    document: documentStub,
+    window: windowStub,
+    localStorage: windowStub.localStorage,
+    globalThis: windowStub,
+    _: windowStub._
+  };
+  const resourceStore = new Map();
+  let resSeq = 1;
+  windowStub.PRISM_WORKFLOW_RESOURCES = {
+    putTextResource: (opts) => {
+      const id = "res_" + resSeq++;
+      const text = String((opts && (opts.text_payload || opts.text)) || "");
+      resourceStore.set(id, text);
+      return Promise.resolve({
+        ok: true,
+        resource_id: id,
+        bytes: text.length
+      });
+    },
+    getTextResource: (id) =>
+      Promise.resolve({ ok: resourceStore.has(id), text: resourceStore.get(id) || "" }),
+    deleteWorkflowResources: () => Promise.resolve({ ok: true })
+  };
+  sandbox.PRISM_WORKFLOW_RESOURCES = windowStub.PRISM_WORKFLOW_RESOURCES;
+  windowStub.window = windowStub;
+  vm.createContext(sandbox);
+  runPrismLibScriptsInSandbox(sandbox, root, [
+    "lib/utility-pedagogical-icons.js",
+    "lib/utility-pedagogical-beats.js",
+    "lib/page-render-normalize.js",
+    "lib/commission-native-lo-bind.js",
+    "lib/learning-journey-shared-source.js",
+    "lib/learning-journey-design-page.js",
+    "lib/learning-journey-sibling-prompts.js",
+    "lib/learning-journey-assemble.js",
+    "lib/page-vnext-assemble.js",
+    "lib/first-class-workflow-family.js"
+  ]);
+  injectLearnerRendererVNextInSandbox(sandbox, root);
+  vm.runInContext(fs.readFileSync(path.join(root, "app.js"), "utf8"), sandbox, { filename: "app.js" });
+  const api = windowStub.__PRISM_TEST_API;
+  assert.ok(api, "window.__PRISM_TEST_API must be exposed");
+  assert.equal(typeof nextClickHandler, "function", "workflowNextStepBtn click handler must be wired");
+
+  // Build a realistic 10-commission 90-minute progressive Economics LJ (9 min each = 90 min)
+  const wf = makeProgressiveWorkflow("wf_s105_m4_econ_10c");
+  wf.deliverySeed = wf.deliverySeed || {};
+  wf.deliverySeed.duration_contract_version = "s104_m1";
+  const baseStages = makeValidStages();
+  const s1 = baseStages.s1;
+  const s2 = baseStages.s2;
+  const s3 = {
+    artifact_type: "learning_journey_stage",
+    schema_version: "1.0.0",
+    stage: "learning_elements",
+    elements: Array.from({ length: 10 }, (_, idx) => ({
+      element_id: `E${idx + 1}`,
+      phase_id: idx < 3 ? "P1" : "P2",
+      title: `Element ${idx + 1}`,
+      indicative_minutes: idx < 3 ? 10 : idx < 9 ? 9 : 6, // P1=30, P2=60 -> total 90
+      educational_job: `Build analytical skill ${idx + 1}.`,
+      knowledge_focus: `Economic concept ${idx + 1}.`,
+      scaffolding_and_feedback: "Concise feedback.",
+      dependencies: idx === 0 ? "" : `E${idx}`,
+      journal_producer_candidate: idx === 0 || idx === 9
+    }))
+  };
+  const s4 = {
+    artifact_type: "learning_journey_stage",
+    schema_version: "1.0.0",
+    stage: "learning_commissions",
+    shared_authoritative_material: {
+      status: "generated",
+      content: "ILLUSTRATIVE ECONOMICS CORPUS: Regional minimum-wage panel across 4 regions (2018-2022)."
+    },
+    continuity: "Learners build from initial correlation checks to full causal evaluation using the illustrative regional minimum-wage panel.",
+    commissions: Array.from({ length: 10 }, (_, idx) => {
+      const n = idx + 1;
+      const product = n % 3 === 1 ? "expository" : n % 3 === 2 ? "practice" : "assessment_pack";
+      return {
+        commission_id: `c${n}`,
+        section_id: `exp_${n}`,
+        order: n,
+        element_ids: [`E${n}`],
+        product_id: product,
+        status: "supported",
+        title: `Experience ${n}`,
+        allocated_minutes: 9,
+        dependencies: n === 1 ? "" : `c${n - 1}`,
+        journey_context_text:
+          n === 1
+            ? "First experience introducing the illustrative regional minimum-wage panel."
+            : `Builds on c${n - 1}, where learners completed Experience ${n - 1} using the illustrative regional minimum-wage panel.`,
+        specification_text:
+          `Commission specification for Experience ${n}.\n\n` +
+          "<<<COMPONENT_LEARNING_OUTCOMES_BEGIN>>>\n" +
+          JSON.stringify({
+            learning_outcomes: [{ statement: `Demonstrate economic reasoning step ${n}.`, cognitive_level: "apply" }],
+            learner_level: "First-year undergraduate"
+          }) +
+          "\n<<<COMPONENT_LEARNING_OUTCOMES_END>>>"
+      };
+    }),
+    journal: {
+      enabled: true,
+      decision_basis: "Captures initial and final causal judgements.",
+      entries: [
+        { entry_id: "j1", order: 1, title: "Opening Judgement", artefact_id: "c1.E1", framing: "Initial judgement." },
+        { entry_id: "j2", order: 2, title: "Final Evaluation", artefact_id: "c10.E1", framing: "Final causal evaluation." }
+      ]
+    }
+  };
+  const s5 = {
+    artifact_type: "page",
+    schema_version: "2.0.0",
+    product_id: "learning_journey",
+    title: "Correlation and Causation: Making Sense of Economic Evidence",
+    editorial_opening_image: {
+      decision: "skip",
+      skip_reason: "Text-first overview is clearest."
+    },
+    sections: [
+      {
+        section_id: "journey_intro",
+        title: "Overview",
+        order: 1,
+        exposition: "Explore correlation vs causation in economic evidence."
+      },
+      ...Array.from({ length: 10 }, (_, idx) => ({
+        section_id: `exp_${idx + 1}`,
+        title: `Experience ${idx + 1}`,
+        order: idx + 2,
+        exposition: `In this experience you work on economic reasoning step ${idx + 1}.`
+      }))
+    ],
+    learning_journey: {
+      design_intent: "Develop disciplined causal reasoning across 90 minutes.",
+      journal: {
+        title: "Economic Reasoning Journal",
+        entries: [
+          { entry_id: "j1", framing: "Record your opening causal intuition." },
+          { entry_id: "j2", framing: "Compare your final judgement with your opening intuition." }
+        ]
+      }
+    },
+    assembly_state: {
+      current_stage: "design_page",
+      enriched_by: ["design_page"],
+      calls_model: true
+    }
+  };
+
+  api.setWorkflowsForTest([wf]);
+  api.setSelectedWorkflowIdForTest(wf.id);
+  const lis = wf.steps.map((st) => makeStepLi(st, ""));
+  setActiveStepLis(lis.map((x) => x.li));
+
+  // Paste Stages 1..3 cleanly
+  [s1, s2, s3].forEach((obj, i) => {
+    lis[i].ta.value = JSON.stringify(obj, null, 2);
+    api.syncWorkflowRunCapturedOutputToState(lis[i].li, { source: "user_input" });
+  });
+
+  // 1) INVALID Stage 4 (10 commissions summing to 85 instead of 90):
+  //    must NOT show "Step complete" and Next click must NOT advance!
+  const badS4 = JSON.parse(JSON.stringify(s4));
+  badS4.commissions[9].allocated_minutes = 4; // total 85 != 90
+  lis[3].ta.value = JSON.stringify(badS4, null, 2);
+  api.syncWorkflowRunCapturedOutputToState(lis[3].li, { source: "user_input" });
+  assert.match(lis[3].statusEl.textContent, /validation errors/i, "invalid Stage 4 must display validation errors, not Step complete");
+  assert.doesNotMatch(lis[3].statusEl.textContent, /Step complete/i);
+
+  // Set run index to Step 4 (index 3) and click Next
+  api.setCurrentWorkflowRunIndexForTest(3);
+  capturedToasts.length = 0;
+  nextClickHandler();
+  await new Promise((r) => setTimeout(r, 20));
+  assert.equal(
+    api.getCurrentWorkflowRunIndexForTest(),
+    3,
+    "invalid Stage 4 must block Next advancement"
+  );
+  assert.ok(capturedToasts.some((t) => /error/i.test(t.className)), "invalid Stage 4 must surface an error toast");
+  assert.doesNotMatch(lis[3].statusEl.textContent, /Step complete/i);
+
+  // 2) VALID Stage 4 (10 commissions totalling 90 minutes, NO legacy COMMISSION_DURATIONS block):
+  //    Next must accept cleanly, advance to Step 5 (index 4), persist 10 durations, and show Step complete!
+  lis[3].ta.value = JSON.stringify(s4, null, 2);
+  api.syncWorkflowRunCapturedOutputToState(lis[3].li, { source: "user_input" });
+  assert.equal(lis[3].statusEl.textContent, "Step complete");
+  capturedToasts.length = 0;
+  nextClickHandler();
+  await new Promise((r) => setTimeout(r, 20));
+  assert.equal(
+    api.getCurrentWorkflowRunIndexForTest(),
+    4,
+    "valid progressive Stage 4 JSON must advance cleanly to Step 5; toasts=" + JSON.stringify(capturedToasts)
+  );
+  assert.equal(
+    capturedToasts.filter((t) => /COMMISSION_DURATIONS|error/i.test(t.text + " " + t.className)).length,
+    0,
+    "valid progressive Stage 4 must produce zero COMMISSION_DURATIONS or error toasts"
+  );
+  const authDur = api.readLearningJourneyAuthoritativeCommissionDurations(wf);
+  assert.ok(authDur && Array.isArray(authDur.commissions), "Stage 4 structured durations must be persisted authoritatively");
+  assert.equal(authDur.commissions.length, 10);
+  assert.equal(authDur.byCommissionId.c10, 9);
+
+  // 3) VALID Stage 5 thin partial on Next click: must NOT be rejected by legacy monolithic LJ DP validator
+  lis[4].ta.value = JSON.stringify(s5, null, 2);
+  api.syncWorkflowRunCapturedOutputToState(lis[4].li, { source: "user_input" });
+  assert.equal(lis[4].statusEl.textContent, "Step complete");
+  capturedToasts.length = 0;
+  nextClickHandler();
+  await new Promise((r) => setTimeout(r, 20));
+  assert.equal(
+    capturedToasts.filter((t) => /error/i.test(t.className)).length,
+    0,
+    "valid progressive Stage 5 thin partial must pass Next without legacy monolithic rejection"
+  );
+  const assembled = api.readAcceptedLearningJourneyPageFromWorkflow(wf);
+  assert.equal(assembled.ok, true);
+  assert.equal(assembled.page.commissions.length, 10);
+
+  // 4) LEGACY Sprint 104 LJ workflow (no progressive_capture_version, duration_contract_version s104_m1):
+  //    missing COMMISSION_DURATIONS block on Step 4 must STILL fail closed on Next AND never show Step complete!
+  const legacyS104Wf = {
+    id: "wf_legacy_s104_lj_dur",
+    name: "Legacy S104 LJ",
+    product: "learning_journey",
+    steps: wf.steps.map((st) => Object.assign({}, st)),
+    deliverySeed: {
+      duration_contract_version: "s104_m1",
+      learning_time: "90 minutes",
+      duration: "2 weeks"
+    },
+    workflowBriefResolution: {
+      resolvedFactors: {
+        duration_contract_version: "s104_m1",
+        learningTime: "90 minutes",
+        learningTimeMinutes: 90
+      }
+    }
+  };
+  api.setWorkflowsForTest([legacyS104Wf]);
+  api.setSelectedWorkflowIdForTest(legacyS104Wf.id);
+  const legLis = legacyS104Wf.steps.map((st) => makeStepLi(st, ""));
+  setActiveStepLis(legLis.map((x) => x.li));
+  legLis[3].ta.value = "Prose Step 4 output without any COMMISSION_DURATIONS marker block.";
+  api.syncWorkflowRunCapturedOutputToState(legLis[3].li, { source: "user_input" });
+  assert.match(
+    legLis[3].statusEl.textContent,
+    /validation errors/i,
+    "legacy S104 LJ missing COMMISSION_DURATIONS must display validation errors, never Step complete"
+  );
+  assert.doesNotMatch(legLis[3].statusEl.textContent, /Step complete/i);
+  api.setCurrentWorkflowRunIndexForTest(3);
+  capturedToasts.length = 0;
+  nextClickHandler();
+  await new Promise((r) => setTimeout(r, 20));
+  assert.equal(
+    api.getCurrentWorkflowRunIndexForTest(),
+    3,
+    "legacy S104 LJ missing COMMISSION_DURATIONS must block Next advancement"
+  );
+});

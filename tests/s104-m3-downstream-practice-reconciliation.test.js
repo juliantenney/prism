@@ -348,7 +348,7 @@ test("104M3 E2E (Lean Practice): zero-materials activity, omitted preamble/bridg
     expandedLsCheck.errors.join("; ")
   );
 
-  // 5. Design Page: valid with empty page_synthesis: {} and omitted editorial_opening_image (and with skip)
+  // 5. Design Page: empty page_synthesis: {} remains valid, while editorial_opening_image requires decision "generate"
   const dpOmittedPartial = {
     artifact_type: "page",
     schema_version: "2.0.0",
@@ -374,7 +374,7 @@ test("104M3 E2E (Lean Practice): zero-materials activity, omitted preamble/bridg
     }
   };
   const dpOmittedCheck = api.validateDesignPagePartialPageCapture(dpOmittedPartial, wf);
-  assert.equal(dpOmittedCheck.ok, true, (dpOmittedCheck.errors || []).join("; "));
+  assert.equal(dpOmittedCheck.ok, false, "omitted editorial_opening_image must be rejected for new Practice captures");
 
   const dpSkippedPartial = Object.assign({}, dpOmittedPartial, {
     editorial_opening_image: {
@@ -383,9 +383,22 @@ test("104M3 E2E (Lean Practice): zero-materials activity, omitted preamble/bridg
     }
   });
   const dpSkippedCheck = api.validateDesignPagePartialPageCapture(dpSkippedPartial, wf);
-  assert.equal(dpSkippedCheck.ok, true, (dpSkippedCheck.errors || []).join("; "));
+  assert.equal(dpSkippedCheck.ok, false, "skip editorial_opening_image must be rejected for new Practice captures");
 
-  // 6. Full vNext Assembly -> Model -> Render -> Package
+  const dpGeneratedPartial = Object.assign({}, dpOmittedPartial, {
+    editorial_opening_image: {
+      decision: "generate",
+      subject: "Everyday household budgeting and shopping choices",
+      context: "Decorative, text-free opening illustration establishing an everyday economic decision context without numbers or spoilers.",
+      caption_intent: "Atmospheric opening for linear budget constraint practice.",
+      alt_text: "",
+      detailed_description: "A calm, contemporary text-free illustration of a bright kitchen table with groceries and an unmarked notebook in natural light. No numbers, equations, labels, or overlays appear."
+    }
+  });
+  const dpGeneratedCheck = api.validateDesignPagePartialPageCapture(dpGeneratedPartial, wf);
+  assert.equal(dpGeneratedCheck.ok, true, (dpGeneratedCheck.errors || []).join("; "));
+
+  // 6. Full vNext Assembly -> Model -> Render -> Package (backward compatibility with existing captured Practice omitting editorial_opening_image)
   const assembled = assembleVNext.assembleVNextPageFromPartials({
     episode_plan: epShell,
     dla: repairedPartial,

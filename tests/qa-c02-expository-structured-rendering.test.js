@@ -490,3 +490,233 @@ test("C02 Surface consistency: standalone export package and unified Learning Jo
   assert.equal((unifiedHtml.match(/data-workspace-id="learner-constructed-E1"/g) || []).length, 1);
   assert.equal((unifiedHtml.match(/In Why might two economic variables be related\?/g) || []).length, 1);
 });
+
+test("C01 progressive LJ Expository: series[].points scatterplots render as SVG + semantic tables without exposing presentation/accessibility specs", () => {
+  const c01Page = {
+    artifact_type: "page",
+    schema_version: "2.0.0",
+    title: "Reading relationships in economic data",
+    page_profile: { profile_type: "learner" },
+    page_synthesis: {},
+    activities: [],
+    expository_journey: { journey_intent: "Read bivariate economic evidence." },
+    sections: [
+      {
+        section_id: "S1",
+        title: "What are we looking at?",
+        order: 1,
+        exposition: "Data containing paired measurements of two variables are called bivariate data.",
+        materials: [
+          {
+            material_id: "M1",
+            commission_id: "XM1",
+            section_id: "S1",
+            kind: "Scatterplot with accessible equivalent data table",
+            body: {
+              title: "Household income and expenditure",
+              introduction: "The data show monthly disposable household income and monthly household consumption expenditure for ten fictional households observed during the same month.",
+              source_note: "Synthetic data constructed for educational purposes. These observations do not describe actual households.",
+              scatterplot: {
+                chart_type: "scatter",
+                title: "Household income and expenditure",
+                x_axis: { label: "Monthly disposable household income (£)", scale: "linear", minimum: 1000, maximum: 4500, tick_interval: 500 },
+                y_axis: { label: "Monthly household consumption expenditure (£)", scale: "linear", minimum: 1000, maximum: 3500, tick_interval: 500 },
+                series: [
+                  {
+                    label: "Households",
+                    points: [
+                      { id: "H1", x: 1500, y: 1350 },
+                      { id: "H2", x: 1800, y: 1450 },
+                      { id: "H3", x: 2100, y: 1800 },
+                      { id: "H4", x: 2400, y: 1750 },
+                      { id: "H5", x: 2700, y: 2150 },
+                      { id: "H6", x: 3000, y: 2350 },
+                      { id: "H7", x: 3300, y: 2400 },
+                      { id: "H8", x: 3600, y: 2850 },
+                      { id: "H9", x: 3900, y: 2700 },
+                      { id: "H10", x: 4200, y: 3200 }
+                    ]
+                  }
+                ],
+                presentation: {
+                  marker_shape: "circle",
+                  marker_radius: 5,
+                  marker_fill: "#174A7E",
+                  background: "#FFFFFF",
+                  axis_colour: "#333333",
+                  gridline_colour: "#DDDDDD",
+                  show_gridlines: true,
+                  show_legend: false,
+                  show_point_labels: false,
+                  connect_points: false,
+                  show_fitted_line: false,
+                  show_correlation_coefficient: false,
+                  preferred_aspect_ratio: "4:3"
+                },
+                alt_text: "Scatterplot of monthly disposable household income and monthly household consumption expenditure for ten fictional households observed during the same month.",
+                caption: "Each point represents the income and expenditure of one household during the observed month."
+              },
+              table: {
+                title: "Household income and expenditure: observed values",
+                caption: "The table contains the same ten paired observations as the scatterplot.",
+                columns: ["Household", "Monthly disposable household income (£)", "Monthly household consumption expenditure (£)"],
+                rows: [
+                  ["H1", 1500, 1350],
+                  ["H2", 1800, 1450],
+                  ["H3", 2100, 1800],
+                  ["H4", 2400, 1750],
+                  ["H5", 2700, 2150],
+                  ["H6", 3000, 2350],
+                  ["H7", 3300, 2400],
+                  ["H8", 3600, 2850],
+                  ["H9", 3900, 2700],
+                  ["H10", 4200, 3200]
+                ],
+                accessibility: {
+                  column_headers: true,
+                  row_header_column: 0,
+                  preserve_observation_order: true,
+                  numeric_column_alignment: "right",
+                  requires_colour_interpretation: false
+                }
+              },
+              reading_note: "Read across a table row to identify the two measurements belonging to the same household."
+            }
+          }
+        ]
+      },
+      {
+        section_id: "S4",
+        title: "Reading a contrasting relationship: price and quantity sold",
+        order: 2,
+        exposition: "Eight fictional retailers sell the same type of product during one week.",
+        materials: [
+          {
+            material_id: "M2",
+            commission_id: "XM2",
+            section_id: "S4",
+            kind: "Scatterplot with accessible equivalent data table",
+            body: {
+              title: "Product price and quantity sold",
+              introduction: "Eight fictional retailers sell the same type of product during one week.",
+              source_note: "Synthetic data constructed for educational purposes. These observations do not describe actual retailers.",
+              scatterplot: {
+                chart_type: "scatter",
+                title: "Product price and quantity sold",
+                x_axis: { label: "Price per unit (£)", scale: "linear", minimum: 8, maximum: 26, tick_interval: 2 },
+                y_axis: { label: "Quantity sold during the week (units)", scale: "linear", minimum: 30, maximum: 120, tick_interval: 10 },
+                series: [
+                  {
+                    label: "Retailers",
+                    points: [
+                      { id: "B1", x: 10, y: 105 },
+                      { id: "B2", x: 12, y: 96 },
+                      { id: "B3", x: 14, y: 85 },
+                      { id: "B4", x: 16, y: 78 },
+                      { id: "B5", x: 18, y: 67 },
+                      { id: "B6", x: 20, y: 58 },
+                      { id: "B7", x: 22, y: 48 },
+                      { id: "B8", x: 24, y: 40 }
+                    ]
+                  }
+                ],
+                presentation: {
+                  marker_shape: "circle",
+                  marker_radius: 5,
+                  marker_fill: "#174A7E",
+                  axis_colour: "#333333",
+                  gridline_colour: "#DDDDDD",
+                  show_gridlines: true,
+                  show_fitted_line: false,
+                  preferred_aspect_ratio: "4:3"
+                },
+                alt_text: "Scatterplot of price per unit and quantity sold during one week for eight fictional retailers.",
+                caption: "Each point represents one retailer's price per unit and quantity sold during the observed week."
+              },
+              table: {
+                title: "Product price and quantity sold: observed values",
+                caption: "The table contains the same eight paired observations as the scatterplot.",
+                columns: ["Retailer", "Price per unit (£)", "Quantity sold during the week (units)"],
+                rows: [
+                  ["B1", 10, 105],
+                  ["B2", 12, 96],
+                  ["B3", 14, 85],
+                  ["B4", 16, 78],
+                  ["B5", 18, 67],
+                  ["B6", 20, 58],
+                  ["B7", 22, 48],
+                  ["B8", 24, 40]
+                ],
+                accessibility: {
+                  column_headers: true,
+                  row_header_column: 0,
+                  preserve_observation_order: true,
+                  numeric_column_alignment: "right",
+                  requires_colour_interpretation: false
+                }
+              },
+              reading_note: "The observations compare different retailers during the same week."
+            }
+          }
+        ]
+      }
+    ]
+  };
+
+  const rendered = vnext.renderLearnerPageHtml(c01Page, { pageKey: "qa-c01-test" });
+  assert.ok(rendered && rendered.html, rendered && rendered.error);
+  const html = rendered.html;
+
+  // Both M1 and M2 render through the deterministic Expository scatterplot SVG renderer
+  assert.match(html, /data-material-id="M1"[^>]*data-material-type="expository_structured_scatterplot"/);
+  assert.match(html, /data-material-id="M2"[^>]*data-material-type="expository_structured_scatterplot"/);
+  assert.equal((html.match(/<svg\b[^>]*class="util-scatterplot-svg"/g) || []).length, 2);
+
+  // Exact observation count: 10 household points + 8 retailer points = 18 SVG circles
+  assert.equal((html.match(/class="util-scatterplot-point"/g) || []).length, 18);
+  assert.match(html, /data-point-label="H1" data-x="1500" data-y="1350"/);
+  assert.match(html, /data-point-label="H10" data-x="4200" data-y="3200"/);
+  assert.match(html, /data-point-label="B1" data-x="10" data-y="105"/);
+  assert.match(html, /data-point-label="B8" data-x="24" data-y="40"/);
+
+  // Axis definitions & units preserved
+  assert.match(html, /Monthly disposable household income \(£\)/);
+  assert.match(html, /Monthly household consumption expenditure \(£\)/);
+  assert.match(html, /Price per unit \(£\)/);
+  assert.match(html, /Quantity sold during the week \(units\)/);
+
+  // Semantic accessible data tables (exactly 2 — no duplicated X/Y coordinate tables) with row headers
+  assert.equal((html.match(/<table class="util-exposition-structured-table">/g) || []).length, 2);
+  assert.match(html, /<th scope="col">Household<\/th>/);
+  assert.match(html, /<th scope="row">H1<\/th>/);
+  assert.match(html, /<th scope="row">H10<\/th>/);
+  assert.match(html, /<th scope="col">Retailer<\/th>/);
+  assert.match(html, /<th scope="row">B1<\/th>/);
+  assert.match(html, /<th scope="row">B8<\/th>/);
+
+  // Preserved explanatory & accessible text
+  assert.match(html, /<desc id="scatterplot-desc-M1">Scatterplot of monthly disposable household income/);
+  assert.match(html, /<desc id="scatterplot-desc-M2">Scatterplot of price per unit and quantity sold/);
+  assert.match(html, /Read across a table row to identify the two measurements belonging to the same household\./);
+  assert.match(html, /The observations compare different retailers during the same week\./);
+  assert.match(html, /Synthetic data constructed for educational purposes\./);
+
+  // Zero exposed implementation / technical specification properties
+  for (const forbidden of [
+    "marker_shape",
+    "marker_radius",
+    "marker_fill",
+    "#174A7E",
+    "axis_colour",
+    "gridline_colour",
+    "show_gridlines",
+    "show_fitted_line",
+    "preferred_aspect_ratio",
+    "row_header_column",
+    "preserve_observation_order",
+    "numeric_column_alignment",
+    "requires_colour_interpretation"
+  ]) {
+    assert.ok(!html.includes(forbidden), `learner HTML must not expose technical spec token: ${forbidden}`);
+  }
+});

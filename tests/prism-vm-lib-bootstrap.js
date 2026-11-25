@@ -75,6 +75,7 @@ const DEFAULT_LIBS = [
   "lib/episode-plan-v1-templates.js",
   "lib/episode-plan-v1-validation.js",
   "lib/page-shell-create.js",
+  "lib/expository-material-anchors.js",
   "lib/practice-episode-plan.js"
 ];
 

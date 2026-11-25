@@ -163,3 +163,70 @@ test("Phase 5B: selectArchetypeVariant is removed; grammar is sole legality auth
   assert.equal(archetypeRules.REGISTRY_ROLE, "removed-phase-5b");
   assert.equal(archetypeRules.ARCHETYPE_GRAMMAR, undefined);
 });
+
+test("evaluate archetype accommodates evaluative refinement of an existing response while preserving pedagogical constraints", () => {
+  // 1. Evaluate specimens/existing response -> refined independent performance -> reflection (live C10 pattern)
+  const evalThenRefine = grammar.isSequenceRepresentable("evaluate", [
+    "worked_judgement",
+    "evaluative_judgement",
+    "independent_performance",
+    "reflection"
+  ]);
+  assert.equal(evalThenRefine.ok, true, JSON.stringify(evalThenRefine.violations));
+
+  // 2. Integrated evaluative refinement without requiring a separate fresh independent_performance beat
+  const integratedRefine = grammar.isSequenceRepresentable("evaluate", [
+    "criteria_exposition",
+    "worked_judgement",
+    "evaluative_judgement",
+    "verification"
+  ]);
+  assert.equal(integratedRefine.ok, true, JSON.stringify(integratedRefine.violations));
+
+  // Integrated evaluative_judgement owns response/evidence materials when guided_* and independent_performance are absent
+  const variant = archetypeRules.buildCanonicalFunctionEnumVariant("evaluate", [
+    "criteria_exposition",
+    "worked_judgement",
+    "evaluative_judgement",
+    "verification"
+  ]);
+  const evalBeat = variant.beats.find((b) => b.sourceFunction === "evaluative_judgement");
+  assert.ok(evalBeat, "expected evaluative_judgement beat");
+  assert.equal(evalBeat.taskSteps.take, "rest");
+  assert.ok(evalBeat.materialTypes.includes("template"));
+  assert.ok(evalBeat.materialTypes.includes("data_table"));
+  assert.ok(evalBeat.materialTypes.includes("selection"));
+
+  // 3. Perform -> evaluate -> verify remains valid
+  const performThenEval = grammar.isSequenceRepresentable("evaluate", [
+    "worked_judgement",
+    "independent_performance",
+    "evaluative_judgement",
+    "verification"
+  ]);
+  assert.equal(performThenEval.ok, true, JSON.stringify(performThenEval.violations));
+
+  // 4. Genuine pedagogical ordering violations still fail closed
+  const verifyBeforeIndependent = grammar.isSequenceRepresentable("evaluate", [
+    "worked_judgement",
+    "verification",
+    "independent_performance",
+    "reflection"
+  ]);
+  assert.equal(verifyBeforeIndependent.ok, false);
+
+  const guidedAfterEval = grammar.isSequenceRepresentable("evaluate", [
+    "worked_judgement",
+    "evaluative_judgement",
+    "guided_reasoning",
+    "reflection"
+  ]);
+  assert.equal(guidedAfterEval.ok, false);
+
+  const missingCore = grammar.isSequenceRepresentable("evaluate", [
+    "orientation",
+    "independent_performance",
+    "reflection"
+  ]);
+  assert.equal(missingCore.ok, false);
+});

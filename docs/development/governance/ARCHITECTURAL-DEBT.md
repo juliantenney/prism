@@ -262,6 +262,20 @@ Investigations should remain context-driven rather than forced into a rigid univ
 
 ---
 
+## D-016 — Native deterministic number-line and quantitative scale rendering
+
+**Priority:** Medium (future architectural enhancement)  
+**State:** Deferred — recorded during Sprint 105 live Economics C1 acceptance; do not implement during Sprint 105  
+**Milestone relevance:** Post-Sprint 105 graphics & structured-materials architecture
+
+**Summary:** PRISM currently renders statistical scatterplots (`expository_structured_scatterplot` in `lib/learner-renderer-vnext/expository-structured-materials.js`) natively as deterministic inline SVG paired with semantic data tables, while routing annotated number lines and quantitative scales (`number_line_segments`, e.g. Pearson correlation scales or reaction-time range lines) through the external visual-jobs image pipeline via `lib/expository-xm-illustration-handoff.js` (with safe client-side SVG intake + 2× PNG rasterisation added in Sprint 105).
+
+**Enhancement target:** Add a native deterministic inline SVG renderer for structured number-line and quantitative-scale specifications (paired with semantic accessible equivalents and exempted from `isUnrealizedIllustrationSpecification` in the same way as `isNativeScatterplotMaterial`), so precision numeric scales do not depend on external image generation.
+
+**Disposition:** Retain as a future architectural enhancement; preserve external `number_line_segments` routing and Sprint 105 SVG intake + rasterisation in the interim.
+
+---
+
 # C. Superseded / retired directions
 
 These are retained as negative programme knowledge.

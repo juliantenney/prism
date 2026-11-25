@@ -16,8 +16,17 @@
 
 ---
 
+## Minor publication defects logged for subsequent attention
+
+| ID | Location | Defect | Status |
+| -- | -------- | ------ | ------ |
+| `S105-AD-005` | `lib/learner-renderer-vnext/render-html-utils.js` (`renderMarkdownBlock`) | Leading Markdown blockquote syntax (`> ...`) in Expository prose renders as literal `&gt;` inside `<p>` (observed once in regenerated Economics C1 live acceptance export: `<p>&gt; Across the ten fictional regions...</p>`) instead of a semantic `<blockquote>` element | **Open (Minor — deferred for subsequent attention; C1 not regenerated)** |
+
+---
+
 ## Explicitly excluded (not pulled into Sprint 105)
 
+- **`D-016` (Future architectural enhancement — deferred):** Native deterministic inline SVG rendering for structured number-line and quantitative scale specifications (`number_line_segments`, e.g. Pearson correlation scales and range lines), matching the `expository_structured_scatterplot` model. Recorded in programme `docs/development/governance/ARCHITECTURAL-DEBT.md` (`D-016`); external `number_line_segments` routing and Sprint 105 client-side SVG intake + 2× PNG rasterisation remain active in the interim.
 - **`PB-S-008`** pre-existing full-suite test failures (tracked separately on `docs/backlog/PRODUCT-BACKLOG.md`).
 - **`S104-AD-009`** remaining Practice criterion caps (tracked under Sprint 104).
 - **Production prose-migration parser** for the incomplete 14,000-word Economics Step 4 run (rejected per `S105-D02` to avoid brittle prose scraping).

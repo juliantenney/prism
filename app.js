@@ -12262,7 +12262,8 @@
       outputName === "learning_requirements" ||
       outputName === "learning_progression" ||
       outputName === "learning_elements" ||
-      outputName === "learning_commissions"
+      outputName === "learning_commissions" ||
+      outputName === "learning_journey_page"
     ) {
       allowed.push("learning_journey_stage");
     }
@@ -16936,25 +16937,24 @@
         errors.push('Practice Design Page page_kind must be "practice" when present');
       }
       var practiceEditorial =
-        parsed.editorial_opening_image && typeof parsed.editorial_opening_image === "object"
+        parsed.editorial_opening_image &&
+        typeof parsed.editorial_opening_image === "object" &&
+        !Array.isArray(parsed.editorial_opening_image)
           ? parsed.editorial_opening_image
           : null;
-      if (parsed.editorial_opening_image != null && !practiceEditorial) {
+      if (!practiceEditorial) {
         errors.push(
-          "Practice Design Page editorial_opening_image must be an object when present"
+          'Practice Design Page editorial_opening_image is required with decision "generate"'
         );
-      } else if (practiceEditorial) {
+      } else {
         var practiceEditorialDecision = String(practiceEditorial.decision || "")
           .trim()
           .toLowerCase();
-        if (
-          practiceEditorialDecision !== "generate" &&
-          practiceEditorialDecision !== "skip"
-        ) {
+        if (practiceEditorialDecision !== "generate") {
           errors.push(
-            'Practice Design Page editorial_opening_image.decision must be "generate" or "skip" when present'
+            'Practice Design Page editorial_opening_image.decision must be "generate" (skip is not permitted on newly authored Practice resources)'
           );
-        } else if (practiceEditorialDecision === "generate") {
+        } else {
           ["subject", "context", "caption_intent", "detailed_description"].forEach(function (field) {
             if (!String((practiceEditorial && practiceEditorial[field]) || "").trim()) {
               errors.push(
@@ -16962,10 +16962,11 @@
               );
             }
           });
-        } else if (!String(practiceEditorial.skip_reason || "").trim()) {
-          errors.push(
-            'Practice Design Page editorial_opening_image.skip_reason is required when decision is "skip"'
-          );
+          if (practiceEditorial.alt_text !== "") {
+            errors.push(
+              'Practice Design Page editorial_opening_image.alt_text must be "" for decorative opening images'
+            );
+          }
         }
       }
     }
@@ -19925,6 +19926,29 @@
         : state.selectedWorkflowId
         ? findWorkflowById(state.selectedWorkflowId)
         : null;
+    if (
+      workflow &&
+      step &&
+      (isLearningJourneyWorkflow(workflow) || workflowRecordIsLearningJourney(workflow)) &&
+      resolveProgressiveLearningJourneyStageForStep(step, workflow)
+    ) {
+      var progStrict = parseAndValidateProgressiveLearningJourneyStageCapture(raw, step, workflow);
+      if (!progStrict || !progStrict.ok) {
+        return {
+          ok: false,
+          errors: (progStrict && progStrict.errors) || ["invalid_lj_stage_capture"],
+          message:
+            (progStrict && (progStrict.message || (progStrict.errors || []).join("; "))) ||
+            "Invalid Learning Journey stage capture",
+          warnings: []
+        };
+      }
+      return {
+        ok: true,
+        errors: [],
+        warnings: Array.isArray(progStrict.warnings) ? progStrict.warnings.slice() : []
+      };
+    }
     if (workflowRecordIsAssessmentPack(workflow)) {
       var assessmentOutput = normalizeWorkflowStepOutputNameKey(step);
       if (
@@ -32992,7 +33016,14 @@
       outputNameInput && typeof outputNameInput.value === "string"
         ? outputNameInput.value.trim().toLowerCase().replace(/\s+/g, "_")
         : "";
+    var isProgLjStepForSync = !!(
+      wf &&
+      stepRow &&
+      (isLearningJourneyWorkflow(wf) || workflowRecordIsLearningJourney(wf)) &&
+      resolveProgressiveLearningJourneyStageForStep(stepRow, wf)
+    );
     if (
+      !isProgLjStepForSync &&
       !partialPostEpisodePlanStep &&
       !episodePlanStep &&
       (outputName === "page" || (stepRow && isWorkflowStepDesignPageRow(stepRow)))
@@ -33013,7 +33044,7 @@
           gamCtx
         );
       }
-    } else if (!partialPostEpisodePlanStep && !episodePlanStep) {
+    } else if (!isProgLjStepForSync && !partialPostEpisodePlanStep && !episodePlanStep) {
       var parsedPage = tryParseWorkflowArtefactJson(raw);
       if (parsedPage && String(parsedPage.artifact_type || "").toLowerCase() === "page") {
         var pageComposeFallback = applyPageCompositionValidationForCapturedPage(li, raw);
@@ -33511,6 +33542,14 @@
         : "";
     var ljStageErr =
       sid && state.workflowRunLjStageValidation ? state.workflowRunLjStageValidation[sid] : "";
+    var ljSharedSourceErr =
+      sid && state.workflowRunLjSharedSourceValidation
+        ? state.workflowRunLjSharedSourceValidation[sid]
+        : "";
+    var ljDurationErr =
+      sid && state.workflowRunLjDurationValidation
+        ? state.workflowRunLjDurationValidation[sid]
+        : "";
     var ljInvalidatedMsg =
       sid && state.workflowRunLjInvalidatedSteps ? state.workflowRunLjInvalidatedSteps[sid] : "";
     var gamSuitabilityErr =
@@ -33539,7 +33578,9 @@
         materialsClosureErr ||
         learnerFramingErr ||
         gamFormatErr ||
-        ljStageErr
+        ljStageErr ||
+        ljSharedSourceErr ||
+        ljDurationErr
       ) && body.length > 0;
     var blockingMessage = String(
       strictErr ||
@@ -33549,6 +33590,8 @@
       learnerFramingErr ||
       gamFormatErr ||
       ljStageErr ||
+      ljSharedSourceErr ||
+      ljDurationErr ||
       ""
     ).trim();
     var text = "";
@@ -43315,13 +43358,13 @@
         );
       } else if (isPracticeWorkflow(wfForChain)) {
         lines.push(
-          "Practice Design Page partial output mode: return a partial page artefact with product_id \"practice\", page_kind \"practice\", title, optional purpose-driven page_synthesis, visual_affordance_schema_version \"38.4\", activities_visual_review[], visual_affordances[], optional purpose-driven editorial_opening_image decision, optional sections[], and assembly_state."
+          "Practice Design Page partial output mode: return a partial page artefact with product_id \"practice\", page_kind \"practice\", title, optional purpose-driven page_synthesis, visual_affordance_schema_version \"38.4\", activities_visual_review[], visual_affordances[], required editorial_opening_image, optional sections[], and assembly_state."
         );
         lines.push(
           "PRISM does not embed stored prior step outputs in this mode. Use Copilot conversation context for upstream Practice continuity."
         );
         lines.push(
-          "Purpose-driven editorial_opening_image (Practice): optional at page root. Emit decision \"generate\" (subject, context, caption_intent, alt_text \"\", detailed_description; decorative and text-free, no overlays, labels, titles, slogans, banners, or spoilers) when an opening contextual visual adds genuine orienting value, OR emit decision \"skip\" with a concise skip_reason, OR omit editorial_opening_image cleanly when unneeded. Do not place it in visual_affordances[]."
+          "Mandatory editorial_opening_image (Practice): required at page root for every newly authored Practice Design Page. Always emit decision \"generate\" with the complete editorial image specification (subject, context, caption_intent, alt_text \"\", detailed_description; decorative and text-free, no overlays, labels, titles, slogans, banners, or spoilers). Do not use decision \"skip\" and do not omit editorial_opening_image. Do not place it in visual_affordances[]."
         );
         lines.push(
           "Purpose-driven page_synthesis (Practice): overview, learning_purpose, knowledge_summary, and study_tips are all optional and purpose-driven — omit any element that is unnecessary given prior learning, journey framing, or the activity apparatus (page_synthesis: {} and partial omissions are valid). Never rewrite learning outcomes or enlarge the Episode Plan."
@@ -43332,7 +43375,7 @@
             ". No other text after the footer line."
         );
         lines.push(
-          "Practice Design Page constraints: modify only Design Page owned fields (title, optional page_synthesis, visual_affordance_schema_version, activities_visual_review, visual_affordances, optional editorial_opening_image, optional sections[], assembly_state). Author a concise learner-facing title. Every visual_affordances[] row must include affordance_id plus the shared Sprint 38 required children for that visual_decision (generate|defer|skip). Use only recognised visual_slot values. Prefer purposeful conceptual/mathematical imagery with anti_spoiler controls when warranted; emit visual_affordances [] when none are justified. Do not regenerate activities, materials, learning_outcomes, episode_plans, or learning_sequence."
+          "Practice Design Page constraints: modify only Design Page owned fields (title, optional page_synthesis, visual_affordance_schema_version, activities_visual_review, visual_affordances, required editorial_opening_image, optional sections[], assembly_state). Author a concise learner-facing title. Every visual_affordances[] row must include affordance_id plus the shared Sprint 38 required children for that visual_decision (generate|defer|skip). Use only recognised visual_slot values. Prefer purposeful conceptual/mathematical imagery with anti_spoiler controls when warranted; emit visual_affordances [] when none are justified. Do not regenerate activities, materials, learning_outcomes, episode_plans, or learning_sequence."
         );
       } else if (workflowRecordIsAssessmentPack(wfForChain)) {
         lines.push(
@@ -62851,10 +62894,119 @@
     });
   }
 
+  function isSvgVisualAssetFile(file) {
+    if (!file) return false;
+    var type = String(file.type || "").trim().toLowerCase();
+    var name = String(file.name || "").trim().toLowerCase();
+    return type === "image/svg+xml" || /\.svg$/i.test(name);
+  }
+
+  function readFileAsTextForSvg(file) {
+    if (file && typeof file.text === "function") {
+      return file.text();
+    }
+    return new Promise(function (resolve, reject) {
+      var reader = new FileReader();
+      reader.onload = function () {
+        resolve(String(reader.result || ""));
+      };
+      reader.onerror = function () {
+        reject(new Error("Could not read SVG file."));
+      };
+      reader.readAsText(file);
+    });
+  }
+
+  function rasterizeSvgFileToPngForVisualJob(file) {
+    var assetsMod =
+      typeof window !== "undefined" && window.PRISM_VISUAL_ASSETS
+        ? window.PRISM_VISUAL_ASSETS
+        : null;
+    return readFileAsTextForSvg(file).then(function (rawText) {
+      var validated =
+        assetsMod && typeof assetsMod.validateAndNormalizeSvgForRasterization === "function"
+          ? assetsMod.validateAndNormalizeSvgForRasterization(rawText)
+          : { ok: false, message: "SVG validation helper is unavailable." };
+      if (!validated || !validated.ok) {
+        return Promise.reject(new Error((validated && validated.message) || "Invalid SVG graphic."));
+      }
+      if (typeof document === "undefined" || typeof document.createElement !== "function") {
+        return Promise.reject(new Error("Canvas rasterization unavailable in this environment."));
+      }
+      var svgBlob = new Blob([validated.svgMarkup], { type: "image/svg+xml;charset=utf-8" });
+      var svgUrl = window.URL.createObjectURL(svgBlob);
+      return new Promise(function (resolve, reject) {
+        var img = new Image();
+        img.onload = function () {
+          try {
+            var canvas = document.createElement("canvas");
+            canvas.width = validated.targetWidth;
+            canvas.height = validated.targetHeight;
+            var ctx = canvas.getContext("2d");
+            if (!ctx) {
+              window.URL.revokeObjectURL(svgUrl);
+              reject(new Error("Canvas 2D context unavailable for SVG conversion."));
+              return;
+            }
+            ctx.fillStyle = "#ffffff";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            window.URL.revokeObjectURL(svgUrl);
+            var pngDataUrl = canvas.toDataURL("image/png");
+            var finishWithBlob = function (blob) {
+              var baseName = String(file.name || "visual.svg").replace(/\.svg$/i, "") || "visual";
+              var pngName = baseName + ".png";
+              var pngFile =
+                typeof File === "function"
+                  ? new File([blob], pngName, { type: "image/png" })
+                  : blob;
+              var pngObjectUrl = window.URL.createObjectURL(pngFile);
+              resolve({
+                objectUrl: pngObjectUrl,
+                dataUrl: pngDataUrl,
+                width: canvas.width,
+                height: canvas.height,
+                file: pngFile,
+                filename: pngName,
+                mimeType: "image/png",
+                byteSize: typeof pngFile.size === "number" ? pngFile.size : blob.size || 0
+              });
+            };
+            if (typeof canvas.toBlob === "function") {
+              canvas.toBlob(function (blob) {
+                if (!blob) {
+                  reject(new Error("SVG to PNG conversion produced empty output."));
+                  return;
+                }
+                finishWithBlob(blob);
+              }, "image/png");
+            } else {
+              var bin = atob(pngDataUrl.split(",")[1] || "");
+              var bytes = new Uint8Array(bin.length);
+              for (var i = 0; i < bin.length; i += 1) bytes[i] = bin.charCodeAt(i);
+              finishWithBlob(new Blob([bytes], { type: "image/png" }));
+            }
+          } catch (err) {
+            window.URL.revokeObjectURL(svgUrl);
+            reject(err);
+          }
+        };
+        img.onerror = function () {
+          window.URL.revokeObjectURL(svgUrl);
+          reject(new Error("Could not render SVG graphic for attachment."));
+        };
+        img.src = svgUrl;
+      });
+    });
+  }
+
   function decodeImageFileForVisualJob(file) {
     if (!file) return Promise.reject(new Error("No file selected."));
     if (!window.URL || typeof window.URL.createObjectURL !== "function") {
       return Promise.reject(new Error("Object URL API unavailable."));
+    }
+    if (isSvgVisualAssetFile(file)) {
+      return rasterizeSvgFileToPngForVisualJob(file);
     }
     var objectUrl = window.URL.createObjectURL(file);
     if (typeof Image === "undefined") {
@@ -62912,10 +63064,16 @@
           renderUtilitiesVisualJobsView();
           return { ok: false, error: "Image data URL conversion failed." };
         }
+        var effectiveFile = decoded.file || file;
         var imageInput = {
-          filename: file.name || "",
-          mime_type: file.type || "",
-          byte_size: typeof file.size === "number" ? file.size : 0,
+          filename: decoded.filename || effectiveFile.name || "",
+          mime_type: decoded.mimeType || effectiveFile.type || "",
+          byte_size:
+            typeof decoded.byteSize === "number"
+              ? decoded.byteSize
+              : typeof effectiveFile.size === "number"
+                ? effectiveFile.size
+                : 0,
           width: decoded.width,
           height: decoded.height,
           render_source: { kind: "data_url", value: dataUrl },
@@ -62936,7 +63094,7 @@
         revokeVisualAssetObjectUrlForBrief(id);
         state.utilitiesVisualAssetObjectUrlsByBriefId[id] = decoded.objectUrl;
         setVisualJobAssetError(id, "");
-        return persistWorkflowResourceFromVisualAttach(id, file, attached.asset).then(function (
+        return persistWorkflowResourceFromVisualAttach(id, effectiveFile, attached.asset).then(function (
           persistResult
         ) {
           if (!persistResult || persistResult.code === "persist_unavailable") {
@@ -63187,20 +63345,47 @@
     for (var i = 0; i < items.length; i += 1) {
       if (String(items[i].type || "").indexOf("image/") === 0) imageItems.push(items[i]);
     }
-    if (!imageItems.length) return;
-    event.preventDefault();
-    if (imageItems.length > 1) {
-      setVisualJobAssetError(briefId, "Paste exactly one image.");
-      renderUtilitiesVisualJobsView();
+    if (imageItems.length) {
+      event.preventDefault();
+      if (imageItems.length > 1) {
+        setVisualJobAssetError(briefId, "Paste exactly one image.");
+        renderUtilitiesVisualJobsView();
+        return;
+      }
+      var file = imageItems[0].getAsFile ? imageItems[0].getAsFile() : null;
+      if (!file) {
+        setVisualJobAssetError(briefId, "Clipboard image is unavailable.");
+        renderUtilitiesVisualJobsView();
+        return;
+      }
+      applyVisualJobAssetFile(briefId, file, "paste");
       return;
     }
-    var file = imageItems[0].getAsFile ? imageItems[0].getAsFile() : null;
-    if (!file) {
-      setVisualJobAssetError(briefId, "Clipboard image is unavailable.");
-      renderUtilitiesVisualJobsView();
-      return;
+    var assetsMod =
+      typeof window !== "undefined" && window.PRISM_VISUAL_ASSETS
+        ? window.PRISM_VISUAL_ASSETS
+        : null;
+    if (
+      event.clipboardData &&
+      typeof event.clipboardData.getData === "function" &&
+      assetsMod &&
+      typeof assetsMod.extractSvgMarkupFromClipboardText === "function"
+    ) {
+      var rawClipboard =
+        event.clipboardData.getData("image/svg+xml") ||
+        event.clipboardData.getData("text/plain") ||
+        event.clipboardData.getData("text/html") ||
+        "";
+      var svgMarkup = assetsMod.extractSvgMarkupFromClipboardText(rawClipboard);
+      if (svgMarkup) {
+        event.preventDefault();
+        var svgFile =
+          typeof File === "function"
+            ? new File([svgMarkup], "pasted-visual.svg", { type: "image/svg+xml" })
+            : new Blob([svgMarkup], { type: "image/svg+xml" });
+        applyVisualJobAssetFile(briefId, svgFile, "paste");
+      }
     }
-    applyVisualJobAssetFile(briefId, file, "paste");
   }
 
   function handleUtilitiesVisualJobViewLearnerPage() {
@@ -66892,7 +67077,11 @@
               }
             }
           }
-          if (storesArtefact && pageStructureStep && body) {
+          var progressiveLjStageNext =
+            stepRow && wf
+              ? resolveProgressiveLearningJourneyStageForStep(stepRow, wf)
+              : "";
+          if (storesArtefact && pageStructureStep && body && !progressiveLjStageNext) {
             var episodePlanStep = !!(stepRow && isWorkflowStepDesignEpisodePlanRow(stepRow));
             var pageCaptureCheck = parseWorkflowRunPageStructureCaptureForStorage(
               body,
@@ -66977,6 +67166,50 @@
               syncWorkflowRunCapturedOutputToState(currentLi, { source: "next_click_normalize" });
             }
           }
+          if (progressiveLjStageNext && body) {
+            state.workflowRunLjStageValidation = state.workflowRunLjStageValidation || {};
+            state.workflowRunLjSharedSourceValidation =
+              state.workflowRunLjSharedSourceValidation || {};
+            state.workflowRunLjDurationValidation =
+              state.workflowRunLjDurationValidation || {};
+            var progNextGate = parseAndValidateProgressiveLearningJourneyStageCapture(
+              body,
+              stepRow,
+              wf
+            );
+            if (!progNextGate || !progNextGate.ok) {
+              var progNextErrMsg = String(
+                (progNextGate && progNextGate.message) ||
+                  "Learning Journey stage capture is invalid."
+              );
+              if (sid) {
+                state.workflowRunLjStageValidation[sid] = progNextErrMsg;
+                if (state.workflowRunStepCompleted && state.workflowRunStepCompleted[sid]) {
+                  delete state.workflowRunStepCompleted[sid];
+                }
+              }
+              updateRunStepOutputStatus(currentLi);
+              showToast(progNextErrMsg, "error");
+              return;
+            }
+            if (sid) {
+              delete state.workflowRunLjStageValidation[sid];
+              delete state.workflowRunLjSharedSourceValidation[sid];
+              delete state.workflowRunLjDurationValidation[sid];
+              if (state.workflowRunLjInvalidatedSteps) {
+                delete state.workflowRunLjInvalidatedSteps[sid];
+              }
+            }
+            if (progressiveLjStageNext === "learning_commissions") {
+              // Progressive Stage 4 structured commissions[].allocated_minutes is the sole
+              // authoritative duration source; never demand legacy COMMISSION_DURATIONS markers.
+              persistLearningJourneyRunDerivedStage4Metadata(
+                wf,
+                progNextGate.parsed,
+                progNextGate.upstream && progNextGate.upstream.learning_requirements
+              );
+            }
+          } else {
           if (
             stepRow &&
             isWorkflowStepDesignPageRow(stepRow) &&
@@ -66996,6 +67229,16 @@
                   ? ljDesignMod.validateLearningJourneyDesignPage(ljParsed, ljValOpts)
                   : { ok: false, errors: ["learning_journey_design_page_module_unavailable"] };
             if (!ljGate.ok) {
+              if (sid) {
+                state.workflowRunPageValidation = state.workflowRunPageValidation || {};
+                state.workflowRunPageValidation[sid] = String(
+                  (ljGate.errors && ljGate.errors.length ? ljGate.errors.join("; ") : "") ||
+                    "Learning Journey Design Page is invalid"
+                );
+                if (state.workflowRunStepCompleted && state.workflowRunStepCompleted[sid]) {
+                  delete state.workflowRunStepCompleted[sid];
+                }
+              }
               updateRunStepOutputStatus(currentLi);
               showToast(
                 "Learning Journey Design Page must be a valid shared page (artifact_type page, product_id learning_journey)" +
@@ -67014,7 +67257,7 @@
             (isLearningJourneyWorkflow(wf) || workflowRecordIsLearningJourney(wf)) &&
             isLearningJourneyCommissioningStep(stepRow)
           ) {
-            // Steps 1–4 are chat-context; markers here are optional. Persist if present.
+            // Steps 1–4 are chat-context on legacy LJ; markers here are optional unless duration contract required.
             applyLearningJourneySharedSourceFromCommissionCapture(wf, body, {
               softMissing: true
             });
@@ -67024,6 +67267,19 @@
               { softMissing: !isLearningJourneyDurationContractRequired(wf) }
             );
             if (step4DurGate && !step4DurGate.ok) {
+              if (sid) {
+                state.workflowRunLjDurationValidation = state.workflowRunLjDurationValidation || {};
+                state.workflowRunLjDurationValidation[sid] = String(
+                  (step4DurGate.errors && step4DurGate.errors.length
+                    ? step4DurGate.errors.join("; ")
+                    : "") ||
+                    step4DurGate.code ||
+                    "commission_durations_invalid"
+                );
+                if (state.workflowRunStepCompleted && state.workflowRunStepCompleted[sid]) {
+                  delete state.workflowRunStepCompleted[sid];
+                }
+              }
               updateRunStepOutputStatus(currentLi);
               showToast(
                 "Step 4 COMMISSION_DURATIONS block is malformed" +
@@ -67043,6 +67299,20 @@
           ) {
             var sharedDpGate = applyLearningJourneySharedSourceFromDesignPageCapture(wf, body);
             if (!sharedDpGate || !sharedDpGate.ok) {
+              if (sid) {
+                state.workflowRunLjSharedSourceValidation =
+                  state.workflowRunLjSharedSourceValidation || {};
+                state.workflowRunLjSharedSourceValidation[sid] = String(
+                  (sharedDpGate && sharedDpGate.errors && sharedDpGate.errors.length
+                    ? sharedDpGate.errors.join("; ")
+                    : "") ||
+                    (sharedDpGate && sharedDpGate.code) ||
+                    "shared_material_invalid"
+                );
+                if (state.workflowRunStepCompleted && state.workflowRunStepCompleted[sid]) {
+                  delete state.workflowRunStepCompleted[sid];
+                }
+              }
               updateRunStepOutputStatus(currentLi);
               showToast(
                 "Learning Journey Design Page shared_authoritative_material is invalid (status generated|provided|none with matching content), unless authoritative source_context is already set." +
@@ -67057,6 +67327,18 @@
             if (dpParsedDurNext) {
               var dpDurNextGate = reconcileLearningJourneyDesignPageDurations(wf, dpParsedDurNext);
               if (!dpDurNextGate || !dpDurNextGate.ok) {
+                if (sid) {
+                  state.workflowRunLjDurationValidation =
+                    state.workflowRunLjDurationValidation || {};
+                  state.workflowRunLjDurationValidation[sid] = String(
+                    (dpDurNextGate.errors && dpDurNextGate.errors.length
+                      ? dpDurNextGate.errors.join("; ")
+                      : "") || "commission_duration_conflict"
+                  );
+                  if (state.workflowRunStepCompleted && state.workflowRunStepCompleted[sid]) {
+                    delete state.workflowRunStepCompleted[sid];
+                  }
+                }
                 updateRunStepOutputStatus(currentLi);
                 showToast(
                   "Learning Journey Design Page allocated_minutes conflicts with Step 4 COMMISSION_DURATIONS" +
@@ -67068,6 +67350,7 @@
                 return;
               }
             }
+          }
           }
           if (storesArtefact && workflowRunLearnerPageFramingGateMessage(sid)) {
             updateRunStepOutputStatus(currentLi);

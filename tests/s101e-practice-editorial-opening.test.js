@@ -218,9 +218,10 @@ test("101E: Assessment Pack generate editorial reaches Graphics", () => {
   assert.equal(editorialBriefs(ws).length, 1);
 });
 
-test("101E / 104M3: Practice contract version marks purpose-driven editorial opening", () => {
+test("101E / 104M3: Practice contract requires editorial_opening_image generate while keeping instructional visual_affordances purpose-driven", () => {
   assert.match(practiceContracts.CONTRACT_VERSION, /104M3-PRACTICE-RECONCILED-V1/);
   const block = practiceContracts.buildPracticePresentationContractBlock("design_page");
-  assert.match(block, /editorial_opening_image: optional and purpose-driven/i);
+  assert.match(block, /editorial_opening_image: REQUIRED/i);
+  assert.match(block, /Do not use decision "skip"/i);
   assert.match(block, /Empty instructional visual_affordances is valid/);
 });

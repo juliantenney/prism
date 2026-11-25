@@ -1,8 +1,8 @@
 # Sprint 105 — Validation Plan
 
 **Sprint:** 105 — Learning Journey Progressive Capture and Assembly  
-**Status:** **MILESTONES 1–2 COMMITTED (`4b698db`, `09cfbfc`); MILESTONE 3 FOCUSED-VERIFIED (STOPPED FOR REVIEW)**  
-**Baseline:** `09cfbfc`
+**Status:** **MILESTONES 1–3 COMMITTED (`4b698db`, `09cfbfc`, `83e7aec`); MILESTONE 4 PRE-LIVE GATE READY (AWAITING MANUAL LIVE ACCEPTANCE)**  
+**Baseline:** `83e7aec`
 
 ---
 
@@ -69,10 +69,152 @@
 | Sprint 104 M2–M4 safeguards (`s104-m2-practice-episode-plan`, `s104-m3-downstream-practice-reconciliation`, `s104-m4-proportionate-commissioning`) | **13 / 13 pass** | Sprint 104 Practice & proportionate commissioning safeguards intact |
 | **Focused Milestone 3 total** | **140 / 140 unique tests pass** (`127/127` + `13/13` M2–M4; `19/19` M2–M5) | Zero regressions across LJ lifecycle, clear-run, duplication, Interactive, Practice, Expository, and Sprint 104 safeguards; no live generation yet |
 
-### Milestone 4 gate — Live clean Economics LJ validation & Sprint 104 handback
+### Milestone 4 gate — Pre-live readiness verified (2026-11-25); manual live Economics LJ validation & Sprint 104 handback pending
+
+#### Pre-live gap-coverage & browser readiness checks (**Verified 2026-11-25**)
+
+| Check / Suite | Result | Verified Scope |
+| ------------- | ------ | -------------- |
+| `index.html` script inventory & cache freshness | **Pass** (`112/112` on disk, `26` bumped to `?v=20261125-s105-m4`) | Eliminated stale browser cache tokens on `app.js`, `learning-journey-*.js`, `page-vnext-assemble.js`, `first-class-*.js`, and S104 workload/Practice/Expository/Situated modules |
+| Live browser readiness (`http://localhost/prism/index.html`, read-only) | **Pass** (`0` non-200 script responses, `109` PRISM globals loaded) | Confirmed fresh M3 handoff/prompt logic active in browser memory and `buildFirstClassWorkflowFamily({ product: "learning_journey", ... })` produces `progressive_capture_version: "s105_v1"`, `duration_contract_version: "s104_m1"`, `source_context_origin: "brief_provided"`, `outputSpec.partialPageOutputs: true`, and all 5 ordered LJ steps |
+| `tests/s102-commission-native-lo-bind.test.js` | **27 / 27 pass** | Component & journey LO marker extraction, fail-closed validation, planning delivery |
+| `tests/s102e-commission-native-runtime-path.test.js` | **13 / 13 pass** | Script load order (`commission-native-lo-bind` before intake) & commission-native routing across products |
+| `tests/s103-artefact-consumer-four-product.test.js` | **5 / 5 pass** | 4-product artefact continuity proposal & read-only consumer resolution |
+| `tests/s95-m2-learning-journey-unified-shell.test.js` | **7 / 7 pass** | Unified shell HTML, Markdown overview, CSS embedding & ZIP assembly |
+| `tests/s95-m5-unified-publishing-ui.test.js` | **3 / 3 pass** | Single ZIP download control routing LJ to unified shell |
+| `tests/s96-lj-unified-overview-editorial-opening.test.js` | **4 / 4 pass** | Parent Editorial Opening banner & offline ZIP resolution on Overview |
+| **Outstanding gap-coverage total** | **59 / 59 pass** | Plus `7 / 7` functional/contract Journal pipeline assertions passing in `s97-m3-t1-learning-journal-pipeline.test.js` (its 2 static legacy-prompt regex failures are pre-existing `PB-S-008` baseline debt documented in Sprint 104 `VALIDATION.md`) |
+
+#### Live-acceptance defect fix — `evaluate` evaluative refinement sequencing (**Verified 2026-11-25**)
+
+| Check / Suite | Result | Verified Scope |
+| ------------- | ------ | -------------- |
+| `tests/episode-plan-v1-archetype-grammar.test.js` | **8 / 8 pass** | `evaluate` accepts `evaluative_judgement → independent_performance`, integrated `evaluative_judgement` without extra `independent_performance`, and `independent_performance → evaluative_judgement`; integrated `evaluative_judgement` binds response/evidence materials; genuine ordering/core violations still fail closed |
+| `tests/episode-plan-v1-validation.test.js` | **3 / 3 pass** | Episode Plan V1 validation & non-regression |
+| `tests/s104-m2-practice-episode-plan.test.js` | **8 / 8 pass** | Practice Episode Plan AI authoring, grammar enforcement, outcome coverage, and Interactive non-regression |
+| `tests/s104-m3-downstream-practice-reconciliation.test.js` | **3 / 3 pass** | Practice downstream reconciliation & Interactive guard |
+| `tests/learner-renderer-vnext-episode-plan-v1-archetypes-imp014b.test.js` | **2 / 2 pass** | Canonical binding & vNext render non-regression |
+| `tests/s105-lj-commission-workload-estimation.test.js` | **7 / 7 pass** | Integrated workload estimation, clause-filtering safety, and Practice feedback contract consistency preserved |
+| `npm run check:learner-renderer-vnext-browser` | **Pass** | Rebuilt browser artefacts match source |
+| **Focused live-acceptance fix total** | **31 / 31 pass** | Zero regressions across grammar, canonical binding, Practice contracts, and workload estimation |
+
+#### Live-acceptance defect fix — Expository Design Page visual-affordance vocabulary & native scatterplot distinction (**Verified 2026-11-25**)
+
+| Check / Suite | Result | Verified Scope |
+| ------------- | ------ | -------------- |
+| `tests/s85-expository-design-page-visual-affordances.test.js` | **12 / 12 pass** | Expository DP prompt lists all 8 `PURPOSES` and 15 `REPRESENTATIONS` verbatim; distinguishes natively rendered deterministic SVG scatterplots from unrealised image-pipeline graphics; keeps Sprint 38 validator strict (`scatterplot` not added to image-pipeline enum); `expository-xm-illustration-handoff` never misclassifies structured scatterplots as unrealised illustrations while preserving number-line handoff |
+| `tests/s85-expository-design-page-capture-shape.test.js` | **10 / 10 pass** | Expository DP capture shape & assembly non-regression |
+| `tests/s93-expository-xm-illustration-handoff.test.js` | **5 / 5 pass** | XM illustration handoff non-regression |
+| `tests/qa-c02-expository-structured-rendering.test.js` | **5 / 5 pass** | Native deterministic inline SVG scatterplot rendering & accessible tables |
+| `npm run check:learner-renderer-vnext-browser` | **Pass** | Rebuilt browser artefacts match source |
+| **Focused Expository DP fix total** | **32 / 32 pass** | Plus `12 / 13` in `s96-c2-expository-number-line-formula-regression` (1 unrelated pre-existing decorative editorial-opening caption assertion) |
+
+#### Live-acceptance defect fix — Authoring graphics SVG intake & rasterization (**Verified 2026-11-25**)
+
+| Check / Suite | Result | Verified Scope |
+| ------------- | ------ | -------------- |
+| `node --check` on `lib/prism-visual-assets.js`, `lib/utilities-visual-jobs-workspace.js`, `app.js` | **Pass** (exit 0) | Syntax clean |
+| `tests/s105-svg-visual-asset-intake.test.js` | **4 / 4 pass** | Clipboard SVG extraction, `viewBox`/2× normalization, fail-closed rejection of active/external SVG content, human prompt PNG/SVG delivery guidance, and dropzone SVG file acceptance |
+| `tests/sprint-70-slice-6-utilities-visual-jobs-workspace.test.js` | **26 / 26 pass** | Visual jobs workspace UI, attachment hooks, and compiler integration non-regression |
+| `tests/sprint-70-slice-7-visual-jobs-human-prompt.test.js` | **13 / 13 pass** | Human prompt derivation & handoff non-regression |
+| `tests/sprint-70-slice-7a-human-prompt-quality.test.js` | **16 / 16 pass** | Prompt modality, representation guidance, and quality diagnostics non-regression |
+| **Focused SVG intake fix total** | **59 / 59 pass** | Zero regressions across existing graphics jobs, attachment pipeline, and prompts |
+
+#### Live-acceptance defect fix — Economics C1 graphical construction-prose suppression (**Verified 2026-11-25**)
+
+| Check / Suite | Result | Verified Scope |
+| ------------- | ------ | -------------- |
+| `tests/s105-c1-figure-construction-prose-suppression.test.js` | **5 / 5 pass** | Real Economics C1 `"Construct a clean horizontal number line..."` spec suppressed in learner preview & ZIP export; caption, alt text, `M02` accessible text, genuine learner-facing `detailed_description`, unattached illustration fallback, and native S2 scatterplot preserved; Design Page prompt distinguishes learner-facing vs production-only `detailed_description` |
+| `tests/s102e-expository-publication-defects.test.js` | **7 / 7 pass** | Layout-commission prose suppression & Expository publication contracts |
+| `tests/learner-figure-description-contract.test.js` | **17 / 17 pass** | Textbook figure description contract, numbering, `aria-describedby`, standalone export & browser bundle parity |
+| `tests/s85-expository-design-page-visual-affordances.test.js` | **12 / 12 pass** | Expository Design Page visual-affordance prompt & validator non-regression |
+| `tests/s105-svg-visual-asset-intake.test.js` | **4 / 4 pass** | Retained SVG intake & 2× PNG rasterisation contract |
+| `npm run check:learner-renderer-vnext-browser` | **Pass** | Rebuilt browser artefacts match source (preview/ZIP parity) |
+| **Focused C1 construction-prose fix total** | **45 / 45 pass** | Plus `12 / 13` in `s96-c2-expository-number-line-formula-regression` (1 pre-existing `PB-S-008` decorative editorial-opening alt assertion) |
+
+#### Live-acceptance defect fix — Nested scatterplot & accessible table realisation across all 6 sections of C1 Expository (**Verified 2026-11-25**)
+
+| Check / Suite | Result | Verified Scope |
+| ------------- | ------ | -------------- |
+| `tests/s105-c1-full-expository-scatterplots-and-sections.test.js` | **1 / 1 pass** | Complete 6-section Economics C1 end-to-end fixture: S1 prose, S2 `M01` SVG scatterplot + restored `accessible_table`, S3 `M02` + `Figure 1` correlation scale (no construction prose), S4 `M03` & S5 `M04` nested `initial_evidence.scatterplot` realised as SVG + semantic tables + staged sequence + zero raw spec/path leakage, S6 `M05` summary table, and preview/ZIP parity |
+| `tests/s105-c1-figure-construction-prose-suppression.test.js` | **5 / 5 pass** | Retained C1 construction-prose suppression & accessible-text preservation |
+| `tests/s105-practice-scatterplot-publication.test.js` | **6 / 6 pass** | Practice scatterplot publication non-regression |
+| `tests/qa-c02-expository-structured-rendering.test.js` | **5 / 5 pass** | Expository SVG scatterplots, response/feedback disclosures, and standalone/unified export parity |
+| `tests/s87-t004-ad010-structured-materials.test.js` | **12 / 12 pass** | Structured material fallback, table, timeline, and browser-bundle export parity |
+| `tests/s93-expository-structured-publication.test.js` | **7 / 7 pass** | Expository structured publication & representation-spec non-regression |
+| `tests/s93-expository-xm-illustration-handoff.test.js` | **5 / 5 pass** | XM illustration handoff & nested native scatterplot exclusion |
+| `tests/s102e-expository-publication-defects.test.js` | **7 / 7 pass** | Schema-mechanic suppression & Expository publication contracts |
+| `tests/s105-svg-visual-asset-intake.test.js` | **4 / 4 pass** | Retained SVG intake & 2× PNG rasterisation contract |
+| `npm run check:learner-renderer-vnext-browser` | **Pass** | Rebuilt browser artefacts match source (preview/ZIP parity) |
+| **Focused C1 6-section fix total** | **47 / 47 pass** (`node --test` count across 9 suites) | Zero regressions across Expository, Practice, structured materials, and SVG intake |
+
+#### Live-acceptance defect fix — Remaining structured-comparison publication defects in S4 (`M03`) & S5 (`M04`) (**Verified 2026-11-25**)
+
+| Check / Suite | Result | Verified Scope |
+| ------------- | ------ | -------------- |
+| `tests/s105-c1-full-expository-scatterplots-and-sections.test.js` | **1 / 1 pass** | Complete 6-section C1 fixture including S4 `ordered_expenditure_values`, `pearson_correlation_reveal`, `datasets[]` cross-ref manifest, and S5 `comparing_successive_observations` + `comparing_the_positions_of_observations_within_each_distribution` `series[]`: zero exposure of `Title`, `Coefficient`, `Coefficient display`, `Series`, `Observation ids`, `Ordered values`, `Successive differences`, `Relative vertical positions`, `Unit`, `Values`, `Horizontal variable`, `Horizontal step`, `Vertical variable`, `Difference unit`, `Accessible distribution comparison`, `Comparison guidance`, `Qualification`, or incomplete S5 coefficient block; row-aligned semantic HTML tables & preview/ZIP parity verified |
+| `tests/s105-c1-figure-construction-prose-suppression.test.js` | **5 / 5 pass** | Retained C1 construction-prose suppression & accessible-text preservation |
+| `tests/s105-practice-scatterplot-publication.test.js` | **6 / 6 pass** | Practice scatterplot publication non-regression |
+| `tests/s105-svg-visual-asset-intake.test.js` | **4 / 4 pass** | Retained SVG intake & 2× PNG rasterisation contract |
+| `tests/qa-c02-expository-structured-rendering.test.js` | **5 / 5 pass** | Expository SVG scatterplots, disclosures, and standalone/unified export parity |
+| `tests/s87-t004-ad010-structured-materials.test.js` | **12 / 12 pass** | Structured material fallback, tables, timelines, and browser-bundle export parity |
+| `tests/s87-t007-terminal-closure-order.test.js` | **10 / 10 pass** | Expository terminal closure & section ordering non-regression |
+| `tests/s93-expository-structured-publication.test.js` | **7 / 7 pass** | Expository structured publication & representation-spec non-regression |
+| `tests/s93-expository-xm-illustration-handoff.test.js` | **5 / 5 pass** | XM illustration handoff & nested native scatterplot exclusion |
+| `tests/s102e-expository-publication-defects.test.js` | **7 / 7 pass** | Schema-mechanic suppression & Expository publication contracts |
+| `npm run check:learner-renderer-vnext-browser` | **Pass** | Rebuilt browser artefacts match source (`?v=20261125-s105-m4n` in `index.html`) |
+| **Focused C1 structured-comparison fix total** | **57 / 57 pass** (`node --test` count across 10 suites) | Zero regressions across Expository, Practice, terminal ordering, structured materials, and SVG intake |
+
+#### Workstream 1 — Expository representational necessity & workload proportionality (**Verified 2026-11-25**)
+
+| Check / Suite | Result | Verified Scope |
+| ------------- | ------ | -------------- |
+| `node --check lib/expository-sibling-prompts.js` | **Pass** (exit 0) | Syntax clean |
+| `tests/s105-expository-representational-necessity.test.js` | **3 / 3 pass** | EJP, XD, and XM carry generic representational necessity & duration proportionality principle, 3-way distinction, prohibition on uncommissioned derived series/transformations, task-relative accessible-equivalence judgement, zero arbitrary caps/tiers, zero Interactive semantics, XD `materials_commission[].constraints` guidance, XM anti-duplication guidance, and runtime Expository augmentation parity |
+| `tests/s85-wp3-expository-sibling-prompts.test.js` | **14 / 14 pass** | Expository sibling prompt routing, judgement rules, domain guidance, and Interactive isolation |
+| `tests/s99-expository-academic-plain-english.test.js` | **4 / 4 pass** | Expository Academic Plain English & non-duplication on EJP/DP |
+| `tests/s85-expository-design-page-visual-affordances.test.js` | **12 / 12 pass** | Expository DP visual-affordance prompt & validator non-regression |
+| `tests/s85-expository-stepnotes-parameterisation.test.js` | **4 / 4 pass** | Expository stepNotes materialisation & Interactive isolation |
+| `tests/s85-wp2-expository-contracts.test.js` | **12 / 12 pass** | Expository EJP/XD/XM contracts, extent, and assembly non-regression |
+| `tests/s105-c1-full-expository-scatterplots-and-sections.test.js` | **1 / 1 pass** | Preserved existing 6-section Economics C1 artefact regression evidence untouched |
+| **Focused Workstream 1 total** | **50 / 50 pass** (`node --test` count across 7 suites) | Zero regressions across Expository prompts, contracts, runtime augmentation, and preserved C1 artefact |
+
+#### Workstream 2 (`S105-D03`) — Optional block-level material anchors in Expository exposition (**Verified 2026-11-25**)
+
+| Check / Suite | Result | Verified Scope |
+| ------------- | ------ | -------------- |
+| `node --check` on `lib/expository-material-anchors.js`, `lib/expository-contracts.js`, `lib/page-vnext-assemble.js` | **Pass** (exit 0) | Syntax clean |
+| `npm run check:learner-renderer-vnext-browser` | **Pass** | Rebuilt browser bundle matches source (`?v=20261125-s105-m4p` in `index.html`) |
+| `tests/s105-expository-material-anchors.test.js` | **9 / 9 pass** | Interleaved exposition, multiple anchors, mixed anchored/unanchored, XD/lock/assembly validation errors (unknown, `material_id`, malformed, cross-section, duplicate), defensive rendering & actionable diagnostics, literal syntax in code fences/inline code/blockquotes/quotes, fulfilled inline + unfulfilled fallback + unlinked section-end figures, EQ8 terminal consolidation, preview/standalone-ZIP/unified-LJ parity, and XD/XM prompt contracts |
+| `tests/s105-expository-representational-necessity.test.js` | **3 / 3 pass** | Workstream 1 proportionality principle & runtime augmentation non-regression |
+| `tests/s105-c1-full-expository-scatterplots-and-sections.test.js` | **1 / 1 pass** | Preserved original 6-section Economics C1 artefact unchanged |
+| `tests/s105-c1-figure-construction-prose-suppression.test.js` | **5 / 5 pass** | Construction-prose suppression & accessible-text preservation |
+| `tests/s85-wp2-expository-contracts.test.js` | **12 / 12 pass** | Expository EJP/XD/XM contracts & assembly |
+| `tests/s85-wp3-expository-sibling-prompts.test.js` | **14 / 14 pass** | Expository sibling prompt contracts & Interactive isolation |
+| `tests/s87-t007-terminal-closure-order.test.js` | **10 / 10 pass** | EQ8 terminal closure ordering across unanchored Expository & Interactive |
+| `tests/qa-c02-expository-structured-rendering.test.js` | **5 / 5 pass** | Expository scatterplots, disclosures, standalone/unified export parity |
+| `tests/s93-expository-structured-publication.test.js` | **7 / 7 pass** | Expository structured publication non-regression |
+| `tests/s93-expository-xm-illustration-handoff.test.js` | **5 / 5 pass** | XM illustration handoff non-regression |
+| `tests/s99-expository-academic-plain-english.test.js` | **4 / 4 pass** | Expository Academic Plain English non-regression |
+| `tests/s102e-expository-publication-defects.test.js` | **7 / 7 pass** | Expository publication defects non-regression |
+| `tests/s87-t004-ad010-structured-materials.test.js` | **12 / 12 pass** | Structured materials & browser-bundle export parity |
+| `tests/s85-expository-design-page-visual-affordances.test.js` | **12 / 12 pass** | Expository DP visual-affordance contracts |
+| **Focused Workstream 2 total** | **106 / 106 pass** (`node --test` count across 14 suites) | Zero regressions across Expository, visual affordances, terminal ordering, structured materials, and unified Learning Journey shell |
+
+#### Live acceptance — Regenerated Economics C1 Expository Resource (**Passed 2026-11-25**)
+
+| Check | Result | Evidence / Notes |
+| ----- | ------ | ---------------- |
+| Expository QA benchmark | **91 / 100 (Professional / Excellent)** | No production cap; zero critical or major production defects ([C1-LIVE-ACCEPTANCE-QA-RECORD.md](evidence/c1-expository-live-acceptance/C1-LIVE-ACCEPTANCE-QA-RECORD.md)) |
+| Independent HTML inspection | **Pass** | 6 substantive sections, 4 inline material placements, 3 native SVG scatterplots, 4 data/comparison tables, 0 unnecessary derived numerical series, 0 raw anchor leaks, coherent evidence-before-prediction & interpretation sequencing, ~1,994 words of expository prose |
+| Preserved export artefact | **Archived** | [c1-regenerated-reading-relationships-in-economic-data.zip](evidence/c1-expository-live-acceptance/c1-regenerated-reading-relationships-in-economic-data.zip); original C1 baseline regression fixture preserved unchanged |
+| Residual workload-fidelity observation | **Recorded (non-blocking)** | Commissioned duration: 10 minutes; estimated actual learner workload: ~12–15 minutes (actual learner timings unmeasured). Workload fidelity continues to be evaluated across remaining Economics Learning Journey components. |
+| Minor publication defect | **Logged (`S105-AD-005`)** | One Markdown blockquote rendered with literal `&gt;` inside `<p>` rather than `<blockquote>`; logged in [ARCHITECTURAL-DEBT.md](ARCHITECTURAL-DEBT.md) for subsequent attention without regenerating C1 |
+
+#### Pending manual live acceptance ([MANUAL-ACCEPTANCE-CHECKLIST.md](MANUAL-ACCEPTANCE-CHECKLIST.md))
 - **Live validation (fresh workflow; original baseline & incomplete Sprint 104 run preserved untouched):**
-  1. Run the 90-minute / 2-week *Correlation and Causation: Making Sense of Economic Evidence* brief end-to-end through progressive Learning Journey Steps 1–5.
+  1. Author the fresh 90-minute / 2-week *Correlation and Causation: Making Sense of Economic Evidence* brief manually through progressive Learning Journey Steps 1–5 with collaborative stage review.
   2. Confirm economical stage outputs across Steps 1–4 (no ~14,000-word Step 4 sprawl) and thin Step 5 synthesis completing comfortably within model output limits.
-  3. Confirm deterministic final assembly passes all LJ Design Page, duration reconciliation, shared-source, continuity, and Journal validations cleanly.
-  4. Verify browser reload persistence, preview contract, single/batch commissioning handoff (carrying authoritative `allocated_minutes`, component outcomes, journey outcomes, shared source, and `{commission_id}.{elicitation_id}` bindings), and unified shell export readiness.
-- **Handback to Sprint 104:** Close Sprint 105 and resume **Sprint 104 live acceptance** (Milestone 1 integrated live acceptance, Milestone 6 live 5-/15-/30-minute Practice sensitivity probes, and Milestone 7 Economics component regeneration, baseline comparison against preserved pre-intervention captures, educational QA, and unified learner-runtime acceptance).
+  3. Confirm deterministic final assembly passes all LJ Design Page, duration reconciliation, shared-source, continuity, and Journal validations cleanly with the unchanged final DP schema.
+  4. Verify browser reload persistence, preview contract, single/batch commissioning readiness, and disposable-workflow lifecycle checks (duplication, upstream invalidation, clear-run).
+- **Handback to Sprint 104:** Only after manual acceptance completes, close Sprint 105 and reuse the accepted Economics Learning Journey directly as the parent workflow for **Sprint 104 live acceptance** (Milestone 1 integrated live acceptance, Milestone 6 live 5-/15-/30-minute Practice sensitivity probes, and Milestone 7 Economics component regeneration, baseline comparison against preserved pre-intervention captures, educational QA, and unified learner-runtime acceptance).

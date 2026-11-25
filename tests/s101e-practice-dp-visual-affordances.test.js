@@ -181,7 +181,7 @@ test("101E: Practice presentation contract points at shared Sprint 38 VA + forbi
   assert.match(block, /Sprint 38 visual-affordance authoring contract/i);
   assert.match(block, /materials-entry/);
   assert.match(block, /Never invent slots such as materials-after-feedback/i);
-  assert.match(block, /Purpose-driven editorial furniture/i);
+  assert.match(block, /Purpose-driven page_synthesis furniture/i);
   assert.match(block, /page_synthesis: \{\} or partial omissions are valid/i);
   const shape = practiceContracts.buildCanonicalPracticeDesignPageShapeSnippet();
   assert.match(shape, /visual_affordance_schema_version": "38.4"/);
@@ -235,7 +235,7 @@ test("101E: Practice Design Page runtime augmentation includes Sprint 38 VA auth
 
   assert.doesNotMatch(augmented, /LD-DESIGN-PAGE-PARTIAL-CONTRACT \(auto-applied\)/i);
   assert.doesNotMatch(augmented, /page_synthesis\.knowledge_summary is mandatory/i);
-  assert.match(augmented, /Purpose-driven editorial furniture/i);
+  assert.match(augmented, /Purpose-driven page_synthesis furniture/i);
   assert.match(augmented, /page_synthesis: \{\} or partial omissions are valid/i);
 });
 
@@ -457,7 +457,7 @@ test("101E: valid Practice plan yields graphics jobs without Interactive KS mand
   assert.match(html, /data-brief-select-id=/);
 });
 
-test("101E / 104M3: Practice Design Page permits purpose-driven editorial skip/omission and validates generate/skip fields", () => {
+test("101E / 104M3: Practice Design Page requires editorial_opening_image generate and rejects skip/omission", () => {
   const { api } = boot();
   const skippedWithReason = practicePageEnvelope([], {
     editorial_opening_image: {
@@ -465,30 +465,137 @@ test("101E / 104M3: Practice Design Page permits purpose-driven editorial skip/o
       skip_reason: "Journey framing already provides orientation."
     }
   });
-  const skipOkGate = api.validateDesignPagePartialPageCapture(skippedWithReason, practiceDesignPageWf());
-  assert.equal(skipOkGate.ok, true, (skipOkGate.errors || []).join("; "));
-
-  const skippedWithoutReason = practicePageEnvelope([], {
-    editorial_opening_image: { decision: "skip" }
-  });
-  const skipBadGate = api.validateDesignPagePartialPageCapture(skippedWithoutReason, practiceDesignPageWf());
-  assert.equal(skipBadGate.ok, false);
+  const skipGate = api.validateDesignPagePartialPageCapture(skippedWithReason, practiceDesignPageWf());
+  assert.equal(skipGate.ok, false);
   assert.ok(
-    skipBadGate.errors.some((msg) => /editorial_opening_image\.skip_reason/i.test(String(msg))),
-    skipBadGate.errors.join("; ")
+    skipGate.errors.some((msg) => /editorial_opening_image\.decision must be "generate"/i.test(String(msg))),
+    skipGate.errors.join("; ")
   );
 
   const omitted = practicePageEnvelope([]);
   delete omitted.editorial_opening_image;
   const omittedGate = api.validateDesignPagePartialPageCapture(omitted, practiceDesignPageWf());
-  assert.equal(omittedGate.ok, true, (omittedGate.errors || []).join("; "));
+  assert.equal(omittedGate.ok, false);
+  assert.ok(
+    omittedGate.errors.some((msg) => /editorial_opening_image is required/i.test(String(msg))),
+    omittedGate.errors.join("; ")
+  );
+
+  const nonEmptyAlt = practicePageEnvelope([], {
+    editorial_opening_image: {
+      decision: "generate",
+      subject: "Constrained optimisation practice atmosphere",
+      context: "Decorative opening only; no solution spoilers.",
+      caption_intent: "Atmosphere for practice.",
+      alt_text: "Should be empty string",
+      detailed_description: "A restrained scene suggesting equations without revealing answers."
+    }
+  });
+  const altGate = api.validateDesignPagePartialPageCapture(nonEmptyAlt, practiceDesignPageWf());
+  assert.equal(altGate.ok, false);
+  assert.ok(
+    altGate.errors.some((msg) => /editorial_opening_image\.alt_text must be ""/i.test(String(msg))),
+    altGate.errors.join("; ")
+  );
 
   const generated = practicePageEnvelope([]);
   const okGate = api.validateDesignPagePartialPageCapture(generated, practiceDesignPageWf());
   assert.equal(okGate.ok, true, (okGate.errors || []).join("; "));
 });
 
-test("101E / 104M3: Practice Design Page prompt marks editorial furniture purpose-driven", () => {
+test("C02 live Practice Design Page regression: supplied skip output and omitted editorial_opening_image are rejected; valid generate is accepted", () => {
+  const { api } = boot();
+  const c02SuppliedSkip = {
+    artifact_type: "page",
+    schema_version: "2.0.0",
+    product_id: "practice",
+    page_kind: "practice",
+    title: "Interpreting contrasting statistical relationships",
+    page_synthesis: {
+      knowledge_summary: {
+        format: "markdown",
+        body: "Pearson correlation measures the direction and strength of linear association between two quantitative variables. Its coefficient ranges from −1 to +1."
+      }
+    },
+    visual_affordance_schema_version: "38.4",
+    activities_visual_review: [
+      {
+        activity_id: "A1",
+        activity_visual_value: {
+          decision: "high",
+          rationale: "Visual inspection of paired economic observations is central to both statistical interpretations; already fulfilled by exact-data scatterplots in A1-M1 and A1-M3."
+        }
+      }
+    ],
+    visual_affordances: [
+      {
+        affordance_id: "va-A1-statistical-evidence-01",
+        scope: "activity",
+        activity_id: "A1",
+        visual_decision: "skip",
+        skip_reason: "duplicate_existing_structure",
+        rationale: "The existing scatterplots and accessible data tables provide the representations required for both interpretation tasks.",
+        subject: "Paired economic observations and linear correlation",
+        context: "Learners examine temperature and household energy expenditure observations, followed by advertising expenditure and sales revenue observations.",
+        evidence_anchors: ["A1.learner_task", "A1.expected_output", "A1.materials.A1-M1", "A1.materials.A1-M3", "A1.materials.A1-M5"]
+      },
+      {
+        affordance_id: "va-page-knowledge-summary-01",
+        scope: "page",
+        region: "knowledge_summary",
+        visual_decision: "skip",
+        skip_reason: "spoiler_risk",
+        rationale: "A conceptual contrast diagram illustrating non-linear relationships and unusual observations would anticipate conclusions learners must derive.",
+        subject: "Observed statistical patterns and correlation summaries",
+        context: "The opening conceptual briefing establishes Pearson correlation as a measure of linear association without disclosing answers.",
+        evidence_anchors: ["page_synthesis.knowledge_summary", "A1.learner_task", "A1.reasoning_orientation", "A1.materials.A1-M5"]
+      }
+    ],
+    editorial_opening_image: {
+      decision: "skip",
+      skip_reason: "The resource follows established prior learning and moves directly into statistical interpretation. A contextual opening image would add no substantive reasoning support within the ten-minute practice episode."
+    },
+    assembly_state: {
+      current_stage: "design_page",
+      enriched_by: ["design_page"],
+      calls_model: true
+    }
+  };
+
+  // Supplied C02 with decision "skip" must be rejected
+  const skipRes = api.validateDesignPagePartialPageCapture(c02SuppliedSkip, practiceDesignPageWf());
+  assert.equal(skipRes.ok, false);
+  assert.ok(
+    skipRes.errors.some((e) => /editorial_opening_image\.decision must be "generate"/i.test(String(e))),
+    skipRes.errors.join("; ")
+  );
+
+  // Omitting editorial_opening_image must also be rejected
+  const c02Omitted = Object.assign({}, c02SuppliedSkip);
+  delete c02Omitted.editorial_opening_image;
+  const omitRes = api.validateDesignPagePartialPageCapture(c02Omitted, practiceDesignPageWf());
+  assert.equal(omitRes.ok, false);
+  assert.ok(
+    omitRes.errors.some((e) => /editorial_opening_image is required/i.test(String(e))),
+    omitRes.errors.join("; ")
+  );
+
+  // Valid generate editorial_opening_image is accepted while preserving skip visual_affordances and partial page_synthesis
+  const c02Generate = Object.assign({}, c02SuppliedSkip, {
+    editorial_opening_image: {
+      decision: "generate",
+      subject: "Seasonal household energy and small-shop retail environments",
+      context: "A decorative, text-free opening illustration evoking ordinary household energy use across changing seasons and independent small-business retail life without showing charts, numbers, or statistical relationships.",
+      caption_intent: "Atmospheric opening setting for contrasting economic relationships.",
+      alt_text: "",
+      detailed_description: "A calm, contemporary text-free editorial illustration in wide landscape format showing residential homes transitioning across crisp winter and warm summer light beside a quiet row of independent small shops. No numbers, charts, scatterplots, labels, signs, or overlays appear anywhere in the scene."
+    }
+  });
+  const okRes = api.validateDesignPagePartialPageCapture(c02Generate, practiceDesignPageWf());
+  assert.equal(okRes.ok, true, (okRes.errors || []).join("; "));
+});
+
+test("101E / 104M3: Practice Design Page prompt requires editorial_opening_image generate while keeping page_synthesis optional", () => {
   const { api } = boot();
   const augmented = api.applyWorkflowStepRuntimePromptAugmentations(
     "Assemble Practice Design Page partial JSON.\n",
@@ -497,15 +604,17 @@ test("101E / 104M3: Practice Design Page prompt marks editorial furniture purpos
     {}
   );
   assert.match(augmented, /LD-PRACTICE-PRESENTATION-CONTRACTS \(auto-applied\)/i);
-  assert.match(augmented, /editorial_opening_image: optional and purpose-driven/i);
-  assert.doesNotMatch(augmented, /editorial_opening_image: REQUIRED/);
-  assert.doesNotMatch(augmented, /Do not use decision "skip"/);
+  assert.match(augmented, /editorial_opening_image: REQUIRED/i);
+  assert.match(augmented, /Do not use decision "skip"/i);
+  assert.match(augmented, /Purpose-driven page_synthesis furniture: every page_synthesis element/i);
+  assert.doesNotMatch(augmented, /editorial_opening_image: optional and purpose-driven/i);
 
   const block = practiceContracts.buildPracticePresentationContractBlock("design_page");
-  assert.match(block, /editorial_opening_image: optional and purpose-driven/i);
-  assert.doesNotMatch(block, /editorial_opening_image: REQUIRED/);
+  assert.match(block, /editorial_opening_image: REQUIRED/i);
+  assert.doesNotMatch(block, /editorial_opening_image: optional and purpose-driven/i);
   const shape = practiceContracts.buildCanonicalPracticeDesignPageShapeSnippet();
   assert.match(shape, /"page_synthesis": \{\}/);
+  assert.match(shape, /"editorial_opening_image": \{ "decision": "generate"/);
 
   const wf = Object.assign({ id: "wf-practice-editorial-copy", steps: [designPageStep()] }, practiceDesignPageWf());
   wf.steps[0] = Object.assign({}, designPageStep(), {
@@ -517,8 +626,10 @@ test("101E / 104M3: Practice Design Page prompt marks editorial furniture purpos
   const instr = api.buildWorkflowStepInstructions(wf.steps[0], 0, null);
   assert.match(
     instr,
-    /Purpose-driven editorial_opening_image \(Practice\): optional at page root/i
+    /Mandatory editorial_opening_image \(Practice\): required at page root/i
   );
+  assert.match(instr, /Always emit decision "generate"/i);
+  assert.match(instr, /Do not use decision "skip" and do not omit editorial_opening_image/i);
   assert.match(instr, /Purpose-driven page_synthesis \(Practice\)/i);
-  assert.doesNotMatch(instr, /Always emit editorial_opening_image/i);
+  assert.doesNotMatch(instr, /Purpose-driven editorial_opening_image \(Practice\): optional/i);
 });

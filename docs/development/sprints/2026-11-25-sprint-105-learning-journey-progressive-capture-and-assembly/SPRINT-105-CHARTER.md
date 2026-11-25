@@ -1,11 +1,10 @@
 # Sprint 105 — Charter
 
 **Sprint:** 105 — Learning Journey Progressive Capture and Assembly  
-**Status:** **OPEN — PHASE 105A COMPLETE (AWAITING REVIEW)**  
-**Opened:** 2026-11-25  
-**Baseline:** `f1f1269` (Sprint 104 M1–M5 committed)  
-**Priority:** Takes priority **before Connect More** (Wed 2 Dec 12:00)  
-**Suspended dependency:** [Sprint 104 — Workload Fidelity and Proportionate Authoring](../2026-11-24-sprint-104-workload-fidelity-and-proportionate-authoring/SPRINT-104-START-HERE.md) (`S104-D04` — suspended at live acceptance pending Sprint 105)
+**Status:** **CLOSED — COMPLETE (2026-11-25)** — see [SPRINT-105-CLOSURE.md](SPRINT-105-CLOSURE.md)  
+**Opened:** 2026-11-25 · **Closed:** 2026-11-25  
+**Baseline:** `f1f1269` (opened) → `a7ad249` (implementation complete; closed per `S105-D04`)  
+**Handback target:** [Sprint 104 — Workload Fidelity and Proportionate Authoring](../2026-11-24-sprint-104-workload-fidelity-and-proportionate-authoring/SPRINT-104-START-HERE.md) (resumed at live acceptance via `S104-D05`)
 
 ---
 

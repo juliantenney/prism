@@ -1,25 +1,25 @@
 # Sprint 105 — START HERE
 
 **Sprint:** 105 — Learning Journey Progressive Capture and Assembly  
-**Status:** **OPEN — MILESTONES 1–3 COMMITTED (`4b698db`, `09cfbfc`, `83e7aec`); MILESTONE 4 READY FOR MANUAL LIVE ACCEPTANCE**  
-**Baseline:** `83e7aec` (Sprint 105 M3 committed on top of M2 `09cfbfc`, M1 `4b698db`, and Sprint 104 M1–M5 `f1f1269`)  
-**Priority:** Active priority **before Connect More** (Wed 2 Dec 12:00)  
-**Decisions:** [S105-D01](decisions.md#s105-d01--open-sprint-105--learning-journey-progressive-capture-and-assembly) · [S105-D02 (Accepted)](decisions.md#s105-d02--stage-authority-progressive-capture-and-deterministic-assembly-contract)  
-**Suspended dependency:** [Sprint 104](../2026-11-24-sprint-104-workload-fidelity-and-proportionate-authoring/SPRINT-104-START-HERE.md) suspended at live acceptance (`S104-D04`)
+**Status:** **CLOSED — COMPLETE (2026-11-25)** — Milestones 1–4 committed (`4b698db`, `09cfbfc`, `83e7aec`, `a7ad249`) & manually accepted; handed back to Sprint 104 (`S105-D04` / `S104-D05`)  
+**Implementation baseline:** `a7ad249` (M1 `4b698db`, M2 `09cfbfc`, M3 `83e7aec`, M4 `a7ad249`)  
+**Closure record:** [SPRINT-105-CLOSURE.md](SPRINT-105-CLOSURE.md)  
+**Decisions:** [S105-D01](decisions.md#s105-d01--open-sprint-105--learning-journey-progressive-capture-and-assembly) · [S105-D02 (Accepted)](decisions.md#s105-d02--stage-authority-progressive-capture-and-deterministic-assembly-contract) · [S105-D03 (Accepted)](decisions.md#s105-d03--optional-block-level-material-anchors-in-expository-exposition) · [S105-D04 (Closed)](decisions.md#s105-d04--close-sprint-105--complete-and-hand-back-to-sprint-104)  
+**Active resumed sprint:** [Sprint 104 — Workload Fidelity and Proportionate Authoring](../2026-11-24-sprint-104-workload-fidelity-and-proportionate-authoring/SPRINT-104-START-HERE.md) (resumed at live acceptance via `S104-D05`)
 
 ---
 
 ## Read in order
 
-1. [MANUAL-ACCEPTANCE-CHECKLIST.md](MANUAL-ACCEPTANCE-CHECKLIST.md) — **Active gate:** concise manual live acceptance checklist for the fresh 90-minute Economics Learning Journey
-2. [decisions.md](decisions.md) — `S105-D01` opening and accepted `S105-D02` (with 9 architectural refinements and field-purpose/consumer contract)
-3. [STATUS.md](STATUS.md) — Milestones 1–3 committed summary and Milestone 4 pre-live readiness log
-4. [VALIDATION.md](VALIDATION.md) — Milestones 1–3 & Milestone 4 pre-live test/browser evidence
-5. [SPRINT-105-CHARTER.md](SPRINT-105-CHARTER.md) — mission, agreed progressive-capture direction, hard invariants, and non-goals
-6. [IMPLEMENTATION-MAP.md](IMPLEMENTATION-MAP.md) — Milestones 1–3 (committed) and Milestone 4 live gate
+1. [SPRINT-105-CLOSURE.md](SPRINT-105-CLOSURE.md) — **Closure record:** delivered milestones, decisions (`S105-D01`–`S105-D04`), automated vs confirmed live evidence, deferred items, and Sprint 104 handback
+2. [MANUAL-ACCEPTANCE-CHECKLIST.md](MANUAL-ACCEPTANCE-CHECKLIST.md) — Completed Milestone 4 manual acceptance record
+3. [VALIDATION.md](VALIDATION.md) — Full automated regression and confirmed live acceptance evidence
+4. [decisions.md](decisions.md) — `S105-D01`, `S105-D02`, `S105-D03`, and `S105-D04`
+5. [STATUS.md](STATUS.md) — Full work log
+6. [SPRINT-105-CHARTER.md](SPRINT-105-CHARTER.md) & [IMPLEMENTATION-MAP.md](IMPLEMENTATION-MAP.md)
 
-## Current posture
+## Final posture
 
-- **Completed:** Phase 105A approved (`S105-D02` accepted); **Milestone 1** committed (`4b698db`); **Milestone 2** committed (`09cfbfc`); **Milestone 3** committed (`83e7aec`); **Milestone 4 pre-live readiness** verified (`index.html` cache tokens bumped to `?v=20261125-s105-m4`, live browser `112/112` HTTP 200 scripts & `109` globals verified, `59/59` outstanding gap-coverage regression tests passing, manual checklist published).
-- **Current gate:** **Stopped before live generation — ready for collaborative manual authoring** of the fresh 90-minute Economics Learning Journey (which will also serve as the parent journey for subsequent Sprint 104 live acceptance). Do **not** close Sprint 105 until manual acceptance is complete.
-- **Preservation:** Both the original pre-intervention *Correlation and Causation: Making Sense of Economic Evidence* baseline and the current incomplete Sprint 104 regeneration remain untouched.
+- **Closed:** All four milestones complete and verified (`4b698db`, `09cfbfc`, `83e7aec`, `a7ad249`), fresh 90-minute Economics LJ and 30-hour / 50-component Political Economy LJ generated through all five stages, regenerated Economics C1 accepted at **91 / 100**, and all six manual lifecycle/compatibility checks confirmed by user.
+- **Handback:** Active work has formally returned to **[Sprint 104](../2026-11-24-sprint-104-workload-fidelity-and-proportionate-authoring/SPRINT-104-START-HERE.md)** (`M1` integrated live acceptance, `M6` Practice sensitivity probes, `M7` remaining Economics components, workload assessment, baseline comparison, QA, and unified learner-runtime acceptance), using the fresh 90-minute Economics LJ as canonical parent workflow.
+- **Preservation:** Both historical Economics baselines remain preserved untouched. Do not reopen Sprint 105.

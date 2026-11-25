@@ -1,7 +1,7 @@
 # Sprint 105 — Architectural Debt & Confirmed Defects Ledger
 
 **Sprint:** 105 — Learning Journey Progressive Capture and Assembly  
-**Updated:** 2026-11-25 (Milestone 3)
+**Updated:** 2026-11-25 (Sprint 105 Closed — Complete; deferred items preserved)
 
 ---
 

@@ -1,28 +1,37 @@
 # Sprint 104 — Status / work log
 
 **Sprint:** 104 — Workload Fidelity and Proportionate Authoring  
-**Status:** **SUSPENDED AT LIVE ACCEPTANCE** — Milestones 1–5 complete and committed (`c461770`, `9db45bf`, `53bd50c`, `43db3f4`, `f1f1269`); suspended pending [Sprint 105 — Learning Journey Progressive Capture and Assembly](../2026-11-25-sprint-105-learning-journey-progressive-capture-and-assembly/SPRINT-105-START-HERE.md)  
-**Baseline:** `1515cd4` (M1: `c461770`; M2: `9db45bf`; M3: `53bd50c`; M4: `43db3f4`; M5: `f1f1269`)  
+**Status:** **OPEN — RESUMED AT LIVE ACCEPTANCE (`S104-D05`)** — Milestones 1–5 committed (`c461770` → `f1f1269`); [Sprint 105 CLOSED — COMPLETE](../2026-11-25-sprint-105-learning-journey-progressive-capture-and-assembly/SPRINT-105-CLOSURE.md) (`a7ad249`)  
+**Resumption baseline:** `a7ad249` (Sprint 104 M1–M5 `c461770`–`f1f1269` + Sprint 105 M1–M4 `4b698db`–`a7ad249`)  
 **Primary backlog item:** [PB-FA-025](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-025--duration-fidelity-learner-workload-budgeting)  
-**Opening & decisions:** [S104-D01](decisions.md#s104-d01--open-sprint-104--workload-fidelity-and-proportionate-authoring), [S104-D02](decisions.md#s104-d02--architectural-agreement-principles-a-e-and-seven-gated-milestones), [S104-D03](decisions.md#s104-d03--milestone-2-multi-lo-compatibility-and-milestone-3-contract-reconciliation), [S104-D04](decisions.md#s104-d04--suspend-sprint-104-at-live-acceptance-pending-sprint-105)
+**Opening & decisions:** [S104-D01](decisions.md#s104-d01--open-sprint-104--workload-fidelity-and-proportionate-authoring), [S104-D02](decisions.md#s104-d02--architectural-agreement-principles-a-e-and-seven-gated-milestones), [S104-D03](decisions.md#s104-d03--milestone-2-multi-lo-compatibility-and-milestone-3-contract-reconciliation), [S104-D04](decisions.md#s104-d04--suspend-sprint-104-at-live-acceptance-pending-sprint-105), [S104-D05](decisions.md#s104-d05--resume-sprint-104-at-live-acceptance-after-sprint-105-closure)
 
 | Item | State |
 | ---- | ----- |
 | S104-D01 Open sprint | **Accepted** |
 | Phase 104A Read-only investigation & documentation | **Complete (`f3bb47d`)** |
 | S104-D02 Architectural agreement (Principles A–E & Milestones 1–7) | **Accepted** |
-| Milestone 1 — Authoritative duration transport | **Complete & committed (`c461770`)** (automated verified; manual live acceptance preserved for resumption) |
+| Milestone 1 — Authoritative duration transport | **Committed (`c461770`)** — **integrated live acceptance active** |
 | Milestone 2 — Practice Episode Plan design authority | **Complete & committed (`9db45bf`)** |
 | Milestone 3 — Reconciliation of downstream Practice contracts | **Complete & committed (`53bd50c`)** |
 | Milestone 4 — Proportionate Learning Journey commissioning | **Complete & committed (`43db3f4`)** |
 | Milestone 5 — Workload estimation corrections | **Complete & committed (`f1f1269`)** |
-| S104-D04 Suspend Sprint 104 at live acceptance | **Accepted (2026-11-25)** — blocked by LJ Step 5 output-length failure after ~14,000-word Step 4; Sprint 105 opened |
-| Milestone 6 — Live 5-, 15- and 30-minute Practice sensitivity probes | **Preserved — suspended pending Sprint 105** |
-| Milestone 7 — 90-minute Economics journey regeneration, baseline comparison, QA & learner-runtime acceptance | **Preserved — suspended pending Sprint 105** |
+| S104-D04 Suspend Sprint 104 pending Sprint 105 | **Resolved** — Sprint 105 **CLOSED — COMPLETE** (`4b698db`–`a7ad249`) |
+| S104-D05 Resume Sprint 104 at live acceptance | **Accepted (2026-11-25)** — canonical parent: fresh 90-min Economics LJ; C1 accepted (`91/100`); scope discipline reaffirmed |
+| Milestone 6 — Live 5-, 15- and 30-minute Practice sensitivity probes | **Active — ready for live execution** |
+| Milestone 7 — Remaining Economics component generation, workload assessment, baseline comparison, QA & unified learner-runtime acceptance | **Active — parent LJ & C1 complete; remaining components, assessment, comparison, QA & runtime pending** |
 
 ---
 
 ## Work log
+
+### 2026-11-25 — Sprint 104 formally resumed at live acceptance (`S104-D05`) following Sprint 105 closure (`S105-D04`)
+
+- **[Sprint 105 CLOSED — COMPLETE](../2026-11-25-sprint-105-learning-journey-progressive-capture-and-assembly/SPRINT-105-CLOSURE.md):** Progressive Learning Journey capture and deterministic assembly (`4b698db`, `09cfbfc`, `83e7aec`, `a7ad249`) plus all six manual acceptance checks are complete and accepted, unblocking Sprint 104 live acceptance.
+- **Canonical parent workflow adopted:** The fresh, deterministically assembled 90-minute *Correlation and Causation: Making Sense of Economic Evidence* Learning Journey is now the canonical parent workflow for Sprint 104 live acceptance. Both historical Economics baselines (original pre-intervention baseline and incomplete Sprint 104 regeneration) remain preserved without mutation.
+- **Carried-forward Sprint 105 authoring & publication improvements:** Includes Workstream 1 (Expository representational necessity and workload proportionality), `S105-D03` (optional block-level material anchors in Expository exposition), `evaluate` evaluative-refinement sequencing, structured-material publication fixes, and accepted regenerated **Economics C1** (`91 / 100 — Professional / Excellent`, archived under Sprint 105 `evidence/c1-expository-live-acceptance/`).
+- **Carried-forward residual observation (non-blocking):** Regenerated Economics C1 is commissioned for **10 minutes** with estimated learner workload of approximately **12–15 minutes**; **actual learner completion times remain unmeasured**. Do not regenerate accepted C1; assess holistic workload fidelity across the complete Economics Learning Journey.
+- **Scope discipline reaffirmed (`S104-D05`):** Objective is to establish workload fidelity across the complete Economics Learning Journey and close Sprint 104 — not comprehensive component-type testing or perfection of individual acceptable resources. Fix only defects blocking generation, publication, meaningful workload assessment, or integrated LJ operation; record and defer unrelated editorial/presentation/component-type enhancements. The 30-hour / 50-component Political Economy module remains an independent reference implementation/stress test and is **not** a Sprint 104 closure dependency.
 
 ### 2026-11-25 — Sprint 104 suspended at live acceptance (`S104-D04`)
 

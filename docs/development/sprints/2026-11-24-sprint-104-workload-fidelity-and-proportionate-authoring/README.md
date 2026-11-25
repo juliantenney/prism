@@ -1,12 +1,12 @@
 # Sprint 104 — Index
 
 **Sprint:** 104 — Workload Fidelity and Proportionate Authoring  
-**Status:** **SUSPENDED AT LIVE ACCEPTANCE** — M1–M5 committed (`c461770` → `f1f1269`); pending [Sprint 105](../2026-11-25-sprint-105-learning-journey-progressive-capture-and-assembly/SPRINT-105-START-HERE.md)  
-**Baseline:** `1515cd4` (M1–M5 committed through `f1f1269`)  
+**Status:** **OPEN — RESUMED AT LIVE ACCEPTANCE (`S104-D05`)** — M1–M5 committed (`c461770` → `f1f1269`); [Sprint 105 CLOSED — COMPLETE](../2026-11-25-sprint-105-learning-journey-progressive-capture-and-assembly/SPRINT-105-CLOSURE.md) (`a7ad249`)  
+**Resumption baseline:** `a7ad249`  
 **Primary backlog item:** [PB-FA-025](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-025--duration-fidelity-learner-workload-budgeting)  
-**Decisions:** [S104-D01](decisions.md#s104-d01--open-sprint-104--workload-fidelity-and-proportionate-authoring) · [S104-D02](decisions.md#s104-d02--architectural-agreement-principles-a-e-and-separately-gated-milestones) · [S104-D03](decisions.md#s104-d03--milestone-2-multi-lo-compatibility-and-milestone-3-contract-reconciliation) · [S104-D04](decisions.md#s104-d04--suspend-sprint-104-at-live-acceptance-pending-sprint-105)  
+**Decisions:** [S104-D01](decisions.md#s104-d01--open-sprint-104--workload-fidelity-and-proportionate-authoring) · [S104-D02](decisions.md#s104-d02--architectural-agreement-principles-a-e-and-separately-gated-milestones) · [S104-D03](decisions.md#s104-d03--milestone-2-multi-lo-compatibility-and-milestone-3-contract-reconciliation) · [S104-D04](decisions.md#s104-d04--suspend-sprint-104-at-live-acceptance-pending-sprint-105) · [S104-D05](decisions.md#s104-d05--resume-sprint-104-at-live-acceptance-after-sprint-105-closure)  
 **Entry:** [SPRINT-104-START-HERE.md](SPRINT-104-START-HERE.md)  
-**Predecessor:** [Sprint 103 CLOSED](../2026-11-23-sprint-103-learning-journey-runtime-continuity-and-commissioning-fidelity/SPRINT-103-CLOSURE.md)
+**Unblocking prerequisite:** [Sprint 105 CLOSED — COMPLETE](../2026-11-25-sprint-105-learning-journey-progressive-capture-and-assembly/SPRINT-105-CLOSURE.md) · **Predecessor:** [Sprint 103 CLOSED](../2026-11-23-sprint-103-learning-journey-runtime-continuity-and-commissioning-fidelity/SPRINT-103-CLOSURE.md)
 
 | Document | Role |
 | -------- | ---- |

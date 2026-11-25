@@ -1,33 +1,32 @@
 # Next sprint — active programme
 
-**Status:** **Sprint 105 OPEN — MILESTONES 1–3 COMMITTED (`4b698db`, `09cfbfc`, `83e7aec`); MILESTONE 4 READY FOR MANUAL LIVE ACCEPTANCE** · Priority **before Connect More** (Wed 2 Dec 12:00). Sprint 104 **SUSPENDED AT LIVE ACCEPTANCE** (`S104-D04`, Milestones 1–5 committed through `f1f1269`). Sprint 103 **CLOSED — COMPLETE — ACCEPTED WITH DOCUMENTED QUALIFICATIONS**.  
-**Updated:** 2026-11-25 (Sprint 105 Milestone 3 committed at `83e7aec`; Milestone 4 pre-live readiness verified — awaiting manual live acceptance)
+**Status:** **Sprint 104 OPEN — RESUMED AT LIVE ACCEPTANCE (`S104-D05`; M1–M5 committed through `f1f1269`; resuming M1 integrated acceptance, M6 Practice sensitivity probes, and M7 Economics completion/QA/runtime)** · [Sprint 105 CLOSED — COMPLETE](sprint-105-learning-journey-progressive-capture-and-assembly.md) (`4b698db`–`a7ad249`, `S105-D04`). Priority **before Connect More** (Wed 2 Dec 12:00).  
+**Updated:** 2026-11-25 (Sprint 105 formally closed and handed back to Sprint 104 live acceptance)
 
 ---
 
 ## Current programme
 
-**Active sprint:** [Sprint 105 — Learning Journey Progressive Capture and Assembly](sprint-105-learning-journey-progressive-capture-and-assembly.md) — **OPEN — MILESTONE 4 READY FOR MANUAL LIVE ACCEPTANCE** · [MANUAL-ACCEPTANCE-CHECKLIST.md](../development/sprints/2026-11-25-sprint-105-learning-journey-progressive-capture-and-assembly/MANUAL-ACCEPTANCE-CHECKLIST.md) · [STATUS.md](../development/sprints/2026-11-25-sprint-105-learning-journey-progressive-capture-and-assembly/STATUS.md)
+**Active sprint:** [Sprint 104 — Workload Fidelity and Proportionate Authoring](sprint-104-workload-fidelity-and-proportionate-authoring.md) — **OPEN — RESUMED AT LIVE ACCEPTANCE (`S104-D05`)** · [SPRINT-104-START-HERE.md](../development/sprints/2026-11-24-sprint-104-workload-fidelity-and-proportionate-authoring/SPRINT-104-START-HERE.md) · [STATUS.md](../development/sprints/2026-11-24-sprint-104-workload-fidelity-and-proportionate-authoring/STATUS.md) · Primary backlog item: [PB-FA-025](../backlog/PRODUCT-BACKLOG.md#pb-fa-025--duration-fidelity-learner-workload-budgeting)
 
-**Suspended sprint (resumes after Sprint 105):** [Sprint 104 — Workload Fidelity and Proportionate Authoring](sprint-104-workload-fidelity-and-proportionate-authoring.md) — **SUSPENDED AT LIVE ACCEPTANCE** (`S104-D04`; M1–M5 committed `c461770`–`f1f1269`; M1 manual live acceptance, M6 Practice sensitivity probes, and M7 90-min Economics regeneration/QA/runtime preserved) · Primary backlog item: [PB-FA-025](../backlog/PRODUCT-BACKLOG.md#pb-fa-025--duration-fidelity-learner-workload-budgeting)
+**Last closed:** [Sprint 105 — Learning Journey Progressive Capture and Assembly](sprint-105-learning-journey-progressive-capture-and-assembly.md) — **CLOSED — COMPLETE** · [SPRINT-105-CLOSURE.md](../development/sprints/2026-11-25-sprint-105-learning-journey-progressive-capture-and-assembly/SPRINT-105-CLOSURE.md) *(Prior: [Sprint 103](sprint-103-learning-journey-runtime-continuity-and-commissioning-fidelity.md) — CLOSED — COMPLETE — ACCEPTED WITH DOCUMENTED QUALIFICATIONS)*
 
-**Last closed:** [Sprint 103 — Learning Journey Runtime Continuity and Commissioning Fidelity](sprint-103-learning-journey-runtime-continuity-and-commissioning-fidelity.md) — **CLOSED — COMPLETE — ACCEPTED WITH DOCUMENTED QUALIFICATIONS** · [SPRINT-103-CLOSURE.md](../development/sprints/2026-11-23-sprint-103-learning-journey-runtime-continuity-and-commissioning-fidelity/SPRINT-103-CLOSURE.md)
-
-**Hard invariants:** Assessment Pack remains **NON-SUMMATIVE**. Constituent Learning Journey products remain standalone-publishable. No implicit sharing of all learner responses. No AI marking of shared artefacts. Author Learning Journey download is **unified-only** (S96-D14). Standalone Interactive remains available and must not be disturbed. Both the original pre-intervention Economics baseline and the current incomplete Sprint 104 regeneration remain untouched.
+**Hard invariants:** Assessment Pack remains **NON-SUMMATIVE**. Constituent Learning Journey products remain standalone-publishable. No implicit sharing of all learner responses. No AI marking of shared artefacts. Author Learning Journey download is **unified-only** (S96-D14). Standalone Interactive remains available and must not be disturbed. Both historical Economics baselines (original pre-intervention baseline and incomplete Sprint 104 regeneration) remain preserved without mutation.
 
 ### Active posture
 
 | Item | State |
 | ---- | ----- |
-| Open sprint | **Sprint 105 — Milestones 1–3 committed (`4b698db`, `09cfbfc`, `83e7aec`); Milestone 4 pre-live readiness verified (awaiting manual live acceptance)** |
+| Active sprint | **Sprint 104 — Resumed at live acceptance (`S104-D05`: M1 integrated live acceptance, M6 5-/15-/30-min Practice sensitivity probes, M7 remaining Economics components, workload assessment, baseline comparison, QA & unified learner-runtime acceptance)** |
 | Priority | **Before Connect More (Wed 2 Dec 12:00)** |
-| Baseline commit | `83e7aec` (Sprint 105 M3 committed on top of M2 `09cfbfc`, M1 `4b698db`, and Sprint 104 M1–M5 `f1f1269`) |
-| Suspended dependency | **Sprint 104 live acceptance** (M1 manual acceptance, M6 Practice probes, M7 Economics regeneration/comparison/QA/runtime) |
-| Excluded from Sprint 105 | `PB-S-008`, `PB-FA-018`, alternative architectures, production prose-migration parser for incomplete run, changes to non-LJ product families |
+| Baseline commit | `a7ad249` (Sprint 104 M1–M5 `c461770`–`f1f1269` + Sprint 105 M1–M4 `4b698db`–`a7ad249`) |
+| Canonical parent workflow | Fresh, deterministically assembled **90-minute Economics Learning Journey** (with regenerated C1 accepted at `91/100`; non-blocking residual observation ~12–15 min estimated workload vs 10 min commissioned; actual learner timings unmeasured) |
+| Scope discipline (`S104-D05`) | Establish workload fidelity across the complete Economics Learning Journey and close Sprint 104. Address only defects blocking generation, publication, meaningful workload assessment, or integrated LJ operation; defer unrelated editorial/presentation/component-type enhancements; avoid regenerating accepted components. Political Economy module remains an independent reference implementation/stress test and is **not** a Sprint 104 closure dependency. |
+| Excluded from Sprint 104 | `PB-S-008`, `PB-FA-018`, comprehensive component-type testing, perfection polish on acceptable resources, Political Economy completion |
 
 ---
 
 ## Immediate next
 
-1. Execute manual Milestone 4 live acceptance of the fresh 90-minute Economics Learning Journey using [MANUAL-ACCEPTANCE-CHECKLIST.md](../development/sprints/2026-11-25-sprint-105-learning-journey-progressive-capture-and-assembly/MANUAL-ACCEPTANCE-CHECKLIST.md) (preserving both the original baseline and incomplete Sprint 104 regeneration).
-2. Close Sprint 105 only after manual acceptance completes, then reuse the accepted Economics Learning Journey as the parent workflow for **Sprint 104 live acceptance** (Milestones 6–7 + M1 integrated live acceptance) ahead of Connect More.
+1. Execute **Sprint 104 Milestone 6** (live 5-, 15-, and 30-minute Practice duration sensitivity probes) and **Milestone 7 / Milestone 1** live acceptance (generate remaining Economics components from the canonical 90-minute parent while retaining accepted C1, assess workload fidelity across the full journey, compare against the preserved pre-intervention baseline, and verify educational QA + unified learner runtime).
+2. Close Sprint 104 once workload fidelity and integrated Learning Journey operation are established ahead of Connect More.

@@ -139,4 +139,29 @@ Sprint 104 implementation milestones 1–5 are complete, verified against focuse
 3. **Preserve artefacts untouched:** Retain both the original pre-intervention Economics baseline (`c01-page.json`, `c01-zip/`, `c02-page.json`, `tests/fixtures/assessment-pack-c06-design-page-d09-scatterplot.json`, and external parent/component baseline captures) and the current incomplete regeneration without alteration.
 4. **Resumption criterion:** Resume Sprint 104 live acceptance (Milestones 6–7 + M1 integrated live acceptance) once Sprint 105 delivers progressive Learning Journey capture and deterministic assembly.
 
+---
+
+## S104-D05 — Resume Sprint 104 at Live Acceptance After Sprint 105 Closure
+
+**Date:** 2026-11-25  
+**Status:** **Accepted**  
+**Resumption baseline:** `a7ad249` (Sprint 104 M1–M5 `c461770`–`f1f1269` + Sprint 105 M1–M4 `4b698db`–`a7ad249`, Sprint 105 closed per `S105-D04`)
+
+**Decision:**
+
+1. **Formally resume Sprint 104 at its outstanding live acceptance milestones:**
+   - **Milestone 1** — Integrated live acceptance;
+   - **Milestone 6** — Practice duration sensitivity probes at **5, 15, and 30 minutes**;
+   - **Milestone 7** — Remaining Economics component generation, workload assessment, baseline comparison against preserved pre-intervention captures, educational QA, and unified learner-runtime acceptance.
+2. **Canonical parent workflow & baseline preservation:** Adopt the fresh, successfully assembled 90-minute *Correlation and Causation: Making Sense of Economic Evidence* Learning Journey (produced and verified under Sprint 105, with regenerated Economics C1 already accepted at **91 / 100**) as the canonical parent workflow for Sprint 104 acceptance. Preserve **both historical Economics baselines** (the original pre-intervention baseline and the incomplete Sprint 104 regeneration) without mutation.
+3. **Carry forward Sprint 105 authoring & publication improvements:** Retain Sprint 105's progressive LJ capture/assembly, Expository representational necessity and workload proportionality (Workstream 1), Expository optional block-level material anchors (`S105-D03`), `evaluate` evaluative-refinement sequencing, and structured-material publication fixes, together with the non-blocking residual C1 observation (~12–15 minutes estimated learner workload vs 10 minutes commissioned; **actual learner completion times remain unmeasured**).
+4. **Scope discipline (binding for Sprint 104 live acceptance):**
+   - Immediate objective: establish workload fidelity across the complete Economics Learning Journey and close Sprint 104.
+   - Do **not** undertake comprehensive component-type testing or pursue incremental improvements to otherwise acceptable resources.
+   - Address defects that prevent generation, publication, meaningful workload assessment, or integrated Learning Journey operation.
+   - Record and defer unrelated editorial, presentation, and component-type enhancement opportunities (including deferred `S105-AD-005` and `D-016`).
+   - Avoid unnecessary regeneration of accepted components (retain accepted Economics C1).
+   - Preserve educational quality, accessibility, and disciplinary authenticity without pursuing perfection in individual resources.
+5. **Political Economy boundary:** The 30-hour, 10-week, 50-component Political Economy Learning Journey remains an independent, incrementally developed, large-scale PRISM reference implementation and stress test; its completion is **not** a dependency for Sprint 104 closure.
+
 

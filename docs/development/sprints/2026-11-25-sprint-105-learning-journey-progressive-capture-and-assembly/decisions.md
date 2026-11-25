@@ -65,3 +65,18 @@ In Expository resources, `sections[].exposition` is a continuous Markdown string
 5. **Fulfilled visual affordances:** Section-scoped visual affordances explicitly linked to an anchored XM material (`commission_id`, `material_id`, exact `<sectionId>.materials.<id>` in `evidence_anchors[]` or `source_basis`) render inline at that material's anchor slot with caption and accessible equivalents when fulfilled, with strict deduplication and zero fuzzy/proximity matching. Unfulfilled linked illustrations preserve their accessible fallback inline; unlinked section-level figures retain existing section-end placement.
 6. **EQ8, backwards compatibility & publication parity:** Unanchored artefacts (including the preserved Economics C1 artefact) follow the exact existing rendering path unchanged. Anchored terminal sections preserve the final prose segment as the EQ8 consolidating close (unanchored materials and unlinked section figures precede it). Implementing inline anchor resolution in `render-page.js` and rebuilding `lib/learner-renderer-vnext-browser.js` guarantees parity across preview, standalone ZIP export, and unified Learning Journey publication.
 
+---
+
+## S105-D04 — Close Sprint 105 — Complete and Hand Back to Sprint 104
+
+**Date:** 2026-11-25  
+**Status:** **Accepted**  
+**Implementation baseline:** `4b698db` (M1), `09cfbfc` (M2), `83e7aec` (M3), `a7ad249` (M4 live-acceptance fixes, Workstream 1, `S105-D03`, and Economics C1 acceptance)
+
+**Decision:**
+
+1. **Close Sprint 105 as `CLOSED — COMPLETE`** following full automated regression verification, live 5-stage generation of both the fresh 90-minute Economics Learning Journey and a 30-hour / 10-week / 50-component Political Economy Learning Journey (scalability evidence for progressive capture and assembly only — no claim of full Political Economy component production or runtime validation), live acceptance of regenerated Economics C1 at **91 / 100 (Professional / Excellent)**, and user confirmation of all six outstanding manual browser acceptance checks (reload persistence, parent Overview preview, legacy compatibility & historical baseline preservation, workflow duplication, upstream invalidation & authoritative prompt propagation without reload resurrection, and clear-run behaviour).
+2. **Distinguish evidence classes transparently:** Record that verbatim transport and preservation of brief-provided source material (`{ status: "provided" }`) across duplication, invalidation, and clear-run is verified by automated regression suites (`s105-m1`, `s105-m2`, `s105-m3`, `s96-lj-shared-source-design-page-boundary`) rather than a separately recorded live brief-provided run.
+3. **Preserve all deferred items and non-blocking observations:** Retain `S105-AD-005` (minor Markdown blockquote `&gt;` defect), `D-016` (deferred native deterministic `number_line_segments` SVG rendering), and the non-blocking C1 workload observation (~12–15 min estimated workload vs 10 min commissioned; actual learner completion times unmeasured) without reopening Sprint 105 or regenerating C1.
+4. **Formally hand back to Sprint 104 (`S104-D05`):** Resume Sprint 104 at its outstanding live acceptance milestones (`M1` integrated live acceptance, `M6` 5-/15-/30-min Practice sensitivity probes, and `M7` remaining Economics component generation, workload assessment, baseline comparison, QA, and unified learner-runtime acceptance), adopting the fresh 90-minute Economics Learning Journey as canonical parent workflow while preserving both historical Economics baselines untouched.
+

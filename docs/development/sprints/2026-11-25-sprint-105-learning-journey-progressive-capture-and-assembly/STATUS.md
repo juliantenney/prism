@@ -1,25 +1,41 @@
 # Sprint 105 — Status / work log
 
 **Sprint:** 105 — Learning Journey Progressive Capture and Assembly  
-**Status:** **OPEN — MILESTONES 1–3 COMMITTED (`4b698db`, `09cfbfc`, `83e7aec`); MILESTONE 4 READY FOR MANUAL LIVE ACCEPTANCE (STOPPED BEFORE LIVE GENERATION)**  
-**Opened:** 2026-11-25  
-**Baseline:** `83e7aec` (Sprint 105 M3 committed on top of M2 `09cfbfc`, M1 `4b698db`, and Sprint 104 M1–M5 `f1f1269`)  
-**Priority:** Takes priority **before Connect More** (Wed 2 Dec 12:00)  
-**Decisions:** [S105-D01](decisions.md#s105-d01--open-sprint-105--learning-journey-progressive-capture-and-assembly) · [S105-D02 (Accepted)](decisions.md#s105-d02--stage-authority-progressive-capture-and-deterministic-assembly-contract) · [S105-D03 (Accepted)](decisions.md#s105-d03--optional-block-level-material-anchors-in-expository-exposition)
+**Status:** **CLOSED — COMPLETE (2026-11-25)** — Milestones 1–4 committed (`4b698db`, `09cfbfc`, `83e7aec`, `a7ad249`), all manual acceptance checks confirmed, formally handed back to Sprint 104 (`S105-D04` / `S104-D05`)  
+**Opened:** 2026-11-25 · **Closed:** 2026-11-25  
+**Baseline:** `a7ad249` (M1 `4b698db`, M2 `09cfbfc`, M3 `83e7aec`, M4 `a7ad249` on top of Sprint 104 M1–M5 `f1f1269`)  
+**Closure record:** [SPRINT-105-CLOSURE.md](SPRINT-105-CLOSURE.md)  
+**Decisions:** [S105-D01](decisions.md#s105-d01--open-sprint-105--learning-journey-progressive-capture-and-assembly) · [S105-D02 (Accepted)](decisions.md#s105-d02--stage-authority-progressive-capture-and-deterministic-assembly-contract) · [S105-D03 (Accepted)](decisions.md#s105-d03--optional-block-level-material-anchors-in-expository-exposition) · [S105-D04 (Closed)](decisions.md#s105-d04--close-sprint-105--complete-and-hand-back-to-sprint-104)
 
 | Item | State |
 | ---- | ----- |
-| Sprint 104 suspension (`S104-D04`) | **Complete** (M1–M5 preserved at `f1f1269`; M6–M7 & M1 live acceptance preserved) |
+| Sprint 104 suspension (`S104-D04`) | **Complete** (now resumed at live acceptance via `S104-D05`) |
 | Programme pointers & dependencies updated | **Complete** (`NEXT-SPRINT.md`, `docs/sprints/README.md`, `sprint-104-*.md`, `sprint-105-*.md`, `PRODUCT-BACKLOG.md`, `docs/backlog/README.md`) |
-| **Phase 105A** — Initial investigation & sprint documentation | **Approved** (`S105-D02` accepted with 9 refinements) |
-| **Milestone 1** — Stage contracts, deterministic LJ assembler, workflow versioning & legacy separation | **Approved & committed (`4b698db`)** |
-| **Milestone 2** — Economical Stage 1–5 prompts, Step 5 runner-guidance fix & continuity guidance reconciliation | **Approved & committed (`09cfbfc`)** |
-| **Milestone 3** — Run orchestration, stage validation, invalidation, reload persistence, clear-run & workflow duplication | **Approved & committed (`83e7aec`)** |
-| **Milestone 4** — Pre-live readiness gate, manual live clean Economics LJ acceptance & handback to Sprint 104 M6–M7 | **Pre-live readiness complete — awaiting manual authoring & review (do not close Sprint 105 yet)** |
+| **Phase 105A** — Initial investigation & sprint documentation | **Complete (`S105-D02` accepted)** |
+| **Milestone 1** — Stage contracts, deterministic LJ assembler, workflow versioning & legacy separation | **Complete & committed (`4b698db`)** |
+| **Milestone 2** — Economical Stage 1–5 prompts, Step 5 runner-guidance fix & continuity guidance reconciliation | **Complete & committed (`09cfbfc`)** |
+| **Milestone 3** — Run orchestration, stage validation, invalidation, reload persistence, clear-run & workflow duplication | **Complete & committed (`83e7aec`)** |
+| **Milestone 4** — Pre-live readiness, live-acceptance fixes (incl. Workstream 1 & `S105-D03`), live Economics & Political Economy LJ generation, C1 acceptance (`91/100`), manual browser lifecycle checks & handback to Sprint 104 | **Complete & accepted (`a7ad249` + closure record)** |
 
 ---
 
 ## Work log
+
+### 2026-11-25 — Sprint 105 CLOSED — COMPLETE (`S105-D04`) & formal handback to Sprint 104 (`S104-D05`)
+
+- **User-confirmed live Learning Journey generation:**
+  - Fresh 90-minute Economics Learning Journey (*Correlation and Causation: Making Sense of Economic Evidence*) completed all five progressive capture stages and assembled deterministically; actively used for downstream component commissioning and adopted as the canonical parent workflow for resumed Sprint 104 live acceptance.
+  - Substantial 30-hour, 10-week, 50-component Political Economy Learning Journey completed all five progressive capture stages and assembled deterministically — providing scalability evidence for progressive LJ capture and assembly (without claiming all 50 components have been produced or that its integrated learner runtime has been validated).
+- **User-confirmed manual acceptance checks (6 / 6 passed):**
+  1. Reload persistence and restoration of accepted stage captures and assembled Design Page.
+  2. Parent Learning Journey Overview preview.
+  3. Legacy workflow compatibility and preservation of both historical Economics baselines.
+  4. Workflow duplication with correct separation of brief and run-derived state.
+  5. Upstream invalidation, authoritative edited captures, downstream prompt propagation, and non-resurrection after reload.
+  6. Clear-run behaviour and preservation of brief data.
+- **Evidence boundary recorded:** Verbatim transport and preservation of brief-provided source material across duplication, invalidation, and clear-run are verified by automated M1–M3 regression tests; a separate live manual brief-provided source run was not separately recorded.
+- **Deferred items & observations preserved:** `S105-AD-005` (minor blockquote `&gt;` defect), `D-016` (deferred native `number_line_segments` SVG rendering), and non-blocking Economics C1 residual workload observation (~12–15 min estimated workload vs 10 min commissioned; actual learner timings unmeasured).
+- Authored [SPRINT-105-CLOSURE.md](SPRINT-105-CLOSURE.md), updated Sprint 105 and programme records, and formally resumed Sprint 104 (`S104-D05`) at live acceptance (`M1`, `M6`, `M7`).
 
 ### 2026-11-25 — Live acceptance PASSED for regenerated Economics C1 (`91/100` — Professional / Excellent); `S105-D03` & representational necessity accepted
 

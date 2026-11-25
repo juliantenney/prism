@@ -1,8 +1,8 @@
 # Sprint 105 — Validation Plan
 
 **Sprint:** 105 — Learning Journey Progressive Capture and Assembly  
-**Status:** **MILESTONES 1–3 COMMITTED (`4b698db`, `09cfbfc`, `83e7aec`); MILESTONE 4 PRE-LIVE GATE READY (AWAITING MANUAL LIVE ACCEPTANCE)**  
-**Baseline:** `83e7aec`
+**Status:** **CLOSED — COMPLETE (2026-11-25; M1 `4b698db`, M2 `09cfbfc`, M3 `83e7aec`, M4 `a7ad249`, all manual acceptance checks confirmed)**  
+**Baseline:** `a7ad249` (implementation complete; closed per `S105-D04`)
 
 ---
 
@@ -69,7 +69,7 @@
 | Sprint 104 M2–M4 safeguards (`s104-m2-practice-episode-plan`, `s104-m3-downstream-practice-reconciliation`, `s104-m4-proportionate-commissioning`) | **13 / 13 pass** | Sprint 104 Practice & proportionate commissioning safeguards intact |
 | **Focused Milestone 3 total** | **140 / 140 unique tests pass** (`127/127` + `13/13` M2–M4; `19/19` M2–M5) | Zero regressions across LJ lifecycle, clear-run, duplication, Interactive, Practice, Expository, and Sprint 104 safeguards; no live generation yet |
 
-### Milestone 4 gate — Pre-live readiness verified (2026-11-25); manual live Economics LJ validation & Sprint 104 handback pending
+### Milestone 4 gate — Pre-live readiness, live-acceptance fixes (`a7ad249`), manual live acceptance & Sprint 104 handback (**Complete & Accepted 2026-11-25**)
 
 #### Pre-live gap-coverage & browser readiness checks (**Verified 2026-11-25**)
 
@@ -211,10 +211,18 @@
 | Residual workload-fidelity observation | **Recorded (non-blocking)** | Commissioned duration: 10 minutes; estimated actual learner workload: ~12–15 minutes (actual learner timings unmeasured). Workload fidelity continues to be evaluated across remaining Economics Learning Journey components. |
 | Minor publication defect | **Logged (`S105-AD-005`)** | One Markdown blockquote rendered with literal `&gt;` inside `<p>` rather than `<blockquote>`; logged in [ARCHITECTURAL-DEBT.md](ARCHITECTURAL-DEBT.md) for subsequent attention without regenerating C1 |
 
-#### Pending manual live acceptance ([MANUAL-ACCEPTANCE-CHECKLIST.md](MANUAL-ACCEPTANCE-CHECKLIST.md))
-- **Live validation (fresh workflow; original baseline & incomplete Sprint 104 run preserved untouched):**
-  1. Author the fresh 90-minute / 2-week *Correlation and Causation: Making Sense of Economic Evidence* brief manually through progressive Learning Journey Steps 1–5 with collaborative stage review.
-  2. Confirm economical stage outputs across Steps 1–4 (no ~14,000-word Step 4 sprawl) and thin Step 5 synthesis completing comfortably within model output limits.
-  3. Confirm deterministic final assembly passes all LJ Design Page, duration reconciliation, shared-source, continuity, and Journal validations cleanly with the unchanged final DP schema.
-  4. Verify browser reload persistence, preview contract, single/batch commissioning readiness, and disposable-workflow lifecycle checks (duplication, upstream invalidation, clear-run).
-- **Handback to Sprint 104:** Only after manual acceptance completes, close Sprint 105 and reuse the accepted Economics Learning Journey directly as the parent workflow for **Sprint 104 live acceptance** (Milestone 1 integrated live acceptance, Milestone 6 live 5-/15-/30-minute Practice sensitivity probes, and Milestone 7 Economics component regeneration, baseline comparison against preserved pre-intervention captures, educational QA, and unified learner-runtime acceptance).
+#### User-confirmed live acceptance & manual browser checks ([MANUAL-ACCEPTANCE-CHECKLIST.md](MANUAL-ACCEPTANCE-CHECKLIST.md) — **Passed 2026-11-25**)
+
+| Check / Live Run | Result | Evidence Class & Qualification |
+| ---------------- | ------ | ------------------------------ |
+| Fresh 90-minute Economics Learning Journey (*Correlation and Causation: Making Sense of Economic Evidence*) | **Pass** | **User-confirmed live authoring:** Completed progressive Steps 1–5 cleanly without output-length failure, assembled deterministically, and actively used for downstream component commissioning (adopted as canonical Sprint 104 parent workflow). |
+| 30-hour, 10-week, 50-component Political Economy Learning Journey | **Pass (LJ scalability)** | **User-confirmed live authoring:** Completed all five progressive capture stages and assembled deterministically. **Boundary:** Provides live scalability evidence for progressive LJ capture and deterministic assembly only; does **not** claim all 50 components have been produced or that its integrated learner runtime has been validated. |
+| 1. Reload persistence & restoration of accepted stage captures and assembled Design Page | **Pass** | **User-confirmed manual browser check** (hard reload restored accepted captures and assembled DP cleanly with zero phantom captures). |
+| 2. Parent Learning Journey Overview preview | **Pass** | **User-confirmed manual browser check** (Overview rendered cleanly without raw commissioning or continuity metadata). |
+| 3. Legacy workflow compatibility & preservation of both historical Economics baselines | **Pass** | **User-confirmed manual browser check (read-only)** (untouched pre-Sprint 105 baseline opened intact without mutation; both historical Economics baselines preserved). |
+| 4. Workflow duplication (`S105-AD-004`) | **Pass** | **User-confirmed manual browser check (disposable duplicate)** (clean separation of brief and progressive mode from stripped stage captures and run-derived state). |
+| 5. Upstream invalidation, authoritative edited captures, downstream prompt propagation & non-resurrection after reload | **Pass** | **User-confirmed manual browser check (disposable duplicate)** (editing upstream stage invalidated downstream stages, propagated edits authoritatively into downstream prompts, and did not resurrect invalidated captures after reload). |
+| 6. Clear-run behaviour & preservation of brief data | **Pass** | **User-confirmed manual browser check (disposable duplicate)** (`Clear run data` cleared captures and run-derived state with zero phantom captures on reload while preserving brief data). |
+| Brief-provided source material preservation (`{ status: "provided" }`) | **Verified (automated)** | **Automated regression coverage** (`tests/s105-m1-lj-assembly.test.js`, `tests/s105-m2-prompts-and-continuity.test.js`, `tests/s105-m3-lifecycle-and-orchestration.test.js`, `tests/s96-lj-shared-source-design-page-boundary.test.js`); separate live manual exercise of a brief-provided source corpus was not separately recorded. |
+
+- **Formal handback to Sprint 104 (`S105-D04` / `S104-D05`):** Sprint 105 is **CLOSED — COMPLETE** ([SPRINT-105-CLOSURE.md](SPRINT-105-CLOSURE.md)). The fresh 90-minute Economics Learning Journey is adopted as the canonical parent workflow for resumed **Sprint 104 live acceptance** (`M1` integrated live acceptance, `M6` 5-/15-/30-min Practice sensitivity probes, and `M7` remaining Economics component generation, workload assessment, baseline comparison against preserved pre-intervention captures, educational QA, and unified learner-runtime acceptance).

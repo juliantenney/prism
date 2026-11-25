@@ -1,8 +1,8 @@
 # Sprint 105 — Implementation Map
 
 **Sprint:** 105 — Learning Journey Progressive Capture and Assembly  
-**Status:** **S105-D02 ACCEPTED — MILESTONES 1–3 COMMITTED (`4b698db`, `09cfbfc`, `83e7aec`); MILESTONE 4 READY FOR MANUAL LIVE ACCEPTANCE**  
-**Baseline:** `83e7aec`
+**Status:** **CLOSED — COMPLETE (2026-11-25)** — M1 (`4b698db`), M2 (`09cfbfc`), M3 (`83e7aec`), M4 (`a7ad249` + manual acceptance) complete; see [SPRINT-105-CLOSURE.md](SPRINT-105-CLOSURE.md)  
+**Baseline:** `a7ad249`
 
 ---
 
@@ -12,11 +12,11 @@ Each milestone is independently testable, committable, and review-gated.
 
 | Milestone | Scope | Primary Files | Gate |
 | --------- | ----- | ------------- | ---- |
-| **105A** | Investigation, sprint pack, Sprint 104 suspension & programme pointer updates | `docs/**` only | **Approved (`S105-D02` accepted)** |
-| **Milestone 1** | **LJ stage partial contracts, deterministic final assembler, workflow versioning & strict legacy separation** | `lib/learning-journey-assemble.js` (new UMD module), `lib/page-vnext-assemble.js`, `lib/first-class-workflow-family.js`, `index.html`, `tests/prism-vm-lib-bootstrap.js`, `tests/s105-m1-lj-assembly.test.js` | **Approved & committed (`4b698db`)** |
-| **Milestone 2** | **Economical Stage 1–5 prompts (distinguishing reasoning from capture, no arbitrary word limits; stored captures authoritative), Step 5 runner-guidance fix & learner artefact continuity reconciliation** | `lib/learning-journey-assemble.js`, `lib/learning-journey-shared-source.js`, `lib/learning-journey-sibling-prompts.js`, `lib/learning-journey-design-page.js`, `app.js` (runner-guidance fix & progressive prompt/handoff wiring), `tests/s105-m2-prompts-and-continuity.test.js` | **Approved & committed (`09cfbfc`)** |
-| **Milestone 3** | **Run orchestration (stored captures authoritative over conversational context), stage capture validation, invalidation, reload persistence, clear-run & workflow duplication** | `app.js`, `lib/learning-journey-assemble.js`, `lib/learning-journey-sibling-prompts.js`, `tests/s105-m3-lifecycle-and-orchestration.test.js` | **Approved & committed (`83e7aec`)** |
-| **Milestone 4** | **Pre-live gap checks, browser cache/module readiness, manual live clean Economics LJ validation & handback to Sprint 104 M6–M7** | `index.html` (`?v=20261125-s105-m4`), `MANUAL-ACCEPTANCE-CHECKLIST.md`, fresh manual 90-min Economics LJ run (preserving baseline & incomplete run) | **Pre-live readiness verified — awaiting manual acceptance** |
+| **105A** | Investigation, sprint pack, Sprint 104 suspension & programme pointer updates | `docs/**` only | **Complete (`S105-D02` accepted)** |
+| **Milestone 1** | **LJ stage partial contracts, deterministic final assembler, workflow versioning & strict legacy separation** | `lib/learning-journey-assemble.js` (new UMD module), `lib/page-vnext-assemble.js`, `lib/first-class-workflow-family.js`, `index.html`, `tests/prism-vm-lib-bootstrap.js`, `tests/s105-m1-lj-assembly.test.js` | **Complete & committed (`4b698db`)** |
+| **Milestone 2** | **Economical Stage 1–5 prompts (distinguishing reasoning from capture, no arbitrary word limits; stored captures authoritative), Step 5 runner-guidance fix & learner artefact continuity reconciliation** | `lib/learning-journey-assemble.js`, `lib/learning-journey-shared-source.js`, `lib/learning-journey-sibling-prompts.js`, `lib/learning-journey-design-page.js`, `app.js` (runner-guidance fix & progressive prompt/handoff wiring), `tests/s105-m2-prompts-and-continuity.test.js` | **Complete & committed (`09cfbfc`)** |
+| **Milestone 3** | **Run orchestration (stored captures authoritative over conversational context), stage capture validation, invalidation, reload persistence, clear-run & workflow duplication** | `app.js`, `lib/learning-journey-assemble.js`, `lib/learning-journey-sibling-prompts.js`, `tests/s105-m3-lifecycle-and-orchestration.test.js` | **Complete & committed (`83e7aec`)** |
+| **Milestone 4** | **Pre-live gap checks, browser cache/module readiness, live-acceptance fixes (incl. Workstream 1 Expository representational necessity & `S105-D03` optional material anchors), live Economics & 50-component Political Economy LJ generation, C1 acceptance (`91/100`), manual lifecycle checks & handback to Sprint 104** | `index.html`, `lib/expository-material-anchors.js`, `lib/expository-sibling-prompts.js`, `lib/learner-renderer-vnext/*`, `MANUAL-ACCEPTANCE-CHECKLIST.md`, `SPRINT-105-CLOSURE.md` | **Complete & accepted (`a7ad249` + closure commit)** |
 
 > **Binding M2/M3 principle (`S105-D02` #7 — Stored captures are authoritative):** Accepted structured captures take precedence over conversational context, particularly following author edits. M2/M3 prompt handoff and invalidation must ensure downstream steps honour current stored captures without unnecessary input duplication or reliance on superseded conversational state.
 

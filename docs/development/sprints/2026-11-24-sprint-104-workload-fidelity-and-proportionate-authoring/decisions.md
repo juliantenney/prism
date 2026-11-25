@@ -164,4 +164,29 @@ Sprint 104 implementation milestones 1–5 are complete, verified against focuse
    - Preserve educational quality, accessibility, and disciplinary authenticity without pursuing perfection in individual resources.
 5. **Political Economy boundary:** The 30-hour, 10-week, 50-component Political Economy Learning Journey remains an independent, incrementally developed, large-scale PRISM reference implementation and stress test; its completion is **not** a dependency for Sprint 104 closure.
 
+---
+
+## S104-D06 — Focused Progressive Learning Journey Workload-Fidelity Corrections and Revised Live Acceptance Sequence
+
+**Date:** 2026-11-25  
+**Status:** **Accepted — focused corrections implemented (stopped for review before commit / live acceptance)**  
+**Baseline:** `76f44ef` (Sprint 105 formally closed and handed back to Sprint 104; Sprint 105 remains **CLOSED — COMPLETE**)
+
+**Context:**  
+Re-evaluation of Sprint 104 live acceptance identified that Sprint 105 M2 prompt compression removed explicit effort-reconciliation and pre-finalisation achievability verification requirements previously introduced by Sprint 104 M4 (`43db3f4`) from `PROGRESSIVE_TEMPLATES` (`lib/learning-journey-sibling-prompts.js`), and that `app.js` surfaced Learning Journey workload feasibility warnings only at Stage 5 (`design_page`) rather than Stage 4 (`learning_commissions`). This is classified as a **regression against existing Sprint 104 workload-fidelity requirements**, not a new enhancement, and is recorded under **Sprint 104** without reopening Sprint 105.
+
+**Decision:**
+
+1. **Implement two focused Sprint 104 workload-fidelity corrections prior to further live acceptance:**
+   - **Correction 1 — Restore progressive Learning Journey workload-fidelity instructions (`lib/learning-journey-sibling-prompts.js`):** Restore concise, stage-appropriate Sprint 104 M4 effort-reconciliation requirements across progressive Stages 1–4 (`learning_requirements`, `learning_progression`, `learning_elements`, `learning_commissions`), respecting progressive capture ownership boundaries. Explicitly require Stage 4 to account for complete learner workload (prior-learning activation, unfamiliar vs familiar evidence inspection, reasoning and decision-making, response construction, and feedback engagement and revision), verify educational achievability of every commission within its `allocated_minutes` before finalising (arithmetic reconciliation alone is insufficient), and reconcile scope/staging/allocation within upstream constraints while preserving educational purpose, intellectual demand, and meaningful learner performance — with zero arbitrary word limits, activity counts, duration tiers, or rigid timing formulae, and zero new schema fields.
+   - **Correction 2 — Surface advisory workload feasibility warnings at Stage 4 (`app.js`, `index.html`):** Use the existing `PrismLearningJourneyWorkloadFeasibilityAdapter` to surface commission-level and journey-level advisory (non-blocking) workload feasibility warnings at Stage 4 (`learning_commissions`) capture before Stage 5 is generated, while preserving final assembled Stage 5 (`design_page`) diagnostics identically. Guarantee full warning lifecycle hygiene across Stage 4 edits (using current Stage 4 `allocated_minutes` rather than stale `deliverySeed` metadata), invalid/empty captures, upstream invalidation, reload/hydration (`restoreWorkflowRunStateForWorkflow` / `revalidateProgressiveLearningJourneyCapturesAfterHydration`), and `Clear run data`, with zero automatic regeneration, zero correction loops, zero new schema fields, and zero estimator threshold changes.
+2. **Preserve all existing acceptance evidence untouched:** Do **not** modify or regenerate the accepted canonical Economics Learning Journey, accepted regenerated Economics C1 (`91/100`), the Political Economy reference module, or either preserved historical Economics baseline.
+3. **Approved subsequent live acceptance sequence (following review of these corrections):**
+   1. Generate **Economics C6 and C2** as the diagnostic pair, recording **Milestone 1** duration-transport evidence concurrently.
+   2. Review the relationship between upstream commissioning demand and realised downstream workload.
+   3. Complete the remaining Economics components and integrated **Milestone 7** acceptance (holistic workload assessment, baseline comparison, educational QA, and unified learner-runtime acceptance).
+   4. Conduct **Milestone 6** through the proposed disposable **50-minute Learning Journey** containing three comparable Practice commissions at **5, 15, and 30 minutes** (probe brief to be reviewed separately so duration, rather than progression or prior familiarity, is the principal variable).
+4. **Scope guardrails reaffirmed:** Do **not** undertake further estimator tuning or unrelated component-type improvements. Stop for review once the two corrections, regression tests, and Sprint 104 documentation updates are complete.
+
+
 

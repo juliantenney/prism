@@ -1,29 +1,45 @@
 # Sprint 104 — Status / work log
 
 **Sprint:** 104 — Workload Fidelity and Proportionate Authoring  
-**Status:** **OPEN — RESUMED AT LIVE ACCEPTANCE (`S104-D05`)** — Milestones 1–5 committed (`c461770` → `f1f1269`); [Sprint 105 CLOSED — COMPLETE](../2026-11-25-sprint-105-learning-journey-progressive-capture-and-assembly/SPRINT-105-CLOSURE.md) (`a7ad249`)  
-**Resumption baseline:** `a7ad249` (Sprint 104 M1–M5 `c461770`–`f1f1269` + Sprint 105 M1–M4 `4b698db`–`a7ad249`)  
+**Status:** **OPEN — LIVE ACCEPTANCE RE-EVALUATION CORRECTIONS IMPLEMENTED (`S104-D06`, STOPPED FOR REVIEW)** — Milestones 1–5 committed (`c461770` → `f1f1269`); [Sprint 105 CLOSED — COMPLETE](../2026-11-25-sprint-105-learning-journey-progressive-capture-and-assembly/SPRINT-105-CLOSURE.md) (`76f44ef`)  
+**Resumption baseline:** `76f44ef` (Sprint 104 M1–M5 `c461770`–`f1f1269` + Sprint 105 M1–M4 & closure `4b698db`–`76f44ef`)  
 **Primary backlog item:** [PB-FA-025](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-025--duration-fidelity-learner-workload-budgeting)  
-**Opening & decisions:** [S104-D01](decisions.md#s104-d01--open-sprint-104--workload-fidelity-and-proportionate-authoring), [S104-D02](decisions.md#s104-d02--architectural-agreement-principles-a-e-and-seven-gated-milestones), [S104-D03](decisions.md#s104-d03--milestone-2-multi-lo-compatibility-and-milestone-3-contract-reconciliation), [S104-D04](decisions.md#s104-d04--suspend-sprint-104-at-live-acceptance-pending-sprint-105), [S104-D05](decisions.md#s104-d05--resume-sprint-104-at-live-acceptance-after-sprint-105-closure)
+**Opening & decisions:** [S104-D01](decisions.md#s104-d01--open-sprint-104--workload-fidelity-and-proportionate-authoring), [S104-D02](decisions.md#s104-d02--architectural-agreement-principles-a-e-and-seven-gated-milestones), [S104-D03](decisions.md#s104-d03--milestone-2-multi-lo-compatibility-and-milestone-3-contract-reconciliation), [S104-D04](decisions.md#s104-d04--suspend-sprint-104-at-live-acceptance-pending-sprint-105), [S104-D05](decisions.md#s104-d05--resume-sprint-104-at-live-acceptance-after-sprint-105-closure), [S104-D06](decisions.md#s104-d06--focused-progressive-learning-journey-workload-fidelity-corrections-and-revised-live-acceptance-sequence)
 
 | Item | State |
 | ---- | ----- |
 | S104-D01 Open sprint | **Accepted** |
 | Phase 104A Read-only investigation & documentation | **Complete (`f3bb47d`)** |
 | S104-D02 Architectural agreement (Principles A–E & Milestones 1–7) | **Accepted** |
-| Milestone 1 — Authoritative duration transport | **Committed (`c461770`)** — **integrated live acceptance active** |
+| Milestone 1 — Authoritative duration transport | **Committed (`c461770`)** — **integrated live acceptance queued with C6/C2 diagnostic pair** |
 | Milestone 2 — Practice Episode Plan design authority | **Complete & committed (`9db45bf`)** |
 | Milestone 3 — Reconciliation of downstream Practice contracts | **Complete & committed (`53bd50c`)** |
-| Milestone 4 — Proportionate Learning Journey commissioning | **Complete & committed (`43db3f4`)** |
-| Milestone 5 — Workload estimation corrections | **Complete & committed (`f1f1269`)** |
-| S104-D04 Suspend Sprint 104 pending Sprint 105 | **Resolved** — Sprint 105 **CLOSED — COMPLETE** (`4b698db`–`a7ad249`) |
+| Milestone 4 — Proportionate Learning Journey commissioning | **Complete & committed (`43db3f4`)** — **progressive Stage 1–4 regression restored (`S104-D06`, pending review)** |
+| Milestone 5 — Workload estimation corrections | **Complete & committed (`f1f1269`)** — **Stage 4 advisory warning surfacing & lifecycle hygiene added (`S104-D06`, pending review)** |
+| S104-D04 Suspend Sprint 104 pending Sprint 105 | **Resolved** — Sprint 105 **CLOSED — COMPLETE** (`4b698db`–`76f44ef`) |
 | S104-D05 Resume Sprint 104 at live acceptance | **Accepted (2026-11-25)** — canonical parent: fresh 90-min Economics LJ; C1 accepted (`91/100`); scope discipline reaffirmed |
-| Milestone 6 — Live 5-, 15- and 30-minute Practice sensitivity probes | **Active — ready for live execution** |
-| Milestone 7 — Remaining Economics component generation, workload assessment, baseline comparison, QA & unified learner-runtime acceptance | **Active — parent LJ & C1 complete; remaining components, assessment, comparison, QA & runtime pending** |
+| S104-D06 Progressive LJ workload-fidelity corrections & revised live acceptance sequence | **Implemented (uncommitted — stopped for review)** — Stage 1–4 prompt restoration, Stage 4 advisory warnings & lifecycle hygiene, targeted regression suite (`48 / 48 pass`) |
+| Milestone 6 — Live 5-, 15- and 30-minute Practice sensitivity probes (via disposable 50-min Probe LJ) | **Queued after M7 completion (probe brief to be reviewed separately)** |
+| Milestone 7 — Economics C6/C2 diagnostic pair → remaining Economics components, workload assessment, baseline comparison, QA & unified learner-runtime acceptance | **Queued immediately after `S104-D06` review** (parent LJ & accepted C1 preserved untouched) |
 
 ---
 
 ## Work log
+
+### 2026-11-25 — Focused progressive LJ workload-fidelity corrections (`S104-D06`, stopped for review)
+
+- Implemented the two approved Sprint 104 workload-fidelity corrections following live acceptance re-evaluation (Sprint 105 remains **CLOSED — COMPLETE**; accepted Economics LJ, accepted C1, Political Economy module, and historical baselines untouched; zero estimator threshold or schema changes):
+  1. **Restored progressive Learning Journey workload-fidelity instructions (`lib/learning-journey-sibling-prompts.js`):**
+     - Restored concise, stage-appropriate Sprint 104 M4 effort-reconciliation requirements across `PROGRESSIVE_TEMPLATES` Stages 1–4 (`learning_requirements`, `learning_progression`, `learning_elements`, `learning_commissions`) while preserving strict single-stage ownership boundaries.
+     - Stage 4 explicitly requires accounting for complete learner workload (prior-learning activation, unfamiliar vs familiar evidence inspection, reasoning and decision-making, response construction, and feedback engagement and revision), verifying educational achievability of every commission within its `allocated_minutes` before finalising (explicitly stating arithmetic reconciliation alone is insufficient), and reconciling scope, staging, feedback/revision load, or allocation within upstream constraints while preserving educational purpose, intellectual demand, and meaningful learner performance — without fixed duration tiers, forced product quotas, arbitrary outcome caps, arbitrary activity counts, arbitrary word-count limits, or rigid timing formulae.
+  2. **Surfaced advisory workload feasibility warnings at Stage 4 with full lifecycle hygiene (`app.js`, `index.html`):**
+     - Wired Stage 4 (`learning_commissions`) capture validation (`parseAndValidateProgressiveLearningJourneyStageCapture`) to run the existing `PrismLearningJourneyWorkloadFeasibilityAdapter` against authoritative Stage 4 `commissions[].allocated_minutes` and journey budget, surfacing non-blocking commission- and journey-level advisory warnings immediately at Stage 4 before Stage 5 is generated.
+     - Updated Stage 5 (`design_page`) validation to pass the exact same authoritative Stage 4 duration map and journey budget into `attachLearningJourneyWorkloadWarningsToGate`, guaranteeing 100% diagnostic consistency between Stage 4 and final assembled Stage 5 without drift or duplication (and preventing stale `wf.deliverySeed.commissioned_component_durations` overrides after Stage 4 edits).
+     - Completed full lifecycle hygiene across `syncWorkflowRunCapturedOutputToState`, `restoreWorkflowRunStateForWorkflow`, `revalidateProgressiveLearningJourneyCapturesAfterHydration`, upstream invalidation (`invalidateDownstreamProgressiveLearningJourneyStages`), `Next` step validation, and `Clear run data`, and bumped `index.html` script cache tokens to `?v=20261125-s104-wf1`.
+  3. **Targeted regression tests (`tests/s104-lj-progressive-workload-fidelity.test.js`):**
+     - Added 4 end-to-end tests covering restored Stage 1–4 progressive prompt requirements, Stage 4 advisory warning availability (both synthetic tight commission and real `tests/fixtures/s105-economics-stage4-commissions.json` flagging `C2`, `C5`, `C8` without blocking), exact Stage 4 ↔ Stage 5 assembled Design Page consistency, and lifecycle behaviour across scope/allocation edits, invalid captures, upstream invalidation, reload/hydration (including corrupted upstream reload), and `Clear run data`.
+     - Verified `node --check` on `lib/learning-journey-sibling-prompts.js` and `app.js`, plus **48 / 48 pass** across the 9-file Sprint 104/105/103 workload-fidelity, assembly, prompt, lifecycle, and isolation regression suite.
+- **Stopped for review** before committing or starting the approved live acceptance sequence (`Economics C6 & C2 diagnostic pair + M1 evidence` → upstream/downstream workload review → remaining Economics components & M7 acceptance → disposable 50-min Probe LJ for M6 5/15/30-min Practice probes).
 
 ### 2026-11-25 — Sprint 104 formally resumed at live acceptance (`S104-D05`) following Sprint 105 closure (`S105-D04`)
 

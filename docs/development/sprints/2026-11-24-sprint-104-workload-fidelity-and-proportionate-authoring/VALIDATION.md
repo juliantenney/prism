@@ -1,7 +1,7 @@
 # Sprint 104 — Validation ledger
 
-**Status:** **OPEN — RESUMED AT LIVE ACCEPTANCE (`S104-D05`)** — Milestones 1–5 committed (`c461770` → `f1f1269`); Sprint 105 **CLOSED — COMPLETE** (`a7ad249`)  
-**Resumption baseline:** `a7ad249` (Sprint 104 M1–M5 `c461770`–`f1f1269` + Sprint 105 M1–M4 `4b698db`–`a7ad249`)
+**Status:** **OPEN — LIVE ACCEPTANCE RE-EVALUATION CORRECTIONS IMPLEMENTED (`S104-D06`, STOPPED FOR REVIEW)** — Milestones 1–5 committed (`c461770` → `f1f1269`); Sprint 105 **CLOSED — COMPLETE** (`76f44ef`)  
+**Resumption baseline:** `76f44ef` (Sprint 104 M1–M5 `c461770`–`f1f1269` + Sprint 105 M1–M4 & closure `4b698db`–`76f44ef`)
 
 ---
 
@@ -165,4 +165,25 @@
 | Regenerated Economics **C1** (*Reading relationships in economic data*, Expository, 10 min) | **Pass (`91 / 100` — Professional / Excellent)** | Zero production cap, zero critical/major defects, 6 sections, 4 inline material placements (`S105-D03`), 3 native SVG scatterplots, 4 data/comparison tables, 0 unnecessary derived series; archived under Sprint 105 [evidence/c1-expository-live-acceptance/](../2026-11-25-sprint-105-learning-journey-progressive-capture-and-assembly/evidence/c1-expository-live-acceptance/C1-LIVE-ACCEPTANCE-QA-RECORD.md). **Do not regenerate.** |
 | Residual C1 workload-fidelity observation | **Carried forward (non-blocking)** | Commissioned: **10 minutes**; estimated learner workload: **~12–15 minutes** (**actual learner completion times remain unmeasured**). Assess holistically alongside remaining Economics components. |
 | Historical Economics baselines (pre-intervention baseline + incomplete Sprint 104 regeneration) | **Preserved untouched** | Confirmed read-only during Sprint 105 closure; preserve without mutation throughout Sprint 104 live acceptance. |
-| Remaining Sprint 104 acceptance gates | **Active** | **M1** integrated live acceptance; **M6** live 5-, 15-, and 30-min Practice sensitivity probes; **M7** remaining Economics components, workload assessment, baseline comparison, educational QA & unified learner-runtime acceptance. Scope discipline (`S104-D05`): fix blocking defects only; defer unrelated editorial/presentation/component-type enhancements; Political Economy module is an independent stress test and not a Sprint 104 closure dependency. |
+| Remaining Sprint 104 acceptance gates | **Sequenced (`S104-D06`)** | After review of `S104-D06` corrections: (1) generate **Economics C6 & C2** diagnostic pair (recording **M1** duration-transport evidence concurrently) and review upstream-commissioning vs realised-workload relationship; (2) complete remaining Economics components & integrated **M7** acceptance (workload assessment, baseline comparison, educational QA, unified learner-runtime acceptance); (3) conduct **M6** via disposable **50-minute Probe LJ** containing three comparable Practice commissions at **5, 15, and 30 minutes** (probe brief reviewed separately). Scope discipline (`S104-D05` / `S104-D06`): no further estimator tuning or unrelated component-type improvements; Political Economy module is an independent stress test and not a Sprint 104 closure dependency. |
+
+---
+
+## `S104-D06` focused progressive LJ workload-fidelity verification (2026-11-25, uncommitted — stopped for review)
+
+### Syntax checks
+
+| Check | Outcome |
+| ----- | ------- |
+| `node --check lib/learning-journey-sibling-prompts.js` | **Pass** (exit 0) |
+| `node --check app.js` | **Pass** (exit 0) |
+
+### Focused automated test suites (`node --test`, observed 2026-11-25)
+
+| Suite / Scope | Result | Notes |
+| ------------- | ------ | ----- |
+| `tests/s104-lj-progressive-workload-fidelity.test.js` | **4 / 4 pass** | (1) Verifies restored S104 M4 workload-fidelity & effort-reconciliation requirements across progressive Stages 1–4 (`learning_requirements`, `learning_progression`, `learning_elements`, `learning_commissions`), all 5 required Stage 4 workload dimensions, mandatory pre-finalisation achievability verification beyond arithmetic, stage ownership boundaries, zero forbidden limits/counts/formulae, and zero new schema fields; (2) verifies non-blocking Stage 4 advisory warnings + UI banner before Stage 5 and exact unduplicated Stage 4 ↔ Stage 5 assembled Design Page consistency; (3) verifies real `tests/fixtures/s105-economics-stage4-commissions.json` flags `C2`, `C5`, and `C8` at Stage 4 capture without blocking acceptance; (4) verifies full warning lifecycle across reload/hydration, corrupted upstream reload, scope reconciliation edits, duration reallocation edits (without stale `deliverySeed` override), invalid captures, upstream invalidation, and `Clear run data` |
+| 9-file Sprint 104 / 105 / 103 workload-fidelity, progressive LJ & isolation bundle (`s104-lj-progressive-workload-fidelity`, `s104-m4-proportionate-commissioning`, `s104-m5-workload-estimation`, `s105-m1-lj-assembly`, `s105-m2-prompts-and-continuity`, `s105-m3-lifecycle-and-orchestration`, `s105-lj-commission-workload-estimation`, `s103-clear-run-learner-runtime-isolation`, `qa-lj-no-phantom-run-captures`) | **48 / 48 pass** | Zero regressions across M4/M5 commissioning & estimator behaviour, Sprint 105 M1–M3 progressive assembly/prompts/lifecycle, Economics C3/C6 false-positive guards, and Clear-run/phantom-capture isolation |
+| Additional S104 M2 & M3 suites (`s104-m2-practice-episode-plan`, `s104-m3-downstream-practice-reconciliation`) | **11 / 11 pass** | Practice Episode Plan authority and downstream DLA/GAM/LS/DP reconciliation remain unaffected |
+| Pre-existing `tests/s104-m1-duration-transport.test.js:1011` (`resolveEffectiveWorkflowDurationMinutes` static count 5 vs 3) | **10 / 11 pass (1 pre-existing M5 mismatch)** | Confirmed via `git diff -- app.js` that `S104-D06` added **0** calls to `resolveEffectiveWorkflowDurationMinutes`; the extra 2 calls were introduced earlier in committed Sprint 104 M5 (`f1f1269`) for Practice LS and Assessment Pack adapters and left untouched per scope discipline |
+| Accepted evidence & baseline preservation | **Untouched** | Accepted Economics LJ, accepted regenerated C1 (`91/100`), Political Economy module, Sprint 105 docs, and preserved historical Economics baselines remain unmodified |

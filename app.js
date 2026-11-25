@@ -7110,6 +7110,36 @@
     };
   }
 
+  function collectProgressiveLearningJourneyCommissionDurationMap(commissions) {
+    var list = Array.isArray(commissions) ? commissions : [];
+    var byId = Object.create(null);
+    var hasAny = false;
+    list.forEach(function (c) {
+      if (!c || typeof c !== "object") return;
+      var cid = String(c.commission_id || c.commissionId || "").trim();
+      var mins = Number(c.allocated_minutes);
+      if (cid && Number.isFinite(mins) && mins > 0) {
+        byId[cid] = Math.round(mins);
+        hasAny = true;
+      }
+    });
+    return hasAny ? byId : null;
+  }
+
+  function resolveProgressiveLearningJourneyWorkloadBudgetMinutes(parentMinutes, stage1Capture) {
+    if (parentMinutes != null && Number.isFinite(Number(parentMinutes)) && Number(parentMinutes) > 0) {
+      return Math.round(Number(parentMinutes));
+    }
+    var s1Mins =
+      stage1Capture && stage1Capture.journey_allocated_minutes != null
+        ? Number(stage1Capture.journey_allocated_minutes)
+        : NaN;
+    if (Number.isFinite(s1Mins) && s1Mins > 0) {
+      return Math.round(s1Mins);
+    }
+    return null;
+  }
+
   function parseAndValidateProgressiveLearningJourneyStageCapture(raw, stepRow, wf, options) {
     var opts = options && typeof options === "object" ? options : {};
     var assembleLib = resolveLearningJourneyAssembleLib();
@@ -7240,6 +7270,37 @@
             parsed.shared_authoritative_material.content = s4San.text;
           }
         }
+        var s4BudgetMinutes = resolveProgressiveLearningJourneyWorkloadBudgetMinutes(
+          parentMinutes,
+          upstream.learning_requirements
+        );
+        var s4DurationsById = collectProgressiveLearningJourneyCommissionDurationMap(
+          parsed.commissions
+        );
+        var s4AssessmentPage = {
+          learning_journey:
+            s4BudgetMinutes != null ? { allocated_minutes: s4BudgetMinutes } : {},
+          commissions: Array.isArray(parsed.commissions) ? parsed.commissions : []
+        };
+        var s4WorkloadWarnings = [];
+        appendLearningJourneyWorkloadFeasibilityWarnings(
+          s4AssessmentPage,
+          wf,
+          s4WorkloadWarnings,
+          {
+            authoritativeParentDurationMinutes: s4BudgetMinutes,
+            authoritativeDurationsByCommissionId: s4DurationsById,
+            requireAuthoritativeDuration: true
+          }
+        );
+        return {
+          ok: true,
+          stage: stage,
+          parsed: parsed,
+          upstream: upstream,
+          warnings: s4WorkloadWarnings,
+          json: JSON.stringify(parsed, null, 2)
+        };
       }
     } else if (stage === "design_page") {
       gate = assembleLib.validateLearningJourneyDesignPagePartial(parsed, {
@@ -7275,7 +7336,18 @@
             parentAuthoritativeMinutes: parentMinutes
           });
         }
-        dpGate = attachLearningJourneyWorkloadWarningsToGate(dpGate, assembledRes.page, wf);
+        var s5BudgetMinutes = resolveProgressiveLearningJourneyWorkloadBudgetMinutes(
+          parentMinutes,
+          upstream.learning_requirements
+        );
+        var s5DurationsById = collectProgressiveLearningJourneyCommissionDurationMap(
+          assembledRes.page && assembledRes.page.commissions
+        );
+        dpGate = attachLearningJourneyWorkloadWarningsToGate(dpGate, assembledRes.page, wf, {
+          authoritativeParentDurationMinutes: s5BudgetMinutes,
+          authoritativeDurationsByCommissionId: s5DurationsById,
+          requireAuthoritativeDuration: true
+        });
         if (!dpGate || !dpGate.ok) {
           var dpErrs = (dpGate && dpGate.errors) || ["invalid_assembled_learning_journey_page"];
           return {
@@ -7327,6 +7399,8 @@
     state.workflowRunLjStageValidation = state.workflowRunLjStageValidation || {};
     state.workflowRunLjInvalidatedSteps = state.workflowRunLjInvalidatedSteps || {};
     state.workflowRunPageValidation = state.workflowRunPageValidation || {};
+    state.workflowRunWorkloadFeasibilityWarnings =
+      state.workflowRunWorkloadFeasibilityWarnings || {};
     var steps = Array.isArray(wf.steps) ? wf.steps : [];
     var stepByStage = {};
     steps.forEach(function (st) {
@@ -7347,6 +7421,7 @@
         "";
       if (!String(raw || "").trim()) {
         delete state.workflowRunLjStageValidation[sid];
+        delete state.workflowRunWorkloadFeasibilityWarnings[sid];
         if (stage === "design_page") delete state.workflowRunPageValidation[sid];
         priorValid = false;
         results[stage] = { ok: false, empty: true };
@@ -7355,6 +7430,7 @@
       if (!priorValid) {
         state.workflowRunLjStageValidation[sid] =
           "Upstream stage missing or invalid; re-validate after fixing earlier stages.";
+        delete state.workflowRunWorkloadFeasibilityWarnings[sid];
         if (stage === "design_page") {
           state.workflowRunPageValidation[sid] = state.workflowRunLjStageValidation[sid];
         }
@@ -7370,6 +7446,7 @@
         state.workflowRunLjStageValidation[sid] = String(
           check.message || (check.errors || []).join("; ") || "Invalid stage capture"
         );
+        delete state.workflowRunWorkloadFeasibilityWarnings[sid];
         if (stage === "design_page") {
           state.workflowRunPageValidation[sid] = state.workflowRunLjStageValidation[sid];
         }
@@ -7380,7 +7457,16 @@
         delete state.workflowRunLjStageValidation[sid];
         delete state.workflowRunLjInvalidatedSteps[sid];
         if (stage === "design_page") delete state.workflowRunPageValidation[sid];
-        results[stage] = { ok: true };
+        var stageWarnings = Array.isArray(check.warnings) ? check.warnings.slice() : [];
+        if (
+          (stage === "learning_commissions" || stage === "design_page") &&
+          stageWarnings.length
+        ) {
+          state.workflowRunWorkloadFeasibilityWarnings[sid] = stageWarnings.join("\n\n");
+        } else {
+          delete state.workflowRunWorkloadFeasibilityWarnings[sid];
+        }
+        results[stage] = { ok: true, warnings: stageWarnings };
       }
     });
     return { ok: priorValid, results: results };
@@ -15520,19 +15606,34 @@
    * Uses authoritative structured parent and commission durations before legacy prose fallbacks.
    * Never converts findings into capture errors or changes TIME CHECK arithmetic.
    */
-  function appendLearningJourneyWorkloadFeasibilityWarnings(page, wf, warningsOut) {
+  function appendLearningJourneyWorkloadFeasibilityWarnings(page, wf, warningsOut, options) {
     if (!Array.isArray(warningsOut)) return;
     var adapter = resolveLearningJourneyWorkloadFeasibilityAdapterLib();
     if (!adapter || typeof adapter.collectLearningJourneyWorkloadWarnings !== "function") return;
-    var authParentMinutes = resolveLearningJourneyAuthoritativeParentDurationMinutes(wf);
-    var requireAuth = isLearningJourneyDurationContractRequired(wf, page);
-    var step4Durations = readLearningJourneyAuthoritativeCommissionDurations(wf);
-    var durationsById =
-      step4Durations &&
-      step4Durations.byCommissionId &&
-      typeof step4Durations.byCommissionId === "object"
-        ? step4Durations.byCommissionId
-        : null;
+    var opts = options && typeof options === "object" ? options : {};
+    var authParentMinutes =
+      opts.authoritativeParentDurationMinutes != null
+        ? opts.authoritativeParentDurationMinutes
+        : resolveLearningJourneyAuthoritativeParentDurationMinutes(wf);
+    var requireAuth =
+      typeof opts.requireAuthoritativeDuration === "boolean"
+        ? opts.requireAuthoritativeDuration
+        : isLearningJourneyDurationContractRequired(wf, page);
+    var durationsById = null;
+    if (
+      opts.authoritativeDurationsByCommissionId &&
+      typeof opts.authoritativeDurationsByCommissionId === "object"
+    ) {
+      durationsById = opts.authoritativeDurationsByCommissionId;
+    } else {
+      var step4Durations = readLearningJourneyAuthoritativeCommissionDurations(wf);
+      durationsById =
+        step4Durations &&
+        step4Durations.byCommissionId &&
+        typeof step4Durations.byCommissionId === "object"
+          ? step4Durations.byCommissionId
+          : null;
+    }
     var rows = [];
     try {
       rows =
@@ -15550,6 +15651,10 @@
     }
     if (!Array.isArray(rows) || !rows.length) return;
     var seen = Object.create(null);
+    warningsOut.forEach(function (existing) {
+      var key = String(existing || "").trim();
+      if (key) seen[key] = true;
+    });
     rows.forEach(function (row) {
       var text = String(row || "").trim();
       if (!text || seen[text]) return;
@@ -15558,7 +15663,7 @@
     });
   }
 
-  function attachLearningJourneyWorkloadWarningsToGate(gate, page, wf) {
+  function attachLearningJourneyWorkloadWarningsToGate(gate, page, wf, options) {
     if (!gate || !gate.ok) {
       if (!gate) return { ok: false, errors: ["invalid_learning_journey_page"], warnings: [] };
       if (!Array.isArray(gate.warnings)) {
@@ -15567,7 +15672,7 @@
       return gate;
     }
     var warnings = Array.isArray(gate.warnings) ? gate.warnings.slice() : [];
-    appendLearningJourneyWorkloadFeasibilityWarnings(page, wf, warnings);
+    appendLearningJourneyWorkloadFeasibilityWarnings(page, wf, warnings, options);
     return Object.assign({}, gate, { warnings: warnings });
   }
 
@@ -33114,6 +33219,9 @@
           delete state.workflowRunLjStageValidation[sid];
           delete state.workflowRunLjSharedSourceValidation[sid];
           delete state.workflowRunLjDurationValidation[sid];
+          if (state.workflowRunWorkloadFeasibilityWarnings) {
+            delete state.workflowRunWorkloadFeasibilityWarnings[sid];
+          }
           if (progressiveLjStage === "design_page" && state.workflowRunPageValidation) {
             delete state.workflowRunPageValidation[sid];
           }
@@ -33167,6 +33275,9 @@
                 "Invalid Learning Journey stage capture."
             );
             state.workflowRunLjStageValidation[sid] = progErrMsg;
+            if (state.workflowRunWorkloadFeasibilityWarnings) {
+              delete state.workflowRunWorkloadFeasibilityWarnings[sid];
+            }
             if (progressiveLjStage === "design_page") {
               state.workflowRunPageValidation = state.workflowRunPageValidation || {};
               state.workflowRunPageValidation[sid] = progErrMsg;
@@ -33219,7 +33330,10 @@
                 progGate.upstream && progGate.upstream.learning_requirements
               );
             }
-            if (progressiveLjStage === "design_page") {
+            if (
+              progressiveLjStage === "learning_commissions" ||
+              progressiveLjStage === "design_page"
+            ) {
               var progWarnings = Array.isArray(progGate.warnings) ? progGate.warnings : [];
               if (progWarnings.length) {
                 state.workflowRunWorkloadFeasibilityWarnings =
@@ -33228,6 +33342,8 @@
               } else if (state.workflowRunWorkloadFeasibilityWarnings) {
                 delete state.workflowRunWorkloadFeasibilityWarnings[sid];
               }
+            } else if (state.workflowRunWorkloadFeasibilityWarnings) {
+              delete state.workflowRunWorkloadFeasibilityWarnings[sid];
             }
           }
         }
@@ -39052,6 +39168,7 @@
     state.workflowRunLjInvalidatedSteps = {};
     state.workflowRunLjSharedSourceValidation = {};
     state.workflowRunLjDurationValidation = {};
+    state.workflowRunWorkloadFeasibilityWarnings = {};
     revalidateProgressiveLearningJourneyCapturesAfterHydration(wid);
     var sessionRunIndex = state.workflowRunSessionIndexByWorkflow[wid];
     state.currentWorkflowRunIndex =
@@ -67184,6 +67301,9 @@
               );
               if (sid) {
                 state.workflowRunLjStageValidation[sid] = progNextErrMsg;
+                if (state.workflowRunWorkloadFeasibilityWarnings) {
+                  delete state.workflowRunWorkloadFeasibilityWarnings[sid];
+                }
                 if (state.workflowRunStepCompleted && state.workflowRunStepCompleted[sid]) {
                   delete state.workflowRunStepCompleted[sid];
                 }
@@ -67199,6 +67319,25 @@
               if (state.workflowRunLjInvalidatedSteps) {
                 delete state.workflowRunLjInvalidatedSteps[sid];
               }
+              if (
+                progressiveLjStageNext === "learning_commissions" ||
+                progressiveLjStageNext === "design_page"
+              ) {
+                var progNextWarnings = Array.isArray(progNextGate.warnings)
+                  ? progNextGate.warnings
+                  : [];
+                if (progNextWarnings.length) {
+                  state.workflowRunWorkloadFeasibilityWarnings =
+                    state.workflowRunWorkloadFeasibilityWarnings || {};
+                  state.workflowRunWorkloadFeasibilityWarnings[sid] =
+                    progNextWarnings.join("\n\n");
+                } else if (state.workflowRunWorkloadFeasibilityWarnings) {
+                  delete state.workflowRunWorkloadFeasibilityWarnings[sid];
+                }
+              } else if (state.workflowRunWorkloadFeasibilityWarnings) {
+                delete state.workflowRunWorkloadFeasibilityWarnings[sid];
+              }
+              updateRunStepOutputStatus(currentLi);
             }
             if (progressiveLjStageNext === "learning_commissions") {
               // Progressive Stage 4 structured commissions[].allocated_minutes is the sole
@@ -69635,6 +69774,14 @@
       var sid = String(stepId || "").trim();
       if (!sid || !state.workflowRunGamFormatWarnings) return "";
       return state.workflowRunGamFormatWarnings[sid] || "";
+    };
+    prismTestApi.getWorkflowRunWorkloadFeasibilityWarningsForTest = function (stepId) {
+      if (stepId === undefined) {
+        return Object.assign({}, state.workflowRunWorkloadFeasibilityWarnings || {});
+      }
+      var sid = String(stepId || "").trim();
+      if (!sid || !state.workflowRunWorkloadFeasibilityWarnings) return "";
+      return state.workflowRunWorkloadFeasibilityWarnings[sid] || "";
     };
     prismTestApi.setWorkflowRunStepCompletedForTest = function (completedMap) {
       state.workflowRunStepCompleted =

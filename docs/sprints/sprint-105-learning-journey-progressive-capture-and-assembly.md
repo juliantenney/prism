@@ -1,8 +1,8 @@
 # Sprint 105 — Learning Journey Progressive Capture and Assembly
 
-**Status:** **OPEN — S105-D02 ACCEPTED; MILESTONE 1 IMPLEMENTED & VERIFIED (STOPPED FOR REVIEW)**  
+**Status:** **OPEN — MILESTONE 1 COMMITTED (`4b698db`); MILESTONE 2 IMPLEMENTED & VERIFIED (STOPPED FOR REVIEW)**  
 **Opened:** 2026-11-25  
-**Baseline:** `f1f1269` (Sprint 104 M1–M5 complete & committed)  
+**Baseline:** `4b698db` (Sprint 105 M1 committed on top of Sprint 104 M1–M5 `f1f1269`)  
 **Priority:** Takes priority **before Connect More** (Wed 2 Dec 12:00)  
 **Development pack:** [../development/sprints/2026-11-25-sprint-105-learning-journey-progressive-capture-and-assembly/](../development/sprints/2026-11-25-sprint-105-learning-journey-progressive-capture-and-assembly/)  
 **Entry:** [SPRINT-105-START-HERE.md](../development/sprints/2026-11-25-sprint-105-learning-journey-progressive-capture-and-assembly/SPRINT-105-START-HERE.md)  
@@ -18,8 +18,8 @@ Retain the established 5-stage Learning Journey educational design process while
 | Milestone | State |
 | --------- | ----- |
 | **105A** — Initial investigation, stage authority mapping & sprint documentation | **Approved (`S105-D02` accepted)** |
-| **Milestone 1** — LJ stage partial contracts, deterministic final assembler, workflow versioning & strict legacy separation | **Implemented & verified (`71/71` pass) — stopped for review** |
-| **Milestone 2** — Economical Stage 1–5 prompts, Step 5 runner-guidance fix & continuity guidance reconciliation | Gated on Milestone 1 review |
+| **Milestone 1** — LJ stage partial contracts, deterministic final assembler, workflow versioning & strict legacy separation | **Approved & committed (`4b698db`)** |
+| **Milestone 2** — Economical Stage 1–5 prompts, Step 5 runner-guidance fix & continuity guidance reconciliation | **Implemented & verified (`100/100` pass) — stopped for review** |
 | **Milestone 3** — Run orchestration, stage validation, invalidation, reload persistence, clear-run & workflow duplication | Gated on Milestone 2 review |
 | **Milestone 4** — Focused regression sweep, live clean Economics LJ validation & handback to Sprint 104 M6–M7 | Gated on Milestone 3 review |
 

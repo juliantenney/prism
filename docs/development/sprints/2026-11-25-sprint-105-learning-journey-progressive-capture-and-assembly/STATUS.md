@@ -1,9 +1,9 @@
 # Sprint 105 — Status / work log
 
 **Sprint:** 105 — Learning Journey Progressive Capture and Assembly  
-**Status:** **OPEN — MILESTONE 1 IMPLEMENTED & FOCUSED-VERIFIED (STOPPED FOR REVIEW)**  
+**Status:** **OPEN — MILESTONE 1 COMMITTED (`4b698db`); MILESTONE 2 IMPLEMENTED & FOCUSED-VERIFIED (STOPPED FOR REVIEW)**  
 **Opened:** 2026-11-25  
-**Baseline:** `f1f1269` (Sprint 104 M1–M5 committed)  
+**Baseline:** `4b698db` (Sprint 105 M1 committed on top of Sprint 104 M1–M5 `f1f1269`)  
 **Priority:** Takes priority **before Connect More** (Wed 2 Dec 12:00)  
 **Decisions:** [S105-D01](decisions.md#s105-d01--open-sprint-105--learning-journey-progressive-capture-and-assembly) · [S105-D02 (Accepted)](decisions.md#s105-d02--stage-authority-progressive-capture-and-deterministic-assembly-contract)
 
@@ -12,14 +12,30 @@
 | Sprint 104 suspension (`S104-D04`) | **Complete** (M1–M5 preserved at `f1f1269`; M6–M7 & M1 live acceptance preserved) |
 | Programme pointers & dependencies updated | **Complete** (`NEXT-SPRINT.md`, `docs/sprints/README.md`, `sprint-104-*.md`, `sprint-105-*.md`, `PRODUCT-BACKLOG.md`, `docs/backlog/README.md`) |
 | **Phase 105A** — Initial investigation & sprint documentation | **Approved** (`S105-D02` accepted with 9 refinements) |
-| **Milestone 1** — Stage contracts, deterministic LJ assembler, workflow versioning & legacy separation | **Implemented & focused-verified (uncommitted — stopped for review)** |
-| **Milestone 2** — Economical Stage 1–5 prompts, Step 5 runner-guidance fix & continuity guidance reconciliation | **Gated on Milestone 1 review** |
+| **Milestone 1** — Stage contracts, deterministic LJ assembler, workflow versioning & legacy separation | **Approved & committed (`4b698db`)** |
+| **Milestone 2** — Economical Stage 1–5 prompts, Step 5 runner-guidance fix & continuity guidance reconciliation | **Implemented & focused-verified (uncommitted — stopped for review)** |
 | **Milestone 3** — Run orchestration, stage validation, invalidation, reload persistence, clear-run & workflow duplication | **Gated on Milestone 2 review** |
 | **Milestone 4** — Focused regression verification, live clean Economics LJ validation & handback to Sprint 104 M6–M7 | **Gated on Milestone 3 review** |
 
 ---
 
 ## Work log
+
+### 2026-11-25 — Milestone 1 committed (`4b698db`); Milestone 2 implemented & focused-verified (stopped before commit / M3)
+
+- Committed Milestone 1 at `4b698db` (`Sprint 105 M1: Learning Journey progressive capture contracts, deterministic assembler, and legacy separation`).
+- Implemented **Milestone 2** aligned verbatim to the M1 stage contracts:
+  - **`lib/learning-journey-assemble.js`:** Added and exported `buildAuthoritativeStageHandoffSection(targetStage, storedCaptures, options)` — establishes the `AUTHORITATIVE STORED UPSTREAM CAPTURES` precedence rule (accepted stored captures override conversational context, especially after author edits) and projects only minimal per-stage anchors (Stage 2 gets Stage 1 minutes/purpose/profile/constraints/numbered outcomes; Stage 3 gets Stage 1 minutes + Stage 2 phases/structure; Stage 4 gets Stage 1 minutes + numbered outcomes `1..N` + Stage 3 elements; Stage 5 gets compact Stage 4 commission & Journal manifests ONLY — zero `specification_text`, zero `journey_context_text`, zero `shared_authoritative_material`).
+  - **`lib/learning-journey-shared-source.js`:** Added and exported `composeProgressiveAuthoritativeSharedSourcePromptSection(existingSourceContext)` — enforces deterministic transport for brief-provided source (`{ "status": "provided" }` with `content` omitted, no retranscription) and concise `"generated"`/`"none"` JSON contract otherwise, leaving legacy shared-source prompt helpers untouched.
+  - **`lib/learning-journey-design-page.js`:**
+    - Added and exported genuinely thin `buildProgressiveLearningJourneyDesignPagePrompt()` and `buildProgressiveLearningJourneyDesignPageCopyInstructions()` (learner-facing editorial synthesis only — `title`, `editorial_opening_image`, 1:1 `sections[]`, `learning_journey.design_intent`, optional `learning_journey.journal` framing keyed by Stage 4 `entry_id`; explicitly forbids `commissions[]`, `shared_authoritative_material`, `activities[]`, `learning_outcomes`, `allocated_minutes`, `continuity`, Journal structure mutation, and all Interactive fields).
+    - Reconciled **`S105-AD-003`** in both prompts and `collectLearningJourneyContinuityErrors`: replaced outdated blanket no-transfer wording with the accurate post-Sprint 95/96/103 distinction (forbidding authoring-time inspection, automatic transfer of arbitrary undeclared answers, response-aware runtime adaptation, AI grading of prior answers, and pre-feedback snapshot claims while accepting declared `{commission_id}.{elicitation_id}` read-only runtime / Learning Journal descriptions).
+  - **`lib/learning-journey-sibling-prompts.js`:** Preserved legacy `TEMPLATES` verbatim and added `PROGRESSIVE_TEMPLATES` (`learning_requirements`, `learning_progression`, `learning_elements`, `learning_commissions`, plus progressive `design_page` delegation) matching M1 allowed keys verbatim, preserving educational reasoning, Sprint 104 M4 proportionate commissioning principles, and Sprint 97 two-criterion Journal discipline without redundant prose checklists or arbitrary word-count caps. Updated `resolveTemplate(stageOrStep, options)` to select progressive templates only when `{ progressive: true }` / `{ mode: "progressive" }`.
+  - **`app.js` (strictly M2 scope):**
+    - Fixed **`S105-AD-002`** at `buildWorkflowStepInstructions` (`workflowRecordIsLearningJourney(wfForChain) || isLearningJourneyWorkflow(wfForChain)` added to the Step 5 generic Interactive `runnerInstructions` suppression guard for both progressive and legacy LJ workflows).
+    - Wired progressive LJ prompt routing (`resolveLearningJourneySiblingPromptBodyForStep`, `orchestrateLearningJourneyDesignPageRunStage`, `composeLearningJourneyAuthoritativeSharedSourceToken`, `materializeWorkflowPromptTemplateTokens` with `AUTHORITATIVE_STAGE_HANDOFF`, and `buildWorkflowStepInstructions` thin Stage 5 Copy notes + suppression of raw full-JSON upstream dumps and conversational Design Page boilerplate on progressive LJ steps). Legacy LJ workflows and all non-LJ product families remain unchanged.
+  - **`tests/s105-m2-prompts-and-continuity.test.js`:** Added 5 focused M2 tests (including live `app.js` VM verification of progressive/legacy LJ and Interactive prompt/instruction routing).
+- Verified **100 / 100** passing assertions across 11 focused suites (`s105-m2`, `s105-m1`, `s104-m4`, `s94-wp2`, `s103-duration`, `s96-shared-source`, `s91-design-page`, plus Expository, Situated Task, and Assessment Pack design-page non-regression suites; `node --check` exit 0 on all touched files). Stopped for review before committing M2 or starting M3. No live generation yet.
 
 ### 2026-11-25 — Milestone 1 implemented & focused-verified (stopped before commit / M2)
 

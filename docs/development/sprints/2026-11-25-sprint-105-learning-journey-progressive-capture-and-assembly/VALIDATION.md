@@ -1,8 +1,8 @@
 # Sprint 105 — Validation Plan
 
 **Sprint:** 105 — Learning Journey Progressive Capture and Assembly  
-**Status:** **MILESTONE 1 FOCUSED-VERIFIED (STOPPED FOR REVIEW)**  
-**Baseline:** `f1f1269`
+**Status:** **MILESTONE 1 COMMITTED (`4b698db`); MILESTONE 2 FOCUSED-VERIFIED (STOPPED FOR REVIEW)**  
+**Baseline:** `4b698db`
 
 ---
 
@@ -32,15 +32,20 @@
 
 *Baseline observation (outside M1 scope):* Running `tests/s104-m1-duration-transport.test.js` showed 10/11 passing; the single failure at `tests/s104-m1-duration-transport.test.js:1011` (`resolveEffectiveWorkflowDurationMinutes(` static count `5 !== 3` in `app.js`) is pre-existing from Sprint 104 M5 (`f1f1269`), as Sprint 105 M1 did not touch `app.js`.
 
-### Milestone 2 gate — Economical prompts, Step 5 runner-guidance fix & continuity reconciliation
-- **Syntax checks:** `node --check` on `lib/learning-journey-sibling-prompts.js`, `lib/learning-journey-design-page.js`, `app.js`.
-- **Focused automated suite (`tests/s105-m2-prompts-and-continuity.test.js`):**
-  - Stages 1–4 prompts emit compact JSON stage contracts without 11-section markdown essay duplication or 6× Stage 1 outcome copying; all Sprint 104 M1/M4 duration & proportionate commissioning principles and Sprint 97 Journal reasoning are preserved.
-  - **Step 5 runner-guidance regression:** `buildWorkflowStepInstructions` for LJ Step 5 contains **zero** Interactive `page_synthesis`, `activities[].materials[]`, `visual_affordance_schema_version`, or `activities_visual_review` runner guidance.
-  - **Continuity guidance & validator reconciliation:**
-    - Still rejects authoring-time inspection claims (*"inspects previous published outputs"*), response-aware runtime adaptation / AI grading of prior answers, automatic transfer of arbitrary undeclared answers, and pre-feedback snapshot claims.
-    - Accepts accurate educational bring-forward descriptions and declared `{commission_id}.{elicitation_id}` unified runtime / Journal availability without false-positive failure.
-  - Non-regression on `tests/s104-m1-duration-transport.test.js`, `tests/s104-m4-proportionate-commissioning.test.js`, `tests/s94-learning-journey-wp2*.test.js`, `tests/s103-duration-fidelity-guidance.test.js`, `tests/s103-artefact-consumer-four-product.test.js`.
+### Milestone 2 gate — Economical prompts, Step 5 runner-guidance fix & continuity reconciliation (**Verified 2026-11-25**)
+
+| Check / Suite | Result | Verified Scope |
+| ------------- | ------ | -------------- |
+| `node --check` on `lib/learning-journey-assemble.js`, `lib/learning-journey-shared-source.js`, `lib/learning-journey-design-page.js`, `lib/learning-journey-sibling-prompts.js`, `app.js`, `tests/s105-m2-prompts-and-continuity.test.js` | **Pass** (exit 0) | All touched JS files syntax clean |
+| `tests/s105-m2-prompts-and-continuity.test.js` | **5 / 5 pass** | All 5 progressive prompts aligned verbatim to M1 contracts without legacy prose checklists or arbitrary word-count limits; thin Step 5 editorial-only contract; deterministic brief-provided shared-source transport without retranscription; authoritative stored-capture handoff honours author edits & never leaks Stage 4 specs/context/source into Stage 5; `S105-AD-002` Step 5 Interactive runner-guidance leak fixed for both progressive & legacy LJ in live `app.js` VM; `S105-AD-003` reconciled continuity guidance & validator; legacy LJ & Interactive preserved |
+| `tests/s105-m1-lj-assembly.test.js` | **8 / 8 pass** | M1 stage validators, deterministic assembler & legacy separation intact |
+| `tests/s104-m4-proportionate-commissioning.test.js` | **2 / 2 pass** | Sprint 104 M4 proportionate commissioning non-regression |
+| `tests/s94-learning-journey-wp2-continuity-validation.test.js` | **20 / 20 pass** | Continuity validator & automatic-transfer rejection non-regression |
+| `tests/s103-duration-fidelity-guidance.test.js` | **5 / 5 pass** | Familiar vs unfamiliar reading & duration fidelity guidance non-regression |
+| `tests/s96-lj-shared-source-design-page-boundary.test.js` | **19 / 19 pass** | Shared source boundary non-regression |
+| `tests/s91-learning-journey-design-page-run-stage.test.js` | **4 / 4 pass** | LJ Design Page run-stage routing & Interactive non-regression |
+| Non-LJ product family design-page suites (`s94-assessment-design-page-framing-string`, `s92-situated-task-slice1-family-design-page`, `s85-expository-design-page-visual-affordances`, `s85-expository-design-page-capture-shape`) | **37 / 37 pass** | Assessment Pack, Situated Task, and Expository product families unaffected |
+| **Focused Milestone 2 total** | **100 / 100 pass** | Zero regressions across LJ and non-LJ product families; no live generation yet |
 
 ### Milestone 3 gate — Run orchestration, invalidation, reload persistence, clear-run, duplication & legacy compatibility
 - **Syntax checks:** `node --check app.js`.

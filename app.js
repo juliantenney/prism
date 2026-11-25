@@ -6521,6 +6521,139 @@
     return null;
   }
 
+  function resolveLearningJourneyAssembleLib() {
+    var roots = [];
+    if (typeof globalThis !== "undefined") roots.push(globalThis);
+    if (typeof window !== "undefined") roots.push(window);
+    if (typeof self !== "undefined") roots.push(self);
+    var i;
+    for (i = 0; i < roots.length; i += 1) {
+      if (roots[i] && roots[i].PRISM_LEARNING_JOURNEY_ASSEMBLE) {
+        return roots[i].PRISM_LEARNING_JOURNEY_ASSEMBLE;
+      }
+    }
+    if (typeof require === "function") {
+      try {
+        return require("./lib/learning-journey-assemble.js");
+      } catch (_err) {}
+      try {
+        return require("../lib/learning-journey-assemble.js");
+      } catch (_err2) {}
+    }
+    return null;
+  }
+
+  function isProgressiveLearningJourneyWorkflowActive(wf) {
+    if (!wf || typeof wf !== "object") return false;
+    if (!isLearningJourneyWorkflow(wf) && !workflowRecordIsLearningJourney(wf)) return false;
+    var assembleLib = resolveLearningJourneyAssembleLib();
+    if (
+      assembleLib &&
+      typeof assembleLib.isProgressiveLearningJourneyWorkflow === "function"
+    ) {
+      return assembleLib.isProgressiveLearningJourneyWorkflow(wf);
+    }
+    var ver = String(
+      wf.progressive_capture_version ||
+        (wf.outputSpec && wf.outputSpec.progressiveCaptureVersion) ||
+        ""
+    ).trim();
+    return Boolean(ver);
+  }
+
+  function parseLearningJourneyStageJsonLoose(raw) {
+    if (!raw) return null;
+    if (typeof raw === "object") return raw;
+    var text = String(raw || "").trim();
+    if (!text) return null;
+    var fence = text.match(/```(?:json)?\s*([\s\S]*?)```/i);
+    var candidate = fence && fence[1] ? String(fence[1]).trim() : text;
+    try {
+      var parsed = JSON.parse(candidate);
+      return parsed && typeof parsed === "object" && !Array.isArray(parsed) ? parsed : null;
+    } catch (_err) {
+      return null;
+    }
+  }
+
+  function collectLearningJourneyStoredStageCapturesForWorkflow(wf) {
+    var out = {};
+    if (!wf || typeof wf !== "object") return out;
+    var siblingLib = resolveLearningJourneySiblingPromptsLib();
+    var preloaded =
+      wf.stageCaptures && typeof wf.stageCaptures === "object"
+        ? wf.stageCaptures
+        : null;
+    if (preloaded) {
+      Object.keys(preloaded).forEach(function (k) {
+        var parsedPre = parseLearningJourneyStageJsonLoose(preloaded[k]);
+        if (parsedPre) out[k] = parsedPre;
+      });
+    }
+    var steps = Array.isArray(wf.steps) ? wf.steps : [];
+    var i;
+    for (i = 0; i < steps.length; i += 1) {
+      var s = steps[i];
+      if (!s || typeof s !== "object") continue;
+      var stage =
+        siblingLib && typeof siblingLib.resolveStageFromStepIdentity === "function"
+          ? siblingLib.resolveStageFromStepIdentity(s)
+          : "";
+      if (!stage || stage === "design_page") continue;
+      var raw = "";
+      if (s.id && typeof readWorkflowRunCaptureTextForStepId === "function") {
+        try {
+          raw = readWorkflowRunCaptureTextForStepId(s.id);
+        } catch (_readErr) {
+          raw = "";
+        }
+      }
+      if (!raw && s.capturedOutput) {
+        raw = String(s.capturedOutput);
+      }
+      var parsed = parseLearningJourneyStageJsonLoose(raw);
+      if (parsed) {
+        out[stage] = parsed;
+      }
+    }
+    return out;
+  }
+
+  function composeLearningJourneyAuthoritativeStageHandoffToken(wf, stepRow) {
+    if (!isProgressiveLearningJourneyWorkflowActive(wf)) return "";
+    var assembleLib = resolveLearningJourneyAssembleLib();
+    var siblingLib = resolveLearningJourneySiblingPromptsLib();
+    if (
+      !assembleLib ||
+      typeof assembleLib.buildAuthoritativeStageHandoffSection !== "function" ||
+      !siblingLib ||
+      typeof siblingLib.resolveStageFromStepIdentity !== "function"
+    ) {
+      return "";
+    }
+    var targetStage = siblingLib.resolveStageFromStepIdentity(stepRow || {});
+    if (!targetStage || targetStage === "learning_requirements") return "";
+    var storedCaptures = collectLearningJourneyStoredStageCapturesForWorkflow(wf);
+    var parentMinutes = null;
+    if (wf && wf.workflowBriefResolution && typeof wf.workflowBriefResolution === "object") {
+      var rf = wf.workflowBriefResolution.resolvedFactors || {};
+      var ib = wf.workflowBriefResolution.initialBrief || {};
+      var cand =
+        rf.journey_allocated_minutes ||
+        rf.allocated_minutes ||
+        rf.duration_minutes ||
+        ib.allocated_minutes ||
+        ib.duration_minutes ||
+        null;
+      if (cand != null && Number.isInteger(Number(cand)) && Number(cand) > 0) {
+        parentMinutes = Number(cand);
+      }
+    }
+    return assembleLib.buildAuthoritativeStageHandoffSection(targetStage, storedCaptures, {
+      parentAuthoritativeMinutes: parentMinutes
+    });
+  }
+
   function isLearningJourneyCommissioningStep(step) {
     if (!step || typeof step !== "object") return false;
     var cid = String(step.canonical_step_id || step.canonicalStepId || "")
@@ -6570,6 +6703,14 @@
       stepRow &&
       typeof isWorkflowStepDesignPageRow === "function" &&
       isWorkflowStepDesignPageRow(stepRow);
+    if (isProgressiveLearningJourneyWorkflowActive(wf)) {
+      if (useDesignPage) return "";
+      if (
+        typeof sharedLib.composeProgressiveAuthoritativeSharedSourcePromptSection === "function"
+      ) {
+        return sharedLib.composeProgressiveAuthoritativeSharedSourcePromptSection(existing);
+      }
+    }
     if (
       useDesignPage &&
       typeof sharedLib.composeAuthoritativeSharedSourceDesignPageSection === "function"
@@ -7948,7 +8089,14 @@
     var promptText = resolved && resolved.text ? String(resolved.text) : "";
     var copyNotes = "";
     var designMod = resolveLearningJourneyDesignPageLib();
+    var isProgLj = isProgressiveLearningJourneyWorkflowActive(workflow);
     if (
+      isProgLj &&
+      designMod &&
+      typeof designMod.buildProgressiveLearningJourneyDesignPageCopyInstructions === "function"
+    ) {
+      copyNotes = String(designMod.buildProgressiveLearningJourneyDesignPageCopyInstructions() || "");
+    } else if (
       designMod &&
       typeof designMod.buildLearningJourneyDesignPageCopyInstructions === "function"
     ) {
@@ -7989,12 +8137,16 @@
     if (!isLearningJourneyWorkflow(wf) && !workflowRecordIsLearningJourney(wf)) return "";
     var siblingLib = resolveLearningJourneySiblingPromptsLib();
     if (!siblingLib || typeof siblingLib.resolveTemplate !== "function") return "";
+    var tplOpts = isProgressiveLearningJourneyWorkflowActive(wf)
+      ? { progressive: true }
+      : { progressive: false };
     return String(
-      siblingLib.resolveTemplate(step || {}) ||
+      siblingLib.resolveTemplate(step || {}, tplOpts) ||
         siblingLib.resolveTemplate(
           siblingLib.resolveStageFromStepIdentity
             ? siblingLib.resolveStageFromStepIdentity(step || {})
-            : ""
+            : "",
+          tplOpts
         ) ||
         ""
     ).trim();
@@ -8179,7 +8331,10 @@
       AUTHORITATIVE_SHARED_SOURCE:
         isLearningJourneyWorkflow(wf) || workflowRecordIsLearningJourney(wf)
           ? composeLearningJourneyAuthoritativeSharedSourceToken(wf, step)
-          : ""
+          : "",
+      AUTHORITATIVE_STAGE_HANDOFF: isProgressiveLearningJourneyWorkflowActive(wf)
+        ? composeLearningJourneyAuthoritativeStageHandoffToken(wf, step)
+        : ""
     };
     if (cfg.defaultPromptVariables && typeof cfg.defaultPromptVariables === "object") {
       Object.keys(cfg.defaultPromptVariables).forEach(function (k) {
@@ -8220,7 +8375,8 @@
       "stepOutputName",
       "inputArtefactTypes",
       "ORIGINAL_BRIEF",
-      "AUTHORITATIVE_SHARED_SOURCE"
+      "AUTHORITATIVE_SHARED_SOURCE",
+      "AUTHORITATIVE_STAGE_HANDOFF"
     ].forEach(function (k) {
       if (!Object.prototype.hasOwnProperty.call(templateVars, k)) templateVars[k] = "";
     });
@@ -38834,7 +38990,16 @@
       isWorkflowStepDesignPageRow(step)
     ) {
       var ljDesignPromptMod = resolveLearningJourneyDesignPageLib();
+      var ljIsProgressiveFallback = isProgressiveLearningJourneyWorkflowActive(wfRec);
       if (
+        ljIsProgressiveFallback &&
+        ljDesignPromptMod &&
+        typeof ljDesignPromptMod.buildProgressiveLearningJourneyDesignPagePrompt === "function"
+      ) {
+        learningJourneySiblingBody = String(
+          ljDesignPromptMod.buildProgressiveLearningJourneyDesignPagePrompt() || ""
+        ).trim();
+      } else if (
         ljDesignPromptMod &&
         typeof ljDesignPromptMod.buildLearningJourneyDesignPagePrompt === "function"
       ) {
@@ -41955,10 +42120,16 @@
       lines.push("");
       if (workflowRecordIsLearningJourney(wfForChain) || isLearningJourneyWorkflow(wfForChain)) {
         var ljDesignLib = resolveLearningJourneyDesignPageLib();
+        var ljIsProgressiveCopy = isProgressiveLearningJourneyWorkflowActive(wfForChain);
         var ljCopyNotes =
-          ljDesignLib && typeof ljDesignLib.buildLearningJourneyDesignPageCopyInstructions === "function"
-            ? ljDesignLib.buildLearningJourneyDesignPageCopyInstructions()
-            : "";
+          ljIsProgressiveCopy &&
+          ljDesignLib &&
+          typeof ljDesignLib.buildProgressiveLearningJourneyDesignPageCopyInstructions === "function"
+            ? ljDesignLib.buildProgressiveLearningJourneyDesignPageCopyInstructions()
+            : ljDesignLib &&
+              typeof ljDesignLib.buildLearningJourneyDesignPageCopyInstructions === "function"
+              ? ljDesignLib.buildLearningJourneyDesignPageCopyInstructions()
+              : "";
         if (ljCopyNotes) {
           lines.push(ljCopyNotes);
         } else {
@@ -42092,7 +42263,7 @@
       }
     } else {
       var strictJsonKindForCopy = resolveStrictJsonWorkflowStepKind(step, wfForChain);
-      if (strictJsonKindForCopy) {
+      if (strictJsonKindForCopy || isProgressiveLearningJourneyWorkflowActive(wfForChain)) {
         lines.push("");
         lines.push(
           "Copilot output contract: return one pretty-printed fenced JSON block (triple-backtick json fence, 2-space indentation). No prose before the fence. After the closing fence emit exactly one runner footer line in the exact format required for this step. No other text after the footer line. No minified single-line JSON."
@@ -42117,7 +42288,9 @@
     var runnerInstructions =
       (workflowRecordIsAssessmentPack(wfForChain) ||
         workflowRecordIsSituatedTask(wfForChain) ||
-        isSituatedTaskWorkflow(wfForChain)) &&
+        isSituatedTaskWorkflow(wfForChain) ||
+        workflowRecordIsLearningJourney(wfForChain) ||
+        isLearningJourneyWorkflow(wfForChain)) &&
       isWorkflowStepDesignPage({
         stepCanonicalStepId: step.canonical_step_id || step.canonicalStepId || "",
         stepCanonicalTitle: step.title || "",
@@ -42167,7 +42340,16 @@
         wfForChain && Array.isArray(wfForChain.steps)
           ? ensureDesignPageUpstreamBindingsForSteps(wfForChain.steps)
           : [];
-      if (isWorkflowStepDesignPageRow(step) && !isPageEnrichmentV2WorkflowEnabled(wfForChain)) {
+      var isProgressiveLjHandoff = isProgressiveLearningJourneyWorkflowActive(wfForChain);
+      if (isProgressiveLjHandoff) {
+        // Sprint 105 M2 — Progressive Learning Journey steps receive authoritative,
+        // minimal structured upstream anchors via {{AUTHORITATIVE_STAGE_HANDOFF}};
+        // do not bloat Copy prompts with raw full-JSON capture dumps or generic
+        // conversational Design Page boilerplate.
+      } else if (
+        isWorkflowStepDesignPageRow(step) &&
+        !isPageEnrichmentV2WorkflowEnabled(wfForChain)
+      ) {
         var conversationalUpstream =
           buildDesignPageUpstreamArtefactsConversationalPromptSection(bindings);
         if (conversationalUpstream) {

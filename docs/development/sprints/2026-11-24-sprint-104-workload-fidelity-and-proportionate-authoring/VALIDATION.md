@@ -187,3 +187,37 @@
 | Additional S104 M2 & M3 suites (`s104-m2-practice-episode-plan`, `s104-m3-downstream-practice-reconciliation`) | **11 / 11 pass** | Practice Episode Plan authority and downstream DLA/GAM/LS/DP reconciliation remain unaffected |
 | Pre-existing `tests/s104-m1-duration-transport.test.js:1011` (`resolveEffectiveWorkflowDurationMinutes` static count 5 vs 3) | **10 / 11 pass (1 pre-existing M5 mismatch)** | Confirmed via `git diff -- app.js` that `S104-D06` added **0** calls to `resolveEffectiveWorkflowDurationMinutes`; the extra 2 calls were introduced earlier in committed Sprint 104 M5 (`f1f1269`) for Practice LS and Assessment Pack adapters and left untouched per scope discipline |
 | Accepted evidence & baseline preservation | **Untouched** | Accepted Economics LJ, accepted regenerated C1 (`91/100`), Political Economy module, Sprint 105 docs, and preserved historical Economics baselines remain unmodified |
+
+---
+
+## Live Practice C6 (*Retrieving the principles of statistical and causal reasoning*) publication QA & supporting fixes (2026-11-26)
+
+### Corrected C6 publication QA result (republished from preserved captures)
+
+| Check / Dimension | Recorded Result | Notes & Scope Boundary |
+| ----------------- | --------------- | ---------------------- |
+| **Final benchmark** | **`89 / 100`** (uncapped weighted score **`88.51`**) | **Release ready with minor revisions** |
+| **Production defects** | **0 Critical, 0 Major, 0 Moderate** | All three previously identified production defects resolved via republication of existing captures (no educational content regenerated) |
+| **Resolved production defects** | **3 / 3 resolved** | (1) **Evidence placement:** A1 `data_table` (`A1-M1`) and attached scatterplots now precede the `A1-M2` matching workspace inside **Your task**, while post-attempt feedback (`A1-M3` `sample_output`) remains in **Check your response** (`lib/learner-renderer-vnext/compose-generic-moments.js`); (2) **Matching-answer serialisation:** generic pair normalisation (`normalizeMatchingPairsMap`) emits `case1:1b\|case2:2c\|case3:3c` instead of `0:[object Object]\|1:[object Object]\|2:[object Object]` across both Practice and Assessment Pack paths (`lib/learner-renderer-vnext/normalize-selection.js`, `lib/learner-renderer-vnext/assessment-interactive.js`); (3) **Orphaned navigation:** `<script>`/`<style>` blocks are stripped before HTML landmark scanning so embedded `assessment-runtime.js` no longer emits a phantom `#journey-assessment` (`Self assessment`) link or inflated section count (`lib/learner-renderer-vnext/sequential-section-nav.js`) |
+| **Preservation** | **Preserved intact** | Existing accepted captures, **5-minute** allocation (`2.5 + 2.5`), statistical evidence (all five correlation coefficients verified accurate), images, questions, and explanatory feedback preserved without regeneration |
+| **Workload-fidelity evidence (non-defect)** | **Indicative QA timing recommendation: 7–10 minutes vs 5 allocated minutes** | Recorded strictly as **workload-fidelity evidence** (not a production defect and **not** a measured learner completion time); evaluate holistically across the 90-minute Economics Learning Journey |
+| **QA scope boundary** | **Static QA only** | Static QA does **not** establish assistive-technology behaviour or client-side persistence behaviour |
+| **Duration-lock observation (M1)** | **Not separately recorded in this QA report** | Kept distinct from the published 5-minute duration; do not infer UI duration-lock state from the published artefact |
+| **Workload-warning observation (M5 / Step 4)** | **Not separately recorded in this QA report** | Kept distinct from the published 5-minute duration; do not infer live PRISM Step 4 / LS advisory warning display from the published artefact |
+
+### Supporting live Practice fixes verified in the same checkpoint
+
+1. **Practice `evaluate` / `evaluative_core` alignment & Step 1 parse diagnostics:**
+   - Clarified `evaluate` `evaluative_core` compliance in `lib/practice-episode-plan.js` and `lib/ld-practice-presentation-contracts.js` (directing defended/refined judgements to `evaluative_judgement` without redundant beats); updated `lib/learner-renderer-vnext/archetype-canonical-binding.js` so `evaluative_judgement` owns `taskSteps` (`take = "rest"`) and `task_card` when `independent_performance` is absent; preserved specific Step 1 JSON parse diagnostics in `app.js` instead of overwriting with generic `"invalid capture object"`.
+2. **Fractional timeline activity duration reconciliation (`2.5 + 2.5 = 5 min`):**
+   - Removed per-activity integer rounding before summation in `app.js` (`parseLearningSequenceDurationMinutes` / `sumLearningSequenceTimelineMinutes` / `appendLearningSequenceDurationComplianceErrors`) and preserved 6-decimal fractional precision without weakening strict reconciliation (`4.9 vs 5`, `5.1 vs 5`, `5.5 vs 5` still fail closed).
+   - Preserved fractional minutes in `lib/interactive-workload-feasibility-adapter.js`, `lib/workload-feasibility-estimator.js`, and `app.js` (`utilityFormatLearningHeaderDuration*`).
+3. **Browser bundle & cache tokens:**
+   - Rebuilt `lib/learner-renderer-vnext-browser.js` (`npm run build:learner-renderer-vnext-browser`) and bumped cache tokens in `index.html`.
+
+### Focused automated test suites (`node --test`, observed 2026-11-26)
+
+| Suite / Scope | Result | Notes |
+| ------------- | ------ | ----- |
+| `tests/s104-c6-practice-publication-qa.test.js` + `learner-renderer-vnext-sequential-nav`, `learner-renderer-vnext-export-shell`, `s96-cross-archetype-section-nav`, `s104-m3-downstream-practice-reconciliation`, `s101e-practice-selection-controls`, `s101e-practice-selection-export-path`, `s103-multi-question-selection-radio-groups`, `learner-renderer-vnext-generic-moments`, `learner-renderer-vnext-compose-full-page`, `sprint-70-composition-moments-regression`, `learner-renderer-vnext-browser-artefact-freshness` | **93 / 93 pass** | Verifies all 3 C6 publication QA fixes (including runtime grading of correct, incorrect, and incomplete matching submissions), fractional `2.5 + 2.5 = 5` min reconciliation & mismatch rejection, and browser bundle freshness |
+| `tests/s104-m2-practice-episode-plan.test.js`, `tests/episode-plan-v1-archetype-grammar.test.js`, `tests/s82-workshop-live-path-production.test.js`, `tests/page-vnext-assemble.test.js`, `tests/s78-t-037-learner-timing-metadata.test.js`, `tests/s100a-workload-feasibility-estimator.test.js`, `tests/s100b1-interactive-workload-feasibility.test.js`, `tests/s104-m5-workload-estimation.test.js` | **96 / 96 pass** | Verifies `evaluate` `evaluative_core` alignment, Practice EP validation, LS duration compliance, assembly projection, timing metadata, and workload estimation |

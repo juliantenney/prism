@@ -1,7 +1,7 @@
 # Sprint 104 — Status / work log
 
 **Sprint:** 104 — Workload Fidelity and Proportionate Authoring  
-**Status:** **OPEN — LIVE ACCEPTANCE RE-EVALUATION CORRECTIONS IMPLEMENTED (`S104-D06`, STOPPED FOR REVIEW)** — Milestones 1–5 committed (`c461770` → `f1f1269`); [Sprint 105 CLOSED — COMPLETE](../2026-11-25-sprint-105-learning-journey-progressive-capture-and-assembly/SPRINT-105-CLOSURE.md) (`76f44ef`)  
+**Status:** **OPEN — LIVE ACCEPTANCE IN PROGRESS (C1 `91/100` & C6 `89/100` ACCEPTED; STOPPED FOR REVIEW)** — Milestones 1–5 committed (`c461770` → `f1f1269`), `S104-D06` committed (`eebb162`); [Sprint 105 CLOSED — COMPLETE](../2026-11-25-sprint-105-learning-journey-progressive-capture-and-assembly/SPRINT-105-CLOSURE.md) (`76f44ef`)  
 **Resumption baseline:** `76f44ef` (Sprint 104 M1–M5 `c461770`–`f1f1269` + Sprint 105 M1–M4 & closure `4b698db`–`76f44ef`)  
 **Primary backlog item:** [PB-FA-025](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-025--duration-fidelity-learner-workload-budgeting)  
 **Opening & decisions:** [S104-D01](decisions.md#s104-d01--open-sprint-104--workload-fidelity-and-proportionate-authoring), [S104-D02](decisions.md#s104-d02--architectural-agreement-principles-a-e-and-seven-gated-milestones), [S104-D03](decisions.md#s104-d03--milestone-2-multi-lo-compatibility-and-milestone-3-contract-reconciliation), [S104-D04](decisions.md#s104-d04--suspend-sprint-104-at-live-acceptance-pending-sprint-105), [S104-D05](decisions.md#s104-d05--resume-sprint-104-at-live-acceptance-after-sprint-105-closure), [S104-D06](decisions.md#s104-d06--focused-progressive-learning-journey-workload-fidelity-corrections-and-revised-live-acceptance-sequence)
@@ -18,15 +18,32 @@
 | Milestone 5 — Workload estimation corrections | **Complete & committed (`f1f1269`)** — **Stage 4 advisory warning surfacing & lifecycle hygiene added (`S104-D06`, pending review)** |
 | S104-D04 Suspend Sprint 104 pending Sprint 105 | **Resolved** — Sprint 105 **CLOSED — COMPLETE** (`4b698db`–`76f44ef`) |
 | S104-D05 Resume Sprint 104 at live acceptance | **Accepted (2026-11-25)** — canonical parent: fresh 90-min Economics LJ; C1 accepted (`91/100`); scope discipline reaffirmed |
-| S104-D06 Progressive LJ workload-fidelity corrections & revised live acceptance sequence | **Implemented (uncommitted — stopped for review)** — Stage 1–4 prompt restoration, Stage 4 advisory warnings & lifecycle hygiene, targeted regression suite (`48 / 48 pass`) |
+| S104-D06 Progressive LJ workload-fidelity corrections & revised live acceptance sequence | **Committed (`eebb162`)** — Stage 1–4 prompt restoration, Stage 4 advisory warnings & lifecycle hygiene (`48 / 48 pass`) |
 | Milestone 6 — Live 5-, 15- and 30-minute Practice sensitivity probes (via disposable 50-min Probe LJ) | **Queued after M7 completion (probe brief to be reviewed separately)** |
-| Milestone 7 — Economics C6/C2 diagnostic pair → remaining Economics components, workload assessment, baseline comparison, QA & unified learner-runtime acceptance | **Queued immediately after `S104-D06` review** (parent LJ & accepted C1 preserved untouched) |
+| Milestone 7 — Economics C6/C2 diagnostic pair → remaining Economics components, workload assessment, baseline comparison, QA & unified learner-runtime acceptance | **In progress** — parent LJ & C1 (`91/100`) preserved; **C6 accepted at `89/100` (uncapped `88.51`, release ready with minor revisions; 0 Critical/Major/Moderate defects)** |
 
 ---
 
 ## Work log
 
-### 2026-11-25 — Focused progressive LJ workload-fidelity corrections (`S104-D06`, stopped for review)
+### 2026-11-26 — Live Practice fixes & corrected C6 publication QA acceptance (`89 / 100`)
+
+- **Corrected C6 (*Retrieving the principles of statistical and causal reasoning*, Practice, 5 min) publication QA:**
+  - **Final benchmark:** **`89 / 100`** (uncapped weighted score **`88.51`**) — **Release ready with minor revisions**, **no Critical, Major, or Moderate production defects**.
+  - All three previously identified production defects resolved generically in the vNext renderer/packaging pipeline and verified via republication of existing captures (no regeneration of educational content; existing captures, 5-minute allocation, five verified correlation coefficients, images, questions, and explanatory feedback preserved):
+    1. **Evidence placement (`lib/learner-renderer-vnext/compose-generic-moments.js`):** Non-deferred observational/task evidence (`A1-M1` `data_table` + scatterplots) now stays in `doMaterials` before the `A1-M2` matching workspace when a split beat has task materials or `learnerRole === "practise"`, while post-attempt feedback (`A1-M3` `sample_output`) remains in `Check`.
+    2. **Matching-answer serialisation (`lib/learner-renderer-vnext/normalize-selection.js`, `lib/learner-renderer-vnext/assessment-interactive.js`):** Added generic `normalizeMatchingPairsMap` supporting array-of-objects, tuples, and map shapes so `data-assessment-correct-map` serialises as `case1:1b|case2:2c|case3:3c` instead of `0:[object Object]|1:[object Object]|2:[object Object]`.
+    3. **Orphaned navigation (`lib/learner-renderer-vnext/sequential-section-nav.js`):** Stripped `<script>`/`<style>` blocks before HTML landmark detection and matched opening HTML tags so embedded `assessment-runtime.js` no longer fabricates a phantom `#journey-assessment` (`Self assessment`) link or inflated section count.
+  - **Workload-fidelity evidence (not a production defect or measured completion time):** Indicative QA timing recommendation of **7–10 minutes** against **5 allocated minutes** recorded in [VALIDATION.md](VALIDATION.md).
+  - **QA scope boundary:** Static QA does not establish assistive-technology or persistence behaviour.
+  - **Separate M1 duration-lock & M5/Step 4 workload-warning observations:** Recorded as distinct fields in [VALIDATION.md](VALIDATION.md) (not inferred from the published 5-minute duration).
+- **Supporting live Practice pipeline fixes committed in the same checkpoint:**
+  - `evaluate` / `evaluative_core` prompt-validator-renderer alignment (`lib/practice-episode-plan.js`, `lib/ld-practice-presentation-contracts.js`, `lib/learner-renderer-vnext/archetype-canonical-binding.js`) and preserved Step 1 JSON parse diagnostics (`app.js`).
+  - Accurate fractional timeline duration reconciliation (`2.5 + 2.5 = 5 min`) without per-activity integer rounding before summation (`app.js`, `lib/interactive-workload-feasibility-adapter.js`, `lib/workload-feasibility-estimator.js`).
+  - Rebuilt `lib/learner-renderer-vnext-browser.js`, bumped `index.html` cache tokens, and added targeted regression suites (`tests/s104-c6-practice-publication-qa.test.js` + additions to `tests/s104-m2-practice-episode-plan.test.js`, `tests/episode-plan-v1-archetype-grammar.test.js`, `tests/s104-m3-downstream-practice-reconciliation.test.js`).
+- **No further C6 enhancements or regeneration.** Stopped for review.
+
+### 2026-11-25 — Focused progressive LJ workload-fidelity corrections (`S104-D06`, committed `eebb162`)
 
 - Implemented the two approved Sprint 104 workload-fidelity corrections following live acceptance re-evaluation (Sprint 105 remains **CLOSED — COMPLETE**; accepted Economics LJ, accepted C1, Political Economy module, and historical baselines untouched; zero estimator threshold or schema changes):
   1. **Restored progressive Learning Journey workload-fidelity instructions (`lib/learning-journey-sibling-prompts.js`):**

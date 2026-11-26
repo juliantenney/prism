@@ -923,3 +923,209 @@ test("104M3 Contract & Interactive Guard: Practice exemplars removed; Interactiv
     "Interactive scaffold repair must still expand terse Interactive preambles"
   );
 });
+
+test("Fractional timeline activity durations (2.5 + 2.5 = 5 min) reconcile accurately across validation, assembly, rendering, and workload estimation while rejecting genuine mismatches", () => {
+  const { api } = boot();
+  const interactiveWorkload = require("../lib/interactive-workload-feasibility-adapter");
+
+  const twoActivityBaseline = {
+    artifact_type: "page",
+    schema_version: "2.0.0",
+    product_id: "practice",
+    page_kind: "practice",
+    title: "Retrieving the principles of statistical and causal reasoning",
+    audience: "Learners",
+    page_profile: { profile_type: "learner" },
+    page_synthesis: {},
+    learning_outcomes: [
+      { id: "LO1", statement: "Interpret statistical association and sensitivity comparisons accurately." },
+      { id: "LO2", statement: "Distinguish statistical association from competing causal explanations." }
+    ],
+    episode_plans: [
+      {
+        activity_id: "A1",
+        mapped_learning_outcome_ids: ["LO1"],
+        episode_plan: {
+          archetype: "apply",
+          beats: [
+            { function: "activation" },
+            { function: "explanation" },
+            { function: "independent_performance" },
+            { function: "verification" }
+          ]
+        }
+      },
+      {
+        activity_id: "A2",
+        mapped_learning_outcome_ids: ["LO2"],
+        episode_plan: {
+          archetype: "apply",
+          beats: [
+            { function: "activation" },
+            { function: "explanation" },
+            { function: "independent_performance" },
+            { function: "verification" },
+            { function: "transition" }
+          ]
+        }
+      }
+    ],
+    activities: [
+      {
+        activity_id: "A1",
+        title: "Interpreting statistical evidence cases",
+        mapped_learning_outcomes: ["LO1"],
+        activity_preamble: "Retrieve key principles for reading economic relationships.",
+        intellectual_coherence_bridge: "Connect prior statistical reasoning to three short cases.",
+        reasoning_orientation: "Attend to direction, strength, and outlier sensitivity.",
+        learner_task: "Select the warranted interpretation for each of the three cases.",
+        expected_output: "Three selected interpretations.",
+        materials: [{ material_id: "A1-M1", type: "worked_example", title: "Case summaries", content: "Three compact cases." }],
+        episode_plan: {
+          archetype: "apply",
+          beats: [
+            { function: "activation" },
+            { function: "explanation" },
+            { function: "independent_performance" },
+            { function: "verification" }
+          ]
+        }
+      },
+      {
+        activity_id: "A2",
+        title: "Classifying causal reasoning cases",
+        mapped_learning_outcomes: ["LO2"],
+        activity_preamble: "Retrieve distinctions between association and competing causal explanations.",
+        intellectual_coherence_bridge: "Move from statistical patterns to causal claims.",
+        reasoning_orientation: "Distinguish direct causation, reverse causality, and confounding.",
+        learner_task: "Select the warranted conclusion and classify the alternative explanations.",
+        expected_output: "Three selected classifications.",
+        materials: [{ material_id: "A2-M1", type: "worked_example", title: "Causal cases", content: "Three short causal cases." }],
+        episode_plan: {
+          archetype: "apply",
+          beats: [
+            { function: "activation" },
+            { function: "explanation" },
+            { function: "independent_performance" },
+            { function: "verification" },
+            { function: "transition" }
+          ]
+        }
+      }
+    ],
+    assembly_state: {
+      current_stage: "gam",
+      enriched_by: ["episode_plan", "dla", "gam"]
+    }
+  };
+
+  const validFractionalLs = {
+    artifact_type: "page",
+    schema_version: "2.0.0",
+    assembly_state: {
+      current_stage: "learning_sequence",
+      enriched_by: ["learning_sequence"]
+    },
+    learning_sequence: {
+      total_duration_minutes: 5,
+      ordered_activity_ids: ["A1", "A2"],
+      timeline: [
+        {
+          activity_id: "A1",
+          duration_minutes: 2.5,
+          start_seconds: 0,
+          end_seconds: 150
+        },
+        {
+          activity_id: "A2",
+          duration_minutes: 2.5,
+          start_seconds: 150,
+          end_seconds: 300
+        }
+      ]
+    }
+  };
+
+  // 1. Live C6 case: two 2.5-minute activities in a 5-minute commission must pass cleanly
+  const okCheck = api.validateLearningSequencePartialPageCapture(validFractionalLs, {
+    effectiveDurationMinutes: 5,
+    practiceProduct: true,
+    baselinePage: twoActivityBaseline
+  });
+  assert.equal(okCheck.ok, true, "2.5 + 2.5 = 5 must pass: " + (okCheck.errors || []).join("; "));
+
+  // 2. Genuinely mismatched fractional timeline sum (2.5 + 2.4 = 4.9 vs 5) must fail
+  const underSumLs = JSON.parse(JSON.stringify(validFractionalLs));
+  underSumLs.learning_sequence.timeline[1].duration_minutes = 2.4;
+  const underCheck = api.validateLearningSequencePartialPageCapture(underSumLs, {
+    effectiveDurationMinutes: 5,
+    practiceProduct: true,
+    baselinePage: twoActivityBaseline
+  });
+  assert.equal(underCheck.ok, false);
+  assert.ok(
+    underCheck.errors.some((e) => /total_duration_minutes \(5\) must equal sum of timeline activity durations \(4\.9\)/.test(e)),
+    "Expected exact fractional mismatch error (5 vs 4.9), got: " + underCheck.errors.join("; ")
+  );
+
+  // 3. Genuinely mismatched fractional timeline sum (2.5 + 2.6 = 5.1 vs 5) must fail
+  const overSumLs = JSON.parse(JSON.stringify(validFractionalLs));
+  overSumLs.learning_sequence.timeline[1].duration_minutes = 2.6;
+  const overCheck = api.validateLearningSequencePartialPageCapture(overSumLs, {
+    effectiveDurationMinutes: 5,
+    practiceProduct: true,
+    baselinePage: twoActivityBaseline
+  });
+  assert.equal(overCheck.ok, false);
+  assert.ok(
+    overCheck.errors.some((e) => /total_duration_minutes \(5\) must equal sum of timeline activity durations \(5\.1\)/.test(e)),
+    "Expected exact fractional mismatch error (5 vs 5.1), got: " + overCheck.errors.join("; ")
+  );
+
+  // 4. Internally consistent 5.5 min against authoritative 5 min must fail
+  const authMismatchLs = JSON.parse(JSON.stringify(validFractionalLs));
+  authMismatchLs.learning_sequence.total_duration_minutes = 5.5;
+  authMismatchLs.learning_sequence.timeline[1].duration_minutes = 3;
+  const authCheck = api.validateLearningSequencePartialPageCapture(authMismatchLs, {
+    effectiveDurationMinutes: 5,
+    practiceProduct: true,
+    baselinePage: twoActivityBaseline
+  });
+  assert.equal(authCheck.ok, false);
+  assert.ok(
+    authCheck.errors.some((e) => /learning_sequence total duration \(5\.5 min\) must match authoritative effective workflow duration \(5 min\)/.test(e)),
+    "Expected authoritative duration mismatch error, got: " + authCheck.errors.join("; ")
+  );
+
+  // 5. Assembly & renderer preserve 2.5 per activity and 5 total without rounding 2.5 -> 3
+  const assembled = assembleVNext.assembleVNextPageFromPartials({
+    episode_plan: twoActivityBaseline,
+    dla: twoActivityBaseline,
+    gam: twoActivityBaseline,
+    learning_sequence: validFractionalLs
+  });
+  assert.equal(assembled.ok, true, "Assembly must succeed: " + (assembled.errors || []).join("; "));
+  assert.equal(assembled.page.activities[0].duration_minutes, 2.5);
+  assert.equal(assembled.page.activities[1].duration_minutes, 2.5);
+
+  const built = buildPageModel.buildPageModel(assembled.page);
+  assert.equal(built.ok, true, JSON.stringify(built.errors || [], null, 2));
+  assert.equal(built.model.activities[0].durationMinutes, 2.5);
+  assert.equal(built.model.activities[1].durationMinutes, 2.5);
+  assert.equal(built.model.header.durationMinutes, 5);
+
+  const rendered = renderLearnerPageHtml(assembled.page, { includeRuntimeScripts: false });
+  assert.equal(rendered.error, null, String(rendered.error || ""));
+  assert.match(rendered.html, /2\.5 min/);
+  assert.match(rendered.html, /5 minutes/);
+
+  // 6. Workload feasibility adapter preserves 2.5 per activity and 5 total (not 3 + 3 = 6)
+  const workload = interactiveWorkload.assessInteractivePageWorkload(
+    assembled.page,
+    twoActivityBaseline,
+    { effectiveDurationMinutes: 5 }
+  );
+  assert.equal(workload.findings[0].input.declaredDurationMinutes, 2.5);
+  assert.equal(workload.findings[1].input.declaredDurationMinutes, 2.5);
+  assert.equal(workload.authoritativeDurationMinutes, 5);
+});

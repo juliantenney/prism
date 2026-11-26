@@ -917,3 +917,135 @@ test("Interactive non-regression: deterministic derivation, Copy prompt, and can
   const enforced = api.applyEpisodePlanCaptureCanonicalEnforcement(customAttempt, epStep, epStep.id, wf);
   assert.equal(JSON.stringify(JSON.parse(enforced)), JSON.stringify(derived));
 });
+
+test("Evaluate evaluative_core prompt-validator alignment: rejects independent_performance-only evaluate, accepts evaluative_judgement without extra beats", () => {
+  const practiceEp = require("../lib/practice-episode-plan.js");
+  const practiceContracts = require("../lib/ld-practice-presentation-contracts.js");
+
+  const prompt = practiceEp.buildPracticeEpisodePlanPromptBody({
+    title: "Strengthening the broadband advisory judgement",
+    audience: "Learners",
+    purpose: "Reconsider and strengthen the broadband advisory judgement with justified additional evidence.",
+    durationMinutes: 15,
+    authoritativeOutcomes: [
+      { id: "LO1", statement: "Explain how temporal information, evidence about potential confounders and informative comparisons could strengthen or challenge a causal explanation." },
+      { id: "LO2", statement: "Justify additional evidence that would help distinguish between competing explanations of the broadband and business-growth relationship." },
+      { id: "LO3", statement: "Improve an existing economic judgement by clarifying its evidential basis, uncertainty and requirements for stronger causal conclusions." }
+    ]
+  });
+
+  // Prompt explicitly warns that criteria_exposition/guided_reasoning/independent_performance do not satisfy evaluative_core
+  assert.match(prompt, /criteria_exposition.*guided_reasoning.*independent_performance.*do NOT satisfy `evaluative_core`/i);
+  assert.match(prompt, /express that performance beat directly as `evaluative_judgement` rather than `independent_performance`/i);
+  assert.match(prompt, /Pre-output grammar self-check.*evaluative_core/i);
+
+  const contractBlock = practiceContracts.buildPracticePresentationContractBlock("episode_plan");
+  assert.match(contractBlock, /satisfy evaluate's required evaluative_core group with a genuine evaluative beat/i);
+  assert.match(contractBlock, /rather than pairing criteria_exposition\/guided_reasoning with independent_performance alone/i);
+
+  const makeBroadbandShell = (a2PerformanceBeat) => ({
+    artifact_type: "page",
+    schema_version: "2.0.0",
+    product_id: "practice",
+    page_kind: "practice",
+    title: "Strengthening the broadband advisory judgement",
+    audience: "Learners",
+    page_profile: { profile_type: "learner" },
+    assembly_state: { enriched_by: ["episode_plan"], current_stage: "episode_plan" },
+    page_synthesis: {},
+    learning_outcomes: [
+      { id: "LO1", statement: "Explain how temporal information, evidence about potential confounders and informative comparisons could strengthen or challenge a causal explanation." },
+      { id: "LO2", statement: "Justify additional evidence that would help distinguish between competing explanations of the broadband and business-growth relationship." },
+      { id: "LO3", statement: "Improve an existing economic judgement by clarifying its evidential basis, uncertainty and requirements for stronger causal conclusions." }
+    ],
+    episode_plans: [
+      {
+        activity_id: "A1",
+        mapped_learning_outcome_ids: ["LO1"],
+        episode_plan: {
+          archetype: "analyse",
+          beats: [{ function: "worked_thinking" }, { function: "guided_inquiry" }, { function: "verification" }]
+        }
+      },
+      {
+        activity_id: "A2",
+        mapped_learning_outcome_ids: ["LO2", "LO3"],
+        episode_plan: {
+          archetype: "evaluate",
+          beats: [
+            { function: "activation" },
+            { function: "criteria_exposition" },
+            { function: "guided_reasoning" },
+            { function: a2PerformanceBeat },
+            { function: "verification" }
+          ]
+        }
+      }
+    ],
+    activities: [
+      {
+        activity_id: "A1",
+        title: "What evidence would help distinguish competing explanations?",
+        learning_outcome_ids: ["LO1"],
+        learner_task: "\u2014",
+        expected_output: "\u2014",
+        activity_preamble: "\u2014",
+        required_materials: [],
+        materials: [],
+        episode_plan: {
+          archetype: "analyse",
+          beats: [{ function: "worked_thinking" }, { function: "guided_inquiry" }, { function: "verification" }]
+        }
+      },
+      {
+        activity_id: "A2",
+        title: "Reconsider and strengthen your broadband advisory judgement",
+        learning_outcome_ids: ["LO2", "LO3"],
+        learner_task: "\u2014",
+        expected_output: "\u2014",
+        activity_preamble: "\u2014",
+        required_materials: [],
+        materials: [],
+        episode_plan: {
+          archetype: "evaluate",
+          beats: [
+            { function: "activation" },
+            { function: "criteria_exposition" },
+            { function: "guided_reasoning" },
+            { function: a2PerformanceBeat },
+            { function: "verification" }
+          ]
+        }
+      }
+    ],
+    source_artefacts: [
+      { artefact_type: "learning_outcomes", source_label: "Authoritative commissioned learning outcomes", role: "structural" }
+    ],
+    generation_notes: {
+      validation: {
+        activity_coverage: "shell_only",
+        material_coverage: "pending_gam",
+        episode_plan_attachment: "attached",
+        self_containment: "shell_only",
+        schema_compliance: "episode_plan_boundary",
+        known_issues: []
+      }
+    }
+  });
+
+  // Validation MUST NOT be weakened: independent_performance-only evaluate still fails evaluative_core
+  const failingCheck = practiceEp.validatePracticeEpisodePlanCapture(
+    makeBroadbandShell("independent_performance")
+  );
+  assert.equal(failingCheck.ok, false);
+  assert.ok(
+    failingCheck.errors.some((e) => /activity A2 \(evaluate\): MISSING_REQUIRED_GROUP group=evaluative_core/.test(e)),
+    JSON.stringify(failingCheck.errors)
+  );
+
+  // Expressing the defended judgement as evaluative_judgement passes with the exact same 5-beat count
+  const passingCheck = practiceEp.validatePracticeEpisodePlanCapture(
+    makeBroadbandShell("evaluative_judgement")
+  );
+  assert.equal(passingCheck.ok, true, JSON.stringify(passingCheck.errors));
+});

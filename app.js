@@ -12819,11 +12819,15 @@
     return options;
   }
 
+  function normalizeDurationMinutesPrecision(minutes) {
+    return Math.round(minutes * 1e6) / 1e6;
+  }
+
   function parseLearningSequenceDurationMinutes(value) {
     if (value == null || value === "") return null;
     var minutes = Number(value);
     if (!isFinite(minutes)) return null;
-    return Math.round(minutes);
+    return normalizeDurationMinutesPrecision(minutes);
   }
 
   function parseLearningSequenceTimelineEntryMinutes(entry) {
@@ -12843,7 +12847,7 @@
       total += minutes;
       saw = true;
     });
-    return saw ? total : null;
+    return saw ? normalizeDurationMinutesPrecision(total) : null;
   }
 
   function appendLearningSequenceDurationComplianceErrors(parsed, options, errors) {
@@ -12865,7 +12869,11 @@
       totalDeclared = parseLearningSequenceDurationMinutes(sequence.total_estimated_minutes);
     }
     var timelineSum = sumLearningSequenceTimelineMinutes(sequence);
-    if (totalDeclared != null && timelineSum != null && totalDeclared !== timelineSum) {
+    if (
+      totalDeclared != null &&
+      timelineSum != null &&
+      Math.abs(totalDeclared - timelineSum) > 1e-6
+    ) {
       errors.push(
         "learning_sequence.total_duration_minutes (" +
           totalDeclared +
@@ -12875,7 +12883,7 @@
       );
     }
     var lsTotal = totalDeclared != null ? totalDeclared : timelineSum;
-    if (lsTotal != null && lsTotal !== authMinutes) {
+    if (lsTotal != null && Math.abs(lsTotal - authMinutes) > 1e-6) {
       errors.push(
         "learning_sequence total duration (" +
           lsTotal +
@@ -32953,13 +32961,30 @@
     }
     var partialPostEpisodePlanStep = isPostEpisodePlanPartialOutputStep(stepRow, wf);
     if (stepRow && isWorkflowStepDesignEpisodePlanRow(stepRow)) {
+      var priorEpParseErr =
+        sid && state.workflowRunEpisodePlanValidation
+          ? String(state.workflowRunEpisodePlanValidation[sid] || "").trim()
+          : "";
       var enforcedRaw = applyEpisodePlanCaptureCanonicalEnforcement(raw, stepRow, sid, wf);
       if (enforcedRaw !== raw) {
         ta.value = enforcedRaw;
         raw = enforcedRaw;
       } else if (raw) {
         var parsedEpRaw = tryParseWorkflowArtefactJson(raw);
-        var epCheck = validateEpisodePlanOrPageShellCapture(parsedEpRaw, wf);
+        var epCheck = parsedEpRaw
+          ? validateEpisodePlanOrPageShellCapture(parsedEpRaw, wf)
+          : {
+              ok: false,
+              errors: [
+                /"artifact_type"\s*:\s*"page"[\s\S]*"artifact_type"\s*:\s*"page"/i.test(
+                  String(raw || "")
+                )
+                  ? "Multiple page JSON objects detected — select all (Ctrl+A), clear the box, and paste a single JSON object."
+                  : priorEpParseErr && priorEpParseErr !== "invalid capture object"
+                    ? priorEpParseErr
+                    : "Invalid JSON — ensure the box contains one complete JSON object with no truncated or leftover text."
+              ]
+            };
         if (!epCheck.ok) {
           var repaired = false;
           if (isPageEnrichmentV2WorkflowEnabled(wf) && !isPracticeWorkflow(wf)) {
@@ -58866,16 +58891,17 @@
   function utilityFormatLearningHeaderDuration(duration) {
     var value = String(duration || "").trim();
     if (!value) return "";
-    var match = value.match(/^(\d+)\s*(?:minutes?|mins?|min)(?:\s+session)?\.?$/i);
+    var match = value.match(/^(\d+(?:\.\d+)?)\s*(?:minutes?|mins?|min)(?:\s+session)?\.?$/i);
     if (!match) return value;
-    var minutes = Number(match[1]);
+    var minutes = Math.round(Number(match[1]) * 1e6) / 1e6;
     return String(minutes) + (minutes === 1 ? " min." : " mins.");
   }
 
   function utilityFormatLearningHeaderDurationFromMinutes(minutes) {
     var value = Number(minutes);
     if (!Number.isFinite(value) || value <= 0) return "";
-    return utilityFormatLearningHeaderDuration(String(Math.round(value)) + " min");
+    var normalized = Math.round(value * 1e6) / 1e6;
+    return utilityFormatLearningHeaderDuration(String(normalized) + " min");
   }
 
   function utilityNormalizeHeaderOverviewPlainText(text) {

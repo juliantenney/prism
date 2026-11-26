@@ -229,4 +229,27 @@ test("evaluate archetype accommodates evaluative refinement of an existing respo
     "reflection"
   ]);
   assert.equal(missingCore.ok, false);
+
+  // 5. Guided reasoning -> evaluative_judgement -> verification (no separate independent_performance)
+  //    is grammar-legal and binds taskSteps + task_card cleanly to evaluative_judgement (not verification)
+  const guidedToEvalSeq = [
+    "activation",
+    "criteria_exposition",
+    "guided_reasoning",
+    "evaluative_judgement",
+    "verification"
+  ];
+  const guidedToEvalCheck = grammar.isSequenceRepresentable("evaluate", guidedToEvalSeq);
+  assert.equal(guidedToEvalCheck.ok, true, JSON.stringify(guidedToEvalCheck.errors));
+  const guidedToEvalVariant = archetypeRules.buildCanonicalFunctionEnumVariant(
+    "evaluate",
+    guidedToEvalSeq
+  );
+  const guidedBeat = guidedToEvalVariant.beats.find((b) => b.sourceFunction === "guided_reasoning");
+  const ejBeat = guidedToEvalVariant.beats.find((b) => b.sourceFunction === "evaluative_judgement");
+  const verBeat = guidedToEvalVariant.beats.find((b) => b.sourceFunction === "verification");
+  assert.equal(ejBeat.taskSteps.take, "rest");
+  assert.ok(ejBeat.materialTypes.includes("task_card"));
+  assert.equal(guidedBeat.materialTypes.includes("task_card"), false);
+  assert.equal(verBeat.taskSteps.take, 0);
 });

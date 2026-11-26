@@ -281,3 +281,30 @@
 | `tests/s104-assessment-pack-stage4-contract-hardening.test.js` (new) | **9 / 9 pass** | Covers Stage 4 canonical `output_specification` prompt examples (both modes), C7 missing-field rejection at paste/save & step advance, valid canonical acceptance with workload warnings & structured-stimulus checks, fail-closed canonical publication without legacy fallback, legacy publication preservation, live Copy path upgrade without duplication on stale saved workflows, Stage 2 & Stage 4 scatterplot prompt/Copy contracts, Stage 2–4 capture rejection of malformed C7 scatterplot structure, and canonical multi-panel C7 (F1 + F2) capture + SVG/table rendering + fail-closed panel mismatch rejection |
 | Existing Assessment Pack regression bundle (`s93-assessment-editorial-opening`, `s93-assessment-pack-canonical`, `s93-assessment-pack-output-specification`, `s93-assessment-pack-output-authoring`, `s93-assessment-pack-publish-integration`, `s100b2-assessment-pack-workload-feasibility`, `qa-c06-assessment-evidence-and-artefact`, `assessment-pack-legacy-retain-output-spec`, `assessment-pack-legacy-section-mapped-output-spec`, `assessment-pack-c04-output-spec-shorthand`) | **78 / 78 pass** | **87 / 87 total pass** across all 11 Assessment Pack suites |
 | `npm run check:learner-renderer-vnext-browser` | **OK** | Confirms `lib/learner-renderer-vnext-browser.js` and export runtime bundles match source |
+
+---
+
+## Security remediation — inline SVG assessment stimulus sanitisation (2026-11-26)
+
+### Finding & exposure
+- `renderStimulus(item)` in `lib/learner-renderer-vnext/assessment-interactive.js` interpolated `item.representation.media.markup` raw into published HTML whenever `media.format === "svg"`, guarded only by `markup.indexOf("<script") !== -1`.
+- Confirmed reachable through supported authoring, import, preview, standalone publication, and LMS export paths (`assessment_evidence.elicitations[].delivery.items[]`, `assessment_check.items[]`, and `activities[].assessment_items[]`), creating a stored-XSS exposure if untrusted JSON or active SVG markup reached `representation.media.markup`.
+
+### Narrowly scoped remediation (independent of `PB-FA-035`)
+1. **Parser-based structural validator & restrictive allowlist (`lib/svg-stimulus-security.js`):**
+   - Implemented a zero-dependency XML/SVG state-machine parser (`validateSafeInlineSvgStimulus`) enforcing a single complete, balanced `<svg>...</svg>` root with zero content outside the root; rejecting `<!DOCTYPE`, `<!ENTITY`, `<![CDATA[`, comments, processing instructions, nested `<svg>`, unquoted/duplicate attributes, and stray angle brackets.
+   - Enforced restrictive allowlists for static SVG geometric/text elements (`svg`, `title`, `desc`, `g`, `rect`, `circle`, `ellipse`, `line`, `polyline`, `polygon`, `path`, `text`, `tspan`, `defs`, `clipPath`) and safe presentational attributes (excluding all `on*` handlers, `href`/`xlink:href`, `style`, `src`, and external URIs, with XML entity decoding prior to protocol inspection).
+   - Consolidated access via `PRISM_VISUAL_ASSETS.validateSafeInlineSvgStimulus` (`lib/prism-visual-assets.js`) without altering Visual Jobs SVG-to-PNG rasterisation.
+2. **Fail-closed pre-publication gate with explicit diagnostics (`lib/learner-renderer-vnext/render-learner-page.js`):**
+   - Wired `validatePageInlineSvgStimuli(sourcePage)` into `renderLearnerPageHtml()` (the single shared chokepoint for learner preview, standalone HTML publication, and LMS export), failing closed with `html: null` and structured `unsafe_svg_stimulus` diagnostics naming the exact JSON path rather than silently dropping assessment evidence.
+3. **Defense-in-depth in `renderStimulus()` (`lib/learner-renderer-vnext/assessment-interactive.js`):**
+   - Replaced the `<script` substring check with `svgStimulusSecurity.validateSafeInlineSvgStimulus(markup)`, failing closed if `renderAssessmentItem()` is invoked directly.
+4. **Browser bundle & cache tokens:**
+   - Rebuilt `lib/learner-renderer-vnext-browser.js` (`npm run build:learner-renderer-vnext-browser`), verified sync (`npm run check:learner-renderer-vnext-browser`), loaded `lib/svg-stimulus-security.js` in `index.html`, and bumped `?v=20261126-sec-svg-stimulus` cache tokens.
+
+### Focused security & compatibility validation (`node --test`, observed 2026-11-26)
+
+| Suite / Scope | Result | Notes |
+| ------------- | ------ | ----- |
+| `tests/security-inline-svg-stimulus-sanitization.test.js` (new) | **4 / 4 pass** | Verifies rejection of 18 active/external/breakout/malformed SVG payloads (uppercase `<SCRIPT>`, `onload`/`onerror`, `<foreignObject>`, `javascript:` & entity-obfuscated URIs, external `<image href>`/`url()`, `</figure>` breakout, `<!DOCTYPE>`/XXE, `<style>`, `<animate>`, nested `<svg>`, unquoted/mismatched/unclosed tags) across direct validator, `PRISM_VISUAL_ASSETS`, `renderAssessmentItem`, and `renderLearnerPageHtml` (canonical AP, legacy `assessment_check`, and activity pages); verifies benign legacy deterministic bar-chart SVG (`lib/assessment-pack-publish.js`) still renders cleanly |
+| `tests/s105-svg-visual-asset-intake.test.js`, `tests/s93-assessment-pack-publish-integration.test.js`, `tests/qa-c06-assessment-evidence-and-artefact.test.js`, `tests/s104-assessment-pack-stage4-contract-hardening.test.js` | **37 / 37 pass** | **41 / 41 total pass**; `npm run check:learner-renderer-vnext-browser` **OK** |

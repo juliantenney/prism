@@ -403,4 +403,14 @@ The completed independent Learning Journey QA audit awarded the canonical Econom
 | Combined 8-suite advisory, toast & workload regression bundle | **66 / 66 pass** | `s104-advisory-and-toast-presentation`, `s104-lj-progressive-workload-fidelity`, `s104-final-workload-policy-and-presentation`, `s104-situated-task-workload-feasibility`, `s104-m5-workload-estimation`, `s100c-learning-journey-workload-feasibility`, `s100a-workload-feasibility-estimator`, `s76-empty-capture-persist-guard` |
 | `npm run check:learner-renderer-vnext-browser` | **OK** | Confirmed vNext browser bundles unaffected and matching source |
 
+---
+
+## M6 live Practice Step 2 (DLA) provider-role closure fix (2026-11-26)
+
+| Suite / Check | Result | Notes |
+| ------------- | ------ | ----- |
+| `tests/s104-dla-provider-role-closure.test.js` (new) | **5 / 5 pass** | Invalid teaching/explanatory with `evidence_requirement` rejected, invalid explanatory feedback discussing/interpreting evidence with `evidence_requirement` rejected, valid separated evidence + explanatory feedback accepted, valid dual-role material with clearly distinguished inspectable evidence accepted, and live Practice DLA contract wording verified |
+| Combined 5-suite DLA provider-role & P02 regression bundle | **57 / 57 pass** | `s104-dla-provider-role-closure`, `dla-candidate-evidence-provider-classification`, `s76-dla-p01-p02-p03-contract`, `s78-t-050-dla-evidence-provider-first-pass-hardening`, `s94-dla-evidence-provider-id-closure` |
+| `npm run check:learner-renderer-vnext-browser` | **OK** | Confirmed vNext browser bundles unaffected and matching source |
+
 

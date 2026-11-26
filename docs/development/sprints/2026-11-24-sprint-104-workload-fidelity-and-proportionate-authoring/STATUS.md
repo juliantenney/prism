@@ -27,6 +27,19 @@
 
 ## Work log
 
+### 2026-11-26 — M6 live Practice Step 2 (DLA) provider-role closure fix (keeping Sprint 104 OPEN)
+
+- **Root cause:** On the 30-minute M6 Practice commission (*"Review and coherently redesign a questionnaire extract"*), Step 2 (DLA) failed provider-role closure (`activities[1].required_materials[1] teaching/explanatory material cannot carry evidence_requirement unless it also supplies clearly distinguished inspectable evidence (provider-role closure)`). Tracing the live Practice DLA prompt assembly (`app.js` `assembleLiveDlaCanonicalPrompt` → `lib/ld-dla-page-enrich-contract.js` `assembleDlaCanonicalContract({ practiceProduct: true })`) showed that:
+  1. `buildDlaSectionProviders()` did not explicitly distinguish teaching/explanatory/post-attempt-feedback materials (including explanatory feedback that discusses or interprets evidence), inspectable evidence providers, and legitimate dual-role materials.
+  2. Pre-output check #4 and `DLA_P02_FINAL_SILENT_PRE_EMIT_GATE` did not verify provider-role closure before emission.
+  3. In `lib/page-dla-enrich.js` `materialLooksTeachingOnly()`, explanatory feedback / post-attempt feedback was not explicitly guarded against being misclassified as inspectable evidence merely because it discusses or interprets evidence.
+- **Bounded fix:**
+  - Strengthened `lib/ld-dla-page-enrich-contract.js` (`buildDlaSectionProviders()`, pre-output check #4, and `DLA_P02_FINAL_SILENT_PRE_EMIT_GATE`) so the Practice/Interactive DLA contract strictly distinguishes teaching/explanatory/feedback materials (must never carry `evidence_requirement` or appear in `provider_material_ids`), inspectable evidence providers, and legitimate dual-role materials (must clearly distinguish supplied inspectable evidence in `purpose`/`specification`).
+  - Refined `lib/page-dla-enrich.js` (`materialLooksTeachingOnly()` + `materialHasDistinguishedInspectableEvidence()`) without weakening validation: explanatory feedback discussing or interpreting evidence is rejected if given `evidence_requirement`, while legitimate dual-role materials with clearly distinguished inspectable evidence remain accepted.
+  - Bumped cache tokens in `index.html` for `lib/ld-dla-page-enrich-contract.js` and `lib/page-dla-enrich.js` (`?v=20261126-s104-dla-provider-role`).
+  - Added `tests/s104-dla-provider-role-closure.test.js` (`5 / 5 pass`); 5-suite DLA provider-role & P02 regression bundle `57 / 57 pass`.
+- **Workflow stage to regenerate:** Regenerate **Step 2 — Design Learning Activities (DLA)** of the 30-minute M6 Practice commission (after reloading PRISM so the updated DLA prompt is active), then continue through Steps 3–5. Step 1 (Episode Plan) does not need regeneration.
+
 ### 2026-11-26 — Authoring advisory warning & toast notification presentation refinement (keeping Sprint 104 OPEN)
 
 - **Workload advisory presentation (`app.js`, `style.css`):**

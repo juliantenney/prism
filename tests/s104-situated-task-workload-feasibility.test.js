@@ -200,12 +200,20 @@ test("2. Substantial integrated advisory judgement stays 1 workspace yet flags o
   assert.equal(res.mapped.input.reasoningDemand, "evaluation");
   assert.equal(res.mapped.input.requiresFeedbackInterpretation, true);
 
-  assert.equal(res.status, "plausibly_insufficient");
-  assert.equal(res.estimate.plausiblyInsufficient, true);
-  assert.equal(res.warnings.length, 1);
-  assert.match(res.warnings[0], /Situated Task/);
-  assert.match(res.warnings[0], /allocated 13 minutes/);
-  assert.match(res.warnings[0], /You may continue without changing the design/);
+  // S104 final policy: 13 min has indicative range 8–18 min (upper boundary 18).
+  // Substantial advisory task (~14–27 min) has rawExceedsAllocated=true (diagnostic evidence preserved)
+  // while overload warning triggers when lower bound exceeds upper indicative boundary (e.g. against 8 min).
+  assert.equal(res.estimate.rawExceedsAllocated, true);
+  assert.equal(res.estimate.plausiblyInsufficient, false);
+  assert.equal(res.warnings.length, 0);
+
+  const severeRes = stAdapter.assessSituatedTaskWorkload(page, { effectiveDurationMinutes: 8 });
+  assert.equal(severeRes.status, "plausibly_insufficient");
+  assert.equal(severeRes.estimate.plausiblyInsufficient, true);
+  assert.equal(severeRes.warnings.length, 1);
+  assert.match(severeRes.warnings[0], /Situated Task/);
+  assert.match(severeRes.warnings[0], /allocated duration of 8 minutes/);
+  assert.match(severeRes.warnings[0], /You may retain the current design/);
 
   // Same page is feasible when given a realistic envelope (e.g. 25 min)
   const feasibleRes = stAdapter.assessSituatedTaskWorkload(page, { effectiveDurationMinutes: 25 });
@@ -215,7 +223,7 @@ test("2. Substantial integrated advisory judgement stays 1 workspace yet flags o
 
 test("3. Multiple genuinely independent recording requirements scale workload distinctly", () => {
   const page = buildMultiEntrySituatedPage();
-  const shortAlloc = stAdapter.assessSituatedTaskWorkload(page, { effectiveDurationMinutes: 10 });
+  const shortAlloc = stAdapter.assessSituatedTaskWorkload(page, { effectiveDurationMinutes: 7 });
   const adequateAlloc = stAdapter.assessSituatedTaskWorkload(page, { effectiveDurationMinutes: 28 });
 
   assert.equal(shortAlloc.mapped.input.constructedResponseCount, 3);
@@ -328,8 +336,10 @@ test("6. Upstream LJ extraction recognises Situated Task advisory deliverables, 
   assert.equal(c4.mapped.input.integratedReasoningProduction, undefined);
   assert.equal(c4.mapped.input.newEvidenceCount, 1);
   assert.equal(c4.mapped.input.requiresFeedbackInterpretation, true);
-  assert.equal(c4.feasibilityStatus, "plausibly_insufficient");
-  assert.equal(c4.estimate.plausiblyInsufficient, true);
+  // S104 final policy: c4_advisory (13 min, indicative 8–18 min) preserves rawExceedsAllocated=true
+  // while marginal overload at or below upper indicative boundary 18 is suppressed.
+  assert.equal(c4.estimate.rawExceedsAllocated, true);
+  assert.equal(c4.estimate.plausiblyInsufficient, false);
 
   const brief = res.findings.find((f) => f.commissionId === "c_brief_sit");
   assert.ok(brief && brief.mapped && brief.estimate);
@@ -371,11 +381,11 @@ test("7. app.js Situated Task Stage 5 warning lifecycle: capture, restoration, r
     name: "C4 Situated Task Lifecycle",
     ldCreateOutputType: "situated_task",
     workflowOutputSpec: { pageEnrichmentV2: false, partialPageOutputs: false },
-    adjustments: { parameters: { duration_minutes: 13 } },
+    adjustments: { parameters: { duration_minutes: 8 } },
     workflowBriefResolution: {
       resolvedFactors: {
-        duration_minutes: 13,
-        commissioned_duration_minutes: 13,
+        duration_minutes: 8,
+        commissioned_duration_minutes: 8,
         duration_contract_version: "s104_m1"
       }
     },
@@ -395,8 +405,8 @@ test("7. app.js Situated Task Stage 5 warning lifecycle: capture, restoration, r
   const capOverloaded = api.validateStrictJsonWorkflowRunStepCaptureForTest(overloadedRaw, stage5, wf);
   assert.equal(capOverloaded.ok, true);
   assert.equal(capOverloaded.warnings.length, 1);
-  assert.match(capOverloaded.warnings[0], /allocated 13 minutes/);
-  assert.equal(wf.workflowBriefResolution.resolvedFactors.duration_minutes, 13);
+  assert.match(capOverloaded.warnings[0], /allocated duration of 8 minutes/);
+  assert.equal(wf.workflowBriefResolution.resolvedFactors.duration_minutes, 8);
 
   // 2. Restoration on reload/hydration restores warning
   const restored = api.revalidateSituatedTaskDesignPageCaptureAfterHydrationForTest(wf, {
@@ -404,7 +414,7 @@ test("7. app.js Situated Task Stage 5 warning lifecycle: capture, restoration, r
   });
   assert.equal(restored.ok, true);
   assert.equal(restored.warnings.length, 1);
-  assert.match(api.getWorkflowRunWorkloadFeasibilityWarningsForTest(stage5.id), /allocated 13 minutes/);
+  assert.match(api.getWorkflowRunWorkloadFeasibilityWarningsForTest(stage5.id), /allocated duration of 8 minutes/);
 
   // 3. Replacement with proportionate short task clears warning
   const replaced = api.revalidateSituatedTaskDesignPageCaptureAfterHydrationForTest(wf, {

@@ -234,10 +234,10 @@ test("maps 300–400-word philosophical argument with implausibly short allocati
     elicitations: [philosophicalElicitation()]
   });
   assert.ok(result.warnings.length >= 1);
-  assert.match(result.warnings[0], /Workload feasibility \(indicative\)/);
-  assert.match(result.warnings[0], /allocated 10 minutes/);
-  assert.match(result.warnings[0], /You may continue without changing the design/);
-  assert.match(result.warnings[0], /not a measured completion time|planning aid/);
+  assert.match(result.warnings[0], /Workload feasibility \(advisory, assessment\)/);
+  assert.match(result.warnings[0], /allocated duration of 10 minutes/);
+  assert.match(result.warnings[0], /You may retain the current design/);
+  assert.match(result.warnings[0], /approximate workload estimates/i);
 });
 
 test("maps 350–500-word evidence-based recommendation overload", () => {
@@ -251,7 +251,7 @@ test("maps 350–500-word evidence-based recommendation overload", () => {
   });
   assert.ok(result.warnings.length >= 1);
   assert.match(result.warnings[0], /Evidence-based recommendation/);
-  assert.match(result.warnings[0], /allocated 19 minutes/);
+  assert.match(result.warnings[0], /allocated duration of 19 minutes/);
 });
 
 test("short straightforward assessment response remains plausible", () => {
@@ -273,7 +273,7 @@ test("substantive feedback and revision add distinct overhead without inventing 
     elicitations: [revisionElicitation()]
   });
   assert.ok(result.warnings.length >= 1);
-  assert.match(result.warnings[0], /feedback interpretation/);
+  assert.match(result.warnings[0], /feedback|revision/i);
   assert.match(result.warnings[0], /revision/);
 });
 
@@ -348,7 +348,7 @@ test("Assessment Pack elicitation capture remains ok with advisory warnings only
   assert.equal((check.errors || []).length, 0);
   assert.ok(Array.isArray(check.warnings));
   assert.ok(check.warnings.length >= 1);
-  assert.match(check.warnings[0], /Workload feasibility \(indicative\)/);
+  assert.match(check.warnings[0], /Workload feasibility \(advisory, assessment\)/);
 });
 
 test("Assessment Design Page capture remains ok with advisory warnings only", () => {

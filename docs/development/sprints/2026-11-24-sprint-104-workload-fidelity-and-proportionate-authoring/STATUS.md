@@ -1,10 +1,10 @@
 # Sprint 104 — Status / work log
 
 **Sprint:** 104 — Workload Fidelity and Proportionate Authoring  
-**Status:** **OPEN — LIVE ACCEPTANCE IN PROGRESS (C1 `91/100` & C6 `89/100` ACCEPTED; STOPPED FOR REVIEW)** — Milestones 1–5 committed (`c461770` → `f1f1269`), `S104-D06` committed (`eebb162`); [Sprint 105 CLOSED — COMPLETE](../2026-11-25-sprint-105-learning-journey-progressive-capture-and-assembly/SPRINT-105-CLOSURE.md) (`76f44ef`)  
+**Status:** **OPEN — FINAL WORKLOAD POLICY IMPLEMENTED (STOPPED FOR REVIEW BEFORE SPRINT CLOSURE)** — Milestones 1–5 committed (`c461770` → `f1f1269`), `S104-D06` committed (`eebb162`), C4/Assessment Pack hardening committed (`fdb9cf9`), inline SVG stimulus security remediation committed (`258f709`), F01/F02 artefact-contract fixes & `S104-D07` final workload policy implemented (uncommitted pending review); [Sprint 105 CLOSED — COMPLETE](../2026-11-25-sprint-105-learning-journey-progressive-capture-and-assembly/SPRINT-105-CLOSURE.md) (`76f44ef`)  
 **Resumption baseline:** `76f44ef` (Sprint 104 M1–M5 `c461770`–`f1f1269` + Sprint 105 M1–M4 & closure `4b698db`–`76f44ef`)  
 **Primary backlog item:** [PB-FA-025](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-025--duration-fidelity-learner-workload-budgeting)  
-**Opening & decisions:** [S104-D01](decisions.md#s104-d01--open-sprint-104--workload-fidelity-and-proportionate-authoring), [S104-D02](decisions.md#s104-d02--architectural-agreement-principles-a-e-and-seven-gated-milestones), [S104-D03](decisions.md#s104-d03--milestone-2-multi-lo-compatibility-and-milestone-3-contract-reconciliation), [S104-D04](decisions.md#s104-d04--suspend-sprint-104-at-live-acceptance-pending-sprint-105), [S104-D05](decisions.md#s104-d05--resume-sprint-104-at-live-acceptance-after-sprint-105-closure), [S104-D06](decisions.md#s104-d06--focused-progressive-learning-journey-workload-fidelity-corrections-and-revised-live-acceptance-sequence)
+**Opening & decisions:** [S104-D01](decisions.md#s104-d01--open-sprint-104--workload-fidelity-and-proportionate-authoring), [S104-D02](decisions.md#s104-d02--architectural-agreement-principles-a-e-and-seven-gated-milestones), [S104-D03](decisions.md#s104-d03--milestone-2-multi-lo-compatibility-and-milestone-3-contract-reconciliation), [S104-D04](decisions.md#s104-d04--suspend-sprint-104-at-live-acceptance-pending-sprint-105), [S104-D05](decisions.md#s104-d05--resume-sprint-104-at-live-acceptance-after-sprint-105-closure), [S104-D06](decisions.md#s104-d06--focused-progressive-learning-journey-workload-fidelity-corrections-and-revised-live-acceptance-sequence), [S104-D07](decisions.md#s104-d07--final-sprint-104-workload-policy-and-presentation)
 
 | Item | State |
 | ---- | ----- |
@@ -19,12 +19,31 @@
 | S104-D04 Suspend Sprint 104 pending Sprint 105 | **Resolved** — Sprint 105 **CLOSED — COMPLETE** (`4b698db`–`76f44ef`) |
 | S104-D05 Resume Sprint 104 at live acceptance | **Accepted (2026-11-25)** — canonical parent: fresh 90-min Economics LJ; C1 accepted (`91/100`); scope discipline reaffirmed |
 | S104-D06 Progressive LJ workload-fidelity corrections & revised live acceptance sequence | **Committed (`eebb162`)** — Stage 1–4 prompt restoration, Stage 4 advisory warnings & lifecycle hygiene (`48 / 48 pass`) |
-| Milestone 6 — Live 5-, 15- and 30-minute Practice sensitivity probes (via disposable 50-min Probe LJ) | **Queued after M7 completion (probe brief to be reviewed separately)** |
-| Milestone 7 — Economics C6/C2 diagnostic pair → remaining Economics components, workload assessment, baseline comparison, QA & unified learner-runtime acceptance | **In progress** — parent LJ & C1 (`91/100`) preserved; **C6 accepted at `89/100` (uncapped `88.51`, release ready with minor revisions; 0 Critical/Major/Moderate defects)** |
+| S104-D07 Final workload policy and presentation | **Implemented (pending review before sprint closure)** — shared indicative duration helper, learner-facing timing hierarchy, prompt alignment, upper-indicative-boundary warning threshold & actionable locked-duration-aware warnings (`144 / 144 pass`) |
+| Milestone 6 — Live 5-, 15- and 30-minute Practice sensitivity probes (via disposable 50-min Probe LJ) | **Queued (updated per S104-D07: verify meaningful scope, activity design & workload proportionality, not exact completion times)** |
+| Milestone 7 — Economics C6/C2 diagnostic pair → remaining Economics components, workload assessment, baseline comparison, QA & unified learner-runtime acceptance | **In progress** — parent LJ & C1 (`91/100`) preserved; **C6 accepted at `89/100`**; **C4 Situated Task live acceptance PASS**; **C7 Assessment Pack accepted at `96/100` (Excellent; 0 Critical/Major/Moderate defects)** |
 
 ---
 
 ## Work log
+
+### 2026-11-26 — Final Sprint 104 workload policy and presentation (`S104-D07` — uncommitted, stopped for review)
+
+- Implemented the final Sprint 104 workload policy (*precision internally, flexibility externally*) per [S104-D07](decisions.md#s104-d07--final-sprint-104-workload-policy-and-presentation):
+  - **Shared indicative duration helper (`lib/indicative-duration.js`):** Single UMD helper (`PrismIndicativeDuration`) matching all benchmark ranges (`5 → Around 5 minutes`, `10 → 5–15 minutes`, `15 → 10–20 minutes`, `20 → 15–25 minutes`, `30 → 20–40 minutes`, `45 → 35–55 minutes`, `90 → 75–105 minutes`), monotonic across short/fractional/extended durations, computing aggregate ranges from exact total allocated duration without cumulative tolerance inflation.
+  - **Learner-facing timing presentation (`lib/learner-renderer-vnext/render-page.js`, `render-activity.js`, `build-activity-model.js`, `lib/learning-journey-unified-shell.js`, `app.js`, rebuilt `lib/learner-renderer-vnext-browser.js`, `index.html`):** Indicative ranges rendered at Journey overview (with single journey-level explanatory wording), component listing (TOC), and component opening (standalone resources include the explanatory wording once); routine activity-level time badges suppressed while preserving exact `durationMinutes` internally and keeping explicitly timed tasks (`explicit_time_limit` / `fixed_timing`) and assessment time limits intact.
+  - **Prompt alignment (`lib/learning-journey-sibling-prompts.js`, `lib/expository-sibling-prompts.js`, `lib/first-class-workflow-family.js`, `lib/practice-episode-plan.js`, `lib/ld-practice-presentation-contracts.js`, `lib/situated-task-design-page.js`):** Future authoring prompts distinguish internal allocations from learner-facing indicative timing guidance and forbid fixed-pace expectations or routine activity-/step-level timing prose.
+  - **Advisory workload warning threshold & actionable guidance (`lib/workload-feasibility-estimator.js`, all four workload feasibility adapters, `app.js`):** Warn only when `credibleLowerWorkload > upperIndicativeBoundary`, retaining full diagnostic evidence (`indicativeEffortMinutes`, `indicativeDuration`, `upperIndicativeBoundaryMinutes`, `rawExceedsAllocated`, `demandDrivers`, `factors`, `components`) even when suppressed; shared `formatActionableWorkloadWarning` delivers factor-grounded current-stage vs upstream options, locked-duration awareness (`durationLocked: true`), and clear advisory framing.
+  - **Regression & acceptance:** Added `tests/s104-final-workload-policy-and-presentation.test.js` (`6 / 6 pass`) and verified **`144 / 144 pass`** across 15 workload/renderer/unified-shell/S104 suites + `npm run check:learner-renderer-vnext-browser` **OK**. Economics Learning Journey and historical baselines preserved untouched. Stopped for review before sprint closure.
+
+### 2026-11-26 — Inline SVG security remediation approved (`258f709`) & C7 Assessment Pack accepted (`96 / 100`)
+
+- **Security remediation approved (`258f709`, separate from `fdb9cf9`):** Parser-based inline SVG stimulus allowlist (`lib/svg-stimulus-security.js`), fail-closed `renderLearnerPageHtml` pre-publication gate, and `renderStimulus()` defense-in-depth approved with separate commits and validation evidence (`41 / 41 pass`) retained; no further SVG development in Sprint 104.
+- **C7 Assessment Pack live acceptance & independent Assessment Pack QA v1.3 (`96 / 100` — Excellent):**
+  - Regenerated from Stage 2 onward, assembled, published, and independently assessed: **0 Critical, 0 Major, 0 Moderate confirmed defects**; two minor educational limitations (referential clarity of the four assessment expectations; limited qualitative differentiation in immediate self-review).
+  - Both scatterplots and accompanying data tables present; both correlation coefficients independently verified; single integrated `E7` constructed performance educationally appropriate; learner artefact contribution `comm_7.E7` correctly specified; inherited **`17-minute`** duration preserved.
+  - Credible workload concern noted by QA does not establish infeasibility and is recorded in [VALIDATION.md](VALIDATION.md) strictly as an **assurance observation** rather than a confirmed defect.
+  - **Disposition:** Accepted; do not regenerate C7. Integrated learner runtime, Learning Journal handoff, persistence, and companion feedback continuity (`comm_8`) remain to be verified during whole-journey acceptance.
 
 ### 2026-11-26 — Live Practice fixes & corrected C6 publication QA acceptance (`89 / 100`)
 

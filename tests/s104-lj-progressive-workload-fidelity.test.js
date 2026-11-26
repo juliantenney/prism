@@ -390,8 +390,8 @@ test("2. Stage 4 surfaces non-blocking workload warnings before Stage 5 and matc
 
   const s4WarnText = String(api.getWorkflowRunWorkloadFeasibilityWarningsForTest("s4") || "");
   assert.ok(s4WarnText.length > 0, "Stage 4 must surface workload feasibility warnings immediately on capture");
-  assert.match(s4WarnText, /Workload feasibility \(indicative, commission\): Evaluating competing economic explanations is allocated 8 minutes/i);
-  assert.match(s4WarnText, /Workload feasibility \(indicative, journey\)/i);
+  assert.match(s4WarnText, /Workload feasibility \(advisory, commission\): Evaluating competing economic explanations has an allocated duration of 8 minutes/i);
+  assert.match(s4WarnText, /Workload feasibility \(advisory, journey\)/i);
   assert.match(lis[3].statusEl.textContent, /\(with warnings\)/i);
   assert.ok(lis[3].getWorkloadNote(), "Stage 4 UI must render advisory warning banner");
   assert.equal(lis[3].getWorkloadNote().hidden, false);
@@ -408,7 +408,7 @@ test("2. Stage 4 surfaces non-blocking workload warnings before Stage 5 and matc
     "Stage 5 assembled Design Page warnings must stay consistent with Stage 4 without drift or duplication"
   );
   // Ensure no duplicate commission warning line inside Stage 4 or Stage 5
-  const s4Matches = s4WarnText.match(/Workload feasibility \(indicative, commission\):/g) || [];
+  const s4Matches = s4WarnText.match(/Workload feasibility \(advisory, commission\):/g) || [];
   assert.equal(s4Matches.length, 1);
 });
 
@@ -482,13 +482,10 @@ test("3. Real Economics Stage 4 fixture surfaces C2, C5, and C8 advisory warning
     }
   );
   assert.equal(gate.ok, true, "Economics Stage 4 must remain accepted (warnings advisory only)");
-  assert.equal(gate.warnings.length, 4, "Expected 3 commission warnings (C2, C5, C8) + 1 journey warning");
-  const joined = gate.warnings.join("\n");
-  assert.match(joined, /Interpreting contrasting statistical relationships is allocated 10 minutes/);
-  assert.match(joined, /Constructing alternative explanations for advertising and sales is allocated 8 minutes/);
-  assert.match(joined, /Reconsidering the advertising and sales relationship is allocated 8 minutes/);
-  assert.doesNotMatch(joined, /Distinguishing association from causation is allocated/);
-  assert.doesNotMatch(joined, /Retrieving the foundations of causal reasoning is allocated/);
+  // S104 final workload policy: C2 (11–24 vs 10 min / upper 15), C5 (9–21 vs 8 min / upper 12),
+  // and C8 (10–23 vs 8 min / upper 12) sit at or below their shared upper indicative boundary,
+  // so marginal overload warnings are appropriately suppressed while underlying estimates remain preserved.
+  assert.equal(gate.warnings.length, 0, "Marginal overloads within shared indicative tolerance are suppressed");
 });
 
 test("4. Warning lifecycle stays accurate across Stage 4 edits, invalid/empty paste, upstream invalidation, reload, and clear-run", async () => {
@@ -595,23 +592,23 @@ test("4. Warning lifecycle stays accurate across Stage 4 edits, invalid/empty pa
   const reallocatedHeavy = makeStages({ totalMinutes: 40, c1Mins: 10, c2Mins: 30 });
   syncStep(2, reallocatedHeavy.stage3);
   syncStep(3, makeStages({ totalMinutes: 40, c1Mins: 32, c2Mins: 8 }).stage4);
-  assert.match(api.getWorkflowRunWorkloadFeasibilityWarningsForTest("s4"), /allocated 8 minutes/);
+  assert.match(api.getWorkflowRunWorkloadFeasibilityWarningsForTest("s4"), /allocated duration of 8 minutes/);
   syncStep(3, reallocatedHeavy.stage4);
   assert.match(
     api.getWorkflowRunWorkloadFeasibilityWarningsForTest("s4"),
-    /allocated 30 minutes/,
+    /allocated duration of 30 minutes/,
     "Increasing comm_2 from 8 to 30 min in Stage 4 must use the new 30-min allocation, not stale deliverySeed 8 min"
   );
-  // (2) Moderate constructed-response + evaluation comm_2 (~10-22 min) warns at 8 min and clears cleanly when reallocated to 20 min.
+  // (2) Moderate constructed-response + evaluation comm_2 (~10-22 min) warns at 5 min (upper boundary 7) and clears cleanly when reallocated to 20 min.
   const moderateSpec =
     "Revisiting the familiar dataset from comm_1, learners construct two distinct alternative causal explanations in a written response, evaluate which assumption each depends on, and inspect criterion-referenced feedback.\n<<<COMPONENT_LEARNING_OUTCOMES_BEGIN>>>\n{\"learning_outcomes\":[{\"statement\":\"Evaluate competing economic explanations using unfamiliar data.\",\"related_concepts\":[\"Causal inference\"],\"cognitive_level\":\"evaluate\"}]}\n<<<COMPONENT_LEARNING_OUTCOMES_END>>>";
-  syncStep(3, makeStages({ totalMinutes: 40, c1Mins: 32, c2Mins: 8, c2Spec: moderateSpec }).stage4);
-  assert.match(api.getWorkflowRunWorkloadFeasibilityWarningsForTest("s4"), /allocated 8 minutes/);
+  syncStep(3, makeStages({ totalMinutes: 40, c1Mins: 35, c2Mins: 5, c2Spec: moderateSpec }).stage4);
+  assert.match(api.getWorkflowRunWorkloadFeasibilityWarningsForTest("s4"), /allocated duration of 5 minutes/);
   syncStep(3, makeStages({ totalMinutes: 40, c1Mins: 20, c2Mins: 20, c2Spec: moderateSpec }).stage4);
   assert.equal(
     api.getWorkflowRunWorkloadFeasibilityWarningsForTest("s4"),
     "",
-    "Reallocating moderate comm_2 from 8 to 20 min must clear the Stage 4 warning cleanly"
+    "Reallocating moderate comm_2 from 5 to 20 min must clear the Stage 4 warning cleanly"
   );
 
   // (c) Re-paste tight Stage 4, then paste invalid JSON -> must clear warning (no stale warning alongside error)

@@ -151,10 +151,10 @@ test("detects implausibly short allocation for writing activity", () => {
   };
   const result = adapter.assessInteractivePageWorkload(page, null);
   assert.ok(result.warnings.length >= 1);
-  assert.match(result.warnings[0], /Workload feasibility \(indicative\)/);
-  assert.match(result.warnings[0], /allocated 10 minutes/);
-  assert.match(result.warnings[0], /You may continue without changing the design/);
-  assert.match(result.warnings[0], /not a measured completion time/);
+  assert.match(result.warnings[0], /Workload feasibility \(advisory\)/);
+  assert.match(result.warnings[0], /allocated duration of 10 minutes/);
+  assert.match(result.warnings[0], /You may retain the current design/);
+  assert.match(result.warnings[0], /approximate workload estimates/i);
 });
 
 test("avoids false positives for short simple MCQ activities", () => {
@@ -263,7 +263,7 @@ test("Learning Sequence validation remains ok while returning advisory warnings"
   assert.equal((check.errors || []).length, 0);
   assert.ok(Array.isArray(check.warnings));
   assert.ok(check.warnings.length >= 1);
-  assert.match(check.warnings[0], /Workload feasibility \(indicative\)/);
+  assert.match(check.warnings[0], /Workload feasibility \(advisory\)/);
 });
 
 test("Learning Sequence arithmetic validation still blocks mismatched totals", () => {

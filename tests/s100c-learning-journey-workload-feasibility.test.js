@@ -186,11 +186,11 @@ test("commission with demanding constructed writing and short allocation warns",
   assert.ok(result.warnings.some((w) => /commission/i.test(w)));
   assert.match(
     result.warnings.find((w) => /commission/i.test(w)),
-    /allocated 10 minutes/
+    /allocated duration of 10 minutes/
   );
   assert.match(
     result.warnings.find((w) => /commission/i.test(w)),
-    /You may continue without changing the design/
+    /You may retain the current design/
   );
 });
 
@@ -270,7 +270,7 @@ test("journey with multiple independently evidenced workload concerns", () => {
   assert.ok(result.journey.overloadedCount >= 2);
   const commissionWarnings = result.warnings.filter((w) => /commission/i.test(w));
   assert.ok(commissionWarnings.length >= 2);
-  assert.ok(result.warnings.some((w) => /journey/i.test(w)));
+  assert.ok(result.warnings.some((w) => /Workload feasibility \(advisory, journey\)/i.test(w)));
 });
 
 test("overlapping commission scopes are not safely aggregated into a predicted total", () => {

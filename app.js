@@ -6094,10 +6094,11 @@
   }
 
   /**
-   * When a Learning Journey Journal (or equivalent) requires constructed-text
-   * artefacts, instruct the owning learner-facing stage to declare them.
+   * When a Learning Journey Journal or explicit downstream artefact_references
+   * requires constructed-text artefacts, instruct the owning learner-facing stage to declare them.
    * Interactive / Practice → DLA response_fulfilment binding.
    * Expository → Design Page learner_artefacts.produces[] (shared contract; not activities).
+   * Situated Task → Design Page situated_learning.record.entries[].artefact binding.
    * Empty when not required or product cannot host the declaration.
    */
   function composeCommissionedLearnerArtefactProducerInstruction(wf) {
@@ -6121,7 +6122,12 @@
       (typeof isExpositoryResourceWorkflow === "function" && isExpositoryResourceWorkflow(wf)) ||
       route === "expository" ||
       product === "expository";
-    if (!isInteractive && !isPractice && !isExpository) return "";
+    var isSituatedTask =
+      (typeof isSituatedTaskWorkflow === "function" && isSituatedTaskWorkflow(wf)) ||
+      (typeof workflowRecordIsSituatedTask === "function" && workflowRecordIsSituatedTask(wf)) ||
+      route === "situated_task" ||
+      product === "situated_task";
+    if (!isInteractive && !isPractice && !isExpository && !isSituatedTask) return "";
     var lines = [
       "SHARED LEARNER ARTEFACT PRODUCER REQUIREMENT (authoritative)",
       "",
@@ -6136,6 +6142,17 @@
         "- Do not bury response_id / producer / stable_identifier metadata inside exposition material bodies.",
         "- The surface must collect authentic learner wording; do not summarise, invent, or auto-improve the contribution.",
         "- Do not invent additional artefact ids. Omit learner_artefacts when no contribution is required.",
+        "",
+        "Required producers:"
+      );
+    } else if (isSituatedTask) {
+      lines.push(
+        "For EACH required elicitation_id below, bind the corresponding situated_learning.record.entries[] item on the Design Page:",
+        '- Add artefact: { elicitation_id: \"<exact id>\", response_kind: \"constructed_text\" } (with optional label/prompt) onto the matching situated_learning.record.entries[] entry.',
+        "- Preserve elicitation_id EXACTLY as listed (spelling and case).",
+        "- Keep situated_learning.record.entries[].entry_id stable and learner-meaningful; do NOT invent Interactive activities[] or persistence fields.",
+        "- The record entry must collect authentic learner wording; do not summarise, invent, or auto-improve the contribution.",
+        "- Do not invent additional artefact ids. Omit artefact on ordinary process notes that are not declared shared artefacts.",
         "",
         "Required producers:"
       );
@@ -6448,23 +6465,30 @@
     var blocks = [];
     if (wp4 || wp5) blocks.push(composeCommissionedContextHonourInstruction(wf));
     if (wp5) blocks.push(composeCommissionedLearnerFacingBringForwardInstruction(wf));
-    // Expository Design Page: inject shared artefact producer requirement when commissioned.
+    // Expository & Situated Task Design Page: inject shared artefact producer requirement when commissioned.
     var stepCid = String((step && (step.canonical_step_id || step.canonicalStepId)) || "")
       .trim()
       .toLowerCase();
     var stepTitle = String((step && step.title) || "")
       .trim()
       .toLowerCase();
+    var isDesignPageProducerHost =
+      (typeof isExpositoryResourceWorkflow === "function" && isExpositoryResourceWorkflow(wf)) ||
+      String((wf && wf.product) || "")
+        .trim()
+        .toLowerCase() === "expository" ||
+      (typeof isSituatedTaskWorkflow === "function" && isSituatedTaskWorkflow(wf)) ||
+      (typeof workflowRecordIsSituatedTask === "function" && workflowRecordIsSituatedTask(wf)) ||
+      String((wf && wf.product) || "")
+        .trim()
+        .toLowerCase() === "situated_task";
     if (
       wp5 &&
       (stepCid === "step_design_page" || stepTitle === "design page") &&
-      ((typeof isExpositoryResourceWorkflow === "function" && isExpositoryResourceWorkflow(wf)) ||
-        String((wf && wf.product) || "")
-          .trim()
-          .toLowerCase() === "expository")
+      isDesignPageProducerHost
     ) {
-      var expoArtefactInstruction = composeCommissionedLearnerArtefactProducerInstruction(wf);
-      if (expoArtefactInstruction) blocks.push(expoArtefactInstruction);
+      var dpArtefactInstruction = composeCommissionedLearnerArtefactProducerInstruction(wf);
+      if (dpArtefactInstruction) blocks.push(dpArtefactInstruction);
     }
     Array.prototype.push.apply(blocks, composeCommissionNativePlanningBlocks(wf, step));
     if (opts.originalBriefTokenPresent) {
@@ -7231,7 +7255,9 @@
         stage1: upstream.learning_requirements,
         stage3: upstream.learning_elements,
         briefProvidedSourceContext: briefSource,
-        parentAuthoritativeMinutes: parentMinutes
+        parentAuthoritativeMinutes: parentMinutes,
+        requireArtefactReferences:
+          opts.fromHydration !== true && isLearningJourneyArtefactReferencesContractRequired(wf)
       });
       if (gate && gate.ok) {
         var sharedLibS4 = resolveLearningJourneySharedSourceLib();
@@ -7440,7 +7466,8 @@
       }
       var check = parseAndValidateProgressiveLearningJourneyStageCapture(raw, st, wf, {
         captures: opts.captures,
-        capturesRaw: opts.capturesRaw
+        capturesRaw: opts.capturesRaw,
+        fromHydration: true
       });
       if (!check.ok) {
         state.workflowRunLjStageValidation[sid] = String(
@@ -7975,6 +8002,50 @@
     }
     var envMins = resolveLearningJourneyLearningTimeEnvelopeMinutes(workflow);
     return envMins != null && Number.isFinite(envMins) && envMins > 0 ? Math.round(envMins) : null;
+  }
+
+  function isLearningJourneyArtefactReferencesContractRequired(wf) {
+    var workflow = null;
+    if (typeof wf === "string") {
+      var id = String(wf || "").trim();
+      if (id && Array.isArray(state.workflows)) {
+        workflow =
+          state.workflows.find(function (row) {
+            return row && String(row.id || "") === id;
+          }) || null;
+      }
+    } else if (wf && typeof wf === "object") {
+      workflow = wf;
+    }
+    if (!workflow) return false;
+    var brief =
+      workflow.workflowBriefResolution && typeof workflow.workflowBriefResolution === "object"
+        ? workflow.workflowBriefResolution
+        : null;
+    var seed =
+      (workflow.deliverySeed && typeof workflow.deliverySeed === "object"
+        ? workflow.deliverySeed
+        : null) ||
+      (brief && brief.resolvedFactors && typeof brief.resolvedFactors === "object"
+        ? brief.resolvedFactors
+        : null);
+    var initial =
+      (brief && brief.initialBrief && typeof brief.initialBrief === "object"
+        ? brief.initialBrief
+        : null) ||
+      (workflow.initialBrief && typeof workflow.initialBrief === "object"
+        ? workflow.initialBrief
+        : null);
+    var ver = String(
+      (seed &&
+        (seed.artefact_references_contract_version || seed.artefactReferencesContractVersion)) ||
+        (initial &&
+          (initial.artefactReferencesContractVersion ||
+            initial.artefact_references_contract_version)) ||
+        workflow.artefact_references_contract_version ||
+        ""
+    ).trim();
+    return !!ver;
   }
 
   function isLearningJourneyDurationContractRequired(wf, parsedPage) {
@@ -15644,6 +15715,11 @@
       if (optionsOrWf.requireAuthoritativeDuration === true) {
         opts.requireAuthoritativeDuration = true;
       }
+      if (optionsOrWf.durationLocked === true) {
+        opts.durationLocked = true;
+      } else if (typeof hasAuthoritativeCommissionedDuration === "function" && hasAuthoritativeCommissionedDuration(optionsOrWf)) {
+        opts.durationLocked = true;
+      }
     }
     var rows = [];
     try {
@@ -15682,6 +15758,11 @@
       if (optionsOrWf.requireAuthoritativeDuration === true) {
         opts.requireAuthoritativeDuration = true;
       }
+      if (optionsOrWf.durationLocked === true) {
+        opts.durationLocked = true;
+      } else if (typeof hasAuthoritativeCommissionedDuration === "function" && hasAuthoritativeCommissionedDuration(optionsOrWf)) {
+        opts.durationLocked = true;
+      }
     }
     var rows = [];
     try {
@@ -15717,6 +15798,11 @@
       } else {
         var wfDur = resolveEffectiveWorkflowDurationMinutes(optionsOrWf);
         if (wfDur != null) opts.effectiveDurationMinutes = wfDur;
+      }
+      if (optionsOrWf.durationLocked === true) {
+        opts.durationLocked = true;
+      } else if (typeof hasAuthoritativeCommissionedDuration === "function" && hasAuthoritativeCommissionedDuration(optionsOrWf)) {
+        opts.durationLocked = true;
       }
     }
     var rows = [];
@@ -16193,7 +16279,10 @@
       if (workflowRecordIsSituatedTask(workflow) || isSituatedTaskWorkflow(workflow)) {
         var stDesignMod = resolveSituatedTaskDesignPageLib();
         if (stDesignMod && typeof stDesignMod.validateSituatedTaskDesignPage === "function") {
-          return stDesignMod.validateSituatedTaskDesignPage(parsed);
+          var stCtxEarly = readWorkflowCommissionContext(workflow);
+          return stDesignMod.validateSituatedTaskDesignPage(parsed, {
+            requiredLearnerArtefacts: stCtxEarly.requiredLearnerArtefacts || []
+          });
         }
         return { ok: false, errors: ["situated_task_design_page_module_unavailable"] };
       }
@@ -17404,7 +17493,10 @@
     if (workflowRecordIsSituatedTask(workflow) || isSituatedTaskWorkflow(workflow)) {
       var stMod = resolveSituatedTaskDesignPageLib();
       if (stMod && typeof stMod.validateSituatedTaskDesignPage === "function") {
-        var stGate = stMod.validateSituatedTaskDesignPage(parsed);
+        var stCtx = readWorkflowCommissionContext(workflow);
+        var stGate = stMod.validateSituatedTaskDesignPage(parsed, {
+          requiredLearnerArtefacts: stCtx.requiredLearnerArtefacts || []
+        });
         if (stGate && stGate.ok) {
           var stWarnings = [];
           appendSituatedTaskWorkloadFeasibilityWarnings(parsed, stWarnings, workflow);
@@ -30489,7 +30581,10 @@
         topic: String(focus || "").trim(),
         learningTime: learningTime,
         duration: duration,
-        durationContractVersion: String(deliverySeed.duration_contract_version || "").trim()
+        durationContractVersion: String(deliverySeed.duration_contract_version || "").trim(),
+        artefactReferencesContractVersion: String(
+          deliverySeed.artefact_references_contract_version || ""
+        ).trim()
       }),
       askedFactors: [],
       inferredFactors: {},
@@ -58653,6 +58748,7 @@
       ".util-learning-header__title{margin-block:0 var(--learner-space-1);font-size:var(--learner-text-title);line-height:var(--learner-leading-tight);font-weight:700;letter-spacing:-.015em;color:#0f172a;text-align:center}" +
       ".util-learning-header__subtitle{margin-block:0;margin-inline:auto;max-width:min(100%,58ch);font-size:var(--learner-text-sm);line-height:1.45;color:#475569;text-align:left;white-space:normal}" +
       ".util-learning-header__duration{color:#64748b;white-space:nowrap}" +
+      ".util-learning-header__timing-note,.util-page-duration-note{margin:.35rem auto 0;max-width:min(100%,58ch);font-size:.8125rem;line-height:1.45;color:#64748b;text-align:left}" +
       ".util-journey-nav{--journey-accent:#16a34a;position:sticky;top:0;z-index:50;margin-bottom:var(--learner-space-4);padding-block:.75rem .85rem;background:rgba(255,255,255,.97);backdrop-filter:blur(8px)}" +
       ".util-journey-nav--sequential{width:100%;max-width:none;margin-inline:0;padding-inline:var(--learner-page-gutter);box-sizing:border-box;overflow:visible}" +
       ".util-journey-sequential{--journey-all-btn-gap:.65rem;position:relative;width:100%;max-width:var(--learner-reading-width);margin-inline:auto;display:grid;gap:.55rem;padding-bottom:.45rem;border-bottom:1px solid #e2e8f0;overflow:visible}" +
@@ -59192,9 +59288,29 @@
     return String(minutes) + (minutes === 1 ? " min." : " mins.");
   }
 
+  function resolveIndicativeDurationLib() {
+    if (typeof window !== "undefined" && window.PrismIndicativeDuration) {
+      return window.PrismIndicativeDuration;
+    }
+    if (typeof globalThis !== "undefined" && globalThis.PrismIndicativeDuration) {
+      return globalThis.PrismIndicativeDuration;
+    }
+    if (typeof require === "function") {
+      try {
+        return require("./lib/indicative-duration.js");
+      } catch (_err) {}
+    }
+    return null;
+  }
+
   function utilityFormatLearningHeaderDurationFromMinutes(minutes) {
     var value = Number(minutes);
     if (!Number.isFinite(value) || value <= 0) return "";
+    var lib = resolveIndicativeDurationLib();
+    if (lib && typeof lib.formatIndicativeDuration === "function") {
+      var label = lib.formatIndicativeDuration(value);
+      if (label) return label;
+    }
     var normalized = Math.round(value * 1e6) / 1e6;
     return utilityFormatLearningHeaderDuration(String(normalized) + " min");
   }
@@ -59289,6 +59405,17 @@
           );
         }
         parts.push("</p>");
+      }
+      if (duration && opts.suppressTimingNote !== true) {
+        var indLib = resolveIndicativeDurationLib();
+        var timingNote =
+          (indLib && indLib.LEARNER_TIMING_GUIDANCE_NOTE) ||
+          "The suggested timings are a guide to help you plan your learning. You may need more or less time depending on your prior knowledge and how you approach the activities. Work at a pace that suits you.";
+        parts.push(
+          '<p class="util-learning-header__timing-note" data-timing-guidance-note="true">' +
+            utilityEscapeHtml(timingNote) +
+            "</p>"
+        );
       }
       parts.push("</div></header>");
     }
@@ -64544,10 +64671,22 @@
     if (!rows.length) {
       return "An explicit Learning Journey artefact relationship could not be resolved.";
     }
-    return rows
+    var blocking = rows.filter(function (gap) {
+      return !!(gap && gap.blocking === true);
+    });
+    var active = blocking.length ? blocking : rows;
+    return active
       .map(function (gap) {
-        var id = gap && gap.commissionId ? String(gap.commissionId) + ": " : "";
-        return id + String((gap && gap.message) || gap.code || "Unresolved artefact relationship.");
+        if (!gap || typeof gap !== "object") return "Unresolved artefact relationship.";
+        var parts = [];
+        if (gap.entryId) parts.push("Journal " + String(gap.entryId));
+        if (gap.producerCommissionId && gap.consumerCommissionId) {
+          parts.push(String(gap.producerCommissionId) + " -> " + String(gap.consumerCommissionId));
+        } else if (gap.commissionId) {
+          parts.push(String(gap.commissionId));
+        }
+        var prefix = parts.length ? "[" + parts.join(" | ") + "] " : "";
+        return prefix + String(gap.message || gap.code || "Unresolved artefact relationship.");
       })
       .join(" ");
   }
@@ -66522,6 +66661,7 @@
       return chain.then(function (constituents) {
         var artefactContract = opts.artefactContract || null;
         var proposal = null;
+        var unresolvedBypassForDiagnosticOnly = false;
         if (
           !artefactContract &&
           rendererApi &&
@@ -66533,29 +66673,46 @@
             producerCommissionId: opts.producerCommissionId,
             consumerCommissionId: opts.consumerCommissionId
           });
-          if (proposal && proposal.ok) {
+          var hasBlockingProposalGaps = !!(
+            proposal &&
+            Array.isArray(proposal.blockingGaps) &&
+            proposal.blockingGaps.length > 0
+          );
+          if (proposal && proposal.ok && !hasBlockingProposalGaps) {
             artefactContract = proposal.contract;
           } else if (
             proposal &&
-            Array.isArray(proposal.pairs) &&
-            proposal.pairs.length &&
-            opts.allowUnresolvedArtefactContract !== true
+            (hasBlockingProposalGaps ||
+              (Array.isArray(proposal.pairs) && proposal.pairs.length))
           ) {
-            // Explicit dependency pairs were found but could not be resolved into a contract.
-            showToast(formatUnifiedShellArtefactProposalGaps(proposal.gaps), "error");
-            return {
-              ok: false,
-              code: "artefact_contract_unresolved",
-              artefactProposal: proposal,
-              constituents: constituents.map(function (row) {
-                return {
-                  commissionId: row.commissionId,
-                  title: row.title,
-                  productId: row.productId,
-                  hasSourcePage: !!row.sourcePage
-                };
-              })
-            };
+            // Safeguard 5: diagnostic inspection override may NEVER permit ordinary
+            // learner-facing publication or ZIP download of an unresolved contract.
+            var canDiagnosticBypass =
+              opts.allowUnresolvedArtefactContract === true &&
+              opts.diagnosticInspectionOnly === true &&
+              opts.skipDownload === true &&
+              opts.download !== true;
+            if (!canDiagnosticBypass) {
+              var diagGaps = hasBlockingProposalGaps ? proposal.blockingGaps : proposal.gaps;
+              showToast(formatUnifiedShellArtefactProposalGaps(diagGaps), "error");
+              return {
+                ok: false,
+                code: "artefact_contract_unresolved",
+                artefactProposal: proposal,
+                blockingGaps: proposal.blockingGaps || [],
+                conflicts: proposal.conflicts || [],
+                constituents: constituents.map(function (row) {
+                  return {
+                    commissionId: row.commissionId,
+                    title: row.title,
+                    productId: row.productId,
+                    hasSourcePage: !!row.sourcePage
+                  };
+                })
+              };
+            }
+            unresolvedBypassForDiagnosticOnly = true;
+            artefactContract = proposal.contract || { produces: [], references: [] };
           }
         }
 
@@ -66671,7 +66828,9 @@
               };
             }
 
-            var shouldDownload = opts.download === true || opts.skipDownload !== true;
+            var shouldDownload =
+              !unresolvedBypassForDiagnosticOnly &&
+              (opts.download === true || opts.skipDownload !== true);
             if (shouldDownload) {
               if (Array.isArray(state.utilitiesDownloadTestLog)) {
                 state.utilitiesDownloadTestLog.push("lj-unified-shell-zip");

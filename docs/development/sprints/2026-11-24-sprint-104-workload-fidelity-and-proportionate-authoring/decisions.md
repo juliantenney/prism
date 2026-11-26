@@ -188,5 +188,39 @@ Re-evaluation of Sprint 104 live acceptance identified that Sprint 105 M2 prompt
    4. Conduct **Milestone 6** through the proposed disposable **50-minute Learning Journey** containing three comparable Practice commissions at **5, 15, and 30 minutes** (probe brief to be reviewed separately so duration, rather than progression or prior familiarity, is the principal variable).
 4. **Scope guardrails reaffirmed:** Do **not** undertake further estimator tuning or unrelated component-type improvements. Stop for review once the two corrections, regression tests, and Sprint 104 documentation updates are complete.
 
+---
+
+## S104-D07 — Final Sprint 104 Workload Policy and Presentation
+
+**Date:** 2026-11-26  
+**Status:** **Accepted — implemented (stopped for review before sprint closure / commit)**  
+**Governing principle:** *Precision internally, flexibility externally.* **Time helps learners decide when to engage; it should not dictate how they engage.**
+
+**Context:**  
+Following live authoring and educational QA of the Economics Learning Journey (`86 / 100`, Ready with qualifications; C1 `91/100`, C6 `89/100`, C4 PASS, C7 `96/100`), workload estimation refinement reached diminishing returns. This final policy makes the existing capability educationally appropriate, useful to authors, and supportive of learners.
+
+**Decision (Final S104 Workload Policy):**
+
+1. **Three distinct duration concepts:**
+   - **Allocated duration:** exact internal design and commissioning constraint (all existing numeric duration contracts, locking, transport, arithmetic, and structural validation preserved unchanged).
+   - **Indicative duration range:** flexible learner-facing planning guidance computed deterministically by a single shared helper (`lib/indicative-duration.js`).
+   - **Estimated workload range:** author-facing advisory assessment of the demands of the generated design.
+2. **Shared indicative duration convention (`lib/indicative-duration.js`):**
+   - `5 → Around 5 minutes` (internal upper tolerance boundary `7`), `10 → 5–15 minutes`, `15 → 10–20 minutes`, `20 → 15–25 minutes`, `30 → 20–40 minutes`, `45 → 35–55 minutes`, `90 → 75–105 minutes`, with monotonic handling for short, fractional, and extended durations.
+   - Aggregate indicative ranges (e.g. Learning Journey overview) are calculated strictly from total exact allocated duration — never by summing individual component ranges.
+3. **Learner-facing timing presentation:**
+   - Displayed at Learning Journey overview (indicative total + explanatory note once), component listing (indicative component duration), and component opening (indicative component duration; standalone resources include the explanatory note once at resource level).
+   - Routine activity-level, episode-level, and step-level timings are **suppressed** in learner-facing output while remaining intact in structured data and authoring; explicitly timed tasks (`explicit_time_limit` / `fixed_timing`) and explicit assessment time limits remain preserved.
+   - Standard explanatory wording: *"The suggested timings are a guide to help you plan your learning. You may need more or less time depending on your prior knowledge and how you approach the activities. Work at a pace that suits you."*
+4. **Authoring prompt alignment:** Future prompts across Learning Journey, Expository, Practice, Assessment Pack, and Situated Task distinguish precise internal allocations from learner-facing indicative timing guidance and avoid fixed-pace framing or routine activity-/step-level timing prose. Accepted resources do not require regeneration solely to adopt this policy.
+5. **Advisory workload warning threshold & actionable guidance:**
+   - Warn across all four workload feasibility adapters (`learning-journey`, `interactive`, `assessment-pack`, `situated-task`) **only when the credible lower workload estimate exceeds the shared upper indicative duration boundary** (`low > upperIndicativeBoundary`), without changing underlying workload estimation calculations or weakening structural validators, and retaining full diagnostic evidence (`indicativeEffortMinutes`, `indicativeDuration`, `upperIndicativeBoundaryMinutes`, `rawExceedsAllocated`, `demandDrivers`, `factors`, `components`) even when a marginal warning is suppressed.
+   - Warnings communicate allocated duration, indicative range, estimated workload range, principal workload demands, and factor-grounded current-stage vs upstream options, honour locked commissioned durations (`durationLocked: true` directs authors to upstream commissioning rather than local duration edits), preserve pedagogical integrity, and state clearly that warnings are advisory and approximate.
+6. **Updated Milestone 6 acceptance framing (5-, 15-, and 30-minute Practice sensitivity test):**
+   - The outstanding 5-, 15-, and 30-minute Practice sensitivity test should demonstrate **meaningful differences in scope, activity design, and workload proportionality** while preserving intended learning purpose and appropriate cognitive demand. It is **not** intended to demonstrate exact learner completion times.
+7. **Conclusion of workload fidelity development:**
+   - This implementation concludes workload fidelity development for Sprint 104. Further refinement should be undertaken only when substantive evidence from real authoring or learner use demonstrates a need.
+
+
 
 

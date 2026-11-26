@@ -308,3 +308,59 @@
 | ------------- | ------ | ----- |
 | `tests/security-inline-svg-stimulus-sanitization.test.js` (new) | **4 / 4 pass** | Verifies rejection of 18 active/external/breakout/malformed SVG payloads (uppercase `<SCRIPT>`, `onload`/`onerror`, `<foreignObject>`, `javascript:` & entity-obfuscated URIs, external `<image href>`/`url()`, `</figure>` breakout, `<!DOCTYPE>`/XXE, `<style>`, `<animate>`, nested `<svg>`, unquoted/mismatched/unclosed tags) across direct validator, `PRISM_VISUAL_ASSETS`, `renderAssessmentItem`, and `renderLearnerPageHtml` (canonical AP, legacy `assessment_check`, and activity pages); verifies benign legacy deterministic bar-chart SVG (`lib/assessment-pack-publish.js`) still renders cleanly |
 | `tests/s105-svg-visual-asset-intake.test.js`, `tests/s93-assessment-pack-publish-integration.test.js`, `tests/qa-c06-assessment-evidence-and-artefact.test.js`, `tests/s104-assessment-pack-stage4-contract-hardening.test.js` | **37 / 37 pass** | **41 / 41 total pass**; `npm run check:learner-renderer-vnext-browser` **OK** |
+
+---
+
+## C7 Assessment Pack live acceptance & independent Assessment Pack QA v1.3 (2026-11-26 — ACCEPTED)
+
+C7 was regenerated from **Stage 2 onward** (exercising the corrected canonical scatterplot representation contract and Stage 4 `output_specification` contract at source), assembled, published, and independently assessed using **Assessment Pack QA v1.3**.
+
+| Check / Dimension | Recorded Result | Notes & Scope Boundary |
+| ----------------- | --------------- | ---------------------- |
+| **Educational QA score** | **`96 / 100` — Excellent** | Accepted; **do not regenerate** |
+| **Confirmed defects** | **0 Critical, 0 Major, 0 Moderate** | — |
+| **Minor educational limitations (non-blocking)** | **2 minor observations** | (1) Referential clarity of the four assessment expectations; (2) limited qualitative differentiation in immediate self-review |
+| **Multi-panel scatterplot & tabular evidence** | **PASS** | Both scatterplots (Panel F1 and Panel F2) and accompanying semantic data tables present; both Pearson correlation coefficients independently verified |
+| **Assessment design & learner artefact binding** | **PASS** | Single integrated `E7` constructed performance educationally appropriate; learner artefact contribution `comm_7.E7` correctly specified |
+| **Commissioned & published duration** | **`17 minutes` preserved** | Inherited authoritative allocation intact |
+| **Workload assurance observation (non-defect)** | **Credible workload concern noted; infeasibility not established** | Recorded strictly as an **assurance observation**, not a confirmed defect and not an empirical learner timing measurement |
+| **Remaining whole-journey verification scope** | **Deferred to whole-journey acceptance** | Integrated learner runtime, Learning Journal handoff, persistence, and companion feedback continuity (`comm_8`) remain to be verified during whole-journey acceptance |
+
+---
+
+## Integrated Learning Journey QA audit — canonical Economics journey (2026-11-26 — 86 / 100, Ready with qualifications)
+
+The completed independent Learning Journey QA audit awarded the canonical Economics journey **`86 / 100`** (superseding the preliminary `79 / 100`), with **zero confirmed Critical or Major defects** and readiness rating **Ready with qualifications**. This is the current Sprint 104 integrated educational QA evidence; **runtime assurance remains outstanding**.
+
+| Dimension / Check | Recorded Result | Notes & Scope Boundary |
+| ----------------- | --------------- | ---------------------- |
+| **Overall score & readiness** | **`86 / 100` — Ready with qualifications** | Supersedes preliminary `79 / 100` |
+| **Confirmed Critical / Major defects** | **0 Critical, 0 Major** | — |
+| **Dimension ratings** | Progression **9/10** · Continuity **7/10** · Assessment validity **9/10** · Scaffolding & feedback **9/10** · Materials **9/10** · Usability **8/10** | — |
+| **Confirmed Moderate configuration concerns (static package)** | **F01** (missing `comm_4.E4` producer & reference route; `j1` unresolved) · **F02** (`comm_6.E6` inappropriately declared as `"Your earlier response"` reference for independent assessment `comm_7`) | Both confirmed in the published package with `conflicts: []`; actual runtime consequences not yet established; root-cause investigation completed and awaiting review before bounded source-level fix |
+| **Runtime assurance** | **Outstanding** | Integrated learner runtime, Journal handoff, persistence, and live cross-resource continuity remain to be verified after bounded F01/F02 fixes |
+
+---
+
+## Final S104 workload policy and presentation (`S104-D07`, 2026-11-26 — verified, pending review)
+
+### Automated regression verification (`node --test`, observed 2026-11-26)
+
+| Suite / Scope | Result | Notes |
+| ------------- | ------ | ----- |
+| `tests/s104-final-workload-policy-and-presentation.test.js` (new) | **6 / 6 pass** | Shared indicative duration benchmarks (`5`–`90` min), short/fractional/extended monotonicity, aggregate non-inflation, `15`-min (`12–18`, `16–28`, `20–30`, `25–40`) and `5`-min (`6–9`, `8–12`) warning boundaries, `insufficient_evidence`/`duration_unavailable` preservation, factor-grounded actionable warnings & `durationLocked: true` upstream guidance, learner-facing indicative header + single note + suppressed routine activity badges + preserved explicit time limit & internal `durationMinutes`, unified shell overview total + single note + component TOC durations, prompt alignment across all product families |
+| Combined 15-suite S104 / S100 / renderer / export-shell / unified-shell bundle | **144 / 144 pass** | Covers `s104-final-workload-policy-and-presentation`, `s100a`, `s100b1`, `s100b2`, `s100c`, `s104-lj-progressive-workload-fidelity`, `s104-m2`, `s104-m3`, `s104-m4`, `s104-m5`, `s104-situated-task-workload-feasibility`, `s104-artefact-contract-f01-f02`, `s104-assessment-pack-stage4-contract-hardening`, `s104-c6-practice-publication-qa`, `learner-renderer-vnext-export-shell`, `s78-t-037-learner-timing-metadata`, `s96-resource-title-in-unified-shell` |
+| `npm run check:learner-renderer-vnext-browser` | **OK** | Confirms rebuilt `lib/learner-renderer-vnext-browser.js` and export runtime bundles match source |
+
+### Representative Economics Learning Journey Stage 4 before-and-after (`tests/fixtures/s105-economics-stage4-commissions.json`)
+
+| Commission | Allocated | Indicative range (upper boundary) | Estimated workload | Before (`low > allocated`) | After (`low > upperBoundary`) | Diagnostic evidence preserved |
+| ---------- | --------: | --------------------------------- | ------------------ | -------------------------- | ----------------------------- | ----------------------------- |
+| `comm_2` | 10 min | 5–15 minutes (15) | 11–24 min | Warned | Suppressed (`11 <= 15`) | `rawExceedsAllocated: true`, full drivers/components retained |
+| `comm_5` | 8 min | 4–12 minutes (12) | 9–21 min | Warned | Suppressed (`9 <= 12`) | `rawExceedsAllocated: true`, full drivers/components retained |
+| `comm_8` | 8 min | 4–12 minutes (12) | 10–23 min | Warned | Suppressed (`10 <= 12`) | `rawExceedsAllocated: true`, full drivers/components retained |
+| Synthetic heavy (`comm_2`, 8 min) | 8 min | 4–12 minutes (12) | 43–87 min | Warned | **Warned** (`43 > 12`, actionable) | Full drivers + current-stage & upstream options |
+
+### Updated Milestone 6 acceptance criterion (`S104-D07`)
+- The outstanding **5-, 15-, and 30-minute Practice sensitivity test** must demonstrate meaningful differences in scope, activity design, and workload proportionality while preserving intended learning purpose and appropriate cognitive demand; it is **not** intended to demonstrate exact learner completion times.
+

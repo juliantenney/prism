@@ -197,18 +197,23 @@ test("Lagrangian-shaped page: timeline durations reach vNext activity models", (
 
 test("Lagrangian-shaped page: live vNext export shows 60 min header and activity badges", () => {
   const { api } = loadPrismTestApi();
-  const html = renderVnextExport(api, applyLagrangianTimingShape(loadHeteroscedasticityPage()));
+  const page = applyLagrangianTimingShape(loadHeteroscedasticityPage());
+  const html = renderVnextExport(api, page);
   const headerIntro = html.match(/<div class="util-learning-header__intro">[\s\S]*?<\/div>/);
   assert.ok(headerIntro);
   assert.match(
     headerIntro[0],
     /class="util-learning-header__duration">60 mins\.<\/span>/
   );
+  // S104 final policy: routine activity-level time badges are suppressed in learner-facing output,
+  // while internal activity durationMinutes projection remains intact in buildPageModel.
+  assert.doesNotMatch(html, /class="util-badge util-badge-time"/);
+  const model = buildPageModel(page).model;
   Object.keys(LAGRANGIAN_TIMELINE_DURATIONS).forEach((activityId) => {
     const minutes = LAGRANGIAN_TIMELINE_DURATIONS[activityId];
-    assert.match(
-      activityHtml(html, activityId),
-      new RegExp(`class="util-badge util-badge-time">${minutes} min</span>`)
+    assert.equal(
+      model.activities.find((row) => row.id === activityId).durationMinutes,
+      minutes
     );
   });
 });
@@ -218,8 +223,11 @@ test("explicit activities[].duration_minutes wins over timeline projection on ex
   const page = applyLagrangianTimingShape(loadHeteroscedasticityPage());
   page.activities.find((row) => row.activity_id === "A1").duration_minutes = 99;
   const html = renderVnextExport(api, page);
-  assert.match(activityHtml(html, "A1"), /class="util-badge util-badge-time">99 min<\/span>/);
-  assert.match(activityHtml(html, "A2"), /class="util-badge util-badge-time">14 min<\/span>/);
+  // Routine activity badges suppressed in learner-facing export; internal model retains 99 and 14.
+  assert.doesNotMatch(html, /class="util-badge util-badge-time"/);
+  const model = buildPageModel(page).model;
+  assert.equal(model.activities.find((row) => row.id === "A1").durationMinutes, 99);
+  assert.equal(model.activities.find((row) => row.id === "A2").durationMinutes, 14);
 });
 
 test("learning_sequence.total_duration_minutes supplies header when activity durations unavailable", () => {
@@ -277,11 +285,13 @@ test("T-007 live LS shape: estimated_minutes project into models and export badg
     headerIntro[0],
     /class="util-learning-header__duration">60 mins\.<\/span>/
   );
+  assert.doesNotMatch(html, /class="util-badge util-badge-time"/);
+  const model = buildPageModel(page).model;
   Object.keys(T007_LAGRANGIAN_ESTIMATED_MINUTES).forEach((activityId) => {
     const minutes = T007_LAGRANGIAN_ESTIMATED_MINUTES[activityId];
-    assert.match(
-      activityHtml(html, activityId),
-      new RegExp(`class="util-badge util-badge-time">${minutes} min</span>`)
+    assert.equal(
+      model.activities.find((row) => row.id === activityId).durationMinutes,
+      minutes
     );
   });
 });
@@ -291,8 +301,10 @@ test("explicit activities[].duration_minutes wins over timeline estimated_minute
   const page = applyT007LagrangianEstimatedTimingShape(loadHeteroscedasticityPage());
   page.activities.find((row) => row.activity_id === "A1").duration_minutes = 9;
   const html = renderVnextExport(api, page);
-  assert.match(activityHtml(html, "A1"), /class="util-badge util-badge-time">9 min<\/span>/);
-  assert.match(activityHtml(html, "A2"), /class="util-badge util-badge-time">12 min<\/span>/);
+  assert.doesNotMatch(html, /class="util-badge util-badge-time"/);
+  const model = buildPageModel(page).model;
+  assert.equal(model.activities.find((row) => row.id === "A1").durationMinutes, 9);
+  assert.equal(model.activities.find((row) => row.id === "A2").durationMinutes, 12);
 });
 
 test("timeline duration_minutes wins over estimated_minutes on the same row", () => {

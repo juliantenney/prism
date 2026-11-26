@@ -426,7 +426,10 @@ test("104M3 E2E (Lean Practice): zero-materials activity, omitted preamble/bridg
   assert.equal(rendered.error, null, String(rendered.error || ""));
   assert.ok(rendered.html);
   assert.match(rendered.html, /Verify bundle feasibility directly/);
-  assert.match(rendered.html, /10 minutes/);
+  // S104 final policy: standalone page header renders indicative duration range (5–15 minutes)
+  // while preserving exact data-duration-minutes="10" internally.
+  assert.match(rendered.html, /data-duration-minutes="10"/);
+  assert.match(rendered.html, /5–15 minutes/);
   assert.doesNotMatch(rendered.html, /Knowledge summary/i);
   assert.doesNotMatch(rendered.html, /Study tips/i);
   assert.doesNotMatch(rendered.html, /<div class="util-editorial-opening"/);
@@ -801,7 +804,9 @@ test("104M3 E2E (Richer Practice): multi-LO fallback parity, selected material b
     rendered.html,
     /Have you identified the missing sufficiency or boundary verification in Claim Y\?/
   );
-  assert.match(rendered.html, /18 minutes/);
+  // S104 final policy: 18 min -> 13–23 minutes indicative range while preserving data-duration-minutes="18"
+  assert.match(rendered.html, /data-duration-minutes="18"/);
+  assert.match(rendered.html, /13–23 minutes/);
   assert.match(rendered.html, /Knowledge summary/);
   assert.doesNotMatch(rendered.html, /Study tips/);
 });
@@ -1116,7 +1121,11 @@ test("Fractional timeline activity durations (2.5 + 2.5 = 5 min) reconcile accur
 
   const rendered = renderLearnerPageHtml(assembled.page, { includeRuntimeScripts: false });
   assert.equal(rendered.error, null, String(rendered.error || ""));
-  assert.match(rendered.html, /2\.5 min/);
+  // S104 final policy: routine activity-level badges (2.5 min) are suppressed in learner-facing output,
+  // while internal duration_minutes and header indicative duration ("Around 5 minutes") remain intact.
+  assert.doesNotMatch(rendered.html, /util-badge-time/);
+  assert.match(rendered.html, /data-duration-minutes="5"/);
+  assert.match(rendered.html, /Around 5 minutes/);
   assert.match(rendered.html, /5 minutes/);
 
   // 6. Workload feasibility adapter preserves 2.5 per activity and 5 total (not 3 + 3 = 6)

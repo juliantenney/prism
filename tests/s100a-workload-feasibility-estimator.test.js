@@ -92,7 +92,7 @@ test("reading and evidence-review overhead increases the range", () => {
   });
   assert.ok(withDossier.indicativeEffortMinutes.low > without.indicativeEffortMinutes.low);
   assert.ok(withDossier.indicativeEffortMinutes.high > without.indicativeEffortMinutes.high);
-  assert.match(withDossier.explanation, /Indicative learner effort about/i);
+  assert.match(withDossier.explanation, /Estimated workload range approximately/i);
   assert.ok(withDossier.factors.some((f) => /dossier/i.test(f)));
 });
 
@@ -150,7 +150,7 @@ test("explanations are stable and intelligible", () => {
     readingDemand: "brief"
   });
   assert.equal(result.explanation, again.explanation);
-  assert.match(result.explanation, /Indicative learner effort about \d+–\d+ minutes/);
+  assert.match(result.explanation, /Estimated workload range approximately \d+–\d+ minutes/);
   assert.match(result.explanation, /not measured completion times/i);
   assert.ok(Array.isArray(result.factors));
   assert.ok(result.factors.length >= 2);
@@ -203,21 +203,33 @@ test("boundary: declared equal to low bound is not flagged insufficient", () => 
   assert.equal(atLow.plausiblyInsufficient, false);
 });
 
-test("boundary: declared one minute below low bound is flagged", () => {
+test("boundary: lower workload exceeding upper indicative boundary is flagged (within tolerance suppressed)", () => {
   const probe = estimate({
     activityType: "analytical_writing",
     suggestedLengthWords: { min: 180, max: 250 },
     reasoningDemand: "analysis",
     readingDemand: "moderate"
   });
-  const below = estimate({
+  // S104 final policy: declared 1 min below low bound falls inside indicative tolerance -> suppressed,
+  // while rawExceedsAllocated remains true; declared well below (upper indicative boundary < low) -> flagged.
+  const withinTol = estimate({
     activityType: "analytical_writing",
     suggestedLengthWords: { min: 180, max: 250 },
     reasoningDemand: "analysis",
     readingDemand: "moderate",
-    declaredDurationMinutes: Math.max(0, probe.indicativeEffortMinutes.low - 1)
+    declaredDurationMinutes: Math.max(1, probe.indicativeEffortMinutes.low - 1)
   });
-  assert.equal(below.plausiblyInsufficient, true);
+  assert.equal(withinTol.rawExceedsAllocated, true);
+  assert.equal(withinTol.plausiblyInsufficient, false);
+
+  const substantial = estimate({
+    activityType: "analytical_writing",
+    suggestedLengthWords: { min: 180, max: 250 },
+    reasoningDemand: "analysis",
+    readingDemand: "moderate",
+    declaredDurationMinutes: 5
+  });
+  assert.equal(substantial.plausiblyInsufficient, true);
 });
 
 test("type floor without word count remains conservative and explicit", () => {

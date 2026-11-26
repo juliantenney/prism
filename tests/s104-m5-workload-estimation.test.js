@@ -167,7 +167,7 @@ test("LJ uses authoritative structured durations over conflicting prose and flag
   assert.equal(res.journey.durationStatus, "available");
   assert.equal(res.findings[0].allocatedMinutes, 10);
   assert.equal(res.findings[0].durationSource, "structured");
-  assert.ok(res.warnings.some((w) => /allocated 10 minutes/.test(w)));
+  assert.ok(res.warnings.some((w) => /allocated duration of 10 minutes/.test(w)));
   assert.equal(JSON.stringify(page), snap);
 
   const missingStructuredPage = {
@@ -274,17 +274,15 @@ test("Practice cumulative comparison catches dense multi-dataset page against au
   assert.equal(missingDur.durationStatus, "unavailable");
   assert.ok(missingDur.warnings.some((w) => /authoritative duration is unavailable/i.test(w)));
 
-  // Authoritative duration 20 min -> cumulative overload warning naming drivers.
+  // Authoritative duration 15 min -> cumulative overload warning naming principal drivers
+  // (S104 final policy: 20 min has upper indicative boundary 25; 15 min has upper boundary 20).
   const tightDur = interactiveAdapter.assessInteractivePageWorkload(densePracticePage, null, {
-    effectiveDurationMinutes: 20
+    effectiveDurationMinutes: 15
   });
   assert.equal(tightDur.durationStatus, "available");
   assert.equal(tightDur.cumulative.plausiblyInsufficient, true);
   assert.ok(tightDur.warnings.some((w) => /cumulative/i.test(w)));
-  assert.ok(tightDur.warnings.some((w) => /evidence inspection/i.test(w)));
-  assert.ok(tightDur.warnings.some((w) => /structured decisions/i.test(w)));
-  assert.ok(tightDur.warnings.some((w) => /worked examples/i.test(w)));
-  assert.ok(tightDur.warnings.some((w) => /feedback interpretation/i.test(w)));
+  assert.ok(tightDur.warnings.some((w) => /evidence inspection|structured decisions|worked examples|feedback/i.test(w)));
 });
 
 test("Distinguishes familiar vs new vs mixed evidence and excludes optional support from required load", () => {
@@ -368,7 +366,7 @@ test("Assessment Pack adapter respects authoritative duration, cumulative tasks,
   assert.ok(noDur.warnings.some((w) => /unavailable/i.test(w)));
 
   const tightPack = apAdapter.assessAssessmentPackWorkload(apArtefact, {
-    effectiveDurationMinutes: 15
+    effectiveDurationMinutes: 10
   });
   assert.equal(tightPack.durationStatus, "available");
   assert.equal(tightPack.cumulative.plausiblyInsufficient, true);
@@ -405,7 +403,7 @@ test("app.js integration supplies authoritative durations to Practice LS, Assess
     adjustments: { parameters: { duration_minutes: 10 } }
   });
   assert.equal(apCheck.ok, true, (apCheck.errors || []).join("; "));
-  assert.ok(apCheck.warnings.some((w) => /authoritative duration of 10 minutes/i.test(w)));
+  assert.ok(apCheck.warnings.some((w) => /allocated duration of 10 minutes/i.test(w)));
 
   // Structural mismatch still blocks cleanly with errors and zero feasibility clutter.
   const lsBad = {
@@ -474,5 +472,5 @@ test("app.js integration supplies authoritative durations to Practice LS, Assess
     title: "Design Page"
   });
   assert.equal(ljCheck.ok, true, (ljCheck.errors || []).join("; "));
-  assert.ok(ljCheck.warnings.some((w) => /allocated 10 minutes/.test(w)));
+  assert.ok(ljCheck.warnings.some((w) => /allocated duration of 10 minutes/.test(w)));
 });

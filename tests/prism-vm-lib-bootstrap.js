@@ -173,7 +173,8 @@ function runPrismLibScriptsInSandbox(sandbox, repoRoot, libs, options) {
       "PrismWorkloadFeasibilityEstimator",
       "PrismInteractiveWorkloadFeasibilityAdapter",
       "PrismAssessmentPackWorkloadFeasibilityAdapter",
-      "PrismLearningJourneyWorkloadFeasibilityAdapter"
+      "PrismLearningJourneyWorkloadFeasibilityAdapter",
+      "PrismSituatedTaskWorkloadFeasibilityAdapter"
     ].forEach(function (key) {
       if (sandbox[key]) {
         sandbox.window[key] = sandbox[key];

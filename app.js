@@ -7472,6 +7472,57 @@
     return { ok: priorValid, results: results };
   }
 
+  /**
+   * Re-evaluate Situated Task Stage 5 Design Page capture on reload/hydration so
+   * advisory workload warnings are restored, replaced, or cleared consistently.
+   */
+  function revalidateSituatedTaskDesignPageCaptureAfterHydration(workflowOrId, options) {
+    var wf =
+      workflowOrId && typeof workflowOrId === "object"
+        ? workflowOrId
+        : typeof findWorkflowById === "function"
+          ? findWorkflowById(workflowOrId)
+          : null;
+    if (!wf || (!isSituatedTaskWorkflow(wf) && !workflowRecordIsSituatedTask(wf))) {
+      return { ok: true, skipped: true };
+    }
+    var opts = options && typeof options === "object" ? options : {};
+    state.workflowRunWorkloadFeasibilityWarnings =
+      state.workflowRunWorkloadFeasibilityWarnings || {};
+    var steps = Array.isArray(wf.steps) ? wf.steps : [];
+    var dpStep = null;
+    for (var i = 0; i < steps.length; i += 1) {
+      if (steps[i] && isWorkflowStepDesignPageRow(steps[i])) {
+        dpStep = steps[i];
+        break;
+      }
+    }
+    if (!dpStep || !dpStep.id) return { ok: true, skipped: true };
+    var sid = String(dpStep.id).trim();
+    var raw =
+      (opts.capturesRaw && opts.capturesRaw[sid]) ||
+      (opts.captures && opts.captures[sid]) ||
+      (state.workflowRunCapturedOutputsRaw && state.workflowRunCapturedOutputsRaw[sid]) ||
+      (state.workflowRunCapturedOutputs && state.workflowRunCapturedOutputs[sid]) ||
+      "";
+    if (!String(raw || "").trim()) {
+      delete state.workflowRunWorkloadFeasibilityWarnings[sid];
+      return { ok: true, empty: true, warnings: [] };
+    }
+    var check = parseSituatedTaskDesignPageCaptureForStorage(raw, wf);
+    if (!check || !check.ok) {
+      delete state.workflowRunWorkloadFeasibilityWarnings[sid];
+      return { ok: false, errors: (check && check.errors) || ["invalid_situated_task_design_page"], warnings: [] };
+    }
+    var warnings = Array.isArray(check.warnings) ? check.warnings.slice() : [];
+    if (warnings.length) {
+      state.workflowRunWorkloadFeasibilityWarnings[sid] = warnings.join("\n\n");
+    } else {
+      delete state.workflowRunWorkloadFeasibilityWarnings[sid];
+    }
+    return { ok: true, warnings: warnings };
+  }
+
   function composeLearningJourneyAuthoritativeStageHandoffToken(wf, stepRow) {
     if (!isProgressiveLearningJourneyWorkflowActive(wf)) return "";
     var assembleLib = resolveLearningJourneyAssembleLib();
@@ -15467,6 +15518,22 @@
     return null;
   }
 
+  function resolveSituatedTaskWorkloadFeasibilityAdapterLib() {
+    if (
+      typeof window !== "undefined" &&
+      window.PrismSituatedTaskWorkloadFeasibilityAdapter
+    ) {
+      return window.PrismSituatedTaskWorkloadFeasibilityAdapter;
+    }
+    if (
+      typeof globalThis !== "undefined" &&
+      globalThis.PrismSituatedTaskWorkloadFeasibilityAdapter
+    ) {
+      return globalThis.PrismSituatedTaskWorkloadFeasibilityAdapter;
+    }
+    return null;
+  }
+
   /**
    * Resolve Learning Journey learning-time envelope minutes from workflow seed/brief.
    * Advisory only — does not alter TIME CHECK arithmetic.
@@ -15596,6 +15663,42 @@
     var rows = [];
     try {
       rows = adapter.collectAssessmentPackWorkloadWarnings(artefact, opts) || [];
+    } catch (_err) {
+      return;
+    }
+    if (!Array.isArray(rows) || !rows.length) return;
+    var seen = Object.create(null);
+    rows.forEach(function (row) {
+      var text = String(row || "").trim();
+      if (!text || seen[text]) return;
+      seen[text] = true;
+      warningsOut.push(text);
+    });
+  }
+
+  /**
+   * Sprint 104 — non-blocking Situated Task workload feasibility warnings.
+   * Assesses the concrete Stage 5 Design Page against its authoritative inherited duration.
+   * Never converts findings into capture errors or mutates declared durations.
+   */
+  function appendSituatedTaskWorkloadFeasibilityWarnings(page, warningsOut, optionsOrWf) {
+    if (!Array.isArray(warningsOut)) return;
+    var adapter = resolveSituatedTaskWorkloadFeasibilityAdapterLib();
+    if (!adapter || typeof adapter.collectSituatedTaskWorkloadWarnings !== "function") return;
+    var opts = {};
+    if (optionsOrWf && typeof optionsOrWf === "object") {
+      if (optionsOrWf.effectiveDurationMinutes != null) {
+        opts.effectiveDurationMinutes = optionsOrWf.effectiveDurationMinutes;
+      } else if (optionsOrWf.authoritativeDurationMinutes != null) {
+        opts.authoritativeDurationMinutes = optionsOrWf.authoritativeDurationMinutes;
+      } else {
+        var wfDur = resolveEffectiveWorkflowDurationMinutes(optionsOrWf);
+        if (wfDur != null) opts.effectiveDurationMinutes = wfDur;
+      }
+    }
+    var rows = [];
+    try {
+      rows = adapter.collectSituatedTaskWorkloadWarnings(page, opts) || [];
     } catch (_err) {
       return;
     }
@@ -16544,7 +16647,7 @@
         : "";
     var canonical =
       contractMod && typeof contractMod.buildCanonicalGamMaterialShapeSnippet === "function"
-        ? contractMod.buildCanonicalGamMaterialShapeSnippet()
+        ? contractMod.buildCanonicalGamMaterialShapeSnippet(practiceOpt)
         : "";
     return [contract, canonical].filter(Boolean).join("\n");
   }
@@ -17275,7 +17378,13 @@
     if (workflowRecordIsSituatedTask(workflow) || isSituatedTaskWorkflow(workflow)) {
       var stMod = resolveSituatedTaskDesignPageLib();
       if (stMod && typeof stMod.validateSituatedTaskDesignPage === "function") {
-        return stMod.validateSituatedTaskDesignPage(parsed);
+        var stGate = stMod.validateSituatedTaskDesignPage(parsed);
+        if (stGate && stGate.ok) {
+          var stWarnings = [];
+          appendSituatedTaskWorkloadFeasibilityWarnings(parsed, stWarnings, workflow);
+          return Object.assign({}, stGate, { warnings: stWarnings });
+        }
+        return stGate;
       }
       return { ok: false, errors: ["situated_task_design_page_module_unavailable"] };
     }
@@ -20060,6 +20169,29 @@
         ok: true,
         errors: [],
         warnings: Array.isArray(progStrict.warnings) ? progStrict.warnings.slice() : []
+      };
+    }
+    if (
+      workflow &&
+      step &&
+      (isSituatedTaskWorkflow(workflow) || workflowRecordIsSituatedTask(workflow)) &&
+      isWorkflowStepDesignPageRow(step)
+    ) {
+      var stStrict = parseSituatedTaskDesignPageCaptureForStorage(raw, workflow);
+      if (!stStrict || !stStrict.ok) {
+        return {
+          ok: false,
+          errors: (stStrict && stStrict.errors) || ["invalid_situated_task_design_page_capture"],
+          message:
+            (stStrict && (stStrict.message || (stStrict.errors || []).join("; "))) ||
+            "Invalid Situated Task Design Page capture",
+          warnings: []
+        };
+      }
+      return {
+        ok: true,
+        errors: [],
+        warnings: Array.isArray(stStrict.warnings) ? stStrict.warnings.slice() : []
       };
     }
     if (workflowRecordIsAssessmentPack(workflow)) {
@@ -39195,6 +39327,7 @@
     state.workflowRunLjDurationValidation = {};
     state.workflowRunWorkloadFeasibilityWarnings = {};
     revalidateProgressiveLearningJourneyCapturesAfterHydration(wid);
+    revalidateSituatedTaskDesignPageCaptureAfterHydration(wid);
     var sessionRunIndex = state.workflowRunSessionIndexByWorkflow[wid];
     state.currentWorkflowRunIndex =
       typeof sessionRunIndex === "number" &&
@@ -39232,6 +39365,7 @@
     // status so Completed is not stuck behind page_unavailable Authoring.
     hydrateWorkflowRunCapturePayloadsForWorkflow(wid).then(function () {
       if (String(state.selectedWorkflowId || "").trim() === wid) {
+        revalidateSituatedTaskDesignPageCaptureAfterHydration(wid);
         applyHydratedCaptureToVisibleRunTextareas(wid);
         updateWorkflowRunView();
         var liveWs =
@@ -60811,8 +60945,53 @@
   }
 
   /**
+   * Situated Task Step 5 storage parse — shared page parse, then Situated Task semantic
+   * validation (including Sprint 38 visual_affordances + visual planning contract).
+   */
+  function parseSituatedTaskDesignPageCaptureForStorage(raw, wf) {
+    var stDesignMod = resolveSituatedTaskDesignPageLib();
+    if (!stDesignMod || typeof stDesignMod.validateSituatedTaskDesignPage !== "function") {
+      return {
+        ok: false,
+        errors: ["situated_task_design_page_module_unavailable"],
+        message: "Situated Task Design Page validator is unavailable"
+      };
+    }
+    var pageCapture = parsePageArtefactCaptureForStorage(raw);
+    if (!pageCapture.ok) {
+      return {
+        ok: false,
+        errors: pageCapture.errors || ["not_page_artefact"],
+        message:
+          pageCapture.message ||
+          "Situated Task Design Page must be a valid shared page artefact (artifact_type page)"
+      };
+    }
+    var check = stDesignMod.validateSituatedTaskDesignPage(pageCapture.parsed);
+    if (!check || !check.ok) {
+      var errs =
+        check && Array.isArray(check.errors) && check.errors.length
+          ? check.errors
+          : ["invalid_situated_task_design_page"];
+      return {
+        ok: false,
+        errors: errs,
+        message: errs.join("; "),
+        parsed: pageCapture.parsed
+      };
+    }
+    var stWorkloadWarnings = [];
+    appendSituatedTaskWorkloadFeasibilityWarnings(
+      pageCapture.parsed,
+      stWorkloadWarnings,
+      wf
+    );
+    return Object.assign({}, pageCapture, { warnings: stWorkloadWarnings });
+  }
+
+  /**
    * Live Run acceptance boundary for page-structure captures.
-   * LJ Design Page reuses the shared page parser, then applies LJ semantic validation.
+   * LJ and Situated Task Design Page reuse the shared page parser, then apply family validation.
    */
   function parseWorkflowRunPageStructureCaptureForStorage(raw, stepRow, wf) {
     if (
@@ -60824,6 +61003,13 @@
         return parseAndValidateProgressiveLearningJourneyStageCapture(raw, stepRow, wf);
       }
       return parseLearningJourneyDesignPageCaptureForStorage(raw, wf);
+    }
+    if (
+      stepRow &&
+      isWorkflowStepDesignPageRow(stepRow) &&
+      (isSituatedTaskWorkflow(wf) || workflowRecordIsSituatedTask(wf))
+    ) {
+      return parseSituatedTaskDesignPageCaptureForStorage(raw, wf);
     }
     if (stepRow && isWorkflowStepDesignEpisodePlanRow(stepRow)) {
       return parseEpisodePlanOrPageCaptureForStorage(raw, wf);
@@ -67251,6 +67437,9 @@
                     pageCaptureCheck.message || "Invalid page artefact JSON"
                   );
                 }
+                if (state.workflowRunWorkloadFeasibilityWarnings) {
+                  delete state.workflowRunWorkloadFeasibilityWarnings[sid];
+                }
                 delete state.workflowRunStepCompleted[sid];
               }
               updateRunStepOutputStatus(currentLi);
@@ -67264,6 +67453,16 @@
                 "error"
               );
               return;
+            }
+            if (sid && Array.isArray(pageCaptureCheck.warnings)) {
+              if (pageCaptureCheck.warnings.length) {
+                state.workflowRunWorkloadFeasibilityWarnings =
+                  state.workflowRunWorkloadFeasibilityWarnings || {};
+                state.workflowRunWorkloadFeasibilityWarnings[sid] =
+                  pageCaptureCheck.warnings.join("\n\n");
+              } else if (state.workflowRunWorkloadFeasibilityWarnings) {
+                delete state.workflowRunWorkloadFeasibilityWarnings[sid];
+              }
             }
             if (pageCaptureCheck.json !== body && outArea) {
               outArea.value = pageCaptureCheck.json;
@@ -69521,6 +69720,10 @@
     prismTestApi.parsePageArtefactCaptureForStorage = parsePageArtefactCaptureForStorage;
     prismTestApi.parseLearningJourneyDesignPageCaptureForStorage =
       parseLearningJourneyDesignPageCaptureForStorage;
+    prismTestApi.parseSituatedTaskDesignPageCaptureForStorage =
+      parseSituatedTaskDesignPageCaptureForStorage;
+    prismTestApi.validateStrictJsonWorkflowRunStepCaptureForTest =
+      validateStrictJsonWorkflowRunStepCapture;
     prismTestApi.parseWorkflowRunPageStructureCaptureForStorage =
       parseWorkflowRunPageStructureCaptureForStorage;
     prismTestApi.workflowRunCaptureAllowedArtifactTypes = workflowRunCaptureAllowedArtifactTypes;
@@ -69582,6 +69785,12 @@
       resolveLearningJourneyWorkloadFeasibilityAdapterLib;
     prismTestApi.appendLearningJourneyWorkloadFeasibilityWarnings =
       appendLearningJourneyWorkloadFeasibilityWarnings;
+    prismTestApi.resolveSituatedTaskWorkloadFeasibilityAdapterLib =
+      resolveSituatedTaskWorkloadFeasibilityAdapterLib;
+    prismTestApi.appendSituatedTaskWorkloadFeasibilityWarnings =
+      appendSituatedTaskWorkloadFeasibilityWarnings;
+    prismTestApi.revalidateSituatedTaskDesignPageCaptureAfterHydrationForTest =
+      revalidateSituatedTaskDesignPageCaptureAfterHydration;
     prismTestApi.attachLearningJourneyWorkloadWarningsToGate =
       attachLearningJourneyWorkloadWarningsToGate;
     prismTestApi.resolveLearningJourneyLearningTimeEnvelopeMinutes =

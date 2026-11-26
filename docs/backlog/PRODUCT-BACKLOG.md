@@ -457,6 +457,46 @@ The extracted design should preserve educational intent, progression, learner ac
 
 **Readiness:** Proposed 2026-11-23 from inter-sprint backlog reconciliation. Approach and acceptance criteria not yet written — **not sprint-allocated**.
 
+### PB-FA-032 — Situated Task structured progressive capture and pipeline alignment
+
+**Status:** Proposed — unassigned. **Deferred until after Connect More.** **Not sprint-allocated. Not an S104 closure dependency.**  
+**Type:** Authoring pipeline & structured-capture architectural alignment.
+
+**Context:** Situated Task Stages 1–4 (*Situation*, *Activity*, *Support*, *Learning Return*) currently produce prose in a continuous conversation, with a structured JSON page artefact produced only at Stage 5 (*Design Page*). By contrast, Learning Journey (Sprint 105) and Practice/Interactive use structured progressive capture with per-stage validation, deterministic handoffs, and earlier feasibility checks.
+
+**Future design scope to consider:**
+
+- Explicit structured JSON contracts at appropriate intermediate stages.
+- Semantic capture validation at each structured stage.
+- Authoritative upstream artefacts and deterministic downstream handoffs between stages.
+- Earlier workload feasibility assessment before final page synthesis.
+- Dependency management and downstream invalidation when an upstream stage is revised.
+- Compatibility with future automated orchestration.
+
+**Educational boundary (mandatory):** Preserve the distinctive educational architecture of Situated Task (`situated_learning` purpose/activity/record/reconnection semantics, learner-owned enactment, `activities: []`, ordered learner-facing `sections[]`, and optional embedded/consolidated/hybrid recording). Do not flatten Situated Task into Interactive or Practice activity templates.
+
+**Boundaries:** Backlog work only — do **not** undertake the pipeline migration before Connect More. This item is **not** a Sprint 104 closure dependency.
+
+**Readiness:** Recorded 2026-11-26 following C4 Situated Task authoring and QA review. Approach and acceptance criteria not yet written — **not sprint-allocated**.
+
+### PB-FA-033 — Expository downstream workload feasibility assessment
+
+**Status:** Proposed — unassigned. **Deferred until after Connect More.** **Not sprint-allocated. Not an S104 closure dependency.**  
+**Type:** Workload-feasibility coverage parity (Expository Resource).
+
+**Context:** Learning Journey (upstream commissions), Practice/Interactive, Assessment Pack, and Situated Task (Stage 5) now have downstream workload feasibility adapters wired into PRISM's non-blocking advisory warning lifecycle. Expository Resource does not yet have a dedicated downstream workload feasibility adapter assessing concrete authored `sections[]` reading volume, structured materials, and embedded formative checks against an inherited commissioned duration.
+
+**Initial scope to consider:**
+
+- Add a dedicated Expository downstream workload feasibility adapter reusing `lib/workload-feasibility-estimator.js`.
+- Assess concrete authored exposition reading volume, structured materials (tables, scatterplots, worked examples), and embedded formative checks against the workflow's authoritative inherited duration (when commissioned inside a Learning Journey; standalone Expository continues to use `Scope/extent` rather than `Duration`).
+- Integrate with the shared non-blocking advisory warning lifecycle (capture, reload restoration, replacement, invalidation, clearing) without mutating schemas or duration locks.
+- Preserve explicit `insufficient_evidence` / `duration_unavailable` status distinction.
+
+**Boundaries:** Backlog item only — **no implementation now**. Deferred until after Connect More; **not** a Sprint 104 closure dependency.
+
+**Readiness:** Recorded 2026-11-26 following C4 Situated Task workload-feasibility implementation. Approach and acceptance criteria not yet written — **not sprint-allocated**.
+
 ---
 
 ## 2. Optional engineering / capability follow-ons

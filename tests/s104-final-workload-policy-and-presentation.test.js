@@ -336,7 +336,7 @@ test("5. Learning Journey unified shell: aggregate indicative total (no toleranc
 
   // Journey overview shows indicative total from exact 30-min total -> 20–40 minutes
   assert.match(built.html, /data-duration-minutes="30" data-indicative-duration="20–40 minutes"/);
-  assert.match(built.html, /Indicative duration: 20–40 minutes/);
+  assert.match(built.html, /Suggested study time: 20–40 minutes/);
 
   // Explanatory timing guidance note appears ONCE (at journey overview), NOT repeated inside C1/C2 templates
   const noteMatches = built.html.match(/data-timing-guidance-note="true"/g) || [];

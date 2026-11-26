@@ -87,9 +87,9 @@ test("Learning Journey producer guidance distinguishes Journal from prepopulatio
     isProducer: true,
     journalListed: true
   });
-  assert.match(help, /Learning Journey/i);
+  assert.match(help, /Saved on this device/i);
   assert.match(help, /Learning Journal/i);
-  assert.match(help, /do not paste it into their answer fields/i);
+  assert.match(help, /backup/i);
   assert.doesNotMatch(help, /kept on this page only/i);
   assert.doesNotMatch(help, /C02\.E1/);
 });
@@ -100,9 +100,9 @@ test("non-journalled producer is not described as journalled", () => {
     isProducer: true,
     journalListed: false
   });
-  assert.match(help, /show it for reference/i);
+  assert.match(help, /later activities/i);
   assert.doesNotMatch(help, /Learning Journal/i);
-  assert.match(help, /do not paste it into later answer fields/i);
+  assert.match(help, /backup/i);
 });
 
 test("unified mount updates only system-owned assessment-output help", () => {
@@ -134,7 +134,7 @@ test("unified mount updates only system-owned assessment-output help", () => {
   assert.equal(result.systemOwnedOnly, true);
   assert.ok(result.rewritten >= 1);
   assert.match(helpNode.textContent, /Learning Journal/i);
-  assert.match(helpNode.textContent, /do not paste it into their answer fields/i);
+  assert.match(helpNode.textContent, /Saved on this device/i);
   // Authored educational prose is not rewritten by this delivery-owned path.
   assert.match(authored, /Save or copy your completed response/);
   assert.match(authored, /Decide which findings matter most/);
@@ -148,7 +148,7 @@ test("producer signpost mentions Journal only for declared journal artefacts", (
     { journalSpec: { entries: [{ artefactId: "C02.E1" }] } }
   );
   assert.match(withJournal, /Learning Journal/);
-  assert.match(withJournal, /do not paste it into their answer fields/i);
+  assert.match(withJournal, /not pasted automatically into later answer fields/i);
   assert.doesNotMatch(withJournal, /C02\.E1/);
 
   const withoutJournal = artefact.buildProducerSignpostHtml(
@@ -158,7 +158,7 @@ test("producer signpost mentions Journal only for declared journal artefacts", (
     { journalSpec: { entries: [{ artefactId: "C05.E1" }] } }
   );
   assert.doesNotMatch(withoutJournal, /Learning Journal/);
-  assert.match(withoutJournal, /do not paste it into their answer fields/i);
+  assert.match(withoutJournal, /not pasted automatically into later answer fields/i);
 });
 
 test("resolved consumer reference states read-only reference without prepopulation", () => {
@@ -173,8 +173,8 @@ test("resolved consumer reference states read-only reference without prepopulati
     { artefactId: "C02.E1", label: "Your earlier explanation" },
     { producerTitle: "Write your first explanation" }
   );
-  assert.match(html, /Available here for reference/);
-  assert.match(html, /not pasted into the answer fields below/i);
+  assert.match(html, /Available here for reference \(read-only\)/);
+  assert.match(html, /From 'Write your first explanation'/);
   assert.match(html, /My explanation/);
   // Technical artefact ids may appear in machine attributes, not ordinary guidance prose.
   assert.doesNotMatch(

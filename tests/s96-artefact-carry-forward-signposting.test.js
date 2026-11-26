@@ -66,7 +66,7 @@ test("C1 producer signpost names C5 and C6 resource titles", () => {
   assert.match(html, /data-lj-artefact-signpost="producer"/);
   assert.match(html, /Reconsider, revise and improve/);
   assert.match(html, /The feedback that changed the work/);
-  assert.match(html, /save your draft in this Learning Journey/i);
+  assert.match(html, /Saved work on this device/i);
   assert.match(html, /on this device/i);
   assert.doesNotMatch(html, /\bc1\b|\bc5\b|\bc6\b|workspace|localStorage|artefactId/i);
 });
@@ -90,9 +90,9 @@ test("C5 producer signpost names C6 and consumer reference identifies C1", () =>
       produceLabel: "Original explanation"
     }
   );
-  assert.match(consumer, /Original explanation/);
+  assert.match(consumer, /Your earlier response/);
   assert.match(consumer, /From 'Your first explanation'/);
-  assert.match(consumer, /saved it earlier in this Learning Journey/);
+  assert.match(consumer, /Available here for reference \(read-only\)/);
   assert.match(consumer, /My first draft explanation/);
   assert.doesNotMatch(consumer.replace(/data-lj-artefact-ref="[^"]*"/g, ""), /c1\.E1|commissionId|localStorage|workspaceId/i);
 });
@@ -318,9 +318,9 @@ test("unified rewrite maps system-owned standalone help for producers", () => {
   });
   assert.doesNotMatch(out, /Later activities will not retrieve/i);
   assert.doesNotMatch(out, /kept on this page only/i);
-  assert.match(out, /kept on this device when you save it/i);
-  assert.match(out, /Learning Journey/i);
-  assert.match(out, /do not paste it into later answer fields/i);
+  assert.match(out, /Saved on this device/i);
+  assert.match(out, /later activities/i);
+  assert.match(out, /backup/i);
 });
 
 test("standalone assessment-output help remains page-only / copy guidance", () => {

@@ -102,8 +102,8 @@ test("rewriteHandoffMechanicsText maps only the known standalone system help sen
     isProducer: true,
     journalListed: false
   });
-  assert.match(out, /Learning Journey/i);
-  assert.match(out, /do not paste it into later answer fields/i);
+  assert.match(out, /Saved on this device/i);
+  assert.match(out, /later activities/i);
   assert.doesNotMatch(out, /kept on this page only/i);
 
   const authored =
@@ -171,8 +171,8 @@ test("unified guidance updates system-owned assessment-output help only", () => 
   assert.equal(result.ok, true);
   assert.equal(result.systemOwnedOnly, true);
   assert.ok(result.rewritten >= 1);
-  assert.match(helpNode.textContent, /Learning Journey/i);
-  assert.match(helpNode.textContent, /do not paste/i);
+  assert.match(helpNode.textContent, /Saved on this device/i);
+  assert.match(helpNode.textContent, /later activities/i);
   assert.equal(helpNode.attrs["data-assessment-output-delivery"], "unified");
 });
 
@@ -187,8 +187,7 @@ test("resolved artefact note states availability without implying prepopulation"
     },
     { artefactId: "c5.E1", label: "Your earlier response" }
   );
-  assert.match(html, /Available here for reference/);
-  assert.match(html, /not pasted into the answer fields below/i);
+  assert.match(html, /Available here for reference \(read-only\)/);
   assert.match(html, /My judgement/);
 });
 

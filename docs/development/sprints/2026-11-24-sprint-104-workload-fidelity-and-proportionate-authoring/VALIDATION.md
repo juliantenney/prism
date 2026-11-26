@@ -1,6 +1,6 @@
 # Sprint 104 — Validation ledger
 
-**Status:** **OPEN — LIVE ACCEPTANCE RE-EVALUATION CORRECTIONS IMPLEMENTED (`S104-D06`, STOPPED FOR REVIEW)** — Milestones 1–5 committed (`c461770` → `f1f1269`); Sprint 105 **CLOSED — COMPLETE** (`76f44ef`)  
+**Status:** **OPEN — ECONOMICS CONSOLIDATED LIVE ACCEPTANCE PASSED; OPEN FOR M6 PROPORTIONALITY ACCEPTANCE & FINAL CLOSURE CHECKS** — Milestones 1–5 committed (`c461770` → `f1f1269`), `S104-D06` (`eebb162`), F01/F02 (`8c0b98a`), `S104-D07` (`86d40ad`); Sprint 105 **CLOSED — COMPLETE** (`76f44ef`)  
 **Resumption baseline:** `76f44ef` (Sprint 104 M1–M5 `c461770`–`f1f1269` + Sprint 105 M1–M4 & closure `4b698db`–`76f44ef`)
 
 ---
@@ -363,4 +363,34 @@ The completed independent Learning Journey QA audit awarded the canonical Econom
 
 ### Updated Milestone 6 acceptance criterion (`S104-D07`)
 - The outstanding **5-, 15-, and 30-minute Practice sensitivity test** must demonstrate meaningful differences in scope, activity design, and workload proportionality while preserving intended learning purpose and appropriate cognitive demand; it is **not** intended to demonstrate exact learner completion times.
+
+---
+
+## Consolidated Economics Learning Journey live runtime acceptance & presentation refinements (2026-11-26 — PASS)
+
+### Live runtime acceptance results (Economics Learning Journey)
+
+| Check / Dimension | Live Result | Notes & Scope Boundary |
+| ----------------- | ----------- | ---------------------- |
+| **Situated Task → Practice learner artefact handoff** | **PASS** | `C4 → C5` and `C4 → C6` response retrieval verified live |
+| **Independent Assessment Pack (`C7`)** | **PASS** | Correctly displays no earlier learner responses, preserving assessment independence |
+| **Assessment Pack → Practice handoff (`C7 → C8`)** | **PASS** | Authoritative artefact bound to `assessment-output-<specification_id>` (the learner's current editable retained judgement under *"My transport and employment judgement"*), preserving existing edits and explicit replacement behaviour (`lib/learner-renderer-vnext/assessment-output.js`, `lib/learner-renderer-vnext/learner-artefact-producers.js`) |
+| **Learning Journal population & response persistence** | **PASS** | Live draft-save sync (`prism:learner-draft-saved`), Journal count increment (`2 → 3`), population, and device persistence verified |
+
+### Intentional presentation policy & recorded legacy / follow-up observations
+
+- **Intentional unified timing presentation policy:** Aggregate **Suggested study time** is shown in the journey overview with discreet secondary explanatory text; component timings are shown in the table of contents; routine timing labels are intentionally omitted within embedded components of the unified journey (standalone resource timing guidance and explicitly timed pedagogical activities remain preserved).
+- **Saved-response, Learning Journal navigation & earlier-response refinements:** Saved-response notices use concise subordinate text with an unobtrusive *"About saving and backup"* disclosure; the Learning Journal section heading and navigation item with live response count sit immediately below the journey title above the independently scrollable contents list; earlier-response panels appear in the component's pedagogical opening (after overview and learning outcomes where present, never above internal navigation or editorial image) with a shortened read-only attribution note.
+- **Legacy Economics `C5` observation (no regeneration):** The existing Economics `C5` receives an unnecessary earlier response through legacy dependency inference even though its authored specification explicitly excludes that response. The new explicit `artefact_references[]` contract (`8c0b98a`) resolves this for newly authored journeys; Economics is not regenerated to correct this legacy configuration.
+- **Editorial opening images (no regeneration of Economics):** The existing Economics journey explicitly specifies `editorial_opening_image.decision: "skip"`, so its `Graphics (0)` state in Authoring is expected. The Learning Journey editorial synthesis prompts (`lib/learning-journey-design-page.js`) have been updated to favour `"generate"` by default (distinguishing decorative editorial imagery from instructional graphical representations while retaining justified `"skip"` for exceptional circumstances). The restored journey-level image production and publication pathway will be verified live on the next newly authored journey.
+
+### Focused automated verification (`node --test`, observed 2026-11-26)
+
+| Suite / Scope | Result | Notes |
+| ------------- | ------ | ----- |
+| `tests/s104-c7-c8-assessment-output-handoff.test.js` (new) | **4 / 4 pass** | Editable retained-judgement workspace binding (`assessment-output-<specId>`), `direct_copy` & bare pack preservation, C7 independence + C7 → C8 handoff + Journal `2 → 3` + C4/C6 non-regression, live `prism:learner-draft-saved` badge sync, and `installAssessmentOutput` direct-edit preservation / explicit replacement |
+| `tests/s104-presentation-refinements.test.js` (new) | **5 / 5 pass** | Overview *"Suggested study time"* without callout/border + TOC durations, concise saved-response guidance + backup disclosure, pinned Learning Journal section heading & nav item above scrollable TOC, earlier-response insertion after overview & learning outcomes with concise read-only note, and LJ editorial opening image discovery/fulfilment/overview placement/packaging/graceful omission + prompt default-generate alignment |
+| Combined 14-suite handoff, Journal, workload, design-page & presentation regression bundle | **92 / 92 pass** | Includes `s104-presentation-refinements`, `s104-c7-c8-assessment-output-handoff`, `s104-final-workload-policy-and-presentation`, `s104-artefact-contract-f01-f02`, `s96-artefact-carry-forward-signposting`, `assessment-pack-delivery-context-retention-guidance`, `s95-m3-learner-artefact-handoff`, `s96-m3-contextual-guidance`, `s97-m2-t2-learning-journal-population`, `s97-m2-t3-learning-journal-notifications`, `s93-assessment-pack-output-assembly`, `assessment-pack-output-direct-copy`, `s105-m2-prompts-and-continuity`, `s91-learning-journey-wp3-design-page` |
+| `npm run check:learner-renderer-vnext-browser` | **OK** | Confirms rebuilt `lib/learner-renderer-vnext-browser.js` and export runtime bundles match source |
+
 

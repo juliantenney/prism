@@ -63848,11 +63848,17 @@
           String(rendered.html || "")
         );
         state.utilitiesLastHtml = durableHtmlText;
+        var ljAssetCount =
+          state.utilitiesOutputWorkspace &&
+          state.utilitiesOutputWorkspace.visualAssetManifest &&
+          Array.isArray(state.utilitiesOutputWorkspace.visualAssetManifest.assets)
+            ? state.utilitiesOutputWorkspace.visualAssetManifest.assets.length
+            : 0;
         applyUtilityPreviewHtml(durableHtmlText, {
           preserveView: true,
           previewRevision: ljRevision,
           reason: why,
-          manifestAssetCount: 0
+          manifestAssetCount: ljAssetCount
         });
         state.utilitiesOutputWorkspace.learnerPreviewRefreshStatus = "ok";
         state.utilitiesOutputWorkspace.previewRevision = ljRevision;

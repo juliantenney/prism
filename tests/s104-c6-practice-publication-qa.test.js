@@ -466,3 +466,184 @@ test("Defect 3: Published navigation omits #journey-assessment when no assessmen
   const withItems = sectionNav.buildSectionNavItems(withAssessment, built.model);
   assert.ok(withItems.some((i) => i.id === "journey-assessment"));
 });
+
+function buildC2ReconsiderationPage(options) {
+  const opts = options || {};
+  const m4Type = opts.m4Type || "data_table";
+  const m4Body =
+    opts.m4Body ||
+    [
+      "Consult this comparison only after committing to your initial interpretation.",
+      "",
+      "| Sample | Pearson correlation |",
+      "| --- | ---: |",
+      "| All 10 retailers (R1–R10) | 0.47 |",
+      "| 9 retailers excluding R10 (R1–R9) | 1.00 |"
+    ].join("\n");
+  const m4Purpose =
+    opts.m4Purpose || "Supplementary evidence comparing correlation calculations for reconsideration";
+  const page = {
+    artifact_type: "page",
+    schema_version: "2.0.0",
+    product_id: "practice",
+    page_kind: "practice",
+    title: "Interpreting contrasting statistical relationships",
+    audience: "Learners",
+    page_profile: { profile_type: "learner" },
+    learning_outcomes: [
+      { id: "LO1", statement: "Interpret correlation coefficients alongside scatterplots and outlier influence." }
+    ],
+    activities: [
+      {
+        activity_id: "A2",
+        title: "Interpret advertising expenditure and sales revenue",
+        duration_minutes: 10,
+        mapped_learning_outcomes: ["LO1"],
+        learner_task: [
+          "1. Inspect the retailer scatterplot and data table.",
+          "2. Write your initial interpretation of the relationship before consulting the comparison.",
+          "3. Compare the two correlation calculations after committing to your initial interpretation and reconsider if needed."
+        ].join("\n"),
+        expected_output: "An initial interpretation and a reconsidered judgement grounded in the scatterplot.",
+        required_materials: [
+          { material_id: "A2-M1", type: "data_table", purpose: "Initial dataset and scatterplot for R1–R10" },
+          { material_id: "A2-M2", type: "template", purpose: "Initial interpretation workspace" },
+          { material_id: "A2-M4", type: m4Type, purpose: m4Purpose }
+        ],
+        materials: [
+          {
+            material_id: "A2-M1",
+            type: "data_table",
+            title: "Advertising expenditure and sales revenue",
+            body_format: "markdown",
+            body: "| Retailer | Advertising | Sales |\n| --- | ---: | ---: |\n| R1 | 1 | 18 |\n| R10 | 10 | 15 |\n\nPearson correlation: \\(r = 0.47\\).",
+            scatterplot: {
+              title: "Monthly advertising expenditure and monthly sales revenue",
+              x_axis: { label: "Monthly advertising expenditure (£ thousands)", scale: "linear", minimum: 0, maximum: 10, tick_interval: 1 },
+              y_axis: { label: "Monthly sales revenue (£ thousands)", scale: "linear", minimum: 0, maximum: 50, tick_interval: 10 },
+              show_point_labels: true,
+              observations: [
+                { label: "R1", x: 1, y: 18 },
+                { label: "R10", x: 10, y: 15 }
+              ],
+              accessible_description: "Scatterplot of retailer observations."
+            }
+          },
+          {
+            material_id: "A2-M2",
+            type: "template",
+            title: "Initial interpretation workspace",
+            body_format: "markdown",
+            body: "**Initial interpretation:**\n\nDescribe the relationship between advertising expenditure and sales revenue across the retailers."
+          },
+          {
+            material_id: "A2-M4",
+            type: m4Type,
+            title: "Compare two correlation calculations",
+            body_format: "markdown",
+            body: m4Body
+          }
+        ],
+        episode_plan: {
+          archetype: "analyse",
+          beats: [
+            { function: "activation" },
+            { function: "explanation" },
+            { function: "guided_inquiry" },
+            { function: "verification" }
+          ]
+        }
+      }
+    ],
+    learning_sequence: {
+      total_duration_minutes: 10,
+      ordered_activity_ids: ["A2"],
+      timeline: [
+        Object.assign(
+          { activity_id: "A2", duration_minutes: 10, start_seconds: 0, end_seconds: 600 },
+          opts.studyFlow ? { learner_study_flow: opts.studyFlow } : {}
+        )
+      ]
+    },
+    assembly_state: {
+      current_stage: "design_page",
+      enriched_by: ["episode_plan", "dla", "gam", "learning_sequence", "design_page"]
+    }
+  };
+  if (opts.feedbackDisclosure) {
+    page.learning_sequence.navigation = { feedback_disclosure: opts.feedbackDisclosure };
+  }
+  return page;
+}
+
+test("C2 Defect: Supplementary reconsideration evidence (A2-M4 data_table/comparison_table) defers to Check after the initial workspace while initial evidence (A2-M1) stays before it", () => {
+  for (const m4Type of ["data_table", "comparison_table", "reference_table"]) {
+    const page = buildC2ReconsiderationPage({ m4Type });
+    const rendered = renderLearnerPageHtml(page, { includeRuntimeScripts: true });
+    assert.equal(rendered.error, null, String(rendered.error || ""));
+    const html = rendered.html;
+
+    const initialEvidencePos = html.indexOf('data-material-id="A2-M1"');
+    const workspacePos = html.indexOf("learner-workspace-a2");
+    const checkHeadingPos = html.indexOf('id="learner-check-a2-heading"');
+    const supplementaryPos = html.indexOf('data-material-id="A2-M4"');
+
+    assert.ok(initialEvidencePos >= 0, `${m4Type}: A2-M1 initial evidence must render`);
+    assert.ok(workspacePos >= 0, `${m4Type}: A2-M2 initial workspace must render`);
+    assert.ok(checkHeadingPos >= 0, `${m4Type}: Check section must render`);
+    assert.ok(supplementaryPos >= 0, `${m4Type}: A2-M4 supplementary comparison must render`);
+
+    assert.ok(
+      initialEvidencePos < workspacePos,
+      `${m4Type}: Required initial evidence (A2-M1) must precede the initial workspace`
+    );
+    assert.ok(
+      workspacePos < checkHeadingPos,
+      `${m4Type}: Initial workspace must precede Check`
+    );
+    assert.ok(
+      checkHeadingPos < supplementaryPos,
+      `${m4Type}: Supplementary reconsideration evidence (A2-M4) must appear in Check AFTER the initial workspace`
+    );
+    // Preserves scatterplot and voluntary collapsed disclosure
+    assert.ok(html.indexOf('class="util-scatterplot-svg"') >= 0, `${m4Type}: scatterplot must be preserved`);
+    const checkSlice = html.slice(checkHeadingPos);
+    assert.match(checkSlice, /<details class="util-composition-reveal[\s\S]*data-material-id="A2-M4"/);
+  }
+});
+
+test("C2 Defect: Supplementary evidence defers to Check when marked post-attempt via learning_sequence study_flow or required_materials purpose, even with neutral body prose", () => {
+  const neutralBody = "| Sample | r |\n| --- | ---: |\n| All 10 retailers | 0.47 |\n| Excluding R10 | 1.00 |";
+
+  // Case A: learner_study_flow post_attempt disclosure
+  const byStudyFlow = buildC2ReconsiderationPage({
+    m4Type: "data_table",
+    m4Body: neutralBody,
+    m4Purpose: "Compare two correlation calculations",
+    studyFlow: [
+      { step: 1, disclosure: "initial_attempt", material_ids: ["A2-M1", "A2-M2"] },
+      { step: 2, disclosure: "post_attempt", material_ids: ["A2-M4"] }
+    ]
+  });
+  const htmlFlow = renderLearnerPageHtml(byStudyFlow).html;
+  assert.ok(
+    htmlFlow.indexOf('data-material-id="A2-M1"') < htmlFlow.indexOf("learner-workspace-a2") &&
+      htmlFlow.indexOf("learner-workspace-a2") < htmlFlow.indexOf('id="learner-check-a2-heading"') &&
+      htmlFlow.indexOf('id="learner-check-a2-heading"') < htmlFlow.indexOf('data-material-id="A2-M4"'),
+    "learning_sequence learner_study_flow post_attempt must defer A2-M4 into Check"
+  );
+
+  // Case B: required_materials[].purpose states post-commitment disclosure
+  const byPurpose = buildC2ReconsiderationPage({
+    m4Type: "comparison_table",
+    m4Body: neutralBody,
+    m4Purpose: "Disclosed after the learner has committed to an initial interpretation for subsequent reconsideration."
+  });
+  const htmlPurpose = renderLearnerPageHtml(byPurpose).html;
+  assert.ok(
+    htmlPurpose.indexOf('data-material-id="A2-M1"') < htmlPurpose.indexOf("learner-workspace-a2") &&
+      htmlPurpose.indexOf("learner-workspace-a2") < htmlPurpose.indexOf('id="learner-check-a2-heading"') &&
+      htmlPurpose.indexOf('id="learner-check-a2-heading"') < htmlPurpose.indexOf('data-material-id="A2-M4"'),
+    "required_materials purpose stating post-commitment disclosure must defer A2-M4 into Check"
+  );
+});

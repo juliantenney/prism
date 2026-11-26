@@ -4,9 +4,17 @@ var assert = require("assert");
 var path = require("path");
 
 var practiceContracts = require(path.join(__dirname, "..", "lib", "ld-practice-presentation-contracts.js"));
+var gamContract = require(path.join(__dirname, "..", "lib", "ld-gam-page-enrich-contract.js"));
 var gamEnrich = require(path.join(__dirname, "..", "lib", "page-gam-enrich.js"));
 var assembler = require(path.join(__dirname, "..", "lib", "page-vnext-assemble.js"));
 var renderer = require(path.join(__dirname, "..", "lib", "learner-renderer-vnext", "index.js"));
+var expositoryStructured = require(path.join(
+  __dirname,
+  "..",
+  "lib",
+  "learner-renderer-vnext",
+  "expository-structured-materials.js"
+));
 
 var TEMP_OBSERVATIONS = [
   { label: "Month 1", x: 0, y: 180 },
@@ -362,6 +370,87 @@ function runTests() {
     var html = renderer.renderLearnerPageHtml(assembled).html;
     assert.strictEqual(html.indexOf("util-scatterplot-svg"), -1, "Must not heuristically extract scatterplots from Markdown tables");
     assert.ok(html.indexOf("<td>180</td>") !== -1, "Markdown data table still renders cleanly");
+  });
+
+  test("7. Live Practice canonical GAM contract includes structured scatterplot schema & example without changing Interactive", function () {
+    var practiceBlock = gamContract.buildGamPageEnrichContractBlock({ practiceProduct: true });
+    var practiceSnippet = gamContract.buildCanonicalGamMaterialShapeSnippet({ practiceProduct: true });
+    assert.ok(practiceBlock.indexOf('"scatterplot"') !== -1, "Practice GAM contract block must specify sibling scatterplot object");
+    assert.ok(practiceBlock.indexOf("GAM-SVG-01") !== -1, "Practice GAM contract block must cite GAM-SVG-01");
+    assert.ok(practiceBlock.indexOf("GAM-SCATTER-02") !== -1, "Practice GAM contract block must cite GAM-SCATTER-02");
+    assert.ok(practiceSnippet.indexOf('"scatterplot": {') !== -1, "Practice canonical GAM snippet must include valid scatterplot example");
+    assert.ok(practiceSnippet.indexOf('"show_point_labels": true') !== -1, "Practice canonical GAM snippet must include show_point_labels");
+    assert.ok(practiceSnippet.indexOf("GAM-SCATTER-02") !== -1, "Practice canonical GAM snippet must list GAM-SCATTER-02 as invalid");
+
+    var interactiveBlock = gamContract.buildGamPageEnrichContractBlock({});
+    var interactiveSnippet = gamContract.buildCanonicalGamMaterialShapeSnippet({});
+    assert.strictEqual(interactiveBlock.indexOf("GAM-SCATTER-02"), -1, "Interactive GAM contract block must stay unchanged");
+    assert.strictEqual(interactiveSnippet.indexOf('"scatterplot": {'), -1, "Interactive canonical GAM snippet must stay unchanged");
+  });
+
+  test("8. GAM capture validation rejects fenced JSON scatterplot specs inside Markdown body and misnamed sibling keys (GAM-SCATTER-02)", function () {
+    var fencedGam = buildStructuredC02GamPartial();
+    var spec = fencedGam.activities[0].materials[0].scatterplot;
+    delete fencedGam.activities[0].materials[0].scatterplot;
+    fencedGam.activities[0].materials[0].body +=
+      "\n\n```json\n" + JSON.stringify({ scatterplot: spec }, null, 2) + "\n```";
+    var fencedRes = gamEnrich.validateGamPartialPageCapture(fencedGam);
+    assert.strictEqual(fencedRes.ok, false, "Fenced JSON scatterplot spec in Markdown body must fail GAM validation");
+    assert.ok(
+      fencedRes.errors.some(function (e) { return e.indexOf("GAM-SCATTER-02") !== -1; }),
+      "Expected GAM-SCATTER-02 error for fenced JSON scatterplot, got: " + JSON.stringify(fencedRes.errors)
+    );
+
+    var misnamedGam = buildStructuredC02GamPartial();
+    misnamedGam.activities[0].materials[0].scatter_plot = misnamedGam.activities[0].materials[0].scatterplot;
+    delete misnamedGam.activities[0].materials[0].scatterplot;
+    var misnamedRes = gamEnrich.validateGamPartialPageCapture(misnamedGam);
+    assert.strictEqual(misnamedRes.ok, false, "Misnamed sibling scatter_plot key must fail GAM validation");
+    assert.ok(
+      misnamedRes.errors.some(function (e) { return e.indexOf("GAM-SCATTER-02") !== -1; }),
+      "Expected GAM-SCATTER-02 error for misnamed sibling key, got: " + JSON.stringify(misnamedRes.errors)
+    );
+  });
+
+  test("9. Cross-product Expository XM and Practice GAM render identical scatterplot SVG from the same canonical spec", function () {
+    var gamPartial = buildStructuredC02GamPartial();
+    var m3 = gamPartial.activities[0].materials[2];
+    var spec = m3.scatterplot;
+
+    var expositoryNormalized = expositoryStructured.normalizeScatterplotMaterial(
+      { material_id: m3.material_id, title: m3.title },
+      { title: m3.title, scatterplot: spec },
+      m3.material_id,
+      "scatterplot",
+      "S1",
+      0
+    );
+    assert.ok(expositoryNormalized, "Expository XM normalizer must accept canonical scatterplot spec");
+    var expositoryHtml = expositoryStructured.renderScatterplotEvidence(expositoryNormalized, {
+      escapeHtml: function (s) {
+        return String(s == null ? "" : s)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;");
+      }
+    });
+    var expositorySvgMatch = expositoryHtml.match(/<svg\b[^>]*class="util-scatterplot-svg"[\s\S]*?<\/svg>/);
+    assert.ok(expositorySvgMatch, "Expository XM must render deterministic scatterplot SVG");
+
+    var assembled = assembler.assembleVNextPageFromPartials({
+      episode_plan: buildDlaBaselinePage(),
+      dla: buildDlaBaselinePage(),
+      gam: gamPartial
+    }).page;
+    var practiceHtml = renderer.renderLearnerPageHtml(assembled).html;
+    var practiceSvgs = practiceHtml.match(/<svg\b[^>]*class="util-scatterplot-svg"[\s\S]*?<\/svg>/g) || [];
+    assert.strictEqual(practiceSvgs.length, 2, "Practice GAM must render both scatterplots");
+    assert.strictEqual(
+      practiceSvgs[1],
+      expositorySvgMatch[0],
+      "Practice GAM and Expository XM must emit byte-identical scatterplot SVG for the same canonical spec"
+    );
   });
 
   console.log("ALL PASSED (" + passed + " tests)");

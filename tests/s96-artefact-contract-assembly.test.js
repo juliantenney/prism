@@ -19,7 +19,8 @@ const {
   renderLearnerPageHtml
 } = require("../lib/learner-renderer-vnext");
 
-function assessmentPage(elicitationId, title) {
+function assessmentPage(elicitationId, title, options) {
+  const opts = options && typeof options === "object" ? options : {};
   return {
     artifact_type: "page",
     schema_version: "2.0.0",
@@ -34,7 +35,17 @@ function assessmentPage(elicitationId, title) {
         stop_rationale: "Formative stop.",
         forward_intent: "Carry the judgement forward."
       },
-      learner_context: { depends_on_prior_work: false },
+      learner_context: opts.dependsOnPriorWork === true
+        ? {
+            depends_on_prior_work: true,
+            bring_forward: [
+              {
+                what: "Your independent judgement from the earlier assessment.",
+                how_used: "Revisit and evaluate it against the review criteria."
+              }
+            ]
+          }
+        : { depends_on_prior_work: false },
       pack_forward_orientation: "Use the result in the next block.",
       elicitations: [
         {
@@ -138,7 +149,7 @@ function duuConstituents() {
     {
       commissionId: "c6",
       productId: "assessment_pack",
-      sourcePage: assessmentPage("review", "Evaluating Judgement")
+      sourcePage: assessmentPage("review", "Evaluating Judgement", { dependsOnPriorWork: true })
     }
   ];
 }
@@ -282,7 +293,7 @@ test("legitimate later Interactive consumer of earlier Assessment Pack remains i
 test("exported unified manifest keeps single C5 produce and C6 reference after repeated assembly", () => {
   const page = duuShapedPage();
   const c5Page = assessmentPage("E1", "Independent Evidence-Informed Judgement");
-  const c6Page = assessmentPage("review", "Evaluating Judgement");
+  const c6Page = assessmentPage("review", "Evaluating Judgement", { dependsOnPriorWork: true });
   const renderedC5 = renderLearnerPageHtml(c5Page);
   const renderedC6 = renderLearnerPageHtml(c6Page);
   assert.equal(renderedC5.error, null, renderedC5.error);

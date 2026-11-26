@@ -15,7 +15,8 @@ const {
   findProduceDeclaration
 } = require("../lib/learner-renderer-vnext/learner-artefact-contract.js");
 
-function assessmentPage(elicitationId, title) {
+function assessmentPage(elicitationId, title, options) {
+  const opts = options && typeof options === "object" ? options : {};
   return {
     artifact_type: "page",
     schema_version: "2.0.0",
@@ -30,7 +31,7 @@ function assessmentPage(elicitationId, title) {
         stop_rationale: "Formative stop.",
         forward_intent: "Carry the judgement forward."
       },
-      learner_context: { depends_on_prior_work: false },
+      learner_context: { depends_on_prior_work: opts.dependsOnPriorWork === true },
       pack_forward_orientation: "Use the result later.",
       elicitations: [
         {
@@ -108,12 +109,12 @@ function constituents() {
       title: "Independent Judgement",
       sourcePage: assessmentPage("E1", "Independent Judgement")
     },
-    {
-      commissionId: "c6",
-      productId: "assessment_pack",
-      title: "Evaluating Judgement",
-      sourcePage: assessmentPage("review", "Evaluating Judgement")
-    }
+      {
+        commissionId: "c6",
+        productId: "assessment_pack",
+        title: "Evaluating Judgement",
+        sourcePage: assessmentPage("review", "Evaluating Judgement", { dependsOnPriorWork: true })
+      }
   ];
 }
 
@@ -305,7 +306,16 @@ test("undeclared Interactive journal producer is surfaced without inventing a pr
     }),
     JSON.stringify(proposal.gaps)
   );
-  assert.equal(proposal.ok, true, JSON.stringify(proposal.gaps));
+  // S104 F01 fail-closed: an unresolved Journal entry blocks ok even when other entries resolve,
+  // while still reporting partial produces[] without inventing the missing declaration.
+  assert.equal(proposal.ok, false, JSON.stringify(proposal.gaps));
+  assert.ok(
+    Array.isArray(proposal.blockingGaps) &&
+      proposal.blockingGaps.some(function (gap) {
+        return gap.code === "journal_producer_elicitation_missing" && gap.artefactId === "c1.E1";
+      }),
+    JSON.stringify(proposal.blockingGaps)
+  );
   assert.equal(proposal.journalDeclaredProduceCount, 1);
   assert.equal(proposal.contract.produces.length, 1);
   assert.equal(proposal.contract.produces[0].artefactId, "c5.E1");

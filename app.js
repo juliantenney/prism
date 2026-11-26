@@ -14027,6 +14027,28 @@
     return firstClassPublishRoute(wf) === "assessment_pack";
   }
 
+  function isCanonicalFourStageAssessmentPackWorkflow(wf) {
+    if (!workflowRecordIsAssessmentPack(wf)) return false;
+    var steps = Array.isArray(wf && wf.steps) ? wf.steps : [];
+    var hasLegacyPackStep = steps.some(function (row) {
+      return row && workflowStepProducesArtefact(row, "assessment_pack");
+    });
+    if (hasLegacyPackStep) return false;
+    return steps.some(function (row) {
+      if (!row || typeof row !== "object") return false;
+      var oname = normalizeWorkflowStepOutputNameKey(row);
+      var cid = String(row.canonical_step_id || row.canonicalStepId || "").trim().toLowerCase();
+      return (
+        oname === "assessment_evidence_purpose" ||
+        oname === "assessment_evidence_elicitation" ||
+        oname === "assessment_formative_return" ||
+        cid === "step_interpret_evidence_purpose" ||
+        cid === "step_design_evidence_elicitation" ||
+        cid === "step_author_formative_return"
+      );
+    });
+  }
+
   function findAssessmentPackCapture(workflow, captures, capturesRaw) {
     var fromChain = resolveUpstreamWorkflowArtefactFromCaptures("assessment_pack", {
       workflow: workflow
@@ -14211,7 +14233,8 @@
               designPage: designJson,
               assessmentPack: packJson,
               learningOutcomes: learningOutcomes,
-              feedbackTiming: factors.feedback_timing
+              feedbackTiming: factors.feedback_timing,
+              requireCanonical: isCanonicalFourStageAssessmentPackWorkflow(workflowEarly)
             })
           : publishMod.assembleAssessmentPackPage({
               designPage: designJson,
@@ -17074,6 +17097,9 @@
       errors.push(message);
     });
     assessmentStructuredStimulusCaptureErrors(parsed).forEach(function (message) {
+      errors.push(message);
+    });
+    assessmentRepresentationCaptureErrors(parsed).forEach(function (message) {
       errors.push(message);
     });
     if (errors.length) {
@@ -20196,10 +20222,27 @@
     }
     if (workflowRecordIsAssessmentPack(workflow)) {
       var assessmentOutput = normalizeWorkflowStepOutputNameKey(step);
+      if (assessmentOutput === "page" || isWorkflowStepDesignPageRow(step)) {
+        var apStrict = parseAssessmentPackDesignPageCaptureForStorage(raw, workflow);
+        if (!apStrict || !apStrict.ok) {
+          return {
+            ok: false,
+            errors: (apStrict && apStrict.errors) || ["invalid_assessment_pack_design_page_capture"],
+            message:
+              (apStrict && (apStrict.message || (apStrict.errors || []).join("; "))) ||
+              "Invalid Assessment Pack Design Page capture",
+            warnings: []
+          };
+        }
+        return {
+          ok: true,
+          errors: [],
+          warnings: Array.isArray(apStrict.warnings) ? apStrict.warnings.slice() : []
+        };
+      }
       if (
         assessmentOutput === "assessment_evidence_elicitation" ||
-        assessmentOutput === "assessment_formative_return" ||
-        assessmentOutput === "page"
+        assessmentOutput === "assessment_formative_return"
       ) {
         var parsedAssessment = tryParseWorkflowArtefactJson(raw);
         if (parsedAssessment) {
@@ -20218,6 +20261,15 @@
               ok: false,
               errors: stimulusErrors,
               message: stimulusErrors.join("; "),
+              warnings: []
+            };
+          }
+          var representationErrors = assessmentRepresentationCaptureErrors(parsedAssessment);
+          if (representationErrors.length) {
+            return {
+              ok: false,
+              errors: representationErrors,
+              message: representationErrors.join("; "),
               warnings: []
             };
           }
@@ -40398,9 +40450,11 @@
         })
       ) {
         augmented = ensureAssessmentPackEditorialOpeningInDesignPrompt(augmented);
+        augmented = ensureAssessmentPackOutputSpecificationInDesignPrompt(augmented);
       }
       augmented = ensureAssessmentPackKeyDefencePrompt(augmented, step, wfRec);
       augmented = ensureAssessmentPackEvidenceQualificationPrompt(augmented, step, wfRec);
+      augmented = ensureAssessmentPackScatterplotRepresentationPrompt(augmented, step, wfRec);
       return applyCommissionedOriginalBriefDelivery(
         augmented,
         step,
@@ -43308,6 +43362,102 @@
     return (body ? body.replace(/\s+$/, "") + "\n\n" + block : block).trim();
   }
 
+  function assessmentPackOutputSpecificationContractPresent(text) {
+    var body = String(text || "");
+    return (
+      body.indexOf("Canonical output_specification JSON example") !== -1 &&
+      body.indexOf("section_id") !== -1 &&
+      body.indexOf("contribution_id") !== -1 &&
+      /\border\b/.test(body)
+    );
+  }
+
+  function buildAssessmentPackOutputSpecificationRuntimeBlock() {
+    var api = assessmentCanonicalApi();
+    var lines =
+      api && typeof api.buildOutputSpecificationAuthoringContractLines === "function"
+        ? api.buildOutputSpecificationAuthoringContractLines({ structuredArtefact: false })
+        : [];
+    if (!lines.length) {
+      lines = [
+        "When emitting assessment_evidence.output_specification, use closed fields only: specification_id, artefact_title, audience, purpose, action_label, missing_response_text, sections.",
+        "Every sections[] entry MUST include section_id (unique non-empty string), order (positive integer starting at 1), heading (non-empty string), and contributions (non-empty array).",
+        "Every contributions[] entry MUST include contribution_id (unique non-empty string), label (non-empty string), elicitation_id (matching an existing elicitation), and response_part (\"response_text\" for constructed_performance)."
+      ];
+    }
+    lines = lines.concat([
+      "Constructing a canonical output_specification does NOT conflict with preserving upstream content: even when upstream stages only described retention in prose (without section_id, order, or contribution_id), Stage 4 Design Page MUST populate every required output_specification key cleanly."
+    ]);
+    return lines.join("\n");
+  }
+
+  function assessmentRepresentationCaptureErrors(parsed) {
+    var api = assessmentCanonicalApi();
+    if (!api || typeof api.reviewElicitationRepresentations !== "function" || !parsed || typeof parsed !== "object") {
+      return [];
+    }
+    var review = api.reviewElicitationRepresentations(parsed);
+    if (!review || review.ok) return [];
+    return (review.errors || []).map(function (err) {
+      var p = err && err.path ? String(err.path) + ": " : "";
+      return p + String((err && (err.message || err.code)) || "Invalid scatterplot representation.");
+    });
+  }
+
+  function assessmentPackScatterplotContractPresent(text) {
+    var body = String(text || "");
+    return (
+      body.indexOf("Canonical scatterplot representation contract") !== -1 &&
+      body.indexOf("plot_specification") !== -1 &&
+      body.indexOf("authoritative_data") !== -1 &&
+      body.indexOf("column_headers") !== -1
+    );
+  }
+
+  function ensureAssessmentPackScatterplotRepresentationPrompt(text, step, wf) {
+    var body = String(text || "");
+    if (!workflowRecordIsAssessmentPack(wf)) return body;
+    var outputName = String((step && (step.outputName || step.output_name)) || "")
+      .trim()
+      .toLowerCase();
+    var canonicalId = String((step && (step.canonical_step_id || step.canonicalStepId)) || "")
+      .trim()
+      .toLowerCase();
+    var isElicitation =
+      outputName === "assessment_evidence_elicitation" ||
+      canonicalId === "step_design_evidence_elicitation";
+    var isDesignPage =
+      outputName === "page" ||
+      canonicalId === "step_design_page" ||
+      isWorkflowStepDesignPage({
+        stepCanonicalStepId: canonicalId,
+        stepCanonicalTitle: (step && step.title) || "",
+        stepTitle: (step && step.title) || ""
+      });
+    if (!isElicitation && !isDesignPage) return body;
+    if (assessmentPackScatterplotContractPresent(body)) return body.trim();
+    var api = assessmentCanonicalApi();
+    var lines =
+      api && typeof api.buildScatterplotRepresentationAuthoringContractLines === "function"
+        ? api.buildScatterplotRepresentationAuthoringContractLines()
+        : [];
+    if (!lines.length) return body;
+    if (isDesignPage) {
+      lines = lines.concat([
+        "When an upstream elicitation includes a scatterplot representation, preserve its exact authoritative observations, units, and correlation summaries while ensuring its JSON structure conforms strictly to the canonical representation contract above (authoritative_data.columns + observations, plot_specification.x_axis + y_axis with variable_id, accessible_equivalent.column_headers + rows, or top-level representation.panels[] of those canonical panel objects for multi-panel datasets)."
+      ]);
+    }
+    var block = lines.join("\n");
+    return (body ? body.replace(/\s+$/, "") + "\n\n" + block : block).trim();
+  }
+
+  function ensureAssessmentPackOutputSpecificationInDesignPrompt(text) {
+    var body = String(text || "");
+    if (assessmentPackOutputSpecificationContractPresent(body)) return body.trim();
+    var block = buildAssessmentPackOutputSpecificationRuntimeBlock();
+    return (body ? body.replace(/\s+$/, "") + "\n\n" + block : block).trim();
+  }
+
   function buildWorkflowStepInstructions(step, index, domElement) {
     if (!step) return "";
     syncAllWorkflowRunCapturesFromDomToState();
@@ -43670,6 +43820,9 @@
           "Do not reproduce assessment components, keys, or representation commissions. Assessment stimuli stay on the assessment components. The editorial opening image is not an assessment stimulus."
         );
         lines.push(
+          "If assessment_evidence.output_specification is emitted, every sections[] entry MUST include section_id, order (positive integer starting at 1), heading, and contributions[], and every contributions[] entry MUST include contribution_id, label, elicitation_id, and response_part (\"response_text\" for constructed_performance). Constructing these required output_specification keys does not conflict with preserving upstream content."
+        );
+        lines.push(
           "Copilot output contract: return one pretty-printed fenced JSON page artefact (triple-backtick json fence, 2-space indentation). No prose before the fence. After the closing fence emit exactly one runner footer line: " +
             exactFooterLine +
             ". No other text after the footer line."
@@ -43941,6 +44094,14 @@
       }
       lines.push("");
       lines.push(promptBody);
+    }
+    if (
+      workflowRecordIsAssessmentPack(wfForPrompt) &&
+      isWorkflowStepDesignPageRow(step) &&
+      !assessmentPackOutputSpecificationContractPresent(lines.join("\n"))
+    ) {
+      lines.push("");
+      lines.push(buildAssessmentPackOutputSpecificationRuntimeBlock());
     }
 
     var canonicalStepId = String(
@@ -60990,8 +61151,78 @@
   }
 
   /**
+   * Assessment Pack Design Page storage parse — shared page parse, then Assessment Pack
+   * semantic & canonical validation (determinate keys, structured stimulus, canonical
+   * assessment_evidence / output_specification contract, and advisory workload warnings).
+   */
+  function parseAssessmentPackDesignPageCaptureForStorage(raw, wf) {
+    var pageCapture = parsePageArtefactCaptureForStorage(raw);
+    if (!pageCapture.ok) {
+      return {
+        ok: false,
+        errors: pageCapture.errors || ["not_page_artefact"],
+        message:
+          pageCapture.message ||
+          "Assessment Pack Design Page must be a valid shared page artefact (artifact_type page)",
+        warnings: []
+      };
+    }
+    var check = validateAssessmentDesignPageCapture(pageCapture.parsed, wf);
+    var errors = !check || !check.ok
+      ? (check && Array.isArray(check.errors) && check.errors.length
+          ? check.errors.slice()
+          : ["invalid_assessment_pack_design_page"])
+      : [];
+    var parsed = pageCapture.parsed;
+    var effectivePage = parsed;
+    var claimsCanonical =
+      String((parsed && parsed.product_id) || "").trim() === "assessment_pack" ||
+      !!(parsed && parsed.assessment_evidence && typeof parsed.assessment_evidence === "object");
+    var requireCanonical = isCanonicalFourStageAssessmentPackWorkflow(wf);
+    if (claimsCanonical || requireCanonical) {
+      var canonicalApi = assessmentCanonicalApi();
+      if (!canonicalApi || typeof canonicalApi.validateAssessmentPackCanonicalPage !== "function") {
+        errors.push("assessment_canonical_validator_unavailable");
+      } else {
+        var preparedCanonical =
+          typeof canonicalApi.normalizeAssessmentPackCanonicalPage === "function"
+            ? canonicalApi.normalizeAssessmentPackCanonicalPage(parsed)
+            : { page: parsed, normalizations: [] };
+        effectivePage = preparedCanonical.page;
+        var canonicalGate = canonicalApi.validateAssessmentPackCanonicalPage(effectivePage);
+        if (!canonicalGate || !canonicalGate.ok) {
+          (canonicalGate && Array.isArray(canonicalGate.errors) ? canonicalGate.errors : []).forEach(
+            function (err) {
+              var p = err && err.path ? String(err.path) + ": " : "";
+              var msg = p + String((err && (err.message || err.code)) || "invalid");
+              if (errors.indexOf(msg) === -1) errors.push(msg);
+            }
+          );
+        }
+      }
+    }
+    if (errors.length) {
+      return {
+        ok: false,
+        errors: errors,
+        message: errors.join("; "),
+        parsed: parsed,
+        warnings: []
+      };
+    }
+    var warnings = Array.isArray(check && check.warnings) ? check.warnings.slice() : [];
+    if (effectivePage !== parsed && !warnings.length) {
+      appendAssessmentPackWorkloadFeasibilityWarnings(effectivePage, warnings, wf);
+    }
+    return Object.assign({}, pageCapture, {
+      warnings: warnings
+    });
+  }
+
+  /**
    * Live Run acceptance boundary for page-structure captures.
-   * LJ and Situated Task Design Page reuse the shared page parser, then apply family validation.
+   * LJ, Situated Task, and Assessment Pack Design Pages reuse the shared page parser,
+   * then apply family validation.
    */
   function parseWorkflowRunPageStructureCaptureForStorage(raw, stepRow, wf) {
     if (
@@ -61010,6 +61241,13 @@
       (isSituatedTaskWorkflow(wf) || workflowRecordIsSituatedTask(wf))
     ) {
       return parseSituatedTaskDesignPageCaptureForStorage(raw, wf);
+    }
+    if (
+      stepRow &&
+      isWorkflowStepDesignPageRow(stepRow) &&
+      workflowRecordIsAssessmentPack(wf)
+    ) {
+      return parseAssessmentPackDesignPageCaptureForStorage(raw, wf);
     }
     if (stepRow && isWorkflowStepDesignEpisodePlanRow(stepRow)) {
       return parseEpisodePlanOrPageCaptureForStorage(raw, wf);
@@ -69797,6 +70035,12 @@
       resolveLearningJourneyLearningTimeEnvelopeMinutes;
     prismTestApi.validateDesignPagePartialPageCapture = validateDesignPagePartialPageCapture;
     prismTestApi.validateAssessmentDesignPageCapture = validateAssessmentDesignPageCapture;
+    prismTestApi.parseAssessmentPackDesignPageCaptureForStorage =
+      parseAssessmentPackDesignPageCaptureForStorage;
+    prismTestApi.parseWorkflowRunPageStructureCaptureForStorage =
+      parseWorkflowRunPageStructureCaptureForStorage;
+    prismTestApi.isCanonicalFourStageAssessmentPackWorkflow =
+      isCanonicalFourStageAssessmentPackWorkflow;
     prismTestApi.validateDesignPageOrPageCapture = validateDesignPageOrPageCapture;
     prismTestApi.validateDesignAssessmentPartialPageCapture =
       validateDesignAssessmentPartialPageCapture;

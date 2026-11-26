@@ -243,3 +243,41 @@
 | Suite / Scope | Result | Notes |
 | ------------- | ------ | ----- |
 | `tests/s104-situated-task-workload-feasibility.test.js` + full workload & C4 regression bundle (`s100a`, `s100b1`, `s100b2`, `s100c`, `s104-m5`, `s104-lj-progressive-workload-fidelity`, `s105-lj-commission-workload-estimation`, `s105-c4-situated-visual-affordance-contract`) | **76 / 76 pass** | Verifies dedicated `lib/situated-task-workload-feasibility-adapter.js`, Stage 5 `app.js` non-blocking warning lifecycle (capture, reload restoration, replacement, invalidation, clearing, duration-lock preservation), upstream LJ extraction for advisory deliverables & paired observations without double-counting, explicit `insufficient_evidence` / `duration_unavailable` vs `assessed_feasible` status, and zero regressions across Practice, Assessment Pack, and Learning Journey workload suites |
+
+### C4 Situated Task live acceptance (2026-11-26 — PASS)
+
+| Check / Dimension | Observed Live Result | Notes |
+| ----------------- | -------------------- | ----- |
+| **Hard refresh on existing completed Stage 5 capture** | **PASS — non-blocking workload feasibility warning displayed** | Restored cleanly via `revalidateSituatedTaskDesignPageCaptureAfterHydration` without regenerating any content |
+| **Inherited duration lock** | **`13 minutes` preserved** | Unchanged by workload assessment |
+| **PRISM indicative workload estimate** | **`19–40 minutes`** | Compare with independent QA indicative estimate (`18–27 minutes`); no further estimator calibration required on the basis of this case |
+| **Workflow & authoring continuity** | **Workflow remains Completed; Continue to Authoring remains available** | Advisory warning does not block completion or downstream authoring |
+
+---
+
+## Assessment Pack bounded pre-Connect More contract hardening & scatterplot representation alignment (2026-11-26)
+
+### Implementation summary (approved for live C7 acceptance from Stage 2 onward)
+
+1. **`output_specification` authoring contract, live Copy path, and fail-closed capture/publication:**
+   - Added `buildOutputSpecificationAuthoringContractLines()` in `lib/assessment-pack-canonical.js` derived directly from authoritative closed schema keys (`section_id`, `order`, `heading`, `contributions`, `contribution_id`, `label`, `elicitation_id`, `response_part`, plus a schema-valid JSON example) and wired it into both branches of Stage 4 `designOutput` in `lib/first-class-workflow-family.js`.
+   - Added runtime Copy-time upgrading (`ensureAssessmentPackOutputSpecificationInDesignPrompt` in `app.js` `resolveStepPromptText` + deduplicated fallback in `buildWorkflowStepInstructions`) so pre-existing saved workflows like C7 receive the canonical contract and non-conflict note at Copy time without duplication.
+   - Wired `parseAssessmentPackDesignPageCaptureForStorage` consistently across Stage 4 paste/save (`validateStrictJsonWorkflowRunStepCapture`) and step advance (`parseWorkflowRunPageStructureCaptureForStorage`), preserving determinate-key, structured-stimulus, and advisory workload feasibility checks.
+   - Hardened `resolveAssessmentPackPublishPage({ ..., requireCanonical: true })` (`lib/assessment-pack-publish.js` + `app.js` `isCanonicalFourStageAssessmentPackWorkflow`) so malformed canonical four-stage Assessment Pack workflows fail closed with `assessment_evidence_invalid` rather than falling through to legacy `assessment_pack_required`, while preserving genuine legacy Assessment Pack compatibility.
+   - Live C7 Stage 4 retest verified `output_specification` capture and authoring progression passed cleanly.
+2. **Canonical scatterplot `representation` contract (single-panel and multi-panel) across Stage 2–4 prompts, capture validation, and learner renderer:**
+   - Added `validateScatterplotRepresentation()`, `reviewElicitationRepresentations()`, and `buildScatterplotRepresentationAuthoringContractLines()` in `lib/assessment-pack-canonical.js`, wired into `validateElicitation()` (Stage 2 & Stage 4 canonical validation) and `app.js` Stage 2, Stage 3, and Stage 4 capture gates (`assessmentRepresentationCaptureErrors`).
+   - Wired the canonical scatterplot contract into Stage 2 (`lib/first-class-workflow-family.js`) and the live Copy path for both Stage 2 and Stage 4 (`ensureAssessmentPackScatterplotRepresentationPrompt` in `app.js`).
+   - Extended `lib/learner-renderer-vnext/assessment-evidence-hydration.js` and `lib/learner-renderer-vnext/render-assessment-evidence.js` (and rebuilt `lib/learner-renderer-vnext-browser.js`) to support multi-panel scatterplots via top-level `representation.panels[]` where every panel obeys the exact same strict fail-closed canonical single-panel contract (`authoritative_data.columns` + `observations`, `plot_specification.x_axis` + `y_axis` with distinct `variable_id`s, cell-for-cell `accessible_equivalent.column_headers` + `rows`) and reuses `expositoryMaterials.renderScatterplotEvidence()`.
+   - C7 will be regenerated from Stage 2 onward to exercise the corrected representation contract at its source in live acceptance.
+3. **Post-Connect More backlog items recorded (not S104 closure dependencies):**
+   - [`PB-FA-034`](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-034--assessment-pack-progressive-capture-and-deterministic-assembly) — Assessment Pack progressive capture and deterministic assembly.
+   - [`PB-FA-035`](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-035--shared-structured-representations-and-native-svg-rendering) — Shared Structured Representations and Native SVG Rendering (cross-referencing `D-016`).
+
+### Focused automated verification (`node --test`, observed 2026-11-26)
+
+| Suite / Scope | Result | Notes |
+| ------------- | ------ | ----- |
+| `tests/s104-assessment-pack-stage4-contract-hardening.test.js` (new) | **9 / 9 pass** | Covers Stage 4 canonical `output_specification` prompt examples (both modes), C7 missing-field rejection at paste/save & step advance, valid canonical acceptance with workload warnings & structured-stimulus checks, fail-closed canonical publication without legacy fallback, legacy publication preservation, live Copy path upgrade without duplication on stale saved workflows, Stage 2 & Stage 4 scatterplot prompt/Copy contracts, Stage 2–4 capture rejection of malformed C7 scatterplot structure, and canonical multi-panel C7 (F1 + F2) capture + SVG/table rendering + fail-closed panel mismatch rejection |
+| Existing Assessment Pack regression bundle (`s93-assessment-editorial-opening`, `s93-assessment-pack-canonical`, `s93-assessment-pack-output-specification`, `s93-assessment-pack-output-authoring`, `s93-assessment-pack-publish-integration`, `s100b2-assessment-pack-workload-feasibility`, `qa-c06-assessment-evidence-and-artefact`, `assessment-pack-legacy-retain-output-spec`, `assessment-pack-legacy-section-mapped-output-spec`, `assessment-pack-c04-output-spec-shorthand`) | **78 / 78 pass** | **87 / 87 total pass** across all 11 Assessment Pack suites |
+| `npm run check:learner-renderer-vnext-browser` | **OK** | Confirms `lib/learner-renderer-vnext-browser.js` and export runtime bundles match source |

@@ -497,6 +497,67 @@ The extracted design should preserve educational intent, progression, learner ac
 
 **Readiness:** Recorded 2026-11-26 following C4 Situated Task workload-feasibility implementation. Approach and acceptance criteria not yet written — **not sprint-allocated**.
 
+### PB-FA-034 — Assessment Pack progressive capture and deterministic assembly
+
+**Status:** Proposed — unassigned. **Deferred until after Connect More.** **Not sprint-allocated. Not an S104 closure dependency.**  
+**Type:** Authoring pipeline, stage ownership & deterministic assembly alignment (Assessment Pack).
+
+**Investigation findings (2026-11-26):**
+
+- Stage 4 (*Design Page*) unnecessarily replays structured content (`purpose`, `learner_context`, `elicitations[]`, `formative_return`, `pack_forward_orientation`) already captured in Stages 1–3 (`assessment_evidence_purpose`, `assessment_evidence_elicitation`, `assessment_formative_return`).
+- Canonical publication (`resolveAssessmentPackPublishPage`) validates Stage 4 in isolation and does not reconcile Stage 4 against those authoritative upstream captures.
+- Intermediate stages (Stages 1–3) lack comprehensive semantic capture validation (Stage 1 has no capture schema gate; Stages 2–3 run determinate-key and structured-stimulus checks only).
+- Upstream edits to Stages 1–3 do not reliably invalidate downstream captures.
+
+**Future architectural scope to consider:**
+
+- Explicit per-stage field ownership across Stages 1–4.
+- Authoritative intermediate captures with semantic validation at each stage.
+- Deterministic assembly from Stages 1–3 into the published Assessment Pack page, paired with a thin editorial Design Page stage (drawing on the established Sprint 105 progressive capture and assembly approach where appropriate).
+- Downstream invalidation when upstream stages are edited or cleared.
+
+**Educational boundary (mandatory):** Preserve Assessment Pack's distinctive educational and assessment architecture (epistemic-class freezing between determinate and non-determinate elicitations, non-summative formative return, authentic `constructed_performance` fidelity, optional closed `output_specification`, and separate `editorial_opening_image` contract).
+
+**Boundaries:** Backlog work only — do **not** implement this wider migration now. Deferred until after Connect More; **not** a Sprint 104 closure dependency.
+
+**Readiness:** Recorded 2026-11-26 following Assessment Pack assembly contract investigation. Approach and acceptance criteria not yet written — **not sprint-allocated**.
+
+### PB-FA-035 — Shared Structured Representations and Native SVG Rendering
+
+**Status:** Proposed — unassigned. **Deferred until after Connect More.** **Not sprint-allocated. Not an S104 closure dependency.**  
+**Type:** Cross-family visual representation architecture & deterministic SVG rendering (all product families).  
+**Cross-references:** Programme `docs/development/governance/ARCHITECTURAL-DEBT.md` **`D-016`** (Native deterministic number-line and quantitative scale rendering); `PB-FA-034`.
+
+**Strategic objective:** Reduce unnecessary generative image production while improving representational precision, accessibility, consistency, and authoring efficiency across all product families by consolidating structured data/diagram representation contracts and expanding deterministic native SVG rendering.
+
+**Read-only codebase capability audit (2026-11-26):**
+
+| Capability / Path | Representation Type | Scope & Product Families | Native SVG vs Rasterised | Validation, Sanitisation & Accessibility |
+| --- | --- | --- | --- | --- |
+| `expositoryMaterials.renderScatterplotEvidence()` (`lib/learner-renderer-vnext/expository-structured-materials.js`) | Structured scatterplots (single-panel; multi-panel in Assessment Pack via `representation.panels[]`) | **Representation-specific, shared across 3 families:** Expository (`expository_structured_scatterplot`), Practice (`render-material.js` sibling `scatterplot`), Assessment Pack (`render-assessment-evidence.js` `kind: "data_figure", figure_type: "scatterplot"`). Not yet exposed to Situated Task or Interactive legacy paths | **Native inline SVG** (`<svg role="img" aria-labelledby="...">`) paired with semantic HTML data table | Strict fail-closed numeric/axis/table validation (`assessment-evidence-hydration.js`, `assessment-pack-canonical.js`, `expository-structured-materials.js`); deterministic `<title>`/`<desc>`, axis ticks, point labels, and cell-for-cell accessible table |
+| `assessment-interactive.js` `renderStimulus()` (`lib/learner-renderer-vnext/assessment-interactive.js:591`) | Arbitrary inline SVG stimulus (`representation.media.format === "svg"`) | **Product-family-specific (legacy/interactive assessment items only)** | **Native inline SVG** inside `<figure class="util-assessment-stimulus">` | Minimal guard only (`markup.indexOf("<script") !== -1`); does **not** use `PRISM_VISUAL_ASSETS` full sanitiser; `figcaption` from `alt_text` |
+| Visual Jobs SVG intake (`lib/prism-visual-assets.js:326` + `app.js:63487` `rasterizeSvgFileToPngForVisualJob`) | Any user-uploaded or pasted `.svg` / `image/svg+xml` graphic (e.g. `number_line_segments`, custom diagrams) | **Generic across all product families** using Visual Jobs | **Rasterised to 2× PNG** (capped at 2400px) before attachment/publication; **not** retained or published as native SVG | Full security validation (`SVG_FORBIDDEN_TAG_RE`, `SVG_EVENT_HANDLER_RE`, `SVG_JS_URI_RE`, `SVG_EXTERNAL_HREF_RE`, root `<svg>` & dimension/viewBox normalisation) — currently only used pre-rasterisation |
+| `number_line_segments` & conceptual diagrams (`lib/sprint38-visual-affordances.js`, `lib/utilities-visual-jobs-workspace.js`, `lib/learner-renderer-vnext/expository-structured-materials.js`) | Quantitative number lines / scales (`number_line_segments`) and node/edge conceptual diagrams (`expository_diagram_specification`) | Expository, Practice, Situated Task, Interactive (via Visual Jobs) | **External image production** (image brief allows PNG or SVG upload, which is rasterised to PNG); no native SVG renderer yet (`D-016`) | `sprint38-visual-affordances.js` enforces `requires_exact_data_match: true` for `number_line_segments`; `expository-structured-materials.js` suppresses unrendered diagram specs cleanly or fails closed if no faithful learner-facing fallback exists |
+
+**Key investigation findings:**
+
+1. **Only scatterplots have mature deterministic native SVG rendering**, and `renderScatterplotEvidence()` is already reused across **Expository, Practice, and Assessment Pack** — demonstrating the viability of a shared cross-family renderer.
+2. **Input schemas for scatterplots are currently fragmented across families:** Expository/Practice use `{ title, x_axis, y_axis, observations: [{ label, x, y }], table }`, while Assessment Pack uses `{ kind: "data_figure", figure_type: "scatterplot", authoritative_data: { columns, observations }, plot_specification: { x_axis, y_axis }, accessible_equivalent: { column_headers, rows } }` (plus `panels[]`).
+3. **Arbitrary validated SVG cannot currently be retained and published natively via Visual Jobs:** `lib/prism-visual-assets.js` already validates and normalises SVG safely, but `app.js` always rasterises it to 2× PNG via `<canvas>`. Meanwhile, `assessment-interactive.js` renders raw `media.format === "svg"` natively with only a `<script` substring check.
+4. **Visual planning does not yet route eligible precision visuals to native SVG instead of generative image production:** `sprint38-visual-affordances.js` and `utilities-visual-jobs-workspace.js` treat `number_line_segments` and quantitative/structural diagrams as external image briefs (only mentioning SVG as an optional upload format to the image job), rather than offering a deterministic native-SVG fulfilment route.
+5. **Prompt communication of native SVG capabilities is uneven:** Practice GAM (`ld-gam-page-enrich-contract.js`), Expository XM, and now Assessment Pack Stages 2/4 explicitly document native scatterplot JSON contracts and forbid raw `<svg>` in Markdown (`GAM-SVG-01`), whereas Situated Task and cross-family visual planning lack a unified representation catalogue.
+
+**Future architectural scope to consider (post-Connect More):**
+
+- **Unified cross-family structured representation registry & renderer:** Consolidate canonical representation schemas (or clean shared adapters) across Expository, Practice, Assessment Pack, Situated Task, and Interactive so one deterministic renderer layer serves all families.
+- **Native deterministic SVG renderers for high-value precision types:** Starting with **`D-016` (`number_line_segments` / quantitative scales)**, then bar/line charts, comparative distributions, and simple structured node-edge/flow diagrams — each paired with mandatory accessible tables/descriptions and fail-closed data/table consistency validation.
+- **Visual-planning routing decision:** Enable visual planning (`sprint38-visual-affordances.js`) to distinguish *native deterministic SVG* (no external image generation required) from *external raster/editorial illustration*, reducing unnecessary generative image production.
+- **Safe native SVG asset retention (optional):** Evaluate retaining validated, sanitised SVG natively (reusing and hardening `lib/prism-visual-assets.js` sanitisation, and upgrading `assessment-interactive.js`'s `<script`-only check) instead of mandatory 2× PNG rasterisation when vector fidelity and accessibility are preferable.
+
+**Boundaries:** Backlog item only — **no implementation before Connect More**. **Not** an S104 closure dependency.
+
+**Readiness:** Recorded 2026-11-26 following bounded read-only SVG capability audit. Approach and acceptance criteria not yet written — **not sprint-allocated**.
+
 ---
 
 ## 2. Optional engineering / capability follow-ons

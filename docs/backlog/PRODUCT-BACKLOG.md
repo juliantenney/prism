@@ -2,7 +2,7 @@
 
 **Canonical location:** `docs/backlog/PRODUCT-BACKLOG.md`  
 **Status:** Active — **alpha-use period** (Alpha development complete, 2026-09-02)  
-**Last updated:** 2026-11-25 (**Sprint 105 — Learning Journey Progressive Capture and Assembly CLOSED — COMPLETE** [`4b698db`–`a7ad249`, `S105-D04`]; **Sprint 104 — Workload Fidelity and Proportionate Authoring** formally resumed at live acceptance per `S104-D05`: M1 integrated acceptance, M6 Practice probes, M7 Economics completion/QA/runtime)  
+**Last updated:** 2026-11-26 (PB-FA-027 refined; PB-FA-036 and PB-FA-037 recorded; **Sprint 105 — Learning Journey Progressive Capture and Assembly CLOSED — COMPLETE** [`4b698db`–`a7ad249`, `S105-D04`]; **Sprint 104 — Workload Fidelity and Proportionate Authoring** formally resumed at live acceptance per `S104-D05`: M1 integrated acceptance, M6 Practice probes, M7 Economics completion/QA/runtime)  
 **Open sprint:** [Sprint 104 — Workload Fidelity and Proportionate Authoring](../development/sprints/2026-11-24-sprint-104-workload-fidelity-and-proportionate-authoring/SPRINT-104-START-HERE.md) — **OPEN — RESUMED AT LIVE ACCEPTANCE (`S104-D05`)** (M1–M5 committed `f1f1269`; M1/M6/M7 live acceptance active ahead of Connect More; `PB-FA-025`).  
 **Last closed sprint:** [Sprint 105 — Learning Journey Progressive Capture and Assembly](../development/sprints/2026-11-25-sprint-105-learning-journey-progressive-capture-and-assembly/SPRINT-105-CLOSURE.md) — **CLOSED — COMPLETE**. Prior: [Sprint 103](../development/sprints/2026-11-23-sprint-103-learning-journey-runtime-continuity-and-commissioning-fidelity/SPRINT-103-CLOSURE.md) · [Sprint 102](../development/sprints/2026-11-20-sprint-102-learning-journey-owned-outcomes/SPRINT-102-CLOSURE.md) · [Sprint 101](../development/sprints/2026-11-19-sprint-101-practice-as-a-learning-journey-component/SPRINT-101-CLOSURE.md) · [Sprint 97](../development/sprints/2026-11-12-sprint-97-learning-journal-and-design-pattern-foundations/SPRINT-97-CLOSURE.md) (PB-FA-028 delivered).  
 **Architectural policy:** [S103-D01 — Learning Journey-first architecture](../development/sprints/2026-11-20-sprint-102-learning-journey-owned-outcomes/decisions.md#s103-d01--learning-journey-first-architecture) — **Accepted**; commissioning alignment verified in Sprint 103.
@@ -384,7 +384,7 @@ Author and publish Expository resources with a coherent editorial hierarchy, so 
 
 **Readiness:** Proposed 2026-11-10; reframed lower-priority LJ authoring assistance 2026-11-23 — **not sprint-allocated**.
 
-### PB-FA-027 — Learning Design Extraction: technology-independent designs from completed resources
+### PB-FA-027 — Learning Design Extraction: technology-independent educational designs
 
 **Status:** **Retain — open.** **Not sprint-allocated.**  
 **Priority:** Medium (future capability / proposed enhancement; not an immediate implementation priority).
@@ -393,7 +393,15 @@ Author and publish Expository resources with a coherent editorial hierarchy, so 
 
 The extracted design should preserve educational intent, progression, learner activities, evidence and assessment logic **without requiring PRISM-specific components**. This is **distinct from exporting a runnable PRISM package**.
 
-**Problem:** Completed PRISM resources and Learning Journeys embody substantial pedagogical design (outcomes, sequence, activities, dependencies, assessment, reflection), but that design is currently bound to PRISM’s product forms and delivery mechanisms. Educators who want to reuse the *learning design* elsewhere lack a readable, technology-independent specification that separates pedagogically essential features from implementation-specific choices.
+**Problem:** Accepted Learning Journey designs and completed PRISM resources embody substantial pedagogical design (outcomes, sequence, activities, dependencies, assessment, reflection), but that design is currently bound to PRISM’s product forms and delivery mechanisms. Educators who want to reuse the *learning design* elsewhere lack a readable, technology-independent specification that separates pedagogically essential features from implementation-specific choices.
+
+**Strategic clarification (2026-11-26):** PRISM is an environment-independent educational design tool with its own native realisation capabilities. Native learner publication is not a prerequisite for using its educational designs elsewhere.
+
+**Source maturity and extraction granularity:**
+
+- An accepted Learning Journey Design Page can be explored as the source for journey-level design extraction before constituent production.
+- Completed constituent designs support richer extraction of detailed pedagogy, activities, evidence and feedback arrangements; published packages provide evidence of actual realisation.
+- Distinguish established design decisions, commissioned intentions, realised experiences and inferred rationale. Do not invent missing detail or require native production solely to extract a design for another environment.
 
 **Proposed scope:**
 
@@ -404,14 +412,20 @@ The extracted design should preserve educational intent, progression, learner ac
 - Distinguish pedagogically essential features from implementation-specific choices.
 - Distinguish directly observable design features from inferred educational rationale; avoid presenting inferred intentions as established facts.
 - Produce a readable, implementation-independent specification suitable for adaptation by educators.
+- Preserve workload expectations, learner-authored artefact dependencies, accessibility requirements and pedagogically essential evidence/feedback disclosure conditions.
+- Explore a structured, technology-independent output suitable for downstream custom workflows, without committing to a formal shared schema.
 
 **Illustrative use case:** Given the completed Learning Journey *The Decision That Went Wrong*, PRISM extracts a design that an educator could implement as a face-to-face seminar, blended workshop, Moodle course, Xerte resource or another suitable format, while preserving the essential progression from initial judgement through evidence appraisal, reconsideration, stakeholder evaluation and independent recommendation.
 
 **Acceptance criterion (eventual implementation):** An educator unfamiliar with PRISM can use the extracted specification to plan an alternative implementation without reproducing the original technology, while retaining the essential learning activities, dependencies, assessment and pedagogical intent evident in the source.
 
-**Boundaries:** Future capability investigation only until sprint-allocated. Do not implement extraction workflows, schemas or generation changes under this entry alone. Distinct from assisted brief development ([PB-FA-026](#pb-fa-026--assisted-brief-development-from-teaching-intention-to-learning-experience)) — that item helps authors *compose* a commission; this item *abstracts* a design from a completed journey. Distinct from unified Learning Journey shell delivery ([PB-FA-022](#pb-fa-022--learning-journey-continuity-contract)–[PB-FA-024](#pb-fa-024--unified-learning-journey-experience--compatibility)) and from Course Home reconciliation ([PB-FA-016](#pb-fa-016--course-home--course-assembly)). Not a runnable-package export substitute.
+**Experimental approach:** Use existing custom workflow functionality to compare extraction from an accepted but unrealised Learning Journey Design Page with extraction from a completed journey. Evaluate granularity, fidelity and usefulness to educators. Custom workflow authoring and evaluation are productive use of existing functionality and need not require a development sprint.
 
-**Readiness:** Proposed 2026-11-10; custom-workflow clarification 2026-11-23 — **not sprint-allocated**. Not implemented.
+**Related capabilities:** [PB-FA-036](#pb-fa-036--learning-journey-teaching-companion) and [PB-FA-037](#pb-fa-037--native-xerte-realisation). These are complementary downstream uses, not additional responsibilities of extraction itself.
+
+**Boundaries:** No core application changes, formal schema adoption or dedicated integration work without separate authorisation and planning. Distinct from assisted brief development ([PB-FA-026](#pb-fa-026--assisted-brief-development-from-teaching-intention-to-learning-experience)) — that item helps authors *compose* a commission; this item *abstracts* a design from an accepted or completed journey. Distinct from unified Learning Journey shell delivery ([PB-FA-022](#pb-fa-022--learning-journey-continuity-contract)–[PB-FA-024](#pb-fa-024--unified-learning-journey-experience--compatibility)) and from Course Home reconciliation ([PB-FA-016](#pb-fa-016--course-home--course-assembly)). Not a runnable-package export substitute.
+
+**Readiness:** Proposed 2026-11-10; custom-workflow clarification 2026-11-23; source maturity and downstream reuse refined 2026-11-26 — **not sprint-allocated**. Not implemented.
 
 ### PB-FA-030 — Practice interaction surfaces
 
@@ -557,6 +571,56 @@ The extracted design should preserve educational intent, progression, learner ac
 **Boundaries:** Backlog item only — **no implementation before Connect More**. **Not** an S104 closure dependency.
 
 **Readiness:** Recorded 2026-11-26 following bounded read-only SVG capability audit. Approach and acceptance criteria not yet written — **not sprint-allocated**.
+
+### PB-FA-036 — Learning Journey Teaching Companion
+
+**Status:** Proposed — unassigned. **Not sprint-allocated. Not an S104 closure or Connect More dependency.**
+**Type:** Educator-facing custom workflow opportunity.
+
+**Objective:** Derive complementary teaching provision from an accepted Learning Journey, supporting lecturers in delivering coherent face-to-face or blended teaching alongside independent learning.
+
+**Inputs:** Accepted Learning Journey Design Page; teaching context (contact hours, class sizes, delivery arrangements and lecturer preferences); authoritative subject material where needed; completed constituent designs or learner packages when available. A reference to a source is not equivalent to access to its content.
+
+**Potential outputs:** Module-wide teaching strategy, weekly lecture guides, seminar and tutorial questions, facilitated activities, teaching notes, assessment preparation and delivery plans. Preserve learning outcomes, intellectual progression, evidence, assessment intentions and feedback relationships. Complement rather than unnecessarily duplicate independent learning. Identify opportunities to use learner-authored work without assuming access to individual responses or preserved pre-feedback snapshots.
+
+**Initial experiment:** Use existing custom workflow functionality with the Political Economy ten-week Learning Journey. Establish a module-wide teaching strategy, then generate and verify detailed teaching packs one week at a time. Compare against realised components when available; distinguish planned provision from confirmed realisation. No requirement to finish all constituent resources first.
+
+**Acceptance direction:** An educator can use the resulting materials to plan and facilitate teaching that is aligned with the journey, appropriate to the teaching context and faithful to authoritative subject material. Review pedagogical complementarity, practical feasibility, accessibility and disciplinary accuracy.
+
+**Related:** [PB-FA-027](#pb-fa-027--learning-design-extraction-technology-independent-educational-designs) and [PB-FA-037](#pb-fa-037--native-xerte-realisation). Extraction abstracts the design; the Teaching Companion extends it into educator-led provision. No mandatory dependency on a new extraction schema.
+
+**Boundaries:** Future opportunity. Explore through existing custom workflows before considering core development. No implementation commitment or sprint allocation.
+
+**Readiness:** Proposed 2026-11-26; workflow and output quality not yet demonstrated.
+
+### PB-FA-037 — Native Xerte realisation
+
+**Status:** Proposed — unassigned. **Not sprint-allocated. Not an S104 closure or Connect More dependency.**
+**Type:** Alternative delivery realisation / custom workflow opportunity.
+
+**Objective:** Translate PRISM educational designs into native, editable Xerte projects through generation of Xerte-compatible XML and associated assets.
+
+**Strategic rationale:** Emerging AI-assisted Xerte XML experiments could benefit from PRISM's established educational design work. Separating pedagogical design from technical realisation allows XML generation to concentrate on mapping established intentions to Xerte capabilities rather than simultaneously inventing pedagogy, content and valid markup. This supports existing educational technology ecosystems rather than requiring adoption of PRISM's native delivery environment.
+
+**Potential approach:**
+
+- Use an accepted Learning Journey as the authoritative educational design, with completed constituent designs and assets where needed.
+- Obtain an export of the Xerte page type demonstrator as a structural reference for XML generation.
+- Map pedagogical intentions to suitable Xerte page types and configurations; compose multiple pages where necessary.
+- Preserve outcomes, intellectual progression, evidence, learner activities, assessment, feedback disclosure and accessibility requirements.
+- Explicitly identify capabilities that cannot be faithfully translated, including potential learner-response persistence and cross-resource dependency limitations; do not silently lose pedagogically essential behaviour.
+- Generate, validate and package XML and assets for native Xerte import, retaining editability.
+
+**Initial experiment (when prioritised):** Use a small completed Learning Journey and the Xerte demonstrator export to investigate existing custom workflow capabilities before considering dedicated integration code.
+
+**Acceptance direction:** A native project imports successfully into the target Xerte environment, remains editable, includes required assets and preserves essential educational design. Verify actual learner behaviour and document any translation compromises. XML validity alone is insufficient.
+
+**Related:** [PB-FA-027](#pb-fa-027--learning-design-extraction-technology-independent-educational-designs) and [PB-FA-036](#pb-fa-036--learning-journey-teaching-companion). Xerte is a concrete alternative realisation target, not a requirement for generic extraction.
+
+**Boundaries:** Future opportunity only. No implementation, technical investigation or sprint planning now. No commitment to dedicated integration code.
+
+**Readiness:** Proposed 2026-11-26; demonstrator export, XML compatibility, packaging and pedagogical fidelity remain to be tested.
+
 
 ---
 

@@ -27,6 +27,20 @@
 
 ## Work log
 
+### 2026-11-26 — Authoring advisory warning & toast notification presentation refinement (keeping Sprint 104 OPEN)
+
+- **Workload advisory presentation (`app.js`, `style.css`):**
+  - Successful step completion status remains dominant when only workload advisories are present (no `" (with warnings)"` suffix or amber status override); blocking validation errors remain unchanged in red with full error text.
+  - Replaced lengthy amber callout blocks with a compact, visually subordinate neutral-slate expandable `<details class="workflow-workload-advisory">` disclosure (collapsed by default) showing an `Advisory` tag and concise summary (affected commission/activity, allocated duration, estimated workload range).
+  - Full diagnostic explanation, principal workload factors, indicative tolerance, actionable recommendations, and advisory qualifications are preserved verbatim inside the disclosure; multi-commission advisories provide a compact summary with individually inspectable commission disclosures and strip redundant commission-list repetition from the journey-level summary.
+  - Applied consistently across Learning Journey commissioning, Design Page, and constituent workflow workload advisories (`Situated Task`, `Practice`/`Interactive`, `Assessment Pack`), preserving disclosure open/closed state across re-renders when unchanged.
+- **Toast notification management (`app.js`, `style.css`, `index.html`):**
+  - Refined the shared `showToast` / `hideToast` notification infrastructure (no parallel system): deduplicates active identical conditions and short validation/sync bursts (`2500ms`), suppresses repeated announcements of unchanged persistent inline advisories (including silent seeding on hydration), replaces stale toasts cleanly on materially changed conditions, and resets condition state when cleared so genuinely new recurrences announce cleanly.
+  - Replaced `999px` pill styling with readable, WCAG-AAA-contrast card toasts (`border-radius: 10px`) with distinct semantic borders/tints (`info`, `success`, `warning`, `error`), sensible type-appropriate durations, hover/focus pause, accessible `type="button"` dismissal, and per-toast live-region roles (`role="alert"` / `aria-live="assertive"` for blocking errors; `role="status"` / `aria-live="polite"` for success/info/advisory; removed container-level `aria-atomic="true"` to prevent repeated screen-reader re-announcements).
+  - Bumped cache tokens in `index.html` (`style.css` and `app.js` to `?v=20261126-s104-advisory-notifications`).
+  - Scope safeguard verified: zero changes to workload estimation, indicative boundaries, validation rules, warning eligibility, captured outputs, workflow progression, or existing Learning Journeys (M6 `14–31 min vs 5 min` evidence untouched).
+  - Added `tests/s104-advisory-and-toast-presentation.test.js` (`5 / 5 pass`); 8-suite focused regression bundle `66 / 66 pass`; `npm run check:learner-renderer-vnext-browser` **OK**.
+
 ### 2026-11-26 — Economics consolidated live runtime acceptance PASSED, C7 → C8 retained-judgement handoff fix, & presentation refinements
 
 - **Consolidated live Economics Learning Journey runtime acceptance — PASS:**

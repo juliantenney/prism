@@ -393,4 +393,14 @@ The completed independent Learning Journey QA audit awarded the canonical Econom
 | Combined 14-suite handoff, Journal, workload, design-page & presentation regression bundle | **92 / 92 pass** | Includes `s104-presentation-refinements`, `s104-c7-c8-assessment-output-handoff`, `s104-final-workload-policy-and-presentation`, `s104-artefact-contract-f01-f02`, `s96-artefact-carry-forward-signposting`, `assessment-pack-delivery-context-retention-guidance`, `s95-m3-learner-artefact-handoff`, `s96-m3-contextual-guidance`, `s97-m2-t2-learning-journal-population`, `s97-m2-t3-learning-journal-notifications`, `s93-assessment-pack-output-assembly`, `assessment-pack-output-direct-copy`, `s105-m2-prompts-and-continuity`, `s91-learning-journey-wp3-design-page` |
 | `npm run check:learner-renderer-vnext-browser` | **OK** | Confirms rebuilt `lib/learner-renderer-vnext-browser.js` and export runtime bundles match source |
 
+---
+
+## Authoring workload advisory & toast notification presentation refinement (2026-11-26)
+
+| Suite / Check | Result | Notes |
+| ------------- | ------ | ----- |
+| `tests/s104-advisory-and-toast-presentation.test.js` (new) | **5 / 5 pass** | Single-commission and multi-commission collapsed-by-default `<details>` disclosures preserving full diagnostics without journey-level repetition, constituent workflow parity, hydration/re-validation toast deduplication, changed-condition announcement, blocking-error `role="alert"` preservation, accessible dismissal, and live-region / styling contracts |
+| Combined 8-suite advisory, toast & workload regression bundle | **66 / 66 pass** | `s104-advisory-and-toast-presentation`, `s104-lj-progressive-workload-fidelity`, `s104-final-workload-policy-and-presentation`, `s104-situated-task-workload-feasibility`, `s104-m5-workload-estimation`, `s100c-learning-journey-workload-feasibility`, `s100a-workload-feasibility-estimator`, `s76-empty-capture-persist-guard` |
+| `npm run check:learner-renderer-vnext-browser` | **OK** | Confirmed vNext browser bundles unaffected and matching source |
+
 

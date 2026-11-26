@@ -685,29 +685,194 @@
   }
 
   // -----------------------------
-  // Toast notifications
+  // Toast notifications (Sprint 104: deduplicated, accessible, readable)
   // -----------------------------
 
-  function showToast(message, type) {
-    if (!els.toastContainer) return;
+  var TOAST_MAX_VISIBLE = 4;
+  var TOAST_RECENT_DEDUPE_WINDOW_MS = 2500;
+  var TOAST_DEFAULT_DURATION_MS = {
+    info: 4500,
+    success: 4500,
+    warning: 6000,
+    error: 7500
+  };
+  var toastRegistry = {
+    activeByKey: Object.create(null),
+    activeOrder: [],
+    lastConditionByKey: Object.create(null),
+    recentBySig: Object.create(null)
+  };
+
+  function normalizeToastType(type) {
+    var t = String(type || "").trim().toLowerCase();
+    if (t === "error" || t === "success" || t === "warning" || t === "info") return t;
+    return "info";
+  }
+
+  function normalizeToastMessageText(message) {
+    return String(message == null ? "" : message)
+      .replace(/\s+/g, " ")
+      .trim();
+  }
+
+  function recordToastConditionState(dedupeKey, fingerprint) {
+    var key = String(dedupeKey || "").trim();
+    if (!key) return;
+    toastRegistry.lastConditionByKey[key] = String(fingerprint == null ? "" : fingerprint);
+  }
+
+  function clearToastConditionState(dedupeKey) {
+    var key = String(dedupeKey || "").trim();
+    if (!key) return;
+    delete toastRegistry.lastConditionByKey[key];
+    var active = toastRegistry.activeByKey[key];
+    if (active && active.toast) {
+      hideToast(active.toast, { immediate: true });
+    }
+  }
+
+  function clearToastConditionStatesByPrefix(prefix) {
+    var p = String(prefix || "");
+    if (!p) return;
+    Object.keys(toastRegistry.lastConditionByKey).forEach(function (k) {
+      if (k.indexOf(p) === 0) {
+        delete toastRegistry.lastConditionByKey[k];
+      }
+    });
+  }
+
+  function resetToastNotificationState() {
+    toastRegistry.activeOrder.slice().forEach(function (entry) {
+      if (entry && entry.toast) {
+        hideToast(entry.toast, { immediate: true });
+      }
+    });
+    toastRegistry.activeByKey = Object.create(null);
+    toastRegistry.activeOrder = [];
+    toastRegistry.lastConditionByKey = Object.create(null);
+    toastRegistry.recentBySig = Object.create(null);
+  }
+
+  function clearToastAutoDismissTimer(entry) {
+    if (entry && entry.timerId) {
+      clearTimeout(entry.timerId);
+      entry.timerId = null;
+    }
+  }
+
+  function scheduleToastAutoDismiss(entry, durationMs) {
+    if (!entry) return;
+    clearToastAutoDismissTimer(entry);
+    var ms =
+      typeof durationMs === "number" && isFinite(durationMs) && durationMs > 0
+        ? durationMs
+        : entry.durationMs || TOAST_DEFAULT_DURATION_MS[entry.type] || 4500;
+    entry.durationMs = ms;
+    entry.timerId = setTimeout(function () {
+      entry.timerId = null;
+      hideToast(entry.toast);
+    }, ms);
+  }
+
+  function removeToastEntryFromRegistry(entry) {
+    if (!entry) return;
+    clearToastAutoDismissTimer(entry);
+    if (entry.key && toastRegistry.activeByKey[entry.key] === entry) {
+      delete toastRegistry.activeByKey[entry.key];
+    }
+    var idx = toastRegistry.activeOrder.indexOf(entry);
+    if (idx !== -1) {
+      toastRegistry.activeOrder.splice(idx, 1);
+    }
+  }
+
+  function showToast(message, type, options) {
+    if (!els.toastContainer) return { shown: false, reason: "no_container" };
+    var normalizedType = normalizeToastType(type);
+    var normalizedMsg = normalizeToastMessageText(message);
+    if (!normalizedMsg) return { shown: false, reason: "empty" };
+
+    var opts = options && typeof options === "object" ? options : {};
+    var dedupeKey = typeof opts.dedupeKey === "string" ? opts.dedupeKey.trim() : "";
+    var sig = normalizedType + "|" + normalizedMsg;
+    var effectiveKey = dedupeKey || sig;
+    var fingerprint =
+      opts.fingerprint !== undefined && opts.fingerprint !== null
+        ? String(opts.fingerprint)
+        : sig;
+    var now = Date.now();
+
+    // Suppress repeated announcement of an unchanged persistent inline advisory.
+    if (
+      dedupeKey &&
+      opts.suppressIfUnchanged &&
+      Object.prototype.hasOwnProperty.call(toastRegistry.lastConditionByKey, dedupeKey) &&
+      toastRegistry.lastConditionByKey[dedupeKey] === fingerprint
+    ) {
+      var existingUnchanged = toastRegistry.activeByKey[effectiveKey];
+      if (existingUnchanged && existingUnchanged.fingerprint === fingerprint) {
+        scheduleToastAutoDismiss(existingUnchanged, opts.durationMs);
+      }
+      return { shown: false, reason: "unchanged_advisory" };
+    }
+
+    // Deduplicate against an already-visible toast for the same key.
+    var existing = toastRegistry.activeByKey[effectiveKey];
+    if (existing) {
+      if (existing.fingerprint === fingerprint) {
+        // Identical active condition: refresh timer without adding DOM or re-announcing.
+        scheduleToastAutoDismiss(existing, opts.durationMs);
+        return { shown: false, reason: "active_duplicate", toast: existing.toast };
+      }
+      // Materially changed condition under the same key: replace cleanly without stacking.
+      hideToast(existing.toast, { immediate: true });
+    }
+
+    // Prevent rapid-fire duplicate toasts from repeated validation/sync bursts.
+    if (!opts.force && toastRegistry.recentBySig[sig]) {
+      if (now - toastRegistry.recentBySig[sig] < TOAST_RECENT_DEDUPE_WINDOW_MS) {
+        return { shown: false, reason: "recent_duplicate" };
+      }
+    }
+
+    // Keep visible toast stack bounded (evict oldest non-error toast first).
+    while (toastRegistry.activeOrder.length >= TOAST_MAX_VISIBLE) {
+      var evictIdx = -1;
+      for (var ei = 0; ei < toastRegistry.activeOrder.length; ei += 1) {
+        if (toastRegistry.activeOrder[ei].type !== "error") {
+          evictIdx = ei;
+          break;
+        }
+      }
+      if (evictIdx === -1) evictIdx = 0;
+      var toEvict = toastRegistry.activeOrder[evictIdx];
+      hideToast(toEvict && toEvict.toast, { immediate: true });
+    }
+
     var toast = document.createElement("div");
-    toast.className =
-      "toast" +
-      (type === "error"
-        ? " toast-error"
-        : type === "success"
-        ? " toast-success"
-        : type === "warning"
-        ? " toast-warning"
-        : "");
+    toast.className = "toast toast-" + normalizedType;
+    if (typeof toast.setAttribute === "function") {
+      toast.setAttribute("role", normalizedType === "error" ? "alert" : "status");
+      toast.setAttribute("aria-live", normalizedType === "error" ? "assertive" : "polite");
+      toast.setAttribute("aria-atomic", "true");
+      toast.setAttribute("data-toast-type", normalizedType);
+      if (dedupeKey) {
+        toast.setAttribute("data-toast-key", dedupeKey);
+      }
+    }
 
     var msgSpan = document.createElement("span");
     msgSpan.className = "toast-message";
-    msgSpan.textContent = message;
+    msgSpan.textContent = normalizedMsg;
 
     var closeBtn = document.createElement("button");
     closeBtn.className = "toast-close";
-    closeBtn.setAttribute("aria-label", "Dismiss notification");
+    if (typeof closeBtn.setAttribute === "function") {
+      closeBtn.setAttribute("type", "button");
+      closeBtn.setAttribute("aria-label", "Dismiss notification");
+    } else {
+      closeBtn.type = "button";
+    }
     closeBtn.textContent = "×";
     closeBtn.addEventListener("click", function () {
       hideToast(toast);
@@ -717,19 +882,373 @@
     toast.appendChild(closeBtn);
     els.toastContainer.appendChild(toast);
 
-    setTimeout(function () {
-      hideToast(toast);
-    }, 4000);
+    var durationMs =
+      typeof opts.durationMs === "number" && isFinite(opts.durationMs) && opts.durationMs > 0
+        ? opts.durationMs
+        : TOAST_DEFAULT_DURATION_MS[normalizedType] || 4500;
+    var entry = {
+      key: effectiveKey,
+      dedupeKey: dedupeKey,
+      sig: sig,
+      fingerprint: fingerprint,
+      type: normalizedType,
+      message: normalizedMsg,
+      toast: toast,
+      timerId: null,
+      durationMs: durationMs
+    };
+    toast.__prismToastEntry = entry;
+    toastRegistry.activeByKey[effectiveKey] = entry;
+    toastRegistry.activeOrder.push(entry);
+    toastRegistry.recentBySig[sig] = now;
+    if (dedupeKey) {
+      toastRegistry.lastConditionByKey[dedupeKey] = fingerprint;
+    }
+
+    if (typeof toast.addEventListener === "function") {
+      toast.addEventListener("mouseenter", function () {
+        clearToastAutoDismissTimer(entry);
+      });
+      toast.addEventListener("mouseleave", function () {
+        scheduleToastAutoDismiss(entry, Math.min(entry.durationMs, 3000));
+      });
+      toast.addEventListener("focusin", function () {
+        clearToastAutoDismissTimer(entry);
+      });
+      toast.addEventListener("focusout", function () {
+        scheduleToastAutoDismiss(entry, Math.min(entry.durationMs, 3000));
+      });
+    }
+
+    scheduleToastAutoDismiss(entry, durationMs);
+    return { shown: true, toast: toast, type: normalizedType, message: normalizedMsg };
   }
 
-  function hideToast(toast) {
-    if (!toast || !toast.parentNode) return;
-    toast.style.animation = "toast-out 0.2s forwards";
+  function hideToast(toast, options) {
+    if (!toast) return;
+    var entry = toast.__prismToastEntry || null;
+    if (entry) {
+      removeToastEntryFromRegistry(entry);
+      toast.__prismToastEntry = null;
+    }
+    if (!toast.parentNode) return;
+    var immediate = !!(options && options.immediate);
+    if (immediate) {
+      toast.parentNode.removeChild(toast);
+      return;
+    }
+    if (toast.style) {
+      toast.style.animation = "toast-out 0.2s forwards";
+    }
     setTimeout(function () {
       if (toast.parentNode) {
         toast.parentNode.removeChild(toast);
       }
     }, 210);
+  }
+
+  // -----------------------------
+  // Workload advisory formatting & disclosure (Sprint 104)
+  // -----------------------------
+
+  function parseWorkloadAdvisoryEntries(rawWarningText) {
+    var raw = String(rawWarningText || "").trim();
+    if (!raw) {
+      return {
+        items: [],
+        journeySummary: null,
+        otherItems: [],
+        summaryText: "",
+        toastSummaryText: ""
+      };
+    }
+    var blocks = raw
+      .split(/\n{2,}/)
+      .map(function (b) {
+        return String(b || "").trim();
+      })
+      .filter(Boolean);
+
+    var items = [];
+    var journeySummary = null;
+    var otherItems = [];
+
+    var primaryRe =
+      /^Workload feasibility \(([^)]+)\):\s*(.+?)\s+has an allocated duration of\s+(\d+(?:\.\d+)?)\s*minutes?\s*\(indicative learner-facing range:\s*([^)]+)\),\s*while the estimated workload range is approximately\s+(\d+(?:\.\d+)?)\s*[–-]\s*(\d+(?:\.\d+)?)\s*minutes?/i;
+    var secondaryRe =
+      /^Workload feasibility \(([^)]+)\):\s*(.+?)\s+is allocated\s+(\d+(?:\.\d+)?)\s*minutes?,\s*while estimated workload is approximately\s+(\d+(?:\.\d+)?)\s*[–-]\s*(\d+(?:\.\d+)?)\s*minutes?/i;
+    var cumulativeRe =
+      /^Workload feasibility \(([^)]+)\):\s*total\s+([^()]+?)\s*\((\d+(?:\.\d+)?)\s*[–-]\s*(\d+(?:\.\d+)?)\s*minutes?\)[^0-9]*?(\d+(?:\.\d+)?)\s*minutes?/i;
+
+    blocks.forEach(function (block) {
+      if (/^Workload feasibility \(advisory,\s*journey\):/i.test(block)) {
+        var concise = block
+          .replace(/^Workload feasibility \(advisory,\s*journey\):\s*/i, "")
+          .replace(
+            /^One or more commissions appear overloaded relative to their allocated time and indicative tolerance:[^.]+\.\s*/i,
+            ""
+          )
+          .trim();
+        journeySummary = {
+          fullText: block,
+          conciseText: concise || block
+        };
+        return;
+      }
+
+      var m = primaryRe.exec(block);
+      if (m) {
+        var scope = String(m[1] || "").trim();
+        items.push({
+          scope: scope,
+          subject: String(m[2] || "").trim(),
+          allocatedMinutes: String(m[3] || "").trim(),
+          indicativeRange: String(m[4] || "").trim(),
+          estimatedLow: String(m[5] || "").trim(),
+          estimatedHigh: String(m[6] || "").trim(),
+          isCommission: /commission/i.test(scope),
+          fullText: block
+        });
+        return;
+      }
+
+      var m2 = secondaryRe.exec(block);
+      if (m2) {
+        var scope2 = String(m2[1] || "").trim();
+        items.push({
+          scope: scope2,
+          subject: String(m2[2] || "").trim(),
+          allocatedMinutes: String(m2[3] || "").trim(),
+          indicativeRange: "",
+          estimatedLow: String(m2[4] || "").trim(),
+          estimatedHigh: String(m2[5] || "").trim(),
+          isCommission: /commission/i.test(scope2),
+          fullText: block
+        });
+        return;
+      }
+
+      var m3 = cumulativeRe.exec(block);
+      if (m3) {
+        items.push({
+          scope: String(m3[1] || "").trim(),
+          subject: "Total " + String(m3[2] || "workload").trim(),
+          allocatedMinutes: String(m3[5] || "").trim(),
+          indicativeRange: "",
+          estimatedLow: String(m3[3] || "").trim(),
+          estimatedHigh: String(m3[4] || "").trim(),
+          isCommission: false,
+          fullText: block
+        });
+        return;
+      }
+
+      otherItems.push({ fullText: block });
+    });
+
+    var summaryText = "";
+    var toastSummaryText = "";
+    if (items.length === 1) {
+      var one = items[0];
+      summaryText =
+        "Workload estimate: " +
+        one.subject +
+        " — " +
+        one.estimatedLow +
+        "–" +
+        one.estimatedHigh +
+        " min estimated vs " +
+        one.allocatedMinutes +
+        " min allocated";
+      toastSummaryText =
+        "Workload advisory: " +
+        one.subject +
+        " (" +
+        one.estimatedLow +
+        "–" +
+        one.estimatedHigh +
+        " min estimated vs " +
+        one.allocatedMinutes +
+        " min allocated). See step details.";
+    } else if (items.length > 1) {
+      var allComm = items.every(function (it) {
+        return it.isCommission;
+      });
+      var noun = allComm ? "commissions" : "items";
+      var briefParts = items.slice(0, 3).map(function (it) {
+        return (
+          it.subject +
+          " (" +
+          it.estimatedLow +
+          "–" +
+          it.estimatedHigh +
+          " vs " +
+          it.allocatedMinutes +
+          " min)"
+        );
+      });
+      if (items.length > 3) {
+        briefParts.push("+" + (items.length - 3) + " more");
+      }
+      summaryText =
+        "Workload estimate: " +
+        items.length +
+        " " +
+        noun +
+        " exceed allocated time — " +
+        briefParts.join("; ");
+      toastSummaryText =
+        "Workload advisory: " +
+        items.length +
+        " " +
+        noun +
+        " exceed allocated time. See step details.";
+    } else {
+      var firstBlock =
+        (journeySummary && journeySummary.conciseText) ||
+        (otherItems[0] && otherItems[0].fullText) ||
+        raw;
+      var cleaned = firstBlock
+        .replace(/^Workload feasibility \([^)]+\):\s*/i, "")
+        .split(/\.\s+/)[0]
+        .trim();
+      if (cleaned.length > 130) {
+        cleaned = cleaned.slice(0, 127).trim() + "…";
+      }
+      summaryText = "Workload estimate: " + (cleaned || "review estimated workload against allocated time");
+      toastSummaryText = "Workload advisory: review estimated workload in step details.";
+    }
+
+    return {
+      items: items,
+      journeySummary: journeySummary,
+      otherItems: otherItems,
+      summaryText: summaryText,
+      toastSummaryText: toastSummaryText
+    };
+  }
+
+  function formatWorkloadAdvisoryToastSummary(rawWarningText) {
+    return parseWorkloadAdvisoryEntries(rawWarningText).toastSummaryText;
+  }
+
+  function escapeWorkloadAdvisoryHtml(s) {
+    return String(s == null ? "" : s)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
+  }
+
+  function buildWorkloadAdvisoryHtml(rawWarningText) {
+    var parsed = parseWorkloadAdvisoryEntries(rawWarningText);
+    if (!parsed.summaryText) return "";
+
+    var bodyParts = [];
+    if (parsed.items.length === 1) {
+      bodyParts.push(
+        '<p class="workflow-workload-advisory__detail">' +
+          escapeWorkloadAdvisoryHtml(parsed.items[0].fullText) +
+          "</p>"
+      );
+      if (parsed.journeySummary && parsed.journeySummary.conciseText) {
+        bodyParts.push(
+          '<p class="workflow-workload-advisory__journey">' +
+            escapeWorkloadAdvisoryHtml(parsed.journeySummary.conciseText) +
+            "</p>"
+        );
+      }
+    } else if (parsed.items.length > 1) {
+      if (parsed.journeySummary && parsed.journeySummary.conciseText) {
+        bodyParts.push(
+          '<p class="workflow-workload-advisory__journey">' +
+            escapeWorkloadAdvisoryHtml(parsed.journeySummary.conciseText) +
+            "</p>"
+        );
+      }
+      var itemBlocks = parsed.items.map(function (it) {
+        var itemSummary =
+          it.subject +
+          " — " +
+          it.estimatedLow +
+          "–" +
+          it.estimatedHigh +
+          " min estimated vs " +
+          it.allocatedMinutes +
+          " min allocated";
+        return (
+          '<details class="workflow-workload-advisory__item">' +
+          '<summary class="workflow-workload-advisory__item-summary">' +
+          escapeWorkloadAdvisoryHtml(itemSummary) +
+          "</summary>" +
+          '<div class="workflow-workload-advisory__item-body">' +
+          '<p class="workflow-workload-advisory__detail">' +
+          escapeWorkloadAdvisoryHtml(it.fullText) +
+          "</p>" +
+          "</div>" +
+          "</details>"
+        );
+      });
+      bodyParts.push('<div class="workflow-workload-advisory__items">' + itemBlocks.join("") + "</div>");
+    } else if (parsed.journeySummary) {
+      bodyParts.push(
+        '<p class="workflow-workload-advisory__journey">' +
+          escapeWorkloadAdvisoryHtml(parsed.journeySummary.fullText) +
+          "</p>"
+      );
+    }
+
+    parsed.otherItems.forEach(function (other) {
+      bodyParts.push(
+        '<p class="workflow-workload-advisory__detail">' + escapeWorkloadAdvisoryHtml(other.fullText) + "</p>"
+      );
+    });
+
+    return (
+      '<details class="workflow-workload-advisory">' +
+      '<summary class="workflow-workload-advisory__summary">' +
+      '<span class="workflow-workload-advisory__summary-main">' +
+      '<span class="workflow-workload-advisory__tag">Advisory</span>' +
+      '<span class="workflow-workload-advisory__summary-text">' +
+      escapeWorkloadAdvisoryHtml(parsed.summaryText) +
+      "</span>" +
+      "</span>" +
+      '<span class="workflow-workload-advisory__cue">' +
+      '<span class="workflow-workload-advisory__cue-more">Details</span>' +
+      '<span class="workflow-workload-advisory__cue-less">Hide details</span>' +
+      "</span>" +
+      "</summary>" +
+      '<div class="workflow-workload-advisory__body">' +
+      bodyParts.join("") +
+      "</div>" +
+      "</details>"
+    );
+  }
+
+  function buildWorkloadToastDedupeKey(wfId, stepId) {
+    return "workload:" + String(wfId || "wf") + ":" + String(stepId || "step");
+  }
+
+  function notifyWorkloadAdvisoryToast(wfId, stepId, rawWarningText, options) {
+    var key = buildWorkloadToastDedupeKey(wfId, stepId);
+    var raw = String(rawWarningText || "").trim();
+    if (!raw) {
+      clearToastConditionState(key);
+      return { shown: false, reason: "cleared" };
+    }
+    var opts = options && typeof options === "object" ? options : {};
+    if (opts.fromHydration || opts.silent) {
+      recordToastConditionState(key, raw);
+      return { shown: false, reason: "hydrated_inline" };
+    }
+    var summary = formatWorkloadAdvisoryToastSummary(raw);
+    if (!summary) return { shown: false, reason: "empty_summary" };
+    return showToast(summary, "warning", {
+      dedupeKey: key,
+      fingerprint: raw,
+      suppressIfUnchanged: true
+    });
   }
 
   function queueWorkflowRunAutosaveToast(type) {
@@ -7489,9 +8008,12 @@
           (stage === "learning_commissions" || stage === "design_page") &&
           stageWarnings.length
         ) {
-          state.workflowRunWorkloadFeasibilityWarnings[sid] = stageWarnings.join("\n\n");
+          var joinedStageWarn = stageWarnings.join("\n\n");
+          state.workflowRunWorkloadFeasibilityWarnings[sid] = joinedStageWarn;
+          notifyWorkloadAdvisoryToast(wf.id, sid, joinedStageWarn, { fromHydration: true });
         } else {
           delete state.workflowRunWorkloadFeasibilityWarnings[sid];
+          clearToastConditionState(buildWorkloadToastDedupeKey(wf.id, sid));
         }
         results[stage] = { ok: true, warnings: stageWarnings };
       }
@@ -7543,9 +8065,12 @@
     }
     var warnings = Array.isArray(check.warnings) ? check.warnings.slice() : [];
     if (warnings.length) {
-      state.workflowRunWorkloadFeasibilityWarnings[sid] = warnings.join("\n\n");
+      var joinedStWarn = warnings.join("\n\n");
+      state.workflowRunWorkloadFeasibilityWarnings[sid] = joinedStWarn;
+      notifyWorkloadAdvisoryToast(wf.id, sid, joinedStWarn, { fromHydration: true });
     } else {
       delete state.workflowRunWorkloadFeasibilityWarnings[sid];
+      clearToastConditionState(buildWorkloadToastDedupeKey(wf.id, sid));
     }
     return { ok: true, warnings: warnings };
   }
@@ -33394,22 +33919,24 @@
             if (state.workflowRunWorkloadFeasibilityWarnings) {
               delete state.workflowRunWorkloadFeasibilityWarnings[sid];
             }
+            clearToastConditionState(buildWorkloadToastDedupeKey(wf && wf.id, sid));
           } else {
             delete state.workflowRunStrictJsonValidation[sid];
             var workloadWarnings =
               strictCheck && Array.isArray(strictCheck.warnings) ? strictCheck.warnings : [];
             if (workloadWarnings.length) {
+              var joinedStrictWarn = workloadWarnings.join("\n\n");
               state.workflowRunWorkloadFeasibilityWarnings =
                 state.workflowRunWorkloadFeasibilityWarnings || {};
-              state.workflowRunWorkloadFeasibilityWarnings[sid] = workloadWarnings.join("\n\n");
-              if (typeof showToast === "function") {
-                showToast(
-                  "Workload feasibility warning: one or more tasks may be allocated less time than their visible demands suggest. Review the step warning for details. You can continue without changing the design.",
-                  "warning"
-                );
+              state.workflowRunWorkloadFeasibilityWarnings[sid] = joinedStrictWarn;
+              notifyWorkloadAdvisoryToast(wf && wf.id, sid, joinedStrictWarn, {
+                fromHydration: !!(options && (options.fromHydration || options.source === "hydration"))
+              });
+            } else {
+              if (state.workflowRunWorkloadFeasibilityWarnings) {
+                delete state.workflowRunWorkloadFeasibilityWarnings[sid];
               }
-            } else if (state.workflowRunWorkloadFeasibilityWarnings) {
-              delete state.workflowRunWorkloadFeasibilityWarnings[sid];
+              clearToastConditionState(buildWorkloadToastDedupeKey(wf && wf.id, sid));
             }
           }
         }
@@ -33582,6 +34109,7 @@
             if (state.workflowRunWorkloadFeasibilityWarnings) {
               delete state.workflowRunWorkloadFeasibilityWarnings[sid];
             }
+            clearToastConditionState(buildWorkloadToastDedupeKey(wf && wf.id, sid));
             if (progressiveLjStage === "design_page") {
               state.workflowRunPageValidation = state.workflowRunPageValidation || {};
               state.workflowRunPageValidation[sid] = progErrMsg;
@@ -33640,14 +34168,24 @@
             ) {
               var progWarnings = Array.isArray(progGate.warnings) ? progGate.warnings : [];
               if (progWarnings.length) {
+                var joinedProgWarn = progWarnings.join("\n\n");
                 state.workflowRunWorkloadFeasibilityWarnings =
                   state.workflowRunWorkloadFeasibilityWarnings || {};
-                state.workflowRunWorkloadFeasibilityWarnings[sid] = progWarnings.join("\n\n");
-              } else if (state.workflowRunWorkloadFeasibilityWarnings) {
+                state.workflowRunWorkloadFeasibilityWarnings[sid] = joinedProgWarn;
+                notifyWorkloadAdvisoryToast(wf && wf.id, sid, joinedProgWarn, {
+                  fromHydration: !!(options && (options.fromHydration || options.source === "hydration"))
+                });
+              } else {
+                if (state.workflowRunWorkloadFeasibilityWarnings) {
+                  delete state.workflowRunWorkloadFeasibilityWarnings[sid];
+                }
+                clearToastConditionState(buildWorkloadToastDedupeKey(wf && wf.id, sid));
+              }
+            } else {
+              if (state.workflowRunWorkloadFeasibilityWarnings) {
                 delete state.workflowRunWorkloadFeasibilityWarnings[sid];
               }
-            } else if (state.workflowRunWorkloadFeasibilityWarnings) {
-              delete state.workflowRunWorkloadFeasibilityWarnings[sid];
+              clearToastConditionState(buildWorkloadToastDedupeKey(wf && wf.id, sid));
             }
           }
         }
@@ -33982,7 +34520,7 @@
       sid && state.workflowRunWorkloadFeasibilityWarnings
         ? state.workflowRunWorkloadFeasibilityWarnings[sid]
         : "";
-    var advisoryWarn = String(gamFormatWarn || workloadWarn || "").trim();
+    var statusLevelWarn = String(gamFormatWarn || "").trim();
     var marked = !!(sid && state.workflowRunStepCompleted[sid]);
     var gamVerificationView = resolveGamMaterialsVerificationView(sid);
     var gamVerificationPending = !!(
@@ -34025,7 +34563,7 @@
       text = gamVerificationView.stepStatusText || GAM_VERIFICATION_COPY.pendingStatus;
     } else {
       text = formatWorkflowRunStepCompleteStatus(oname, body.length > 0, marked);
-      if (advisoryWarn) {
+      if (statusLevelWarn) {
         text = text || "Step captured";
         text += " (with warnings)";
       }
@@ -34037,11 +34575,11 @@
       } else {
         statusEl.title = blockingMessage;
       }
-    } else if (advisoryWarn) {
+    } else if (statusLevelWarn) {
       if (typeof statusEl.setAttribute === "function") {
-        statusEl.setAttribute("title", advisoryWarn);
+        statusEl.setAttribute("title", statusLevelWarn);
       } else {
-        statusEl.title = advisoryWarn;
+        statusEl.title = statusLevelWarn;
       }
     } else if (typeof statusEl.removeAttribute === "function") {
       statusEl.removeAttribute("title");
@@ -34052,10 +34590,11 @@
     statusEl.classList.toggle("workflow-run-step-output-status--error", hasBlockingErr);
     statusEl.classList.toggle(
       "workflow-run-step-output-status--warning",
-      !hasBlockingErr && !!advisoryWarn
+      !hasBlockingErr && !!statusLevelWarn
     );
     var workloadNote = li.querySelector('[data-role="workload-feasibility-warning"]');
     if (!hasBlockingErr && workloadWarn) {
+      var workloadRawStr = String(workloadWarn);
       if (!workloadNote) {
         workloadNote = document.createElement("div");
         workloadNote.setAttribute("data-role", "workload-feasibility-warning");
@@ -34066,10 +34605,28 @@
           li.appendChild(workloadNote);
         }
       }
-      workloadNote.textContent = String(workloadWarn);
+      var prevWorkloadRaw =
+        workloadNote.getAttribute && typeof workloadNote.getAttribute === "function"
+          ? workloadNote.getAttribute("data-workload-raw")
+          : workloadNote.__prismWorkloadRaw || "";
+      if (prevWorkloadRaw !== workloadRawStr) {
+        var parsedAdvisory = parseWorkloadAdvisoryEntries(workloadRawStr);
+        workloadNote.innerHTML = buildWorkloadAdvisoryHtml(workloadRawStr);
+        workloadNote.__prismWorkloadRaw = workloadRawStr;
+        if (typeof workloadNote.setAttribute === "function") {
+          workloadNote.setAttribute("data-workload-raw", workloadRawStr);
+          workloadNote.setAttribute("data-advisory-summary", parsedAdvisory.summaryText);
+        }
+      }
       workloadNote.hidden = false;
     } else if (workloadNote) {
+      workloadNote.innerHTML = "";
       workloadNote.textContent = "";
+      workloadNote.__prismWorkloadRaw = "";
+      if (typeof workloadNote.removeAttribute === "function") {
+        workloadNote.removeAttribute("data-workload-raw");
+        workloadNote.removeAttribute("data-advisory-summary");
+      }
       workloadNote.hidden = true;
     }
     refreshGamSuitabilityReviewUi(li);
@@ -70427,6 +70984,14 @@
       if (!sid || !state.workflowRunWorkloadFeasibilityWarnings) return "";
       return state.workflowRunWorkloadFeasibilityWarnings[sid] || "";
     };
+    prismTestApi.showToastForTest = showToast;
+    prismTestApi.hideToastForTest = hideToast;
+    prismTestApi.resetToastNotificationStateForTest = resetToastNotificationState;
+    prismTestApi.clearToastConditionStateForTest = clearToastConditionState;
+    prismTestApi.parseWorkloadAdvisoryEntriesForTest = parseWorkloadAdvisoryEntries;
+    prismTestApi.buildWorkloadAdvisoryHtmlForTest = buildWorkloadAdvisoryHtml;
+    prismTestApi.formatWorkloadAdvisoryToastSummaryForTest = formatWorkloadAdvisoryToastSummary;
+    prismTestApi.notifyWorkloadAdvisoryToastForTest = notifyWorkloadAdvisoryToast;
     prismTestApi.setWorkflowRunStepCompletedForTest = function (completedMap) {
       state.workflowRunStepCompleted =
         completedMap && typeof completedMap === "object" ? Object.assign({}, completedMap) : {};

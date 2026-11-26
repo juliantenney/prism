@@ -392,10 +392,18 @@ test("2. Stage 4 surfaces non-blocking workload warnings before Stage 5 and matc
   assert.ok(s4WarnText.length > 0, "Stage 4 must surface workload feasibility warnings immediately on capture");
   assert.match(s4WarnText, /Workload feasibility \(advisory, commission\): Evaluating competing economic explanations has an allocated duration of 8 minutes/i);
   assert.match(s4WarnText, /Workload feasibility \(advisory, journey\)/i);
-  assert.match(lis[3].statusEl.textContent, /\(with warnings\)/i);
-  assert.ok(lis[3].getWorkloadNote(), "Stage 4 UI must render advisory warning banner");
+  assert.doesNotMatch(
+    lis[3].statusEl.textContent,
+    /\(with warnings\)/i,
+    "Successful step completion status must remain dominant (workload advisories are subordinate)"
+  );
+  assert.ok(lis[3].getWorkloadNote(), "Stage 4 UI must render subordinate advisory disclosure");
   assert.equal(lis[3].getWorkloadNote().hidden, false);
-  assert.equal(lis[3].getWorkloadNote().textContent, s4WarnText);
+  assert.match(lis[3].getWorkloadNote().innerHTML, /<details class="workflow-workload-advisory">/);
+  assert.ok(
+    lis[3].getWorkloadNote().innerHTML.includes("Evaluating competing economic explanations"),
+    "Advisory disclosure must preserve affected commission identity and diagnostics"
+  );
 
   // Now capture Stage 5 and verify Stage 5 assembled Design Page diagnostics are identical & unduplicated
   syncStep(4, stage5);

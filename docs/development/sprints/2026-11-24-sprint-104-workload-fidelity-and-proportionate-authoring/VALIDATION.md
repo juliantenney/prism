@@ -409,8 +409,8 @@ The completed independent Learning Journey QA audit awarded the canonical Econom
 
 | Suite / Check | Result | Notes |
 | ------------- | ------ | ----- |
-| `tests/s104-dla-provider-role-closure.test.js` (new) | **5 / 5 pass** | Invalid teaching/explanatory with `evidence_requirement` rejected, invalid explanatory feedback discussing/interpreting evidence with `evidence_requirement` rejected, valid separated evidence + explanatory feedback accepted, valid dual-role material with clearly distinguished inspectable evidence accepted, and live Practice DLA contract wording verified |
-| Combined 5-suite DLA provider-role & P02 regression bundle | **57 / 57 pass** | `s104-dla-provider-role-closure`, `dla-candidate-evidence-provider-classification`, `s76-dla-p01-p02-p03-contract`, `s78-t-050-dla-evidence-provider-first-pass-hardening`, `s94-dla-evidence-provider-id-closure` |
+| `tests/s104-dla-provider-role-closure.test.js` (new) | **7 / 7 pass** | Invalid teaching/explanatory with `evidence_requirement` rejected, invalid explanatory feedback discussing/interpreting evidence with `evidence_requirement` rejected, valid separated evidence + explanatory feedback accepted, valid dual-role material with clearly distinguished inspectable evidence accepted, live Practice DLA contract wording verified, exact M6 C3 Step 2 JSON (`A1-M1` independent evaluation + `A2-M1` feedback-informed reconsideration + `A2-M2` explanatory feedback negative check) verified, and prohibition/separation/usage-context references to explanatory feedback verified |
+| Combined 5-suite DLA provider-role & P02 regression bundle | **59 / 59 pass** | `s104-dla-provider-role-closure`, `dla-candidate-evidence-provider-classification`, `s76-dla-p01-p02-p03-contract`, `s78-t-050-dla-evidence-provider-first-pass-hardening`, `s94-dla-evidence-provider-id-closure` |
 | `npm run check:learner-renderer-vnext-browser` | **OK** | Confirmed vNext browser bundles unaffected and matching source |
 
 

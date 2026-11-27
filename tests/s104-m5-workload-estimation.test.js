@@ -98,7 +98,11 @@ function loadPrismTestApi() {
     ])
   );
   vm.runInContext(source, sandbox, { filename: "app.js" });
-  return sandbox.window.__PRISM_TEST_API;
+  const api = sandbox.window.__PRISM_TEST_API;
+  // Sprint 104 recovery (S104-D08): deterministic workload assessment is off by default in app.js;
+  // this suite tests the dormant advisory machinery, so enable it explicitly.
+  api.setWorkloadAssessmentEnabledForTest(true);
+  return api;
 }
 
 test("Practice math-problem operator-precedence bug is fixed", () => {

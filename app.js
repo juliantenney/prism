@@ -951,6 +951,16 @@
   // Workload advisory formatting & disclosure (Sprint 104)
   // -----------------------------
 
+  /**
+   * Sprint 104 recovery (S104-D08) — internal switch for deterministic workload assessment.
+   * Defaults to false: the workload estimator/adapters are dormant (retained for research, not
+   * deleted) and no workload advisory is produced, stored-for-display or notified. Not a
+   * user-facing setting. Duration contracts, locking and arithmetic reconciliation are
+   * independent of this switch. Tests of the dormant machinery enable it through
+   * setWorkloadAssessmentEnabledForTest.
+   */
+  var workloadAssessmentEnabled = false;
+
   function parseWorkloadAdvisoryEntries(rawWarningText) {
     var raw = String(rawWarningText || "").trim();
     if (!raw) {
@@ -1232,6 +1242,10 @@
 
   function notifyWorkloadAdvisoryToast(wfId, stepId, rawWarningText, options) {
     var key = buildWorkloadToastDedupeKey(wfId, stepId);
+    if (!workloadAssessmentEnabled) {
+      clearToastConditionState(key);
+      return { shown: false, reason: "workload_assessment_disabled" };
+    }
     var raw = String(rawWarningText || "").trim();
     if (!raw) {
       clearToastConditionState(key);
@@ -16224,6 +16238,7 @@
    * Never converts findings into capture errors.
    */
   function appendInteractiveWorkloadFeasibilityWarnings(page, baseline, warningsOut, optionsOrWf) {
+    if (!workloadAssessmentEnabled) return;
     if (!Array.isArray(warningsOut)) return;
     var adapter = resolveInteractiveWorkloadFeasibilityAdapterLib();
     if (!adapter || typeof adapter.collectInteractiveWorkloadWarnings !== "function") return;
@@ -16267,6 +16282,7 @@
    * Never converts findings into capture errors.
    */
   function appendAssessmentPackWorkloadFeasibilityWarnings(artefact, warningsOut, optionsOrWf) {
+    if (!workloadAssessmentEnabled) return;
     if (!Array.isArray(warningsOut)) return;
     var adapter = resolveAssessmentPackWorkloadFeasibilityAdapterLib();
     if (!adapter || typeof adapter.collectAssessmentPackWorkloadWarnings !== "function") return;
@@ -16311,6 +16327,7 @@
    * Never converts findings into capture errors or mutates declared durations.
    */
   function appendSituatedTaskWorkloadFeasibilityWarnings(page, warningsOut, optionsOrWf) {
+    if (!workloadAssessmentEnabled) return;
     if (!Array.isArray(warningsOut)) return;
     var adapter = resolveSituatedTaskWorkloadFeasibilityAdapterLib();
     if (!adapter || typeof adapter.collectSituatedTaskWorkloadWarnings !== "function") return;
@@ -16352,6 +16369,7 @@
    * Never converts findings into capture errors or changes TIME CHECK arithmetic.
    */
   function appendLearningJourneyWorkloadFeasibilityWarnings(page, wf, warningsOut, options) {
+    if (!workloadAssessmentEnabled) return;
     if (!Array.isArray(warningsOut)) return;
     var adapter = resolveLearningJourneyWorkloadFeasibilityAdapterLib();
     if (!adapter || typeof adapter.collectLearningJourneyWorkloadWarnings !== "function") return;
@@ -16417,6 +16435,7 @@
       return gate;
     }
     var warnings = Array.isArray(gate.warnings) ? gate.warnings.slice() : [];
+    if (!workloadAssessmentEnabled) return Object.assign({}, gate, { warnings: warnings });
     appendLearningJourneyWorkloadFeasibilityWarnings(page, wf, warnings, options);
     return Object.assign({}, gate, { warnings: warnings });
   }
@@ -34517,7 +34536,7 @@
     var gamFormatWarn =
       sid && state.workflowRunGamFormatWarnings ? state.workflowRunGamFormatWarnings[sid] : "";
     var workloadWarn =
-      sid && state.workflowRunWorkloadFeasibilityWarnings
+      workloadAssessmentEnabled && sid && state.workflowRunWorkloadFeasibilityWarnings
         ? state.workflowRunWorkloadFeasibilityWarnings[sid]
         : "";
     var statusLevelWarn = String(gamFormatWarn || "").trim();
@@ -70975,6 +70994,14 @@
       var sid = String(stepId || "").trim();
       if (!sid || !state.workflowRunGamFormatWarnings) return "";
       return state.workflowRunGamFormatWarnings[sid] || "";
+    };
+    prismTestApi.setWorkloadAssessmentEnabledForTest = function (enabled) {
+      var prev = workloadAssessmentEnabled;
+      workloadAssessmentEnabled = enabled === true;
+      return prev;
+    };
+    prismTestApi.getWorkloadAssessmentEnabledForTest = function () {
+      return workloadAssessmentEnabled;
     };
     prismTestApi.getWorkflowRunWorkloadFeasibilityWarningsForTest = function (stepId) {
       if (stepId === undefined) {

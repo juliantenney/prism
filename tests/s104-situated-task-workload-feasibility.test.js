@@ -366,6 +366,8 @@ test("7. app.js Situated Task Stage 5 warning lifecycle: capture, restoration, r
       "lib/situated-task-sibling-prompts.js"
     ]
   });
+  // Sprint 104 recovery (S104-D08): workload assessment is off by default; this test exercises it.
+  api.setWorkloadAssessmentEnabledForTest(true);
 
   const built = family.buildFirstClassWorkflowFamily({
     product: "situated_task",

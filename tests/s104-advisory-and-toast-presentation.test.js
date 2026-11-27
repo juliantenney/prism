@@ -192,6 +192,9 @@ function loadHarness() {
 
   const appSource = fs.readFileSync(path.join(REPO_ROOT, "app.js"), "utf8");
   vm.runInContext(appSource, sandbox, { filename: "app.js" });
+  // Sprint 104 recovery (S104-D08): deterministic workload assessment is off by default in app.js;
+  // this suite tests the dormant advisory machinery, so enable it explicitly.
+  sandbox.window.__PRISM_TEST_API.setWorkloadAssessmentEnabledForTest(true);
   return {
     api: sandbox.window.__PRISM_TEST_API,
     toastContainer,

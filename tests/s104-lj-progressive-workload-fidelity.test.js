@@ -25,7 +25,7 @@ const economicsStage4Fixture = JSON.parse(
   )
 );
 
-function loadHarness() {
+function loadHarness(harnessOptions) {
   const loaded = loadPrismAppJsTestApi({
     extraLibs: [
       "lib/learning-journey-assemble.js",
@@ -52,6 +52,14 @@ function loadHarness() {
     loaded.sandbox.globalThis.PrismLearningJourneySiblingPrompts = ljPrompts;
     loaded.sandbox.globalThis.PrismWorkloadFeasibilityEstimator = workloadEstimator;
     loaded.sandbox.globalThis.PrismLearningJourneyWorkloadFeasibilityAdapter = ljWorkloadAdapter;
+  }
+  if (
+    !(harnessOptions && harnessOptions.workloadAssessment === false) &&
+    loaded.api &&
+    typeof loaded.api.setWorkloadAssessmentEnabledForTest === "function"
+  ) {
+    // Sprint 104 recovery (S104-D08): workload assessment is off by default; this suite tests it.
+    loaded.api.setWorkloadAssessmentEnabledForTest(true);
   }
   return loaded;
 }
@@ -655,4 +663,55 @@ test("4. Warning lifecycle stays accurate across Stage 4 edits, invalid/empty pa
   api.restoreWorkflowRunStateForWorkflowForTest(wf.id);
   assert.equal(api.getWorkflowRunWorkloadFeasibilityWarningsForTest("s4"), "");
   assert.equal(api.getWorkflowRunWorkloadFeasibilityWarningsForTest("s5"), "");
+});
+
+test("S104-D08: workload assessment is off by default; Stage 4/5 stay valid with no advisory, stored state or toast", () => {
+  const { api } = loadHarness({ workloadAssessment: false });
+  assert.equal(api.getWorkloadAssessmentEnabledForTest(), false, "switch defaults to false");
+  api.resetToastNotificationStateForTest();
+  const wf = makeProgressiveWorkflow("wf-s104-d08-off", 40);
+  api.setWorkflowsForTest([wf]);
+  api.setSelectedWorkflowIdForTest(wf.id);
+  const { stage1, stage2, stage3, stage4, stage5 } = makeStages();
+  const lis = wf.steps.map((s) => makeStepLi(s, ""));
+  const syncStep = (idx, obj) => {
+    lis[idx].ta.value = JSON.stringify(obj, null, 2);
+    api.syncWorkflowRunCapturedOutputToState(lis[idx].li, { source: "test_paste" });
+  };
+  [stage1, stage2, stage3, stage4].forEach((s, i) => syncStep(i, s));
+  assert.equal(api.workflowRunStepHasBlockingCaptureErrors("s4"), false);
+  assert.equal(api.isWorkflowRunStepCaptureReadyForAdvance(wf.steps[3], "s4", wf, lis[3].li), true);
+  assert.equal(String(api.getWorkflowRunWorkloadFeasibilityWarningsForTest("s4") || ""), "");
+  const note4 = lis[3].getWorkloadNote();
+  assert.ok(!note4 || note4.hidden === true, "no advisory disclosure rendered");
+  syncStep(4, stage5);
+  assert.equal(api.workflowRunStepHasBlockingCaptureErrors("s5"), false);
+  assert.equal(api.isWorkflowRunStepCaptureReadyForAdvance(wf.steps[4], "s5", wf, lis[4].li), true);
+  assert.equal(String(api.getWorkflowRunWorkloadFeasibilityWarningsForTest("s5") || ""), "");
+});
+
+test("S104-D08: previously stored advisories are neither displayed nor notified once the switch is off", () => {
+  const { api } = loadHarness();
+  api.resetToastNotificationStateForTest();
+  const wf = makeProgressiveWorkflow("wf-s104-d08-stored", 40);
+  api.setWorkflowsForTest([wf]);
+  api.setSelectedWorkflowIdForTest(wf.id);
+  const { stage1, stage2, stage3, stage4 } = makeStages();
+  const lis = wf.steps.map((s) => makeStepLi(s, ""));
+  [stage1, stage2, stage3, stage4].forEach((s, i) => {
+    lis[i].ta.value = JSON.stringify(s, null, 2);
+    api.syncWorkflowRunCapturedOutputToState(lis[i].li, { source: "test_paste" });
+  });
+  assert.ok(String(api.getWorkflowRunWorkloadFeasibilityWarningsForTest("s4") || "").length > 0, "advisory stored while on");
+  assert.equal(lis[3].getWorkloadNote().hidden, false);
+  // Switch off: the stored advisory remains in memory but must not be rendered or announced.
+  api.setWorkloadAssessmentEnabledForTest(false);
+  api.updateRunStepOutputStatus(lis[3].li);
+  assert.equal(lis[3].getWorkloadNote().hidden, true, "stored advisory hidden when off");
+  assert.equal(lis[3].getWorkloadNote().innerHTML, "");
+  const toast = api.notifyWorkloadAdvisoryToastForTest("wf-x", "s4", "Workload feasibility (advisory, journey): x");
+  assert.equal(toast.shown, false);
+  assert.equal(toast.reason, "workload_assessment_disabled");
+  // Unrelated validation outcomes are untouched: Stage 4 remains accepted.
+  assert.equal(api.workflowRunStepHasBlockingCaptureErrors("s4"), false);
 });

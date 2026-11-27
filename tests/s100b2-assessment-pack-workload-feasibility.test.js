@@ -109,6 +109,9 @@ function loadPrismTestApi() {
   vm.runInContext(source, sandbox, { filename: "app.js" });
   const api = sandbox.window.__PRISM_TEST_API;
   assert.ok(api, "Expected __PRISM_TEST_API");
+  // Sprint 104 recovery (S104-D08): deterministic workload assessment is off by default in app.js;
+  // this suite tests the dormant advisory machinery, so enable it explicitly.
+  api.setWorkloadAssessmentEnabledForTest(true);
   return api;
 }
 

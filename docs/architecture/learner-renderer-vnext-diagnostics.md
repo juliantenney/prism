@@ -1,4 +1,4 @@
-# Learner-renderer-vNext Diagnostics Reference
+﻿# Learner-renderer-vNext Diagnostics Reference
 
 **Status:** Sprint 68 catalogue  
 **Source of truth (machine):** `lib/learner-renderer-vnext/certification-diagnostics-catalog.js`  
@@ -47,6 +47,7 @@ Certification treats unexpected production diagnostics as release-blocking regar
 | Code | Severity | Expected in success? | Blocking | Meaning | Learner impact | Developer action |
 | ---- | -------- | -------------------- | -------- | ------- | -------------- | ---------------- |
 | `UNSUPPORTED_LEARNER_SURFACE` | error | no | yes | Requested surface kind not implemented | Workspace missing / explicit failure | Implement surface or stop requesting it |
+| `SELECTION_ITEM_NOT_REALISED` | error | no | yes | Selection response item (authored `selection.items[]` or DLA-declared `response_items[]`) has no realised response part | Learner is asked for a response with no control | Fix selection cluster item identity/options so every item composes a response part |
 | `DUPLICATE_RESPONSE_PART` | warning | no | yes* | Duplicate response-part identity suppressed | Hidden duplicate risk | Fix collection provenance |
 | `UNASSIGNED_WRITTEN_RESPONSE` | error | no | yes | Written requirement lacked a workspace | Learner cannot respond | Fix response-part → surface mapping |
 

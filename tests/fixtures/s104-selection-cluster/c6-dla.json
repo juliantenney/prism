@@ -1,0 +1,127 @@
+{
+  "artifact_type": "page",
+  "schema_version": "2.0.0",
+  "assembly_state": {
+    "current_stage": "dla",
+    "enriched_by": [
+      "episode_plan",
+      "dla"
+    ]
+  },
+  "activities": [
+    {
+      "activity_id": "A1",
+      "title": "Determine and interpret predictive proportions",
+      "activity_preamble": "Return to the familiar diagnostic results table. In Calculating and interpreting test accuracy, you considered groups defined by whether people actually had the condition. In Changing perspective from test accuracy to test interpretation, you considered how changing the reference group changes the question being answered. Apply that reasoning now to interpret positive and negative results.",
+      "prior_knowledge_activation": "Recall the difference between grouping people by their actual condition status and grouping them by their reported test result.",
+      "reasoning_orientation": "For each question, identify the group of people being considered, determine how many members of that group meet the stated condition, and select the interpretation that your proportion supports.",
+      "learner_task": "1. Using the diagnostic results table, determine the proportion of people receiving positive results who actually have the condition. Select the numerator and denominator, then choose the interpretation that correctly describes this proportion.\n\n2. Determine the proportion of people receiving negative results who do not have the condition. Select the numerator and denominator, then choose the interpretation that correctly describes this proportion.\n\n3. Review the feedback for both proportions. Reconsider any incorrect selections, paying particular attention to which group each denominator represents.",
+      "expected_output": "Two correctly constructed predictive proportions, each accompanied by an interpretation that identifies the appropriate reported-result reference group and actual condition status. Each proportion must use a numerator drawn from its denominator group. The interpretations must distinguish predictive proportions from sensitivity and specificity without treating either test result as proof of actual condition status. Natural-frequency expressions or fractions are sufficient; decimal percentage calculations are not required.",
+      "task_material_decision": {
+        "separate_inputs_required": true,
+        "task_input_material_ids": [
+          "A1-M1"
+        ]
+      },
+      "required_materials": [
+        {
+          "material_id": "A1-M1",
+          "material_type": "reference_table",
+          "purpose": "Provide the familiar Dataset A diagnostic results table as directly inspectable numerical evidence for both predictive-proportion determinations and their interpretations.",
+          "specification": "Reproduce Dataset A from the authoritative illustrative shared corpus supplied in the preceding conversation attachment. Use a consistently labelled two-by-two table with actual condition status in columns and reported test result in rows, including row totals, column totals and the overall population total. Columns must identify people with the condition, people without the condition, and totals. The positive-result row must contain 90 true positives (TP), 20 false positives (FP), and a total of 110. The negative-result row must contain 10 false negatives (FN), 80 true negatives (TN), and a total of 90. Column totals must be 100 people with the condition, 100 people without the condition, and 200 people overall. Preserve these exact frequencies and classifications. Include a brief statement that the scenario and data are fictional, intended solely for introductory learning, and must not inform clinical decisions. Actual condition status is established independently using an assumed reliable reference procedure. Do not include calculated predictive proportions, predictive percentages, highlighted answer cells, denominator recommendations or interpretations. Do not rely on colour alone to distinguish categories. Do not introduce Dataset B, Dataset C or additional observations.",
+          "evidence_requirement": {
+            "kind": "learner_evidence",
+            "purpose": "Supply the original observed-frequency structure from which learners must construct and interpret result-based predictive proportions.",
+            "learner_action": "Inspect the reported-result rows, actual-condition columns, individual cell frequencies and marginal totals to identify the relevant reference group and construct each predictive proportion.",
+            "observable_features": [
+              "Positive-result frequencies of 90 true positives and 20 false positives, with a row total of 110.",
+              "Negative-result frequencies of 10 false negatives and 80 true negatives, with a row total of 90.",
+              "Actual-condition column totals of 100 people with the condition and 100 people without the condition.",
+              "Overall population total of 200 people.",
+              "The distinction between reported test result and independently established actual condition status."
+            ],
+            "provenance": "conversation_attachment",
+            "evidence_layout": "separate_provider",
+            "disclosure_constraint": "Expose the original frequencies, classifications and totals before the attempt, but withhold calculated predictive proportions and their interpretations until post-attempt feedback.",
+            "minimum_suitable_form": "One complete, directly inspectable, consistently labelled two-by-two frequency table with marginal totals.",
+            "processing_notes": "Use the source unit titled DATASET A: BASELINE POPULATION and its accompanying REPRESENTATIONAL CONVENTION from the ILLUSTRATIVE SHARED CORPUS: FICTIONAL HEALTHCARE SCENARIO AND SYNTHETIC DIAGNOSTIC TEST DATA. Preserve the supplied synthetic evidence rather than generating a replacement dataset. Conversation-attachment provenance identifies the supplied source; it does not imply that the fictional figures are empirical clinical observations."
+          }
+        },
+        {
+          "material_id": "A1-M2",
+          "material_type": "selection",
+          "purpose": "Provide an operational response surface for independently constructing and interpreting the positive predictive proportion through three connected disciplinary decisions.",
+          "specification": "Commission one compact selection cluster addressing the proportion of people receiving positive results who actually have the condition. Include exactly three single-select decisions: numerator selection, denominator selection and interpretation selection. For the numerator, offer 90 as the correct choice alongside 20 and 100 as plausible alternatives. For the denominator, offer 110 as the correct choice alongside 100 and 200 as plausible alternatives. The denominator decision must require learners to distinguish all people receiving positive results from condition-based groups and the entire population. Use concise option labels that do not identify the correct reference group in advance. The interpretation decision must offer one correct result-based interpretation and three plausible alternatives: a sensitivity interpretation that reverses the conditional relationship, an interpretation using the entire population as the reference group, and an interpretation treating a positive result as certain evidence that the condition is present. The correct interpretation must describe the proportion of people receiving positive results who actually have the condition. Do not disclose the correct numerical fraction or percentage within the interpretation options. Do not preselect answers, highlight correct options or display answer-bearing explanations before the independent attempt. Keep correct-key information separate from initially visible option content. Present the decisions as one connected performance rather than three unrelated knowledge-recall questions. The selected numerator and denominator together constitute the numerical response; no duplicate fraction-entry field, percentage calculation or written justification is required. Use A1-M1 as the sole numerical evidence source.",
+          "selection": {
+            "form": "single_select"
+          },
+          "response_fulfilment": {
+            "kind": "learner_workspace",
+            "response_kind": "selection_choose",
+            "binds_production_steps": [
+              1
+            ]
+          }
+        },
+        {
+          "material_id": "A1-M3",
+          "material_type": "selection",
+          "purpose": "Provide an operational response surface for independently constructing and interpreting the negative predictive proportion through three connected disciplinary decisions.",
+          "specification": "Commission one compact selection cluster addressing the proportion of people receiving negative results who do not have the condition. Include exactly three single-select decisions: numerator selection, denominator selection and interpretation selection. For the numerator, offer 80 as the correct choice alongside 10 and 100 as plausible alternatives. For the denominator, offer 90 as the correct choice alongside 100 and 200 as plausible alternatives. The denominator decision must require learners to distinguish all people receiving negative results from condition-based groups and the entire population. Use concise option labels that do not identify the correct reference group in advance. The interpretation decision must offer one correct result-based interpretation and three plausible alternatives: a specificity interpretation that reverses the conditional relationship, an interpretation using the entire population as the reference group, and an interpretation treating a negative result as certain evidence that the condition is absent. The correct interpretation must describe the proportion of people receiving negative results who do not have the condition. Do not disclose the correct numerical fraction or percentage within the interpretation options. Do not preselect answers, highlight correct options or display answer-bearing explanations before the independent attempt. Keep correct-key information separate from initially visible option content. Present the decisions as one connected performance rather than three unrelated knowledge-recall questions. The selected numerator and denominator together constitute the numerical response; no duplicate fraction-entry field, percentage calculation or written justification is required. Use A1-M1 as the sole numerical evidence source.",
+          "selection": {
+            "form": "single_select"
+          },
+          "response_fulfilment": {
+            "kind": "learner_workspace",
+            "response_kind": "selection_choose",
+            "binds_production_steps": [
+              2
+            ]
+          }
+        },
+        {
+          "material_id": "A1-M4",
+          "material_type": "sample_output",
+          "purpose": "Provide compact post-attempt explanatory feedback that verifies both predictive proportions, diagnoses reference-group misconceptions and supports targeted correction of the learner's selections.",
+          "specification": "Reveal after both integrated proportion-and-interpretation performances have been attempted. Commission one concise feedback resource with distinct positive-result and negative-result explanations. For the positive-result performance, identify 90/110 as the correct proportion, approximately 81.8%. Explain that the numerator counts true positives and the denominator counts everyone receiving a positive result, including the 20 false positives. Contrast this with sensitivity, 90/100 or 90%, whose denominator comprises all people with the condition. For the negative-result performance, identify 80/90 as the correct proportion, approximately 88.9%. Explain that the numerator counts true negatives and the denominator counts everyone receiving a negative result, including the 10 false negatives. Contrast this with specificity, 80/100 or 80%, whose denominator comprises all people without the condition. Explain that using 200 as the denominator would describe a proportion of the entire population rather than a predictive proportion within a reported-result group. Address the incorrect numerator selections by distinguishing the relevant correct-result count from the corresponding incorrect-result count and from condition-based totals. Reinforce that some people receiving positive results do not have the condition and some people receiving negative results do. Neither result establishes actual condition status with certainty. Label rounded percentages as approximate. Accept the exact fractions as complete numerical answers. Direct learners who made incorrect selections to reconsider the corresponding numerator, denominator or interpretation in A1-M2 or A1-M3. Keep feedback and targeted correction as one coherent review experience. Do not commission another response surface, extended written explanation, additional worked example, prevalence comparison, independent transfer situation or clinical recommendation. Calibrate the combined explanatory feedback and correction opportunity to the allocated one-minute review period without displaying that internal timing to learners."
+        }
+      ],
+      "evidence_decision": {
+        "required": true,
+        "reason": "The activity requires more than recalling predictive-value definitions or applying a supplied formula. Learners must inspect the particular frequencies and marginal totals in Dataset A, determine the appropriate reference groups, construct two proportions and interpret what those proportions establish within the fictional population. The table therefore functions both as a numerical task operand and as inspectable grounds for the required interpretations.",
+        "provider_material_ids": [
+          "A1-M1"
+        ]
+      }
+    }
+  ],
+  "generation_notes": {
+    "learner_evidence_attachments": {
+      "present": true,
+      "role": "both",
+      "inventoried_units": [
+        "ILLUSTRATIVE SHARED CORPUS: FICTIONAL HEALTHCARE SCENARIO AND SYNTHETIC DIAGNOSTIC TEST DATA",
+        "RECURRING SCENARIO",
+        "REPRESENTATIONAL CONVENTION",
+        "DATASET A: BASELINE POPULATION",
+        "FICTIONAL INDIVIDUAL EXAMPLES FROM DATASET A",
+        "DATASET B: LOWER-PREVALENCE POPULATION",
+        "AUTHORITATIVE COMPARISON OF DATASETS A AND B",
+        "DATASET C: INDEPENDENT TRANSFER SITUATION",
+        "AUTHORITATIVE INTERPRETATION OF DATASET C",
+        "CONSISTENCY AND DISCLOSURE RULES"
+      ]
+    },
+    "design_decisions": {
+      "response_surface": "Two connected selection clusters, each containing numerator, denominator and interpretation decisions, fulfil the two inherited learning outcomes without requiring extended writing or duplicate numerical entry.",
+      "preparatory_scaffolding": "The activity preamble and prior-knowledge activation fulfil the inherited activation beat. The reasoning orientation and expected output fulfil the criteria_exposition beat without commissioning a separate teaching resource or disclosing the answers.",
+      "independent_performance": "Both predictive-proportion performances use the same familiar evidence provider and must be attempted before answer-bearing feedback is reviewed.",
+      "verification": "One post-attempt feedback resource addresses both performances and supports correction through reconsideration of the original selections.",
+      "evidence_scope": "Only Dataset A is commissioned for learner inspection. The remaining inventoried source units establish continuity and disclosure boundaries but are not additional learner-facing evidence providers for this activity.",
+      "diagnostic_review": "A separate checklist is unnecessary because the six structured decisions have determinate correct responses and the explanatory feedback addresses the consequential misconceptions.",
+      "workload": "The design retains the authoritative three-minute allocation: approximately two minutes for evidence inspection and the two integrated performances, followed by one minute for explanatory feedback and targeted correction.",
+      "prior_learning_reuse": "The design relies on the commissioned prior learning described for comm_4 and comm_5. It does not assume access to individual learner responses or claim inspection of the published predecessor resources.",
+      "implementation_boundary": "Material bodies, selection item structures, correct-key encoding and executable response behaviour remain the responsibility of GAM. The single-select clusters are commissioned as three connected single-select items per material, not as one multi-select question. Actual rendering and feedback-release behaviour have not been verified at this authoring stage."
+    }
+  }
+}

@@ -1,0 +1,219 @@
+{
+  "artifact_type": "page",
+  "schema_version": "2.0.0",
+  "assembly_state": {
+    "current_stage": "gam",
+    "enriched_by": [
+      "gam"
+    ]
+  },
+  "activities": [
+    {
+      "activity_id": "A1",
+      "materials": [
+        {
+          "material_id": "A1-M1",
+          "material_type": "reference_table",
+          "activity_id": "A1",
+          "title": "Diagnostic results for 200 people",
+          "body_format": "markdown",
+          "body": "A fictional healthcare service is evaluating a diagnostic test for an unnamed health condition. The test reports either a positive or a negative result. For the purposes of these illustrative datasets, actual condition status is established independently using an assumed reliable reference procedure.\n\n| Reported test result | With the condition | Without the condition | Total |\n| --- | ---: | ---: | ---: |\n| Positive | 90 true positives (TP) | 20 false positives (FP) | 110 |\n| Negative | 10 false negatives (FN) | 80 true negatives (TN) | 90 |\n| Total | 100 | 100 | 200 |\n\nSource: Dataset A: Baseline population, from the illustrative shared corpus.\n\nAll healthcare scenarios, people, conditions and numerical data in this corpus are fictional and constructed solely for introductory learning. They do not describe an actual diagnostic test, clinical investigation or published research study. The figures must not be used to inform clinical decisions."
+        },
+        {
+          "material_id": "A1-M2",
+          "material_type": "selection",
+          "activity_id": "A1",
+          "title": "Interpreting a positive result",
+          "body_format": "markdown",
+          "body": "Use the table to determine the proportion of people receiving positive results who actually have the condition. Choose a numerator, a denominator and an interpretation. You do not need to calculate a percentage.",
+          "selection": {
+            "form": "single_select",
+            "prompt": "Construct and interpret the positive predictive proportion.",
+            "options": [
+              {
+                "key": "positive_numerator_20",
+                "text": "20"
+              },
+              {
+                "key": "positive_numerator_90",
+                "text": "90"
+              },
+              {
+                "key": "positive_numerator_100",
+                "text": "100"
+              }
+            ],
+            "correct_answer": "positive_numerator_90",
+            "items": [
+              {
+                "id": "positive_numerator",
+                "form": "single_select",
+                "prompt": "1. Which number belongs in the numerator?",
+                "options": [
+                  {
+                    "key": "positive_numerator_20",
+                    "text": "20"
+                  },
+                  {
+                    "key": "positive_numerator_90",
+                    "text": "90"
+                  },
+                  {
+                    "key": "positive_numerator_100",
+                    "text": "100"
+                  }
+                ],
+                "correct_answer": "positive_numerator_90"
+              },
+              {
+                "id": "positive_denominator",
+                "form": "single_select",
+                "prompt": "2. Which number belongs in the denominator?",
+                "options": [
+                  {
+                    "key": "positive_denominator_100",
+                    "text": "100"
+                  },
+                  {
+                    "key": "positive_denominator_200",
+                    "text": "200"
+                  },
+                  {
+                    "key": "positive_denominator_110",
+                    "text": "110"
+                  }
+                ],
+                "correct_answer": "positive_denominator_110"
+              },
+              {
+                "id": "positive_interpretation",
+                "form": "single_select",
+                "prompt": "3. What does the predictive proportion tell you?",
+                "options": [
+                  {
+                    "key": "positive_sensitivity",
+                    "text": "The proportion of people with the condition who receive a positive result."
+                  },
+                  {
+                    "key": "positive_population",
+                    "text": "The proportion of the entire population who have the condition and receive a positive result."
+                  },
+                  {
+                    "key": "positive_predictive",
+                    "text": "The proportion of people receiving positive results who actually have the condition."
+                  },
+                  {
+                    "key": "positive_certainty",
+                    "text": "A person receiving a positive result definitely has the condition."
+                  }
+                ],
+                "correct_answer": "positive_predictive"
+              }
+            ]
+          }
+        },
+        {
+          "material_id": "A1-M3",
+          "material_type": "selection",
+          "activity_id": "A1",
+          "title": "Interpreting a negative result",
+          "body_format": "markdown",
+          "body": "Use the same table to determine the proportion of people receiving negative results who do not have the condition. Choose a numerator, a denominator and an interpretation.",
+          "selection": {
+            "form": "single_select",
+            "prompt": "Construct and interpret the negative predictive proportion.",
+            "options": [
+              {
+                "key": "negative_numerator_100",
+                "text": "100"
+              },
+              {
+                "key": "negative_numerator_10",
+                "text": "10"
+              },
+              {
+                "key": "negative_numerator_80",
+                "text": "80"
+              }
+            ],
+            "correct_answer": "negative_numerator_80",
+            "items": [
+              {
+                "id": "negative_numerator",
+                "form": "single_select",
+                "prompt": "1. Which number belongs in the numerator?",
+                "options": [
+                  {
+                    "key": "negative_numerator_100",
+                    "text": "100"
+                  },
+                  {
+                    "key": "negative_numerator_10",
+                    "text": "10"
+                  },
+                  {
+                    "key": "negative_numerator_80",
+                    "text": "80"
+                  }
+                ],
+                "correct_answer": "negative_numerator_80"
+              },
+              {
+                "id": "negative_denominator",
+                "form": "single_select",
+                "prompt": "2. Which number belongs in the denominator?",
+                "options": [
+                  {
+                    "key": "negative_denominator_90",
+                    "text": "90"
+                  },
+                  {
+                    "key": "negative_denominator_100",
+                    "text": "100"
+                  },
+                  {
+                    "key": "negative_denominator_200",
+                    "text": "200"
+                  }
+                ],
+                "correct_answer": "negative_denominator_90"
+              },
+              {
+                "id": "negative_interpretation",
+                "form": "single_select",
+                "prompt": "3. What does the predictive proportion tell you?",
+                "options": [
+                  {
+                    "key": "negative_certainty",
+                    "text": "A person receiving a negative result definitely does not have the condition."
+                  },
+                  {
+                    "key": "negative_predictive",
+                    "text": "The proportion of people receiving negative results who do not have the condition."
+                  },
+                  {
+                    "key": "negative_specificity",
+                    "text": "The proportion of people without the condition who receive a negative result."
+                  },
+                  {
+                    "key": "negative_population",
+                    "text": "The proportion of the entire population who do not have the condition and receive a negative result."
+                  }
+                ],
+                "correct_answer": "negative_predictive"
+              }
+            ]
+          }
+        },
+        {
+          "material_id": "A1-M4",
+          "material_type": "sample_output",
+          "activity_id": "A1",
+          "title": "Check your predictive proportions",
+          "body_format": "markdown",
+          "body": "Review after attempting both the positive-result and negative-result questions.\n\n### Positive predictive value\n\nPositive predictive value: 90/110, approximately 81.8%.\n\nOf the 110 people receiving positive results, 90 have the condition. The denominator includes the 20 false positives, who receive positive results but do not have the condition.\n\nSensitivity is different: 90/100 = 90%. Its reference group is everyone with the condition, not everyone receiving a positive result.\n\n### Negative predictive value\n\nNegative predictive value: 80/90, approximately 88.9%.\n\nOf the 90 people receiving negative results, 80 do not have the condition. The denominator includes the 10 false negatives, who receive negative results but have the condition.\n\nSpecificity is different: 80/100 = 80%. Its reference group is everyone without the condition, not everyone receiving a negative result.\n\n### Reconsider your selections\n\n- If your numerator was incorrect, distinguish the correct results from the incorrect results within the relevant reported-result group. A condition-based total of 100 is not the required numerator.\n- If your denominator was incorrect, identify everyone receiving the specified result. Using 100 selects a condition-based group; using 200 selects the entire population.\n- If your interpretation was incorrect, check which group the proportion describes and whether it allows for incorrect test results.\n\nReturn to any incorrect selections and correct them. The fractions alone are sufficient numerical answers.\n\nSome people receiving positive results do not have the condition, and some people receiving negative results do. Neither result establishes actual condition status with certainty."
+        }
+      ]
+    }
+  ]
+}

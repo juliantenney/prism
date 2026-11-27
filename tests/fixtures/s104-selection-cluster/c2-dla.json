@@ -1,0 +1,122 @@
+{
+  "artifact_type": "page",
+  "schema_version": "2.0.0",
+  "assembly_state": {
+    "current_stage": "dla",
+    "enriched_by": [
+      "dla"
+    ]
+  },
+  "activities": [
+    {
+      "activity_id": "A1",
+      "title": "Classify four diagnostic test results",
+      "activity_preamble": "In A test result is not the same as a diagnosis, you encountered four categories of diagnostic test result. Use the same classification criteria to examine four individuals from the fictional healthcare service. For each person, their actual condition status has been established independently of their test result.",
+      "learner_task": "1. Refer to the classification criteria if needed. For each of the four individuals, compare their actual condition status with their reported test result and select the appropriate category.\n2. Once you have classified all four results, review the explanatory feedback. Pay particular attention to the difference between an incorrect positive result and an incorrect negative result, and reconsider any classifications you got wrong.",
+      "expected_output": "Four classifications that correctly account for both the reported test result and whether the person actually has the condition. Your selections should distinguish correct from incorrect results independently of whether the reported result is positive or negative, including the distinction between the two types of incorrect result.",
+      "task_material_decision": {
+        "separate_inputs_required": true,
+        "task_input_material_ids": [
+          "A1-M2"
+        ]
+      },
+      "required_materials": [
+        {
+          "material_id": "A1-M1",
+          "material_type": "reference_table",
+          "purpose": "Provide a concise, optional reference to the established classification criteria, fulfilling the criteria_exposition beat without repeating introductory teaching.",
+          "specification": "Provide the familiar Dataset A two-by-two table as a compact classification reference. Actual condition status must appear in columns and reported test result in rows. Label the four interior cells using the full category names and abbreviations: true positive (TP), false positive (FP), false negative (FN) and true negative (TN). Preserve the exact Dataset A frequencies: positive row TP 90, FP 20, row total 110; negative row FN 10, TN 80, row total 90; condition-present column total 100, condition-absent column total 100, overall total 200. Include clear row and column headings. Make the distinction between result direction and correctness readily identifiable without relying on colour. Keep this material available as a reference rather than requiring learners to read another explanation of all four categories. Do not identify or classify any of the four focal individuals. Do not introduce sensitivity, specificity, predictive values, prevalence comparisons or calculations."
+        },
+        {
+          "material_id": "A1-M2",
+          "material_type": "scenario",
+          "purpose": "Supply the four authoritative individual cases from Dataset A as directly inspectable particulars for classification during the independent_performance beat.",
+          "specification": "Present exactly four compact fictional individual descriptions using the supplied authoritative corpus. Person A has the condition and receives a positive result. Person B does not have the condition and receives a positive result. Person C has the condition and receives a negative result. Person D does not have the condition and receives a negative result. Preserve these facts and individual identifiers exactly. Present the descriptions in a consistent, accessible format that makes both actual condition status and reported test result explicit. Identify the scenario as fictional and constructed for introductory learning, not clinical decision-making. The individuals are members of the existing Dataset A population, not additional observations. Do not include their diagnostic result category labels, answer keys, correctness indicators, interpretive commentary or additional individual characteristics. Do not introduce other cases or numerical datasets.",
+          "evidence_requirement": {
+            "kind": "learner_evidence",
+            "purpose": "Provide the actual condition status and reported test result of each individual as the necessary grounds for determining their diagnostic result category.",
+            "learner_action": "Inspect both supplied variables for each individual and use their relationship to select the appropriate diagnostic result category.",
+            "observable_features": [
+              "Person A: condition present; positive test result.",
+              "Person B: condition absent; positive test result.",
+              "Person C: condition present; negative test result.",
+              "Person D: condition absent; negative test result."
+            ],
+            "provenance": "conversation_attachment",
+            "evidence_layout": "separate_provider",
+            "disclosure_constraint": "Expose the individual condition status and reported test result before classification, but withhold all case-specific category assignments and explanatory answers until the learner has attempted all four classifications.",
+            "minimum_suitable_form": "Four individually labelled, directly inspectable descriptions, each explicitly stating actual condition status and reported test result.",
+            "processing_notes": "Use the FICTIONAL INDIVIDUAL EXAMPLES FROM DATASET A section of the ILLUSTRATIVE SHARED CORPUS: FICTIONAL HEALTHCARE SCENARIO AND SYNTHETIC DIAGNOSTIC TEST DATA. Retain the supplied case particulars while withholding the category assignments included in the authoritative source. The source is author-supplied fictional evidence, not an actual clinical investigation or published research study."
+          }
+        },
+        {
+          "material_id": "A1-M3",
+          "material_type": "selection",
+          "purpose": "Provide the operational learner response surface for independently classifying all four individual diagnostic test results, directly fulfilling both mapped learning outcomes.",
+          "specification": "Commission one connected selection cluster containing exactly four single-select decisions, one for each individual in A1-M2. Each decision must identify the corresponding person unambiguously and provide the same four category options: True positive (TP), False positive (FP), True negative (TN), False negative (FN). Keep the option order consistent across decisions. Each decision must have exactly one correct answer, with the authoritative internal answer mapping Person A to TP, Person B to FP, Person C to FN and Person D to TN. Do not preselect answers, supply partial completed classifications or expose correct-answer indicators before the attempt. Allow category choices to be made independently; do not impose a use-each-category-once constraint that would permit elimination to substitute for classification. Use accessible, keyboard-operable, explicitly labelled native selection controls rather than drag-and-drop, colour-based matching or spatial positioning alone. Keep the case particulars readily inspectable alongside the corresponding decisions, repeating their exact wording where necessary for accessibility and usability. Withhold answer-bearing feedback until all four decisions have been attempted. Provide an opportunity to reconsider incorrect selections following feedback. Do not commission a justification field, calculation, confidence rating or learner-authored text artefact.",
+          "selection": {
+            "form": "single_select"
+          },
+          "response_fulfilment": {
+            "kind": "learner_workspace",
+            "response_kind": "selection_choose",
+            "binds_production_steps": [
+              1
+            ],
+            "allows_partial_exemplar": false
+          }
+        },
+        {
+          "material_id": "A1-M4",
+          "material_type": "sample_output",
+          "purpose": "Provide post-attempt explanatory feedback for all four classifications, fulfilling the verification beat and correcting misconceptions about positive and negative results.",
+          "specification": "Reveal after the learner has attempted all four classification decisions in A1-M3. Provide concise explanatory feedback for each of the four individuals using the authoritative answer mapping: Person A is a true positive because the condition is present and the test reports a positive result; Person B is a false positive because the condition is absent but the test reports a positive result; Person C is a false negative because the condition is present but the test reports a negative result; Person D is a true negative because the condition is absent and the test reports a negative result. Explain correctness through agreement or disagreement between actual condition status and reported test result, not through the positive or negative direction of the result alone. Explicitly contrast Person B and Person C to distinguish an incorrect positive result from an incorrect negative result. Address both misconceptions: a positive result is not necessarily correct, and a negative result is not necessarily incorrect. Reinforce that a positive result can occur in someone without the condition and a negative result can occur in someone with the condition. Encourage learners to reconsider any incorrect selections using both variables. Keep the feedback compact enough to support meaningful review and correction within the allocated two-minute activity. Do not add a separate assessment, written reflection, calculation, new scenario or transfer task. Do not introduce Dataset B, Dataset C or later diagnostic accuracy concepts. This material is post-attempt feedback, not pre-task teaching or an additional evidence provider."
+        }
+      ],
+      "evidence_decision": {
+        "required": true,
+        "reason": "The learner must inspect the actual condition status and reported test result of each supplied individual as the grounds for determining their classification. Recalling category definitions alone cannot demonstrate the required application to these particular cases. The four individual descriptions therefore constitute the focal learner evidence; the reference table, selection workspace and explanatory feedback serve distinct supporting roles.",
+        "provider_material_ids": [
+          "A1-M2"
+        ]
+      }
+    }
+  ],
+  "generation_notes": {
+    "learner_evidence_attachments": {
+      "present": true,
+      "role": "both",
+      "inventoried_units": [
+        "ILLUSTRATIVE SHARED CORPUS: FICTIONAL HEALTHCARE SCENARIO AND SYNTHETIC DIAGNOSTIC TEST DATA",
+        "RECURRING SCENARIO",
+        "REPRESENTATIONAL CONVENTION",
+        "DATASET A: BASELINE POPULATION",
+        "FICTIONAL INDIVIDUAL EXAMPLES FROM DATASET A",
+        "DATASET B: LOWER-PREVALENCE POPULATION",
+        "AUTHORITATIVE COMPARISON OF DATASETS A AND B",
+        "DATASET C: INDEPENDENT TRANSFER SITUATION",
+        "AUTHORITATIVE INTERPRETATION OF DATASET C",
+        "CONSISTENCY AND DISCLOSURE RULES"
+      ]
+    },
+    "design_decisions": [
+      "Preserved the inherited single-activity apply archetype and its ordered criteria_exposition, independent_performance and verification beats without replanning.",
+      "Used the existing Dataset A table as an optional criteria reference rather than commissioning further introductory exposition.",
+      "Classified the four author-supplied individual descriptions as learner evidence because their particulars determine the required classifications. Their fictional origin is preserved independently of their conversation_attachment provenance.",
+      "Separated the evidence provider from the operational selection workspace and post-attempt explanatory feedback.",
+      "Selected four independent single-select decisions rather than constrained matching so that learners must classify each case on its own merits.",
+      "Used the same selection cluster to fulfil both mapped outcomes. Correct classification of the false positive and false negative cases directly demonstrates the required distinction.",
+      "Omitted a separate justification field, checklist, worked example, revision artefact and transfer task because none is necessary to demonstrate the commissioned outcomes.",
+      "Restricted learner-facing source disclosure to Dataset A and its four individual examples. Later datasets and interpretations are inventoried for source awareness only and must not appear in this activity.",
+      "Retained the authoritative two-minute workload allocation by commissioning compact decisions followed by one coherent explanatory feedback experience."
+    ],
+    "validation": {
+      "known_issues": [],
+      "downstream_dependencies": [
+        "GAM must author the commissioned material bodies and preserve the exact source particulars.",
+        "GAM must implement the four single-select decisions as an accessible operational response surface.",
+        "Downstream assembly must preserve post-attempt disclosure of answer-bearing feedback. Executable interaction and feedback-release behaviour have not been implemented or verified at the DLA stage."
+      ]
+    }
+  }
+}

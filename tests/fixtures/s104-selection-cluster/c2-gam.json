@@ -1,0 +1,94 @@
+{
+  "artifact_type": "page",
+  "schema_version": "2.0.0",
+  "assembly_state": {
+    "current_stage": "gam",
+    "enriched_by": [
+      "gam"
+    ]
+  },
+  "activities": [
+    {
+      "activity_id": "A1",
+      "materials": [
+        {
+          "material_id": "A1-M1",
+          "material_type": "reference_table",
+          "activity_id": "A1",
+          "title": "Diagnostic result classification reference",
+          "body_format": "markdown",
+          "body": "Refer to the familiar table from Dataset A if you need a reminder of the classification criteria. Compare the reported test result with the actual condition status.\n\n| Reported test result | Condition present | Condition absent | Total |\n| --- | --- | --- | ---: |\n| Positive | True positive (TP): 90 | False positive (FP): 20 | 110 |\n| Negative | False negative (FN): 10 | True negative (TN): 80 | 90 |\n| Total | 100 | 100 | 200 |\n\nTrue and false describe whether the reported result agrees with the actual condition status. Positive and negative describe what the test reports."
+        },
+        {
+          "material_id": "A1-M2",
+          "material_type": "scenario",
+          "activity_id": "A1",
+          "title": "Four individual test results",
+          "body_format": "markdown",
+          "body": "Four individuals from the fictional healthcare service receive diagnostic test results. Their actual condition status is known independently of their test results.\n\n- Person A: has the condition and receives a positive result.\n- Person B: does not have the condition and receives a positive result.\n- Person C: has the condition and receives a negative result.\n- Person D: does not have the condition and receives a negative result.\n\nThese individuals are members of the Dataset A population, not additional observations.\n\nSource: Fictional individual examples from Dataset A, reproduced with the classification labels withheld.\n\nAll healthcare scenarios, people, conditions and numerical data in this corpus are fictional and constructed solely for introductory learning. They do not describe an actual diagnostic test, clinical investigation or published research study. The figures must not be used to inform clinical decisions."
+        },
+        {
+          "material_id": "A1-M3",
+          "material_type": "selection",
+          "activity_id": "A1",
+          "title": "Classify each individual's result",
+          "body_format": "markdown",
+          "body": "Select one category for each person. Consider both their actual condition status and their reported test result. Make each decision independently, then check your classifications once you have attempted all four.",
+          "selection": {
+            "form": "single_select",
+            "prompt": "Which diagnostic result category applies to each person?",
+            "options": [
+              {
+                "key": "TP",
+                "text": "True positive (TP)"
+              },
+              {
+                "key": "FP",
+                "text": "False positive (FP)"
+              },
+              {
+                "key": "TN",
+                "text": "True negative (TN)"
+              },
+              {
+                "key": "FN",
+                "text": "False negative (FN)"
+              }
+            ],
+            "items": [
+              {
+                "key": "person_a",
+                "prompt": "Person A: has the condition and receives a positive result.",
+                "correct_answer": "TP"
+              },
+              {
+                "key": "person_b",
+                "prompt": "Person B: does not have the condition and receives a positive result.",
+                "correct_answer": "FP"
+              },
+              {
+                "key": "person_c",
+                "prompt": "Person C: has the condition and receives a negative result.",
+                "correct_answer": "FN"
+              },
+              {
+                "key": "person_d",
+                "prompt": "Person D: does not have the condition and receives a negative result.",
+                "correct_answer": "TN"
+              }
+            ],
+            "feedback": "Review the explanatory feedback after attempting all four classifications. Use both the actual condition status and the reported test result to reconsider any incorrect selections."
+          }
+        },
+        {
+          "material_id": "A1-M4",
+          "material_type": "sample_output",
+          "activity_id": "A1",
+          "title": "Check your classifications",
+          "body_format": "markdown",
+          "body": "Reveal after attempting all four classifications.\n\n| Person | Correct classification | Explanation |\n| --- | --- | --- |\n| A | True positive (TP) | The person has the condition and receives a positive result. The result correctly indicates that the condition is present. |\n| B | False positive (FP) | The person does not have the condition but receives a positive result. The result incorrectly indicates that the condition is present. |\n| C | False negative (FN) | The person has the condition but receives a negative result. The result incorrectly indicates that the condition is absent. |\n| D | True negative (TN) | The person does not have the condition and receives a negative result. The result correctly indicates that the condition is absent. |\n\n### Distinguishing the two incorrect results\n\nPerson B receives an incorrect positive result: the test reports positive when the condition is absent. Person C receives an incorrect negative result: the test reports negative when the condition is present.\n\nA positive result is not necessarily correct, as Person B illustrates. A negative result is not necessarily incorrect, as Person D illustrates.\n\nIf you misclassified a result, reconsider your selection by asking two questions: What did the test report? Does that result agree with the person's actual condition status?"
+        }
+      ]
+    }
+  ]
+}

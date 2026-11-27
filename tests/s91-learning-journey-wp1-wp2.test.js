@@ -108,8 +108,17 @@ test("authenticated Learning Journey prompts match export top-level bodies", () 
       "Do not choose Expository Resource, Interactive Resource, Assessment Pack or Situated Task products."
     ) !== -1
   );
+  const historical = authenticated.prompts.find((p) => p.title === "JourneyRequirements").versions[0]
+    .body;
+  assert.notEqual(sibling.TEMPLATES.learning_requirements, historical);
+});
+
+test("authenticated commissioning prompt: export, module and shared workload principles agree", () => {
+  const entry = authenticated.prompts.find((p) => p.title === "JourneyCommissioning");
+  const principles = require("../lib/workload-authoring-principles.js");
+  const block = principles.promptBlock();
   // Sprint 94 WP1: commissioning remains the authenticated export, plus the continuity contract.
-  assert.notEqual(sibling.TEMPLATES.learning_commissions, byTitle.JourneyCommissioning);
+  assert.notEqual(sibling.TEMPLATES.learning_commissions, entry.body);
   assert.ok(
     sibling.TEMPLATES.learning_commissions.indexOf(
       "You are commissioning the designed learning experiences required to realise a Learning Journey."
@@ -118,9 +127,17 @@ test("authenticated Learning Journey prompts match export top-level bodies", () 
   assert.ok(
     sibling.TEMPLATES.learning_commissions.indexOf("EDUCATIONAL CONTINUITY CONTRACT") !== -1
   );
-  const historical = authenticated.prompts.find((p) => p.title === "JourneyRequirements").versions[0]
-    .body;
-  assert.notEqual(sibling.TEMPLATES.learning_requirements, historical);
+  // Sprint 104 M6: the shared principles block is integrated verbatim in both, before TASK.
+  assert.ok(entry.body.indexOf(block) !== -1, "export body carries the shared principles block");
+  assert.ok(
+    sibling.TEMPLATES.learning_commissions.indexOf(block) !== -1,
+    "module body carries the shared principles block"
+  );
+  assert.ok(entry.body.indexOf(block) < entry.body.indexOf("\nTASK\n\n1. ANALYSE THE ELEMENT ARCHITECTURE"));
+  // The latest archived version is the current body.
+  assert.equal(entry.versions[entry.versions.length - 1].body, entry.body);
+  // The progressive Stage 4 prompt carries the same block.
+  assert.ok(sibling.PROGRESSIVE_TEMPLATES.learning_commissions.indexOf(block) !== -1);
 });
 
 test("LJ sibling routing resolves by title and outputName", () => {

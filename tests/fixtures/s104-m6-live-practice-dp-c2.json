@@ -1,0 +1,42 @@
+{
+  "_fixture_note": "Live Sprint 104 M6 Practice Design Page output, C2 (15 minutes), as supplied by the user. Verbatim except this note. This stage output carries no activities, learning_sequence or required_materials; upstream DLA, GAM and LS captures are needed for workload assessment.",
+  "artifact_type": "page",
+  "schema_version": "2.0.0",
+  "product_id": "practice",
+  "page_kind": "practice",
+  "title": "Questionnaire design: evaluating and refining survey items",
+  "page_synthesis": {},
+  "visual_affordance_schema_version": "38.4",
+  "activities_visual_review": [
+    {
+      "activity_id": "A1",
+      "activity_visual_value": {
+        "decision": "none",
+        "rationale": "The questionnaire wording, response options, research objective and intended respondent population constitute the evidence learners must independently evaluate. Their existing textual presentation makes the relevant particulars directly inspectable. A conceptual diagram or annotated questionnaire would either duplicate this evidence or disclose diagnostic distinctions that learners are expected to establish independently."
+      }
+    },
+    {
+      "activity_id": "A2",
+      "activity_visual_value": {
+        "decision": "none",
+        "rationale": "The item-by-item explanatory feedback already connects specific questionnaire weaknesses with their plausible methodological consequences, illustrative revisions and design trade-offs. Learners need to compare this reasoning with their own evaluation and make a targeted improvement. An additional visual would duplicate the feedback rather than support a distinct reasoning operation, adding unnecessary reading demands within the five-minute refinement activity."
+      }
+    }
+  ],
+  "visual_affordances": [],
+  "editorial_opening_image": {
+    "decision": "generate",
+    "subject": "Questionnaire development in a university study environment",
+    "context": "A decorative editorial opening image situating questionnaire development within the familiar context of university students' use of campus study spaces. Connect the researcher's work with the environment being investigated without representing particular questionnaire items, respondent judgements, research findings or methodological problems. The image should establish the setting rather than teach questionnaire-design principles or anticipate the learner's evaluation.",
+    "caption_intent": "Text-free editorial image establishing the context of questionnaire research into university study spaces. No visible caption, title, labels, slogans, banners or explanatory overlays.",
+    "alt_text": "",
+    "detailed_description": "A university researcher sits at a desk in a contemporary campus library, reviewing a small collection of papers beside a laptop. The papers and screen are positioned so that no writing, questions, response options or other text is visible. Beyond the desk, students undertake ordinary independent and collaborative study in a welcoming university learning environment. Natural daylight and an understated editorial photographic treatment create a credible academic setting. The composition is calm, uncluttered and suitable for a landscape opening image. No annotations, diagrams, highlighted questionnaire features, survey results, charts, corrective markings or visual cues imply particular methodological weaknesses or preferred revisions. The image is entirely decorative and conveys no information required to complete either activity."
+  },
+  "assembly_state": {
+    "current_stage": "design_page",
+    "enriched_by": [
+      "design_page"
+    ],
+    "calls_model": true
+  }
+}

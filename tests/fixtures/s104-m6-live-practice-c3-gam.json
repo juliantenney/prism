@@ -1,0 +1,136 @@
+{
+  "_fixture_note": "Live Sprint 104 M6 Practice C3 (30 minutes) Generate Activity Materials capture, as supplied by the user. Verbatim except this note.",
+  "artifact_type": "page",
+  "schema_version": "2.0.0",
+  "assembly_state": {
+    "current_stage": "gam",
+    "enriched_by": [
+      "gam"
+    ]
+  },
+  "activities": [
+    {
+      "activity_id": "A1",
+      "materials": [
+        {
+          "material_id": "A1-M1",
+          "material_type": "scenario",
+          "activity_id": "A1",
+          "title": "Research context and draft questionnaire",
+          "body_format": "markdown",
+          "body": "### Research context\n\nA university researcher is investigating the relationship between recent participation in organised extracurricular activities and students' current sense of belonging at university. The researcher also wants to identify barriers that may limit participation.\n\nThe questionnaire is intended for currently enrolled students, including those who participate in extracurricular activities and those who do not.\n\nOrganised extracurricular activities include organised student clubs, societies, sports groups, volunteering opportunities and comparable activities outside formal course requirements.\n\nThe research aims to investigate associations between participation and belonging, rather than establish whether participation causes changes in belonging.\n\n### Draft questionnaire extract\n\n#### Item 1\n\nHow often have you participated in extracurricular activities since starting university?\n\n- Never\n- Occasionally\n- Regularly\n- Very frequently\n\n#### Item 2\n\nHow many organised extracurricular activities have you attended in the past four weeks?\n\n- 0\n- 1–2\n- 2–4\n- 4 or more\n\n#### Item 3\n\nTaking part in extracurricular activities has helped me make friends and feel that I belong at university.\n\n- Strongly disagree\n- Disagree\n- Neither agree nor disagree\n- Agree\n- Strongly agree\n\n#### Item 4\n\nI feel that I belong at this university.\n\n- Strongly disagree\n- Disagree\n- Neither agree nor disagree\n- Agree\n- Strongly agree\n\n#### Item 5\n\nWhy have you not taken advantage of the many extracurricular opportunities available to you?\n\nSelect one response:\n\n- Too busy\n- Too expensive\n- Not interested\n- Other\n\n#### Item 6\n\nHow satisfied are you with the accessibility and quality of extracurricular activities at your university?\n\n- Very dissatisfied\n- Dissatisfied\n- Neither satisfied nor dissatisfied\n- Satisfied\n- Very satisfied\n\nSource: fictional research context and draft questionnaire supplied for this learning activity. This is not an actual or validated research instrument."
+        },
+        {
+          "material_id": "A1-M2",
+          "material_type": "text",
+          "activity_id": "A1",
+          "title": "Criteria for a coherent questionnaire review",
+          "body_format": "markdown",
+          "body": "A questionnaire can contain individually reasonable questions yet still produce evidence that is poorly suited to its research objective. Reviewing the whole instrument involves considering four connected dimensions.\n\n### Alignment with the research objective\n\nConsider what the researcher needs to measure and whether the questions collectively provide evidence about those constructs. A question may be well written but contribute little to the intended analysis.\n\n### Suitability for respondents\n\nConsider whether people across the intended respondent population can understand each question, retrieve the information requested and express their answers accurately using the available response options.\n\n### Methodological consequences\n\nConnect design weaknesses to their likely effects. Explain how a particular feature could influence respondents' interpretations or answers, and how this might affect the comparability, meaning or usefulness of the resulting evidence. Distinguish substantial measurement problems from minor preferences about wording.\n\n### Coherence and proportionality\n\nConsider how proposed changes work together. Improving one question may change the purpose or necessity of another. Additional questions may improve measurement coverage but also increase respondent effort. Greater precision may require information that respondents cannot reliably recall.\n\nPrioritise weaknesses according to their likely consequences for the research objective. Your review should justify why particular changes matter more than others and why your preferred design decisions are appropriate in this context. Retaining an existing question can be as defensible as changing it."
+        },
+        {
+          "material_id": "A1-M3",
+          "material_type": "template",
+          "activity_id": "A1",
+          "title": "Your questionnaire review",
+          "body_format": "markdown",
+          "body": "**Questionnaire review and proposed improvements:**\n\nWrite one concise, independently reasoned review of the questionnaire. Use paragraphs or structured notes, whichever communicates your reasoning most effectively.\n\nBegin by establishing which three or four problems, or groups of related problems, deserve priority in relation to the research objective.\n\nFor each priority, identify the relevant questionnaire wording, response options or relationships between items. Explain how the design could affect respondents' interpretations or answers and what this would mean for the evidence available to the researcher. Consider whether problems reinforce one another across the questionnaire.\n\nPropose concrete improvements and explain why they would address the problems you have identified. Where appropriate, include revised question wording, response options or decisions to retain, remove or reorganise items.\n\nConsider at least one credible alternative to your preferred approach. Explain what each approach would achieve, what might be lost or compromised, and why your preferred decision is more appropriate for this research objective.\n\nConclude by making clear how your proposed changes would work together to produce a more useful questionnaire. You do not need to rewrite every item or identify every possible weakness.\n\nComplete your independent review before consulting the explanatory feedback. You will return to this same review to refine your reasoning afterwards."
+        }
+      ]
+    },
+    {
+      "activity_id": "A2",
+      "materials": [
+        {
+          "material_id": "A2-M1",
+          "material_type": "scenario",
+          "activity_id": "A2",
+          "title": "Original questionnaire for reference",
+          "body_format": "markdown",
+          "body": "Refer selectively to the original research context and questionnaire as you reconsider your review.\n\n### Research context\n\nA university researcher is investigating the relationship between recent participation in organised extracurricular activities and students' current sense of belonging at university. The researcher also wants to identify barriers that may limit participation.\n\nThe questionnaire is intended for currently enrolled students, including those who participate in extracurricular activities and those who do not.\n\nOrganised extracurricular activities include organised student clubs, societies, sports groups, volunteering opportunities and comparable activities outside formal course requirements.\n\nThe research aims to investigate associations between participation and belonging, rather than establish whether participation causes changes in belonging.\n\n### Draft questionnaire extract\n\n#### Item 1\n\nHow often have you participated in extracurricular activities since starting university?\n\n- Never\n- Occasionally\n- Regularly\n- Very frequently\n\n#### Item 2\n\nHow many organised extracurricular activities have you attended in the past four weeks?\n\n- 0\n- 1–2\n- 2–4\n- 4 or more\n\n#### Item 3\n\nTaking part in extracurricular activities has helped me make friends and feel that I belong at university.\n\n- Strongly disagree\n- Disagree\n- Neither agree nor disagree\n- Agree\n- Strongly agree\n\n#### Item 4\n\nI feel that I belong at this university.\n\n- Strongly disagree\n- Disagree\n- Neither agree nor disagree\n- Agree\n- Strongly agree\n\n#### Item 5\n\nWhy have you not taken advantage of the many extracurricular opportunities available to you?\n\nSelect one response:\n\n- Too busy\n- Too expensive\n- Not interested\n- Other\n\n#### Item 6\n\nHow satisfied are you with the accessibility and quality of extracurricular activities at your university?\n\n- Very dissatisfied\n- Dissatisfied\n- Neither satisfied nor dissatisfied\n- Satisfied\n- Very satisfied\n\nSource: fictional research context and draft questionnaire supplied for this learning activity. This is not an actual or validated research instrument."
+        },
+        {
+          "material_id": "A2-M2",
+          "material_type": "sample_output",
+          "activity_id": "A2",
+          "title": "Explanatory feedback: evaluating the questionnaire",
+          "body_format": "markdown",
+          "body": "Review after completing your independent questionnaire review.\n\nThe following evaluation illustrates one defensible approach to improving the questionnaire. Your priorities and recommendations may differ. Consider whether the methodological reasoning strengthens, challenges or qualifies your own decisions.\n\n### 1. Establishing a meaningful measure of participation\n\nItems 1 and 2 both concern participation, but they use different reference periods and potentially measure different aspects of it.\n\nItem 1 asks about participation since starting university. Students who have been enrolled for different lengths of time are therefore considering different periods. Their answers may reflect cumulative experience rather than recent participation. Categories such as 'occasionally' and 'regularly' also depend on personal interpretations, making responses difficult to compare consistently.\n\nItem 2 is more closely aligned with the objective of measuring recent participation, but its response categories overlap. Someone reporting two activities could select either 1–2 or 2–4; someone reporting four could select either 2–4 or 4 or more. Respondents may also interpret 'activities' as distinct clubs or types of activity rather than individual attendance occasions.\n\nOne possible revision is:\n\n> On how many occasions have you taken part in organised extracurricular activities in the past four weeks?\n\n- 0\n- 1–2\n- 3–4\n- 5–7\n- 8 or more\n\nThis wording establishes a clearer counting unit, and the non-overlapping categories allow each reported count to fit only one option. Grouped responses may be easier to provide than an exact count, although they sacrifice some measurement precision.\n\nCounting distinct activities would be a credible alternative if the researcher were interested in breadth of participation rather than frequency. A student attending one society eight times and a student attending eight different societies would then produce different kinds of evidence, depending on the measure selected.\n\nFor the stated objective, prioritising a clearly defined recent participation measure and removing Item 1 would reduce unnecessary duplication. However, retaining both recent and longer-term measures could be justified if the researcher wanted to distinguish established patterns from recent behaviour. The four-week period should also be considered in relation to the academic calendar: holidays or examination periods may produce atypical participation patterns.\n\n### 2. Separating participation from belonging\n\nItem 3 combines making friends with feeling a sense of belonging. A student might have made friends through extracurricular activities without feeling more connected to the university. A single agreement response cannot distinguish those experiences.\n\nThe wording also asks respondents to attribute these experiences to participation. This introduces a question about perceived causal influence when the research objective concerns the relationship between participation and belonging. Non-participants may be unable to provide a meaningful answer, yet the response scale offers no way to indicate that the statement does not apply to them.\n\nA more coherent approach would measure recent participation and current belonging independently, using questions that can be answered by both participants and non-participants. The researcher could then examine whether different reported levels of participation are associated with different levels of belonging.\n\nIf perceived benefits of participation were an additional research objective, separate questions about friendship and belonging could be directed to students with relevant participation experience. That would provide evidence about perceived benefits, rather than an independent measure of belonging across the whole respondent population.\n\nSeparating these constructs improves the interpretability of the resulting evidence, but an observed association would still not establish that participation causes belonging.\n\n### 3. Recognising when an existing item is defensible\n\nItem 4 directly asks respondents about their sense of belonging at university. It does not require them to have participated in extracurricular activities, and its balanced agreement scale allows positive, negative and neutral responses.\n\nRetaining this item is therefore a reasonable decision within the scope of the questionnaire. It provides a measure of self-reported belonging that can be considered alongside an independently collected participation measure.\n\nHowever, belonging is a potentially multidimensional construct. A single question may not distinguish social connection, acceptance, identification with the institution or other relevant experiences. A broader set of questions or an appropriate validated measure could provide richer evidence, but would also increase questionnaire length and respondent effort.\n\nThe important judgement is whether additional measurement coverage is necessary for the intended research, rather than assuming that every existing question needs revision.\n\n### 4. Identifying barriers without excluding respondents\n\nItem 5 presupposes that respondents have not taken advantage of available opportunities. Its wording may communicate criticism, potentially influencing how respondents describe their circumstances.\n\nThe instruction to select one response also assumes that a single factor adequately represents each student's situation. A student might experience financial difficulties, timetable conflicts and accessibility barriers simultaneously. Selecting only one would conceal the others. The absence of a no-barriers option creates a further problem for respondents who experience none.\n\nA more neutral alternative is:\n\n> Which, if any, of the following factors limit your participation in organised extracurricular activities?\n\nSelect all that apply:\n\n- Work, study or caring commitments\n- Cost\n- Inconvenient activity times\n- Accessibility difficulties\n- Lack of information about available activities\n- Activities that do not match my interests\n- Other factors\n- No factors limit my participation\n\nThe final option should be exclusive: respondents selecting it should not also select substantive barriers.\n\nThis approach allows participants and non-participants to report multiple factors affecting their participation. It also avoids treating non-participation as a failure. Nevertheless, a preference not to participate is not necessarily a barrier to participation that a student desires. The researcher should consider whether those circumstances need to be distinguished in the question design or subsequent analysis.\n\nA multiple-response question is useful when the objective is to identify the range of factors students experience. If the researcher instead needs to establish which factor is most important to each respondent, a principal-barrier question may be more appropriate. The choice depends on the intended analysis.\n\n### 5. Balancing construct coverage and respondent burden\n\nItem 6 asks about accessibility and quality within a single satisfaction judgement. A student might consider activities accessible but of poor quality, or inaccessible despite believing them to be of high quality. Their response would not reveal which aspect informed the judgement.\n\nSome students may also lack sufficient experience to assess quality. Without an appropriate non-applicable or unable-to-judge option, they may select a response that does not accurately represent their circumstances.\n\nSplitting the question into separate accessibility and quality items would improve interpretability if both constructs were important to the research. Questions about experienced quality could then be directed to respondents with relevant experience, while questions about accessibility could include students who have encountered obstacles to participation.\n\nHowever, splitting the question is not automatically the best decision. The research objective focuses on participation, belonging and barriers. If a revised barriers question already captures relevant accessibility difficulties, a separate satisfaction question may contribute little to that objective. Removing Item 6 could reduce burden without sacrificing essential evidence. Separate targeted questions would be justified if accessibility or activity quality were important additional research constructs.\n\n### Bringing the design decisions together\n\nThe most consequential priorities in this review are establishing a meaningful and comparable measure of recent participation, separating participation from belonging, and collecting interpretable information about barriers across the intended respondent population.\n\nThese priorities are connected. Clarifying the participation measure is more useful when belonging is measured independently. Improving the barriers question may also reduce the need for a separate accessibility-related satisfaction item. Retaining an appropriate belonging item avoids unnecessary changes while preserving the evidence needed for the intended analysis.\n\nA shorter questionnaire with clearly distinguished constructs may serve this bounded research objective better than a longer instrument that attempts to measure every potentially relevant experience. Conversely, additional questions may be justified where they provide evidence needed for a clearly specified analytical purpose.\n\nThese are illustrative design decisions, not empirically validated improvements or a uniquely correct solution. A real questionnaire would benefit from testing with intended respondents before deployment. Use the reasoning here to reconsider selected aspects of your own review, including decisions that you still regard as defensible."
+        },
+        {
+          "material_id": "A2-M3",
+          "material_type": "template",
+          "activity_id": "A2",
+          "title": "Strengthen your existing review",
+          "body_format": "markdown",
+          "body": "**Questionnaire review and proposed improvements:**\n\nReturn to the review you developed before reading the explanatory feedback. Refine that same review rather than producing a second response.\n\nIdentify the aspects of your reasoning that would benefit most from reconsideration. You might revise the priority assigned to a problem, explain its methodological consequences more precisely, recognise a relationship between items that you previously overlooked, improve a proposed revision or strengthen your justification for choosing one design over another.\n\nUse the original questionnaire to substantiate any changes. Where the feedback offers an alternative to your preferred approach, consider what each design would measure and how well it would serve the research objective. You may retain your original recommendation if you can defend it convincingly, including any relevant limitations.\n\nEdit selected passages directly, preserving the parts of your review that remain sound. Aim for a coherent final review in which the diagnoses, methodological explanations and proposed improvements support one another.\n\nYou do not need to reproduce the illustrative feedback, explain every change separately or write an additional reflection."
+        },
+        {
+          "material_id": "A2-M4",
+          "material_type": "checklist",
+          "activity_id": "A2",
+          "title": "Check the quality of your refined review",
+          "body_format": "json",
+          "body": {
+            "review_mode": "guided_criteria",
+            "criteria": [
+              {
+                "statement": "Have you prioritised consequential weaknesses in relation to the research objective and intended respondents?",
+                "why_it_matters": "A review that treats every weakness as equally important may recommend numerous changes without addressing the measurement problems that most affect the intended research evidence.",
+                "features": [
+                  {
+                    "expected": "Your review identifies a manageable set of consequential problems and explains why they deserve priority in relation to the stated research objective.",
+                    "repair": "Reconsider your selected problems and identify which would most affect the researcher's ability to interpret participation, belonging or barriers. Explain why these consequences justify prioritising those problems over less consequential concerns."
+                  },
+                  {
+                    "expected": "Your judgements account for the intended respondent population, including relevant differences between respondents' experiences and circumstances.",
+                    "repair": "Identify which respondents might interpret or answer a selected question differently, or be unable to answer it meaningfully. Explain how this affects the suitability of the question and the evidence it would produce."
+                  }
+                ],
+                "confirmation_label": "My review establishes defensible priorities"
+              },
+              {
+                "statement": "Have you explained how the selected weaknesses could affect responses and the usefulness of the resulting evidence?",
+                "why_it_matters": "Naming a design weakness does not establish its methodological importance. The review needs to explain how the feature could influence answers and what those answers would allow the researcher to interpret.",
+                "features": [
+                  {
+                    "expected": "Your methodological explanations refer to specific question wording, response options or other observable features of the original questionnaire.",
+                    "repair": "For any diagnosis that relies mainly on a general questionnaire design rule, identify the particular wording or response format responsible for the problem and connect that feature to your judgement."
+                  },
+                  {
+                    "expected": "Your explanations connect design features to plausible effects on respondent interpretation or response behaviour and then to consequences for the research evidence.",
+                    "repair": "Develop any explanation that stops at naming a weakness. Describe how a respondent might understand or answer the question as a result of that feature, and explain how the resulting response could affect measurement, comparison or interpretation."
+                  },
+                  {
+                    "expected": "Your review explains relevant relationships between items and how their design features may collectively affect the evidence.",
+                    "repair": "Identify two or more items whose measurement purposes or response characteristics are connected. Explain whether their relationship creates ambiguity, unnecessary duplication, a gap in coverage or another consequential problem for the intended analysis."
+                  }
+                ],
+                "confirmation_label": "My explanations connect design to methodological consequences"
+              },
+              {
+                "statement": "Do your proposed improvements form a coherent, justified redesign that takes account of meaningful alternatives?",
+                "why_it_matters": "An individually improved question may still contribute to an ineffective questionnaire if it duplicates another measure, introduces unnecessary burden or fails to support the intended analysis. Comparing alternatives helps establish why a proposed design is appropriate for this research.",
+                "features": [
+                  {
+                    "expected": "Your proposed improvements are sufficiently concrete to show how they would address the diagnosed problems.",
+                    "repair": "Where a recommendation merely states that a question should be improved, specify the wording, response format, respondent instructions or other design decision you would change. Explain how that change addresses the particular methodological problem."
+                  },
+                  {
+                    "expected": "Your recommendations work together, with justified decisions about retaining, revising, removing or reorganising relevant items.",
+                    "repair": "Consider how each proposed change affects the purpose of related items. Where your redesign introduces duplication, leaves an important construct insufficiently measured or creates unnecessary respondent effort, reconsider the combination of design decisions."
+                  },
+                  {
+                    "expected": "Your review considers at least one credible alternative and explains a relevant trade-off or limitation supporting your preferred approach.",
+                    "repair": "Identify an alternative that could reasonably serve the research objective. Compare the kinds of evidence each approach would produce and any differences in respondent effort, measurement coverage or interpretability. Use that comparison to justify or qualify your preferred decision."
+                  }
+                ],
+                "confirmation_label": "My recommendations form a coherent and justified redesign"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

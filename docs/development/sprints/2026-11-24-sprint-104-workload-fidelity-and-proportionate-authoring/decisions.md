@@ -224,3 +224,21 @@ Following live authoring and educational QA of the Economics Learning Journey (`
 
 
 
+
+---
+
+## S104-D08 — Recovery: Deactivate Deterministic Workload Assessment; Preserve Estimator Work on a Recovery Branch
+
+**Date:** 2026-11-27  
+**Status:** **Accepted — implemented on `master` (Sprint 104 remains OPEN)**
+
+**Context:**  
+The live 5/15/30-minute Practice experiment (M6) demonstrated pedagogical proportionality, but diagnostics exposed fundamental limitations of the additive deterministic estimator (counterintuitive workload ordering, flat reasoning floors, sensitivity to stated response length). The M6 estimator resolution was not accepted and incremental refinement was suspended (see STATUS.md, 2026-11-26).
+
+**Decision:**
+
+1. Further refinement of the deterministic workload estimator is **not pursued**.
+2. The educational/runtime fixes (Practice evidence placement, saving-information sidebar footer) and authoring guidance (shared proportionality principles, authorised authenticated commissioning prompt change) are **committed on `master`**.
+3. 2026-11-26's estimator, adapter and advisory-wiring work, its tests and diagnostics are preserved **only** on branch `recovery/s104-m6-workload-estimator`, **not merged to `master`**. `master` keeps the previously committed estimator and adapter implementations unchanged (retained for possible research; not deleted or refactored).
+4. A single internal switch in `app.js` (`workloadAssessmentEnabled`, default `false`) deactivates deterministic workload assessment across all four product families: the four `append*WorkloadFeasibilityWarnings` entry points and `attachLearningJourneyWorkloadWarningsToGate` return before any adapter/estimator runs; `notifyWorkloadAdvisoryToast` is inert; previously stored advisories are not rendered. It is not user-facing configuration. Tests of the dormant machinery enable it via `setWorkloadAssessmentEnabledForTest`.
+5. Duration contracts, allocation transport, locking, arithmetic reconciliation, indicative timing presentation, authoring guidance, capture, assembly and publication are unchanged. No replacement mechanism, AI call, workflow stage or setting is introduced.

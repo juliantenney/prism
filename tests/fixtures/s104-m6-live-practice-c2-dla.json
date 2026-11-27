@@ -1,0 +1,194 @@
+{
+  "_fixture_note": "Live Sprint 104 M6 Practice C2 (15 minutes) Design Learning Activities capture, as supplied by the user. Verbatim except this note.",
+  "artifact_type": "page",
+  "schema_version": "2.0.0",
+  "assembly_state": {
+    "enriched_by": [
+      "dla"
+    ],
+    "current_stage": "dla"
+  },
+  "activities": [
+    {
+      "activity_id": "A1",
+      "title": "Evaluate three questionnaire items",
+      "activity_preamble": "A university researcher is developing a questionnaire about students' use of campus study spaces. Review the draft items from the perspective of both the researcher collecting evidence and the students answering the questions. The questionnaire items have been constructed for this activity and are not taken from an actual university survey.",
+      "learner_task": "Evaluate all three questionnaire items against the stated research objective and intended respondents. For each item, identify consequential weaknesses, explain how they could affect respondents' answers or the interpretation of the resulting data, and propose and justify an improved question or response format. Consider whether your changes preserve what the researcher intends to measure and whether they introduce any relevant limitations. Record your evaluations together before reviewing the feedback. You can organise your response by item and use concise notes rather than extended prose.",
+      "expected_output": "A coherent written evaluation covering all three items, distinguishing their consequential design weaknesses and explaining their differing methodological effects. Proposed revisions should address the identified problems, remain aligned with the research objective and accommodate the intended respondents. Justifications should establish why the changes would improve the usefulness of the resulting evidence, recognising relevant limitations where appropriate. Exhaustive identification of every possible weakness is not necessary.",
+      "task_material_decision": {
+        "separate_inputs_required": true,
+        "task_input_material_ids": [
+          "A1-M1"
+        ]
+      },
+      "required_materials": [
+        {
+          "material_id": "A1-M1",
+          "material_type": "scenario",
+          "purpose": "Provide the complete constructed research context and three questionnaire items as directly inspectable evidence for independent methodological evaluation and revision.",
+          "specification": "Present one concise, explicitly constructed questionnaire scenario concerning university students' use of campus study spaces. State the research objective: to understand how frequently students use campus study spaces, how satisfied they are with the suitability of those spaces for their study needs, and what barriers may limit their use. State that the intended respondents are currently enrolled students, including those who rarely or never use campus study spaces. Define campus study spaces as libraries, designated study rooms and shared areas provided by the university for independent or collaborative study. Reproduce the following three draft items and their complete response options without correction or annotation. Item 1: 'How often do you use the university's study spaces?' Options: Never; Occasionally; Regularly; Frequently. Item 2: 'How satisfied are you with the excellent study spaces provided by the university?' Options: Very dissatisfied; Dissatisfied; Neither satisfied nor dissatisfied; Satisfied; Very satisfied. Item 3: 'What is the main reason you do not use campus study spaces more often?' Instruction: Select one response. Options: Lack of available seats; Noise; Inconvenient location. Preserve the wording, response-option order and single-selection instruction exactly. Identify the scenario as constructed for learning purposes rather than an actual university survey. Present the items as one inspectable set with clear item numbering. Do not include diagnostic annotations, design principles, methodological interpretations, suggested revisions, respondent data or item-specific hints.",
+          "evidence_requirement": {
+            "kind": "learner_evidence",
+            "purpose": "Supply the actual questionnaire wording, response options, research objective and respondent characteristics against which learners can substantiate their methodological judgements.",
+            "learner_action": "Inspect each complete questionnaire item in relation to the shared research objective and intended respondent population. Determine which features warrant improvement, explain their plausible methodological consequences and construct justified revisions.",
+            "observable_features": [
+              "The three-part research objective concerning frequency of use, satisfaction with suitability and barriers to use.",
+              "The inclusion of currently enrolled students who rarely or never use campus study spaces.",
+              "The definition and scope of campus study spaces.",
+              "Item 1 question wording and all four ordered frequency response options.",
+              "Item 2 question wording and all five satisfaction response options.",
+              "Item 3 question wording, single-selection instruction and all three barrier response options."
+            ],
+            "provenance": "system_generated_simulation",
+            "evidence_layout": "separate_provider",
+            "disclosure_constraint": "Make the complete original questionnaire evidence available before independent production. Withhold all diagnostic interpretations, illustrative revisions and answer-bearing feedback until the learner has attempted the evaluation of all three items.",
+            "minimum_suitable_form": "One self-contained research context followed by three numbered questionnaire items with verbatim question wording, complete response options and the original response-selection instruction where specified.",
+            "processing_notes": "The questionnaire particulars are authoritative constructed evidence specified in the commission, not extracts from an actual survey. Preserve the supplied items rather than generating alternative examples or silently correcting their weaknesses."
+          }
+        },
+        {
+          "material_id": "A1-M2",
+          "material_type": "template",
+          "purpose": "Provide one editable learner-authored response surface for the substantive evaluation, methodological explanation, revision and justification of all three questionnaire items.",
+          "specification": "Commission a single constructed-text workspace containing one response field for the complete questionnaire evaluation. Allow learners to organise their response using item numbers, concise paragraphs, labelled notes or an equivalent coherent structure. The response must accommodate evaluations of all three items, including consequential diagnoses, plausible methodological consequences, revised wording or response formats and methodological justifications. Encourage consideration of construct alignment and relevant limitations without prescribing which weaknesses or design principles apply to individual items. Do not supply partially completed evaluations, item-specific diagnostic prompts, response-option suggestions, model answers or mandatory extended prose. Do not split the response into separate fields for each item or reasoning operation. Bind the entire learner-authored contribution to elicitation E2. Preserve this as the same editable response surface used during the feedback-informed refinement in A2. The current complete response, including any subsequent learner edits, constitutes the commissioned Learning Journal artefact comm_2.E2. Do not commission additional journal writing or require retention of a separate pre-feedback version.",
+          "response_fields": [
+            {
+              "label": "Questionnaire evaluation",
+              "input_modality": "text"
+            }
+          ],
+          "response_fulfilment": {
+            "kind": "learner_text_production",
+            "response_kind": "text_compose",
+            "artefact_elicitation_id": "E2",
+            "allows_partial_exemplar": false
+          }
+        }
+      ],
+      "evidence_decision": {
+        "required": true,
+        "reason": "The learner must inspect the particular question wording, response options, research objective and respondent population to establish consequential weaknesses, explain their methodological effects and justify appropriate revisions. Generic questionnaire-design knowledge alone cannot fulfil the commissioned evaluation.",
+        "provider_material_ids": [
+          "A1-M1"
+        ]
+      }
+    },
+    {
+      "activity_id": "A2",
+      "title": "Refine your questionnaire evaluation",
+      "activity_preamble": "There is rarely a single correct way to design a questionnaire item. The suitability of a revision depends on what the researcher needs to measure, who will answer the question and how the resulting data will be used.",
+      "learner_task": "Review the explanatory feedback after completing your evaluation of all three items. Revisit your existing response and select the aspect that would most benefit from improvement. Strengthen that part of your evaluation, revision or methodological justification directly in your original response. If your original decisions are already defensible, make your reasoning more precise or acknowledge a relevant limitation. Check that your refinement addresses a consequential issue and remains consistent with the research objective. You do not need to rewrite all three evaluations or produce a separate reflection.",
+      "expected_output": "The existing questionnaire evaluation with a targeted, methodologically justified refinement informed by the explanatory feedback. The improvement should strengthen the relationship between an identified weakness, its consequences and the proposed design decision, or make the rationale for an already defensible decision more precise. The complete evaluation should remain coherent, preserve appropriate original judgements and recognise relevant limitations rather than simply reproduce an illustrative revision.",
+      "task_material_decision": {
+        "separate_inputs_required": true,
+        "task_input_material_ids": [
+          "A2-M1",
+          "A2-M2"
+        ]
+      },
+      "required_materials": [
+        {
+          "material_id": "A2-M1",
+          "material_type": "scenario",
+          "purpose": "Keep the original questionnaire evidence directly inspectable during feedback-informed reconsideration, so that learners can test proposed refinements against the actual research objective, intended respondents and original item wording.",
+          "specification": "Provide a local evidence reference to the complete constructed questionnaire scenario commissioned as A1-M1. Preserve the original research objective, respondent population, definition of campus study spaces, question wording and response options. The research objective concerns frequency of use, satisfaction with suitability for study needs and barriers to use. Respondents are currently enrolled students, including rare users and non-users. Campus study spaces include libraries, designated study rooms and shared areas provided by the university for independent or collaborative study. Item 1: 'How often do you use the university's study spaces?' Options: Never; Occasionally; Regularly; Frequently. Item 2: 'How satisfied are you with the excellent study spaces provided by the university?' Options: Very dissatisfied; Dissatisfied; Neither satisfied nor dissatisfied; Satisfied; Very satisfied. Item 3: 'What is the main reason you do not use campus study spaces more often?' Select one response. Options: Lack of available seats; Noise; Inconvenient location. Prefer continued access to the existing evidence over unnecessary repetition of the full scenario. If a local display is required, preserve all particulars exactly and make clear that this is the same constructed questionnaire, not a new case. Do not replace the original evidence with corrected items or feedback summaries.",
+          "evidence_requirement": {
+            "kind": "learner_evidence",
+            "purpose": "Provide the unchanged questionnaire particulars against which the learner can reconsider the suitability of an existing diagnosis, methodological explanation or proposed revision.",
+            "learner_action": "Reinspect the relevant original item and its response options, considering the research objective and respondent population when selecting and justifying a targeted refinement.",
+            "observable_features": [
+              "The original research objective and intended respondent population.",
+              "The original frequency question and its complete response options.",
+              "The original satisfaction question and its complete response options.",
+              "The original barrier question, single-selection instruction and complete response options."
+            ],
+            "provenance": "system_generated_simulation",
+            "evidence_layout": "separate_provider",
+            "minimum_suitable_form": "Continued access to the complete, unchanged original questionnaire evidence, including all response options and the shared research context.",
+            "processing_notes": "This provider refers to the same constructed evidence as A1-M1. Do not introduce a second questionnaire scenario or require learners to repeat their original inspection as a separate task."
+          }
+        },
+        {
+          "material_id": "A2-M2",
+          "material_type": "task_card",
+          "purpose": "Provide the learner's existing questionnaire evaluation as the inspectable, editable object of feedback-informed refinement, preserving the continuity of the commissioned learner artefact.",
+          "specification": "Use the current learner-authored response from A1-M2, bound to elicitation E2, as the actual material for reconsideration. Make the complete existing evaluation available for direct inspection and targeted editing. Preserve the learner's own wording, including any incomplete or defensible judgements. Do not generate, reconstruct, summarise, prepopulate or automatically improve the learner's contribution. This material is a continuation of the original response surface, not a new constructed-text elicitation or independent response field. Learners must be able to edit a selected part of their existing response while retaining the rest of the evaluation. The resulting current response remains the single commissioned artefact comm_2.E2. Do not require a separate account of what changed, a new reflection, a duplicate response or a retained pre-feedback snapshot. Do not substitute a generic example evaluation if the learner has not yet produced their own response.",
+          "evidence_requirement": {
+            "kind": "learner_evidence",
+            "purpose": "Supply the learner's actual existing diagnoses, methodological explanations, proposed revisions and justifications as the grounds for selecting and making a meaningful improvement.",
+            "learner_action": "Inspect the existing evaluation in light of the explanatory feedback, identify a consequential opportunity for improvement and refine the relevant part of the same response.",
+            "observable_features": [
+              "The learner's current evaluation of each questionnaire item.",
+              "The methodological consequences identified and explained by the learner.",
+              "The learner's proposed question wording or response formats.",
+              "The learner's existing methodological justifications and any acknowledged limitations."
+            ],
+            "evidence_layout": "separate_provider",
+            "minimum_suitable_form": "The complete current learner-authored E2 response, available for direct inspection and editing through the existing response surface.",
+            "processing_notes": "The evidence is generated by the learner during A1, not by GAM and not by an external attachment. No supported provenance enumeration accurately describes this runtime learner-owned evidence, so the optional provenance field is omitted. The local provider must resolve to the existing response rather than create a static copy or additional workspace."
+          },
+          "response_fulfilment": {
+            "kind": "learner_text_production",
+            "response_kind": "text_compose",
+            "artefact_elicitation_id": "E2",
+            "allows_partial_exemplar": false
+          }
+        },
+        {
+          "material_id": "A2-M3",
+          "material_type": "sample_output",
+          "purpose": "Provide post-attempt explanatory feedback that models defensible questionnaire-design judgements, differentiates methodological consequences and supports targeted improvement of the learner's existing evaluation.",
+          "specification": "Review after completing the independent evaluation of all three questionnaire items. Provide one compact feedback material organised by the original item numbers. For each item, explain the consequential weakness, its plausible effects on respondent interpretation or response behaviour and the usefulness of the resulting data, then illustrate a defensible revision and explain a relevant design trade-off. For Item 1, address the absence of a defined reference period and the subjective, potentially overlapping frequency descriptions. Explain how respondents may interpret 'regularly' and 'frequently' differently or draw on different periods of their university experience, reducing comparability. Illustrate the question 'On how many days in the past four weeks have you used campus study spaces?' with complete options: 0 days; 1–3 days; 4–7 days; 8–14 days; 15–28 days. Explain the contribution of a defined reference period, specified measurement unit and mutually exclusive categories. Contrast exact counts, which may permit more flexible analysis, with categories, which may reduce recall and response demands. Recognise that the reference period should reflect whether recent, typical or longer-term use is of interest. For Item 2, explain how 'excellent' communicates a favourable evaluation and may encourage favourable responses. Address the broad basis of satisfaction. Illustrate the neutral question 'How satisfied are you with the suitability of campus study spaces for your study needs?' Retain the complete balanced five-point satisfaction scale and consider a separate 'Not applicable — I have not used these spaces' option. Distinguish non-applicability from neutral satisfaction. Contrast an overall satisfaction measure with feature-specific questions that may provide more actionable evidence at the cost of additional respondent effort. For Item 3, explain the assumptions that respondents want or need to use campus study spaces more often and that one of the listed barriers applies. Explain how restricted options can produce inaccurate selections or exclude meaningful responses. Illustrate the question 'Which, if any, of the following factors limit your use of campus study spaces?' with multiple selections permitted from: Lack of available seats; Noise; Inconvenient location; Unsuitable opening hours; Accessibility difficulties; Other reasons; No factors limiting use. Specify that the final option is exclusive of substantive barriers. Contrast identifying coexisting barriers with identifying a single principal barrier when prioritisation is the research purpose. Recognise that preferring to study elsewhere need not constitute a barrier and that its treatment depends on the research objective. Across the three explanations, distinguish consequential methodological weaknesses from stylistic preferences. Present illustrative revisions as defensible possibilities, not uniquely correct answers. Do not imply that all items require the same response format or that any proposed revision guarantees unbiased or valid data. Keep the complete feedback concise enough for approximately three minutes of engagement. Do not include an additional exercise, comprehensive questionnaire-design tutorial or mandatory written comparison with the model.",
+          "instructional_archetype": "evaluation_judgement",
+          "archetype_plan": {
+            "question": "How can the three questionnaire items be improved to produce evidence that better serves the research objective and intended respondent population?",
+            "criteria": [
+              "Alignment between the question, response format and intended construct.",
+              "Consistency of respondent interpretation and suitability of the available responses.",
+              "Plausible methodological consequences for response behaviour, comparability and data interpretation.",
+              "Proportionality of the revision in relation to respondent effort and the researcher's analytical needs."
+            ],
+            "evidence": [
+              "The original research objective and intended respondent population.",
+              "The complete original frequency item and response options.",
+              "The complete original satisfaction item and response options.",
+              "The complete original barrier item and response options."
+            ],
+            "tradeoffs": [
+              "Exact frequency counts offer analytical flexibility, while grouped responses may reduce recall and response demands.",
+              "Different reference periods support different interpretations of frequency of use.",
+              "Overall satisfaction measures are economical, while feature-specific measures may offer more actionable detail.",
+              "Non-applicability must be distinguished from substantive satisfaction responses.",
+              "Multiple-selection barrier questions identify coexisting barriers, while a single principal-barrier question may support prioritisation.",
+              "Preference for studying elsewhere and experienced barriers may require different treatment depending on the research purpose."
+            ],
+            "judgement_focus": "Model how a consequential questionnaire-design weakness can be connected to its plausible methodological effects and addressed through a justified revision, while recognising that alternative design decisions may be appropriate under different research priorities."
+          }
+        }
+      ],
+      "evidence_decision": {
+        "required": true,
+        "reason": "The learner must inspect their actual existing evaluation and the unchanged questionnaire particulars to determine which aspect warrants refinement and whether a proposed change strengthens the methodological judgement. Explanatory feedback supports that decision but does not substitute for either the original questionnaire evidence or the learner's own response.",
+        "provider_material_ids": [
+          "A2-M1",
+          "A2-M2"
+        ]
+      }
+    }
+  ],
+  "generation_notes": {
+    "design_decisions": [
+      "The inherited two-activity Episode Plan and its beat sequences remain unchanged. A1 framing introduces the constructed questionnaire evidence; evaluative_judgement elicits the complete independent evaluation; transition establishes the boundary before feedback. A2 worked_judgement provides explanatory feedback; evaluative_judgement supports targeted refinement; verification is incorporated as a lightweight check within the existing task.",
+      "A single authored-text response is retained instead of a selection-led interaction because independently identifying weaknesses, constructing revisions and articulating methodological explanations and justifications are themselves the commissioned learning outcomes. Supplying diagnostic options would reduce the intended independence.",
+      "No additional checklist is commissioned. The explanatory feedback and concise verification instruction provide proportionate support without duplicating the review process.",
+      "The authoritative fifteen-minute allocation is preserved through approximately two minutes of contextual reading, eight minutes of independent evaluation, three minutes of feedback engagement and two minutes of targeted refinement. These allocations are internal design constraints rather than learner-facing completion expectations.",
+      "The pasted workflow specifications constitute supporting instructional context. The three questionnaire items are explicitly constructed evidence supplied within that context, not attached empirical research material. No external survey, dataset or primary-source document is required.",
+      "The educational dependency on comm_1 is satisfied through reuse of the previously practised evaluative reasoning capability. No earlier learner-authored response is required as an input."
+    ],
+    "known_issues": [
+      "The supplied DLA contract does not define an explicit cross-activity workspace-reference field. A1-M2 and A2-M2 therefore bind the same authoritative elicitation E2, with specifications requiring one shared editable response rather than two independent workspaces. Downstream GAM and assembly must preserve this identity and verify that both activity surfaces resolve to the same current learner contribution.",
+      "The requirement for a local evidence provider in A2 is addressed through the unchanged questionnaire evidence and the learner's existing response. The optional provenance field is omitted for the learner-owned response because neither system_generated_simulation nor conversation_attachment accurately describes it.",
+      "The post-attempt feedback disclosure boundary and continued access to the editable response are commissioned explicitly but require downstream implementation. Executability, shared-state behaviour and deterministic schema validation have not been externally verified."
+    ]
+  }
+}

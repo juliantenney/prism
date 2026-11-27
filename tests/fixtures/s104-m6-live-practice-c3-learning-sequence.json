@@ -1,0 +1,144 @@
+{
+  "_fixture_note": "Live Sprint 104 M6 Practice C3 (30 minutes) Learning Sequence capture, as supplied by the user. Verbatim except this note.",
+  "artifact_type": "page",
+  "schema_version": "2.0.0",
+  "assembly_state": {
+    "current_stage": "learning_sequence",
+    "enriched_by": [
+      "learning_sequence"
+    ]
+  },
+  "learning_sequence": {
+    "total_duration_minutes": 30,
+    "ordered_activity_ids": [
+      "A1",
+      "A2"
+    ],
+    "timeline": [
+      {
+        "activity_id": "A1",
+        "start_minute": 0,
+        "end_minute": 20,
+        "duration_minutes": 20,
+        "learner_study_flow": [
+          {
+            "step": 1,
+            "instructional_function": "framing",
+            "learner_action": "Read the activity introduction and establish the purpose of the questionnaire review. Identify the research objective, intended respondent population and scope of the intended research evidence.",
+            "material_ids": [
+              "A1-M1"
+            ],
+            "duration_minutes": 2
+          },
+          {
+            "step": 2,
+            "instructional_function": "activation",
+            "learner_action": "Recall the methodological reasoning used in earlier questionnaire evaluation activities, particularly the relationship between design decisions, respondent behaviour and evidence quality. Apply this approach without retrieving earlier written responses.",
+            "material_ids": [],
+            "duration_minutes": 1
+          },
+          {
+            "step": 3,
+            "instructional_function": "criteria_exposition",
+            "learner_action": "Read the criteria for evaluating the questionnaire as an integrated research instrument. Establish how research alignment, respondent suitability, methodological consequences and design coherence will inform your priorities.",
+            "material_ids": [
+              "A1-M2"
+            ],
+            "duration_minutes": 1
+          },
+          {
+            "step": 4,
+            "instructional_function": "evaluative_judgement",
+            "learner_action": "Inspect all six original questionnaire items and their relationships. Independently prioritise three or four consequential problems or groups of related problems. Explain their plausible individual and collective methodological consequences, propose concrete and coherent improvements, and justify selected decisions against at least one credible alternative or trade-off. Record the reasoning as one integrated questionnaire review.",
+            "material_ids": [
+              "A1-M1",
+              "A1-M3"
+            ],
+            "duration_minutes": 15
+          },
+          {
+            "step": 5,
+            "instructional_function": "transition",
+            "learner_action": "Complete the independent review before proceeding to the explanatory feedback. Retain the current review for direct refinement in the next activity.",
+            "material_ids": [
+              "A1-M3"
+            ],
+            "duration_minutes": 1
+          }
+        ]
+      },
+      {
+        "activity_id": "A2",
+        "start_minute": 20,
+        "end_minute": 30,
+        "duration_minutes": 10,
+        "learner_study_flow": [
+          {
+            "step": 1,
+            "instructional_function": "worked_judgement",
+            "learner_action": "After completing the independent review, read the explanatory feedback. Refer selectively to the original questionnaire and your existing review. Examine how the illustrative evaluation connects questionnaire design choices to methodological consequences, weighs alternative decisions and establishes coherent priorities.",
+            "material_ids": [
+              "A2-M1",
+              "A2-M2"
+            ],
+            "duration_minutes": 5
+          },
+          {
+            "step": 2,
+            "instructional_function": "evaluative_judgement",
+            "learner_action": "Critically reconsider selected aspects of your existing review in light of the feedback. Edit the original response directly to strengthen consequential prioritisation, methodological explanation, relationships between items, proposed improvements or justification of alternatives. Retain defensible decisions where appropriate, strengthening their justification or acknowledging relevant limitations. Do not produce a separate review or reflection.",
+            "material_ids": [
+              "A2-M1",
+              "A2-M2",
+              "A2-M3"
+            ],
+            "duration_minutes": 4
+          },
+          {
+            "step": 3,
+            "instructional_function": "verification",
+            "learner_action": "Use the diagnostic checklist to verify the quality of the refined review. Check that the priorities are consequential, the methodological explanations are grounded in the questionnaire, and the proposed improvements form a coherent and justified redesign. Address any remaining consequential gap by editing the same response.",
+            "material_ids": [
+              "A2-M3",
+              "A2-M4"
+            ],
+            "duration_minutes": 1
+          }
+        ]
+      }
+    ],
+    "navigation": {
+      "entry_activity_id": "A1",
+      "completion_activity_id": "A2",
+      "progression": [
+        {
+          "from_activity_id": "A1",
+          "to_activity_id": "A2",
+          "progression_condition": "The learner has completed an independent attempt at the integrated questionnaire review before accessing explanatory feedback.",
+          "retained_response_material_id": "A1-M3",
+          "continuation_response_material_id": "A2-M3"
+        }
+      ],
+      "feedback_disclosure": [
+        {
+          "material_id": "A2-M2",
+          "release_after_activity_id": "A1",
+          "release_after_response_material_id": "A1-M3",
+          "disclosure_condition": "Release after the independent questionnaire review has been attempted. Do not expose the explanatory evaluation, illustrative revisions or preferred design decisions during the independent review."
+        }
+      ],
+      "learner_artefact_continuity": [
+        {
+          "artefact_elicitation_id": "E3",
+          "artefact_id": "comm_3.E3",
+          "initial_response_material_id": "A1-M3",
+          "refinement_response_material_id": "A2-M3",
+          "response_continuity": "shared_editable_response",
+          "completion_condition": "The learner has critically reconsidered and refined selected aspects of the existing questionnaire review and completed the final diagnostic verification.",
+          "final_contribution": "The current complete learner-authored questionnaire review and coherent redesign, including any feedback-informed refinements.",
+          "implementation_constraint": "Both response surfaces must resolve to the same editable E3 contribution. Do not create a duplicate journal entry, require retranscription, automatically incorporate feedback or require a separately retained initial response. Shared response persistence and conditional feedback disclosure are downstream implementation requirements, not runtime capabilities verified by this sequence artefact."
+        }
+      ]
+    }
+  }
+}

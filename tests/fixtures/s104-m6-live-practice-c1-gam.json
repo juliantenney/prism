@@ -1,0 +1,42 @@
+{
+  "_fixture_note": "Live Sprint 104 M6 Practice C1 (5 minutes) Generate Activity Materials capture, as supplied by the user. Verbatim except this note.",
+  "artifact_type": "page",
+  "schema_version": "2.0.0",
+  "assembly_state": {
+    "current_stage": "gam",
+    "enriched_by": [
+      "gam"
+    ]
+  },
+  "activities": [
+    {
+      "activity_id": "A1",
+      "materials": [
+        {
+          "material_id": "A1-M1",
+          "material_type": "scenario",
+          "activity_id": "A1",
+          "title": "Research context and draft questionnaire item",
+          "body_format": "markdown",
+          "body": "### Research objective\n\nA researcher wishes to investigate currently enrolled university students' satisfaction with the availability of academic support. Here, academic support means opportunities to obtain help with course-related learning from university teaching and support staff.\n\n### Draft questionnaire item\n\nHow satisfied are you with the availability and quality of academic support at your university?\n\nResponse options:\n\n- Very dissatisfied\n- Dissatisfied\n- Neither satisfied nor dissatisfied\n- Satisfied\n- Very satisfied\n\nThis example has been constructed for this learning activity and is not taken from an actual research instrument."
+        },
+        {
+          "material_id": "A1-M2",
+          "material_type": "template",
+          "activity_id": "A1",
+          "title": "Your independent evaluation",
+          "body_format": "markdown",
+          "body": "**Your evaluation and revised item:**\n\n1. Identify one consequential weakness in the questionnaire item in relation to the research objective.\n2. Explain how this weakness could affect respondents' answers or the usefulness of the resulting data.\n3. Propose an improved questionnaire item and briefly justify your revision.\n\nAim for three or four short sentences together with your revised item. You may retain the original response options or specify changes where appropriate.\n\nComplete your response before reviewing the feedback."
+        },
+        {
+          "material_id": "A1-M3",
+          "material_type": "sample_output",
+          "activity_id": "A1",
+          "title": "Feedback and improvement",
+          "body_format": "markdown",
+          "body": "Review after completing your independent evaluation and proposed revision.\n\n### Why the wording matters\n\nThe draft item combines availability and quality in a single question. This is known as a double-barrelled question.\n\nA student might be satisfied with the quality of academic support when it is available but dissatisfied with how difficult it is to access. They must nevertheless select a single satisfaction response. That response cannot distinguish their two evaluations, leaving the researcher uncertain whether it reflects availability, quality or a combination of both. This makes the data difficult to interpret in relation to the stated research objective.\n\n### One defensible revision\n\nHow satisfied are you with the availability of academic support at your university?\n\nRetain the original five-point satisfaction scale. Removing quality means respondents no longer have to combine two potentially different judgements. The revised item therefore aligns more closely with what the researcher intends to investigate and makes responses easier to interpret.\n\n### Other defensible improvements\n\nSeparate questions about availability and quality would be appropriate if the research objective included both, although this would increase questionnaire length.\n\nYou may instead have questioned whether students with insufficient experience of academic support can answer meaningfully. A non-applicable response option or an eligibility instruction could help, depending on the intended respondent population and whether availability includes students' perceptions of access without having used the support.\n\nThe illustrative revision is not the only defensible answer, nor has it been empirically validated.\n\n### Improve your response\n\nReturn to your existing response and strengthen one aspect of it. You might make the connection between the weakness and its methodological consequence clearer, adjust your revised item or explain more precisely why your proposed change helps address the research objective. If your original response is already defensible, consider acknowledging a relevant limitation. Make the improvement directly in your existing response."
+        }
+      ]
+    }
+  ]
+}

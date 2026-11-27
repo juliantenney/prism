@@ -1,0 +1,35 @@
+{
+  "_fixture_note": "Live Sprint 104 M6 Practice Design Page output, C1 (5 minutes), as supplied by the user. Verbatim except this note. This stage output carries no activities, learning_sequence or required_materials; upstream DLA, GAM and LS captures are needed for workload assessment.",
+  "artifact_type": "page",
+  "schema_version": "2.0.0",
+  "product_id": "practice",
+  "page_kind": "practice",
+  "title": "Improving Questionnaire Items",
+  "page_synthesis": {},
+  "visual_affordance_schema_version": "38.4",
+  "activities_visual_review": [
+    {
+      "activity_id": "A1",
+      "activity_visual_value": {
+        "decision": "none",
+        "rationale": "The disciplinary task requires close inspection of the exact questionnaire wording, response options and research objective. These particulars are already directly inspectable in the scenario material. An instructional visual would either duplicate the textual evidence or risk revealing the weakness that learners must identify independently. The post-attempt feedback already provides a concise explanation of the relationship between question wording, respondent experience and data interpretability. No additional instructional representation is warranted within the five-minute practice cycle. Page-level orientation and consolidation prose are also omitted because the existing activity framing, response apparatus and explanatory feedback provide sufficient instructional continuity."
+      }
+    }
+  ],
+  "visual_affordances": [],
+  "editorial_opening_image": {
+    "decision": "generate",
+    "subject": "Questionnaire design in educational research",
+    "context": "A university researcher thoughtfully reviewing a draft questionnaire at a quiet workspace. The scene establishes the context of questionnaire development and methodological decision-making without representing any particular design weakness, research finding or preferred revision. The image is decorative rather than instructional and must not provide clues to the independent evaluation task.",
+    "caption_intent": "Establish a reflective educational research context through a text-free editorial image of questionnaire development. Do not include a visible caption, title, slogan, banner, annotation or explanatory overlay within the image.",
+    "alt_text": "",
+    "detailed_description": "A naturalistic editorial photograph of a researcher seated at a university workspace, considering a draft questionnaire on a sheet of paper, with a pen and notebook nearby. Use soft natural daylight, a restrained academic setting and an uncluttered composition. Any questionnaire markings must be indistinct and unreadable. Do not show legible questions, response options, selected answers, highlighted wording, corrections, contrasting questionnaire versions, diagrams, symbols indicating correctness or incorrectness, or visual metaphors suggesting the specific weakness under evaluation. Include no readable text, labels, titles, logos, banners or overlays. The image serves solely as a decorative opening and carries no information necessary to complete the activity."
+  },
+  "assembly_state": {
+    "current_stage": "design_page",
+    "enriched_by": [
+      "design_page"
+    ],
+    "calls_model": true
+  }
+}

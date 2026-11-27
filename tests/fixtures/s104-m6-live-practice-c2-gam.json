@@ -1,0 +1,63 @@
+{
+  "_fixture_note": "Live Sprint 104 M6 Practice C2 (15 minutes) Generate Activity Materials capture, as supplied by the user. Verbatim except this note.",
+  "artifact_type": "page",
+  "schema_version": "2.0.0",
+  "assembly_state": {
+    "current_stage": "gam",
+    "enriched_by": [
+      "gam"
+    ]
+  },
+  "activities": [
+    {
+      "activity_id": "A1",
+      "materials": [
+        {
+          "material_id": "A1-M1",
+          "material_type": "scenario",
+          "activity_id": "A1",
+          "title": "Draft questionnaire: campus study spaces",
+          "body_format": "markdown",
+          "body": "### Research context\n\nA university researcher is developing a questionnaire to understand how frequently students use campus study spaces, how satisfied they are with the suitability of those spaces for their study needs, and what barriers may limit their use.\n\nThe intended respondents are currently enrolled students, including those who rarely or never use campus study spaces. Campus study spaces include libraries, designated study rooms and shared areas provided by the university for independent or collaborative study.\n\nThe following questionnaire items have been constructed for learning purposes. They are not taken from an actual university survey.\n\n### Item 1\n\nHow often do you use the university's study spaces?\n\n- Never\n- Occasionally\n- Regularly\n- Frequently\n\n### Item 2\n\nHow satisfied are you with the excellent study spaces provided by the university?\n\n- Very dissatisfied\n- Dissatisfied\n- Neither satisfied nor dissatisfied\n- Satisfied\n- Very satisfied\n\n### Item 3\n\nWhat is the main reason you do not use campus study spaces more often?\n\nSelect one response:\n\n- Lack of available seats\n- Noise\n- Inconvenient location"
+        },
+        {
+          "material_id": "A1-M2",
+          "material_type": "template",
+          "activity_id": "A1",
+          "title": "Your questionnaire evaluation",
+          "body_format": "markdown",
+          "body": "**Questionnaire evaluation:**\n\nFor each of the three items, identify consequential weaknesses, explain their likely methodological effects, propose an improved question or response format, and justify your changes in relation to the research objective and intended respondents. Consider any relevant limitations of your proposed revisions.\n\nUse item numbers to organise your evaluation. Concise notes are sufficient."
+        }
+      ]
+    },
+    {
+      "activity_id": "A2",
+      "materials": [
+        {
+          "material_id": "A2-M1",
+          "material_type": "scenario",
+          "activity_id": "A2",
+          "title": "Original questionnaire for reference",
+          "body_format": "markdown",
+          "body": "Refer to the original questionnaire as you reconsider your evaluation. This is the same constructed questionnaire you evaluated, not a new example.\n\n### Research context\n\nA university researcher is developing a questionnaire to understand how frequently students use campus study spaces, how satisfied they are with the suitability of those spaces for their study needs, and what barriers may limit their use.\n\nThe intended respondents are currently enrolled students, including those who rarely or never use campus study spaces. Campus study spaces include libraries, designated study rooms and shared areas provided by the university for independent or collaborative study.\n\nThe following questionnaire items have been constructed for learning purposes. They are not taken from an actual university survey.\n\n### Item 1\n\nHow often do you use the university's study spaces?\n\n- Never\n- Occasionally\n- Regularly\n- Frequently\n\n### Item 2\n\nHow satisfied are you with the excellent study spaces provided by the university?\n\n- Very dissatisfied\n- Dissatisfied\n- Neither satisfied nor dissatisfied\n- Satisfied\n- Very satisfied\n\n### Item 3\n\nWhat is the main reason you do not use campus study spaces more often?\n\nSelect one response:\n\n- Lack of available seats\n- Noise\n- Inconvenient location"
+        },
+        {
+          "material_id": "A2-M2",
+          "material_type": "task_card",
+          "activity_id": "A2",
+          "title": "Improve your existing evaluation",
+          "body_format": "markdown",
+          "body": "After reviewing the explanatory feedback, return to your existing questionnaire evaluation and identify one aspect that would benefit from refinement.\n\nMake the improvement directly in your original response. You might address an overlooked weakness, strengthen an explanation of its methodological consequences, improve a proposed revision or make your justification more precise. If your original design decision remains appropriate, consider whether acknowledging a relevant limitation would strengthen your reasoning.\n\nCheck that your refinement addresses a consequential issue and remains aligned with the research objective. Retain the other parts of your evaluation that you consider defensible. You do not need to rewrite all three evaluations or record a separate reflection."
+        },
+        {
+          "material_id": "A2-M3",
+          "material_type": "sample_output",
+          "activity_id": "A2",
+          "title": "Explanatory feedback and illustrative revisions",
+          "body_format": "markdown",
+          "body": "Review after completing your independent evaluation of all three questionnaire items. The revisions below illustrate defensible design decisions rather than uniquely correct answers.\n\n### Item 1: Frequency of use\n\nWithout a defined reference period, students may answer based on the current week, the current term or their entire university experience. The distinction between 'regularly' and 'frequently' is also subjective: students with similar patterns of use could select different responses. These inconsistencies make comparisons between respondents difficult.\n\n#### Illustrative revision\n\nOn how many days in the past four weeks have you used campus study spaces?\n\n- 0 days\n- 1–3 days\n- 4–7 days\n- 8–14 days\n- 15–28 days\n\nA defined reference period, a specified unit of measurement and non-overlapping response categories give answers a more consistent meaning. Asking for an exact number of days would offer greater analytical flexibility, but categories may reduce the effort involved in recalling and reporting use. Four weeks is a reasonable period for investigating recent use, although it may not represent typical or longer-term patterns, particularly around holidays or examinations.\n\n### Item 2: Satisfaction with study spaces\n\nThe word 'excellent' communicates a favourable judgement and may encourage respondents to give more positive answers. The question also leaves the basis of satisfaction broad: students might answer in relation to comfort, facilities or other characteristics rather than suitability for their study needs.\n\n#### Illustrative revision\n\nHow satisfied are you with the suitability of campus study spaces for your study needs?\n\n- Very dissatisfied\n- Dissatisfied\n- Neither satisfied nor dissatisfied\n- Satisfied\n- Very satisfied\n- Not applicable — I have not used these spaces\n\nThe neutral wording aligns the question more closely with the research objective while retaining the original balanced satisfaction scale. The additional option accommodates non-users without requiring them to express a satisfaction judgement. It should be treated separately in analysis, not as equivalent to the neutral midpoint.\n\nAn overall satisfaction measure may be sufficient for this research objective. Separate questions about particular features could provide more actionable evidence but would increase respondent effort.\n\n### Item 3: Barriers to use\n\nThe original question assumes that students want or need to use campus study spaces more often and that at least one of the listed barriers applies. Students experiencing other barriers, or no barriers at all, may select an inaccurate answer or leave the question unanswered. The resulting data could therefore misrepresent which barriers students experience.\n\n#### Illustrative revision\n\nWhich, if any, of the following factors limit your use of campus study spaces?\n\nSelect all that apply:\n\n- Lack of available seats\n- Noise\n- Inconvenient location\n- Unsuitable opening hours\n- Accessibility difficulties\n- Other reasons\n- No factors limiting use\n\nSelect 'No factors limiting use' only if none of the other options applies.\n\nMultiple selection allows the researcher to identify coexisting barriers rather than requiring respondents to choose between them. However, a single principal-barrier question may be preferable if the research objective is to prioritise one main obstacle. Some students may simply prefer studying elsewhere without experiencing a barrier. Whether to capture that preference separately depends on the research purpose.\n\n### What makes these improvements consequential?\n\nThe three revisions address different methodological problems: inconsistent measurement of frequency, potentially biased or misaligned satisfaction judgements, and assumptions and restricted choices that may misrepresent barriers. These are more than stylistic changes because they affect how respondents answer and what the researcher can reasonably infer from those answers.\n\nAn appropriate revision balances the usefulness of the evidence against respondent effort and the researcher's analytical needs. Your own revisions may differ from these examples and still be defensible if your methodological justification establishes that relationship."
+        }
+      ]
+    }
+  ]
+}

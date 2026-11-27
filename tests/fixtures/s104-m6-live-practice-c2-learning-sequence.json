@@ -1,0 +1,162 @@
+{
+  "_fixture_note": "Live Sprint 104 M6 Practice C2 (15 minutes) Learning Sequence capture, as supplied by the user. Verbatim except this note.",
+  "artifact_type": "page",
+  "schema_version": "2.0.0",
+  "assembly_state": {
+    "current_stage": "learning_sequence",
+    "enriched_by": [
+      "learning_sequence"
+    ]
+  },
+  "learning_sequence": {
+    "total_duration_minutes": 15,
+    "ordered_activity_ids": [
+      "A1",
+      "A2"
+    ],
+    "timeline": [
+      {
+        "activity_id": "A1",
+        "duration_minutes": 10,
+        "start_minute": 0,
+        "end_minute": 10,
+        "learner_study_flow": [
+          {
+            "instructional_function": "framing",
+            "duration_minutes": 2,
+            "material_ids": [
+              "A1-M1"
+            ],
+            "learner_action": "Read the research context, establish what the researcher intends to measure and identify the intended respondent population. Inspect the three original questionnaire items and their response options."
+          },
+          {
+            "instructional_function": "evaluative_judgement",
+            "duration_minutes": 8,
+            "material_ids": [
+              "A1-M1",
+              "A1-M2"
+            ],
+            "learner_action": "Independently evaluate all three questionnaire items. Identify consequential weaknesses, explain their methodological effects, propose appropriate revisions and justify the design decisions. Record the complete evaluation in the single editable questionnaire evaluation workspace."
+          },
+          {
+            "instructional_function": "transition",
+            "duration_minutes": 0,
+            "material_ids": [
+              "A1-M2"
+            ],
+            "learner_action": "Proceed to the explanatory feedback once you have attempted the evaluation of all three items. Retain your existing response for subsequent refinement."
+          }
+        ]
+      },
+      {
+        "activity_id": "A2",
+        "duration_minutes": 5,
+        "start_minute": 10,
+        "end_minute": 15,
+        "learner_study_flow": [
+          {
+            "instructional_function": "worked_judgement",
+            "duration_minutes": 3,
+            "material_ids": [
+              "A2-M1",
+              "A2-M3"
+            ],
+            "learner_action": "Review the explanatory feedback and illustrative revisions, referring to the original questionnaire where necessary. Compare the methodological reasoning with your own evaluation, recognising that alternative revisions may be defensible."
+          },
+          {
+            "instructional_function": "evaluative_judgement",
+            "duration_minutes": 2,
+            "material_ids": [
+              "A2-M1",
+              "A2-M2",
+              "A2-M3"
+            ],
+            "learner_action": "Identify one consequential opportunity to improve your existing evaluation. Refine the relevant diagnosis, methodological explanation, proposed revision or justification directly in your original editable response, drawing on the explanatory feedback."
+          },
+          {
+            "instructional_function": "verification",
+            "duration_minutes": 0,
+            "material_ids": [
+              "A2-M2"
+            ],
+            "learner_action": "Check that your refinement strengthens the methodological reasoning, remains aligned with the research objective and preserves the coherence of your complete evaluation."
+          }
+        ]
+      }
+    ],
+    "navigation": {
+      "entry_activity_id": "A1",
+      "completion_activity_id": "A2",
+      "progression_mode": "sequential",
+      "allow_revisit": true,
+      "disclosure_rules": [
+        {
+          "material_ids": [
+            "A1-M1",
+            "A1-M2"
+          ],
+          "available_from": "A1",
+          "condition": "Available before and throughout independent evaluation."
+        },
+        {
+          "material_ids": [
+            "A2-M3"
+          ],
+          "available_from": "A2",
+          "condition": "Release only after the learner has independently attempted the evaluation of all three questionnaire items. Do not disclose illustrative revisions or diagnostic explanations during A1."
+        },
+        {
+          "material_ids": [
+            "A2-M1",
+            "A2-M2"
+          ],
+          "available_from": "A2",
+          "condition": "Provide continued access to the unchanged questionnaire evidence and the learner's existing editable evaluation throughout feedback engagement and refinement."
+        }
+      ],
+      "response_continuity": {
+        "artefact_elicitation_id": "E2",
+        "artefact_id": "comm_2.E2",
+        "initial_response_material_id": "A1-M2",
+        "refinement_material_id": "A2-M2",
+        "response_mode": "shared_editable_response",
+        "completion_state": "The current complete learner-authored questionnaire evaluation, including any feedback-informed refinement.",
+        "requirements": [
+          "Preserve one coherent learner-authored contribution across both activities.",
+          "Allow targeted editing of the existing response without requiring a complete rewrite.",
+          "Preserve the learner's wording unless the learner chooses to change it.",
+          "Do not create a second elicitation, independent response field, separate reflection or mandatory pre-feedback snapshot.",
+          "Retain the current complete evaluation as the commissioned Learning Journal artefact."
+        ]
+      }
+    },
+    "sequencing_notes": {
+      "instructional_rationale": "The sequence preserves the inherited progression from framing and independent evaluative judgement to explanatory feedback, targeted refinement and verification. The learner first applies previously developed questionnaire-evaluation capabilities across several items without item-specific diagnostic scaffolding. Subsequent feedback differentiates methodological consequences and illustrates defensible revisions, enabling the learner to exercise evaluative judgement when improving their own work.",
+      "duration_rationale": "The inherited ten-minute independent evaluation activity and five-minute feedback-informed refinement activity are preserved. Transition and verification are embedded within the allocated activity durations rather than treated as additional timed stops. Zero-minute entries represent integrated instructional functions, not omitted functions. All timing allocations are internal planning metadata and are not learner-facing time limits.",
+      "material_order_rationale": "The authored material arrays remain unchanged. Within A2, the learner study flow intentionally introduces A2-M3 before the substantive refinement operation associated with A2-M2. This follows the inherited worked_judgement, evaluative_judgement and verification beat order without modifying the upstream material order.",
+      "educational_dependency": "The sequence builds on the evaluative reasoning developed in 'Evaluate and improve an individual questionnaire item'. It does not require retrieval of an earlier learner response or introduce additional prerequisite teaching.",
+      "implementation_dependencies": [
+        "Downstream assembly must implement the feedback disclosure boundary so that the complete independent attempt precedes answer-bearing feedback.",
+        "A1-M2 and A2-M2 must resolve to the same editable E2 response. The sequence specifies this continuity but does not itself implement or verify shared workspace behaviour.",
+        "The renderer must respect learner_study_flow when presenting feedback and refinement, rather than infer instructional order solely from the stored materials array.",
+        "No automated assessment of the correctness or completeness of the learner's free-text evaluation is assumed. Progression should support learner confirmation of an independent attempt without claiming semantic verification."
+      ],
+      "validation": {
+        "activity_count": 2,
+        "activity_order_preserved": true,
+        "episode_plan_beat_order_preserved": true,
+        "timeline_duration_sum_minutes": 15,
+        "learner_study_flow_duration_sum_minutes": 15,
+        "duration_matches_authoritative_parameter": true,
+        "independent_attempt_precedes_feedback": true,
+        "feedback_precedes_refinement": true,
+        "additional_activities_introduced": false,
+        "additional_elicitations_introduced": false,
+        "upstream_fields_modified": false,
+        "external_schema_validation_performed": false,
+        "runtime_navigation_verified": false,
+        "runtime_response_continuity_verified": false
+      }
+    }
+  }
+}

@@ -1,0 +1,218 @@
+{
+  "_fixture_note": "Live Sprint 104 M6 Practice C3 (30 minutes) Design Learning Activities capture, as supplied by the user. Verbatim except this note.",
+  "artifact_type": "page",
+  "schema_version": "2.0.0",
+  "assembly_state": {
+    "current_stage": "dla",
+    "enriched_by": [
+      "dla"
+    ]
+  },
+  "activities": [
+    {
+      "activity_id": "A1",
+      "title": "Review and redesign the questionnaire",
+      "activity_preamble": "You are reviewing a draft questionnaire before it is distributed to university students. Your task is to judge whether the questionnaire, taken as a whole, will produce useful evidence for the stated research objective. A good review identifies the problems that matter most and recommends changes that work coherently together.",
+      "prior_knowledge_activation": "Recall how you previously connected questionnaire design decisions to their likely methodological consequences and justified improvements. Apply that approach to a complete questionnaire extract, considering relationships between items and deciding which changes deserve priority. You do not need to retrieve your earlier responses.",
+      "reasoning_orientation": "Consider the relevance of each question to the research objective, how different respondents might interpret and answer it, what the resulting responses would allow the researcher to conclude, and how proposed improvements would work together. Use these criteria to establish priorities rather than treating every possible weakness as equally important.",
+      "learner_task": "Read the research context and inspect all six questionnaire items before deciding what to change. Write a concise researcher's review that identifies and prioritises three or four consequential problems or groups of related problems. Explain how these could individually and collectively affect respondent interpretation, response behaviour and the usefulness of the resulting evidence. Propose specific improvements and justify how they address the selected problems while working coherently together. Consider at least one credible alternative design decision and explain the trade-off involved in choosing your preferred approach. You may recommend retaining or removing items where justified. Use concise paragraphs or structured notes; you do not need to rewrite the entire questionnaire. Complete your independent review before consulting the explanatory feedback.",
+      "expected_output": "One coherent written questionnaire review that establishes defensible priorities in relation to the research objective and intended respondents. It identifies specific features of the draft, explains their plausible individual and collective methodological consequences, and proposes concrete, justified improvements. The recommendations should work together rather than merely improve individual items in isolation. The review should demonstrate consideration of at least one credible alternative and its methodological trade-offs. The quality of the reasoning matters more than the length of the response or the number of weaknesses identified.",
+      "task_material_decision": {
+        "separate_inputs_required": true,
+        "task_input_material_ids": [
+          "A1-M1"
+        ]
+      },
+      "required_materials": [
+        {
+          "material_id": "A1-M1",
+          "material_type": "scenario",
+          "purpose": "Provide the original fictional research context and complete unannotated six-item questionnaire extract as directly inspectable evidence for independent methodological evaluation and redesign.",
+          "specification": "Present the fictional university research context and six-item questionnaire extract established in the preceding commission and activity design. The research objective is to investigate the relationship between recent participation in organised extracurricular activities and students' current sense of belonging, while identifying barriers that may limit participation. The intended respondents are currently enrolled students, including participants and non-participants. Organised extracurricular activities include organised student clubs, societies, sports groups, volunteering opportunities and comparable activities outside formal course requirements. The intended inference concerns associations rather than establishing causation. Identify the questionnaire as fictional instructional evidence, not an actual or validated survey instrument. Preserve the following six items and their response options without correction or diagnostic annotation. Item 1: 'How often have you participated in extracurricular activities since starting university?' Options: Never; Occasionally; Regularly; Very frequently. Item 2: 'How many organised extracurricular activities have you attended in the past four weeks?' Options: 0; 1–2; 2–4; 4 or more. Item 3: 'Taking part in extracurricular activities has helped me make friends and feel that I belong at university.' Options: Strongly disagree; Disagree; Neither agree nor disagree; Agree; Strongly agree. Item 4: 'I feel that I belong at this university.' Options: Strongly disagree; Disagree; Neither agree nor disagree; Agree; Strongly agree. Item 5: 'Why have you not taken advantage of the many extracurricular opportunities available to you?' Select one response: Too busy; Too expensive; Not interested; Other. Item 6: 'How satisfied are you with the accessibility and quality of extracurricular activities at your university?' Options: Very dissatisfied; Dissatisfied; Neither satisfied nor dissatisfied; Satisfied; Very satisfied. Preserve the original absence of routing instructions and non-applicable response options. Render the extract as a questionnaire to review, not a survey for the learner to complete. Do not introduce highlighted weaknesses, interpretive headings, corrected wording, model answers or indications of which items should be prioritised.",
+          "evidence_requirement": {
+            "kind": "learner_evidence",
+            "purpose": "Supply the research objective, respondent conditions, exact question wording and response formats against which the learner must substantiate methodological judgements.",
+            "learner_action": "Inspect all six items and their relationships, establish consequential weaknesses, explain their plausible methodological effects and justify coherent improvements using the supplied particulars.",
+            "observable_features": [
+              "The stated research objective and intended scope of inference",
+              "The intended respondent population and definition of organised extracurricular activities",
+              "The complete wording of all six questionnaire items",
+              "The response options and selection instructions accompanying each item",
+              "The relationships between items and the evidence they would collectively produce",
+              "The respondent instructions present in the original draft"
+            ],
+            "provenance": "conversation_attachment",
+            "evidence_layout": "separate_provider",
+            "minimum_suitable_form": "The complete fictional research context and six original questionnaire items with their response options and instructions.",
+            "disclosure_constraint": "Present the original evidence without diagnostic commentary, suggested priorities or preferred design decisions.",
+            "processing_notes": "Source unit: the fictional research context and questionnaire extract established in the preceding Design Episode Plan commission and reproduced in the preceding DLA response. Preserve continuity with that evidence. The attachment provenance describes the supplied instructional source, not the authenticity of an empirical research instrument."
+          }
+        },
+        {
+          "material_id": "A1-M2",
+          "material_type": "text",
+          "purpose": "Establish concise, non-answer-bearing criteria for evaluating the questionnaire as an integrated research instrument.",
+          "specification": "Commission a brief criteria exposition covering four connected dimensions: alignment with the research objective and intended constructs; suitability for the intended respondent population; plausible consequences for interpretation, response behaviour and evidence usefulness; and coherence and proportionality of proposed design decisions across the questionnaire. Establish that consequential prioritisation involves weighing methodological importance rather than counting faults. Explain that design alternatives should be judged against their intended measurement purpose and relevant trade-offs. Do not diagnose any of the six focal items, identify preferred priorities, provide corrected wording or disclose the subsequent feedback. Keep this orientation sufficiently brief to preserve the independent review workload."
+        },
+        {
+          "material_id": "A1-M3",
+          "material_type": "template",
+          "purpose": "Provide one operational constructed-text workspace for the learner's integrated questionnaire review and coherent redesign.",
+          "specification": "Commission one editable extended-text field labelled 'Questionnaire review and proposed improvements'. Collect a single independently authored review containing a brief statement of priorities, three or four consequential problems or groups of related problems, their plausible methodological consequences, concrete proposed improvements and consideration of at least one credible alternative or trade-off. Require attention to relationships between items where these affect the resulting evidence or coherence of the redesign. Permit justified retention or removal of items. Allow concise paragraphs or structured notes without prescribing a rigid item-by-item format. Do not subdivide the response into separate diagnostic, justification or reflection fields. Do not prefill any diagnoses, revisions or model reasoning. This is the authoritative constructed-text surface for E3. Its current learner-authored content must remain available for direct editing during the subsequent feedback-informed refinement activity. Do not create a separate journal entry or require preservation of an initial version.",
+          "response_fields": [
+            {
+              "label": "Questionnaire review and proposed improvements",
+              "input_modality": "text"
+            }
+          ],
+          "response_fulfilment": {
+            "kind": "learner_text_production",
+            "response_kind": "text_compose",
+            "artefact_elicitation_id": "E3",
+            "allows_partial_exemplar": false
+          },
+          "instructional_archetype": "evaluation_judgement",
+          "archetype_plan": {
+            "question": "Which design weaknesses most consequentially affect the usefulness of this questionnaire, and what coherent set of improvements would best serve its stated research objective?",
+            "criteria": [
+              "Alignment of review priorities with the research objective and intended respondents",
+              "Specificity and plausibility of methodological explanations",
+              "Suitability and coherence of the proposed improvements",
+              "Strength of the justification for preferred decisions in relation to credible alternatives"
+            ],
+            "evidence": [
+              "The fictional research objective and respondent conditions in A1-M1",
+              "The original wording, response formats and relationships between the six questionnaire items in A1-M1"
+            ],
+            "tradeoffs": [
+              "Relative methodological importance of competing design concerns within a bounded review",
+              "Benefits and limitations of alternative design decisions in relation to the intended evidence",
+              "Measurement coverage and precision in relation to respondent effort"
+            ],
+            "judgement_focus": "Produce an independently reasoned and prioritised methodological review whose recommendations form a coherent redesign rather than a catalogue of isolated corrections."
+          }
+        }
+      ],
+      "evidence_decision": {
+        "required": true,
+        "reason": "The required methodological judgements and proposed improvements depend on inspecting the particular research objective, respondent population, question wording, response formats and relationships between items. General questionnaire design knowledge alone cannot substantiate the required evaluation.",
+        "provider_material_ids": [
+          "A1-M1"
+        ]
+      }
+    },
+    {
+      "activity_id": "A2",
+      "title": "Refine your questionnaire review",
+      "activity_preamble": "Questionnaire design decisions need to be justified in relation to the intended research evidence. The explanatory feedback illustrates how a researcher might evaluate this questionnaire and consider alternative designs. Use it to test and strengthen your own reasoning rather than simply replace your recommendations with the illustrative alternatives.",
+      "intellectual_coherence_bridge": "Your independent review established priorities and proposed a set of justified improvements. Now consider whether the feedback changes which problems you regard as consequential, how you understand their methodological effects or which design decisions you would recommend.",
+      "learner_task": "After completing your independent review, engage with the explanatory feedback, referring to the original questionnaire and your existing response. Identify where your review could be strengthened through a more consequential diagnosis, a clearer methodological explanation, recognition of a relationship between items, a stronger design solution or more convincing consideration of an alternative. Edit selected aspects of your existing review directly. Where your original decisions remain defensible, strengthen their justification or acknowledge a relevant limitation. Finally, check that your revised review presents a coherent set of recommendations supported by methodological reasoning. You do not need to produce a second review or a separate reflection.",
+      "expected_output": "A substantively strengthened version of the existing questionnaire review that demonstrates critical engagement with the explanatory feedback. The revised response should show more defensible prioritisation, greater precision in methodological explanation, improved coherence between design decisions or stronger justification of selected recommendations. Changes should remain grounded in the original questionnaire and research objective. Agreement with every illustrative revision is neither necessary nor sufficient. The resulting review should remain one coherent piece of learner-authored work.",
+      "task_material_decision": {
+        "separate_inputs_required": true,
+        "task_input_material_ids": [
+          "A2-M1"
+        ]
+      },
+      "required_materials": [
+        {
+          "material_id": "A2-M1",
+          "material_type": "scenario",
+          "purpose": "Maintain access to the original questionnaire evidence during feedback-informed reconsideration so that the learner can substantiate selected refinements against the actual research objective and item wording.",
+          "specification": "Provide the same complete fictional research context and six-item questionnaire extract commissioned in A1-M1. Preserve every original question, response option, respondent condition and research objective. The research objective concerns the relationship between recent participation in organised extracurricular activities and current university belonging, alongside barriers that may limit participation. The intended respondents are currently enrolled students, including participants and non-participants. Organised extracurricular activities include organised student clubs, societies, sports groups, volunteering opportunities and comparable activities outside formal course requirements. The intended inference concerns associations rather than causation. Preserve the explicit fictional, unvalidated status of the extract. Item 1: 'How often have you participated in extracurricular activities since starting university?' Options: Never; Occasionally; Regularly; Very frequently. Item 2: 'How many organised extracurricular activities have you attended in the past four weeks?' Options: 0; 1–2; 2–4; 4 or more. Item 3: 'Taking part in extracurricular activities has helped me make friends and feel that I belong at university.' Options: Strongly disagree; Disagree; Neither agree nor disagree; Agree; Strongly agree. Item 4: 'I feel that I belong at this university.' Options: Strongly disagree; Disagree; Neither agree nor disagree; Agree; Strongly agree. Item 5: 'Why have you not taken advantage of the many extracurricular opportunities available to you?' Select one response: Too busy; Too expensive; Not interested; Other. Item 6: 'How satisfied are you with the accessibility and quality of extracurricular activities at your university?' Options: Very dissatisfied; Dissatisfied; Neither satisfied nor dissatisfied; Satisfied; Very satisfied. Retain the absence of routing instructions and non-applicable response options. Make the original extract available for selective reference without requiring a second complete reading or independent review. Do not substitute a corrected questionnaire, a summary of its weaknesses or a different scenario. Keep this original evidence distinct from explanatory feedback.",
+          "evidence_requirement": {
+            "kind": "learner_evidence",
+            "purpose": "Supply the unchanged questionnaire particulars needed to reconsider and substantiate selected methodological judgements during refinement.",
+            "learner_action": "Return selectively to relevant questions, response options and research conditions when testing explanatory feedback against the original evidence and strengthening the existing review.",
+            "observable_features": [
+              "The original research objective and intended respondent population",
+              "The unchanged wording and response options of the six questionnaire items",
+              "The original respondent instructions",
+              "Relationships between the original items relevant to the learner's selected refinements"
+            ],
+            "provenance": "conversation_attachment",
+            "evidence_layout": "separate_provider",
+            "minimum_suitable_form": "The same directly inspectable research context and complete original questionnaire extract used in the independent review.",
+            "processing_notes": "Source unit: RESEARCH CONTEXT AND QUESTIONNAIRE EVIDENCE in the Design Episode Plan commissioning attachment. Maintain exact evidential continuity with A1-M1. This local provider supports reconsideration of the original evidence; it is not a new questionnaire case or additional review task."
+          }
+        },
+        {
+          "material_id": "A2-M2",
+          "material_type": "sample_output",
+          "purpose": "Provide substantive post-attempt explanatory feedback that models reasoned methodological judgement about the actual questionnaire and supports selective reconsideration of the learner's existing review.",
+          "specification": "Reveal after the learner has attempted the independent questionnaire review. Commission a concise, clearly organised reasoned evaluation of the actual six-item extract, structured around relationships between design decisions and the research objective rather than a generic catalogue of questionnaire design rules. Cover five connected methodological concerns. First, participation measurement and comparability: explain how Items 1 and 2 potentially overlap while using different reference periods and imprecise response formats. Explain how Item 1 may reflect cumulative experience and length of enrolment rather than recent participation, and how subjective frequency categories limit comparability. Identify the overlapping response boundaries at two and four in Item 2 and the ambiguity between counting distinct activities and attendance occasions. Illustrate the revision 'On how many occasions have you taken part in organised extracurricular activities in the past four weeks?' with response options 0; 1–2; 3–4; 5–7; 8 or more. Explain why explicit counting units and non-overlapping categories improve interpretability. Discuss measuring distinct activities as an alternative when participation breadth matters, retaining both recent and longer-term measures when justified, removing Item 1 to reduce unnecessary duplication, and the influence of academic calendar effects on the suitability of a four-week reference period. Second, construct separation and interpretation: explain how Item 3 combines friendship and belonging, asks respondents to attribute these experiences to participation and may be unsuitable for non-participants. Explain how this conflates distinct constructs and perceived causal influence when the objective concerns an association between participation and belonging. Illustrate measuring recent participation and current belonging independently. If perceived benefits serve an additional research objective, discuss separate questions directed to respondents with relevant experience. Clarify that construct separation improves interpretability but does not establish causation. Third, defensible retention: explain why Item 4 offers a reasonably suitable direct measure of self-reported belonging for participants and non-participants, using a balanced response scale. Explain why retaining an appropriate item can be preferable to unnecessary revision. Acknowledge that a single item cannot necessarily capture every dimension of belonging and that a broader or validated instrument might be appropriate in a more extensive research design. Fourth, barriers and respondent inclusion: explain how Item 5 presupposes non-participation or insufficient participation, potentially communicates criticism, restricts respondents to one answer and fails to accommodate multiple barriers or their absence. Illustrate neutral wording such as 'Which, if any, of the following factors limit your participation in organised extracurricular activities?' Discuss multiple-response options covering relevant barriers, an other option and an exclusive no-barriers option. Explain how existing participants may also experience barriers, and distinguish lack of interest or preference not to participate from barriers to desired participation where relevant. Contrast multiple selection with identifying a principal barrier when prioritising the most important obstacle is the analytical purpose. Fifth, construct coverage and questionnaire burden: explain how Item 6 combines accessibility and quality, potentially requires judgements respondents cannot make and produces ambiguous satisfaction responses. Consider whether the item contributes sufficiently to the stated objective. Discuss removal where the barriers question already supplies relevant accessibility evidence, or separate appropriately targeted questions with suitable eligibility or non-applicable options where accessibility or quality is an important additional construct. Across these concerns, explicitly connect design choices to respondent interpretation, response behaviour, measurement precision, construct coverage, analytical usefulness and respondent burden. Distinguish consequential methodological problems from minor wording preferences. Present illustrative revisions and alternatives as components of explanatory feedback, not as a separate candidate-comparison exercise or new evidence provider. Explain their conditional suitability without implying empirical validation or a uniquely correct questionnaire. Do not provide a complete model questionnaire. Keep the feedback concise enough for purposeful engagement and selective refinement within the commissioned workload. Do not require a response to every feedback section.",
+          "instructional_archetype": "evaluation_judgement",
+          "archetype_plan": {
+            "question": "How well do the original questionnaire design decisions serve the research objective, and under what conditions would alternative decisions produce more useful evidence?",
+            "criteria": [
+              "Alignment between the constructs measured and the intended research objective",
+              "Interpretability and comparability of the resulting responses",
+              "Suitability of questions and response options for the intended respondent population",
+              "Coherence and proportionality of the questionnaire as a whole"
+            ],
+            "evidence": [
+              "The unchanged research context and six-item questionnaire extract supplied separately in A2-M1"
+            ],
+            "tradeoffs": [
+              "Measurement precision versus recall demands and response effort",
+              "Attendance frequency versus breadth of participation as distinct measurement intentions",
+              "Recent participation measurement versus longer-term participation coverage",
+              "Construct coverage versus questionnaire length and respondent burden",
+              "Multiple-barrier identification versus prioritisation of a principal barrier",
+              "Additional construct measurement versus relevance to the bounded research objective"
+            ],
+            "judgement_focus": "Model defensible, context-sensitive questionnaire evaluation and explain why particular improvements or alternatives may strengthen the intended evidence. Support critical reconsideration of the learner's own decisions without imposing a single model solution."
+          }
+        },
+        {
+          "material_id": "A2-M3",
+          "material_type": "template",
+          "purpose": "Provide an operational continuation of the existing E3 constructed-text workspace so that feedback-informed improvement changes the original learner-authored review rather than creating a separate response.",
+          "specification": "Commission the same single editable extended-text field labelled 'Questionnaire review and proposed improvements' used in A1-M3. Bind this surface to the existing E3 contribution, not a new response or duplicate artefact. The learner must be able to inspect and edit the current complete review directly. Prompt selective substantive improvement after engagement with A2-M2, allowing reconsideration of priorities, diagnoses, methodological explanations, relationships between items, proposed revisions, alternative design decisions and limitations. Preserve the learner's original wording wherever they choose not to revise it. Do not automatically insert feedback, replace text with illustrative answers, generate a revised response on the learner's behalf or require fresh transcription. Do not commission separate initial-response, change-description, revised-response or reflective-writing fields. The resulting current content is the single coherent learner-authored contribution E3 for the journey-level Learning Journal as comm_3.E3. Do not assume that a separate pre-feedback version exists. Downstream implementation must preserve shared response identity across A1-M3 and A2-M3; this commissioning specification does not itself establish runtime persistence.",
+          "response_fields": [
+            {
+              "label": "Questionnaire review and proposed improvements",
+              "input_modality": "text"
+            }
+          ],
+          "response_fulfilment": {
+            "kind": "learner_text_production",
+            "response_kind": "text_compose",
+            "artefact_elicitation_id": "E3",
+            "allows_partial_exemplar": false
+          }
+        },
+        {
+          "material_id": "A2-M4",
+          "material_type": "checklist",
+          "purpose": "Support brief final verification of the quality and coherence of the refined review without introducing additional written production or requiring conformity to the illustrative feedback.",
+          "specification": "Commission one compact diagnostic self-review checklist containing three distinct quality dimensions. The first concerns consequential prioritisation and alignment with the research objective and intended respondents. The second concerns the plausibility and specificity of methodological explanations, including relevant relationships between items and their collective effects. The third concerns the coherence, suitability and justification of proposed design decisions, including consideration of a meaningful alternative or trade-off. Focus verification on the current revised review. Do not enumerate item-specific expected diagnoses, require every possible weakness to be addressed or assess agreement with the illustrative feedback. Support direct editing of the existing review if a consequential gap remains. Do not require additional written answers, scores, peer feedback or a separate reflection.",
+          "diagnostic_review": {
+            "covers_response_material_ids": [
+              "A2-M3"
+            ]
+          }
+        }
+      ],
+      "evidence_decision": {
+        "required": true,
+        "reason": "Substantive refinement requires the learner to reconsider and substantiate selected questionnaire design judgements against the original research objective, question wording and response formats. A2-M1 supplies those directly inspectable particulars. A2-M2 is explanatory feedback that supports interpretation and reconsideration of the original evidence; it is not an additional evidence provider or independent task operand. The learner's existing review is the learner-owned artefact being refined, not a newly commissioned evidence material.",
+        "provider_material_ids": [
+          "A2-M1"
+        ]
+      }
+    }
+  ],
+  "generation_notes": {
+    "learner_evidence_attachments": {
+      "present": true,
+      "role": "both",
+      "inventoried_units": [
+        "Design Episode Plan commissioning attachment: RESEARCH CONTEXT AND QUESTIONNAIRE EVIDENCE, containing the fictional research scenario, research objective, respondent population, activity definition and six exact questionnaire items with response options.",
+        "Design Episode Plan commissioning attachment: INDEPENDENT PRACTICE, EXPLANATORY FEEDBACK, SUBSTANTIVE IMPROVEMENT, WORKLOAD AND SCAFFOLDING, and SUCCESS EXPECTATIONS, supplying the authoritative pedagogical and methodological commissioning constraints.",
+        "Design Episode Plan commissioning attachment: LEARNER EVIDENCE AND JOURNAL CONTRACT, supplying the E3 constructed-text obligation and shared-response continuity requirement.",
+        "Design Learning Activities commissioning attachment: learner production, material commissioning, evidence-provider role separation and partial-output contracts. This is supporting workflow guidance, not learner evidence."
+      ]
+    }
+  }
+}

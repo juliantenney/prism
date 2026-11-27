@@ -1,0 +1,106 @@
+{
+  "_fixture_note": "Live Sprint 104 M6 Practice C1 (5 minutes) Learning Sequence capture, as supplied by the user. Verbatim except this note.",
+  "artifact_type": "page",
+  "schema_version": "2.0.0",
+  "assembly_state": {
+    "current_stage": "learning_sequence",
+    "enriched_by": [
+      "learning_sequence"
+    ]
+  },
+  "learning_sequence": {
+    "total_duration_minutes": 5,
+    "ordered_activity_ids": [
+      "A1"
+    ],
+    "timeline": [
+      {
+        "activity_id": "A1",
+        "duration_minutes": 5,
+        "start_minute": 0,
+        "end_minute": 5
+      }
+    ],
+    "learner_study_flow": [
+      {
+        "step": 1,
+        "activity_id": "A1",
+        "instructional_function": "framing",
+        "material_ids": [
+          "A1-M1"
+        ],
+        "learner_action": "Read the research objective, definition of academic support, draft questionnaire item and response options.",
+        "duration_minutes": 1
+      },
+      {
+        "step": 2,
+        "activity_id": "A1",
+        "instructional_function": "evaluative_judgement",
+        "material_ids": [
+          "A1-M1",
+          "A1-M2"
+        ],
+        "learner_action": "Independently identify a consequential weakness, explain its possible methodological consequences and construct a justified revision. Record your evaluation and revised item in the response field before reviewing the feedback.",
+        "duration_minutes": 2
+      },
+      {
+        "step": 3,
+        "activity_id": "A1",
+        "instructional_function": "verification",
+        "material_ids": [
+          "A1-M3"
+        ],
+        "learner_action": "Review the explanatory feedback after attempting your own evaluation and revision. Consider how the explanation and illustrative revision relate to your reasoning.",
+        "duration_minutes": 1
+      },
+      {
+        "step": 4,
+        "activity_id": "A1",
+        "instructional_function": "verification",
+        "material_ids": [
+          "A1-M2",
+          "A1-M3"
+        ],
+        "learner_action": "Return to your existing response and strengthen one aspect of your evaluation, explanation, revised item or justification. If your original response is already defensible, make your reasoning more precise or acknowledge a relevant limitation.",
+        "duration_minutes": 1
+      }
+    ],
+    "navigation": {
+      "entry_activity_id": "A1",
+      "completion_activity_id": "A1",
+      "material_disclosure": [
+        {
+          "material_id": "A1-M1",
+          "available_from_step": 1
+        },
+        {
+          "material_id": "A1-M2",
+          "available_from_step": 2,
+          "remain_editable_through_step": 4
+        },
+        {
+          "material_id": "A1-M3",
+          "available_from_step": 3,
+          "disclosure_condition": "Reveal only after the learner has attempted the independent evaluation and proposed revision in A1-M2."
+        }
+      ],
+      "response_continuity": {
+        "material_id": "A1-M2",
+        "initial_response_step": 2,
+        "refinement_step": 4,
+        "reuse_existing_response": true,
+        "require_separate_revision_response": false,
+        "require_retained_initial_version": false,
+        "artefact_elicitation_id": "E1",
+        "artefact_id": "comm_1.E1"
+      },
+      "completion_condition": "The learner has attempted the independent evaluation and justified revision, reviewed the explanatory feedback and reconsidered and strengthened the existing response. No additional activity, reflection field, transfer task or journal transcription is required."
+    },
+    "sequence_notes": {
+      "episode_plan_fidelity": "Preserve the single authored activity and the ordered framing, evaluative_judgement and verification beats. Steps 3 and 4 realise two complementary operations within the existing verification beat rather than introducing a new instructional beat or activity.",
+      "discovery_sequence_protection": "The research scenario and independent response surface precede the explanatory feedback. The feedback must not be disclosed before the independent attempt.",
+      "workload_fidelity": "The four study-flow steps allocate one minute to framing, two minutes to independent evaluation and construction, one minute to explanatory feedback and one minute to response refinement. The total remains five minutes.",
+      "implementation_limitations": "The timing allocations are planning estimates. Material disclosure, continued editability of the existing response and Learning Journal persistence are downstream runtime requirements rather than verified capabilities. The sequence-owned navigation field structure has not been checked against an external schema validator."
+    }
+  }
+}

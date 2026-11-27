@@ -1,0 +1,42 @@
+{
+  "_fixture_note": "Live Sprint 104 M6 Practice Design Page output, C3 (30 minutes), as supplied by the user. Verbatim except this note. This stage output carries no activities, learning_sequence or required_materials; upstream DLA, GAM and LS captures are needed for workload assessment.",
+  "artifact_type": "page",
+  "schema_version": "2.0.0",
+  "product_id": "practice",
+  "page_kind": "practice",
+  "title": "Questionnaire design: from individual items to coherent evidence",
+  "page_synthesis": {},
+  "visual_affordance_schema_version": "38.4",
+  "activities_visual_review": [
+    {
+      "activity_id": "A1",
+      "activity_visual_value": {
+        "decision": "none",
+        "rationale": "The disciplinary task requires close inspection of exact question wording, response options, research objectives and relationships between items. The original questionnaire and accompanying evaluation criteria provide sufficient directly inspectable evidence and reasoning support. An additional conceptual diagram would either duplicate the existing criteria or risk disclosing relationships and methodological weaknesses that learners must identify independently. Omitting additional instructional imagery preserves the independent evaluative demand and the time available for constructing the integrated review."
+      }
+    },
+    {
+      "activity_id": "A2",
+      "activity_visual_value": {
+        "decision": "none",
+        "rationale": "The explanatory feedback already makes relationships between questionnaire design decisions, methodological consequences and alternative approaches explicit through contextualised reasoning. The original questionnaire, editable review and diagnostic checklist provide the necessary apparatus for selective substantive refinement. A further visual synthesis would duplicate the feedback, potentially privilege one defensible redesign over others and consume time intended for improving the learner's own methodological reasoning."
+      }
+    }
+  ],
+  "visual_affordances": [],
+  "editorial_opening_image": {
+    "decision": "generate",
+    "subject": "A researcher reviewing a draft university questionnaire",
+    "context": "A university research setting in which a researcher is examining a draft questionnaire before distribution. Establish the authentic disciplinary context of questionnaire development and methodological review. The scene should suggest careful consideration of a research instrument as a whole without identifying particular questionnaire weaknesses, measurement relationships, preferred design decisions or solutions. The image is decorative rather than instructional and must not introduce additional evidence or imply that the fictional questionnaire has been administered or validated.",
+    "caption_intent": "Provide a quiet editorial introduction to the work of reviewing and refining a research questionnaire. The image must be entirely text-free, with no visible lettering, numbers, annotations, labels, titles, slogans, banners, overlays or embedded caption.",
+    "alt_text": "",
+    "detailed_description": "A researcher sits at a university workspace examining several draft questionnaire sheets, with a notebook and pen nearby. The sheets suggest the general appearance of a questionnaire through abstract, non-readable marks and unselected response circles. No particular question, response option, correction, highlighted weakness or completed answer is visible. The scene establishes the context of thoughtful questionnaire review without communicating an instructional conclusion or revealing any part of the subsequent explanatory feedback."
+  },
+  "assembly_state": {
+    "current_stage": "design_page",
+    "enriched_by": [
+      "design_page"
+    ],
+    "calls_model": true
+  }
+}

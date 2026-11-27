@@ -1,0 +1,139 @@
+{
+  "_fixture_note": "Live Sprint 104 M6 Practice C1 (5 minutes) Design Learning Activities capture, as supplied by the user. Verbatim except this note.",
+  "artifact_type": "page",
+  "schema_version": "2.0.0",
+  "assembly_state": {
+    "enriched_by": [
+      "dla"
+    ],
+    "current_stage": "dla"
+  },
+  "activities": [
+    {
+      "activity_id": "A1",
+      "title": "Evaluate and improve a questionnaire item",
+      "activity_preamble": "A questionnaire item needs to produce responses that help a researcher address their research objective. Examine the draft item below and consider whether it will provide the evidence the researcher needs.",
+      "learner_task": "Read the research objective and draft questionnaire item. Complete your own evaluation before reviewing the feedback.\n\n1. Identify one consequential weakness in the questionnaire item in relation to the research objective.\n2. Explain how this weakness could affect respondents' answers or the usefulness of the resulting data.\n3. Propose an improved questionnaire item and briefly justify your revision. Retain or change the response options as appropriate.\n4. Review the explanatory feedback, then return to your response and improve one aspect of your evaluation, explanation, revised item or justification. If your original response is already defensible, make your reasoning more precise or acknowledge a relevant limitation.",
+      "expected_output": "Approximately three or four short sentences together with a revised questionnaire item. Your response should identify a consequential weakness in relation to the research objective, explain a plausible methodological consequence and justify a revision that addresses the weakness while preserving what the researcher intends to investigate. After reviewing the feedback, strengthen one aspect of your existing response.",
+      "task_material_decision": {
+        "separate_inputs_required": true,
+        "task_input_material_ids": [
+          "A1-M1"
+        ]
+      },
+      "required_materials": [
+        {
+          "material_id": "A1-M1",
+          "material_type": "scenario",
+          "purpose": "Provide the research objective, intended respondent population, definition of academic support and complete draft questionnaire item as directly inspectable evidence for independent evaluation and revision.",
+          "specification": "Present one concise, explicitly constructed research example. The researcher wishes to investigate currently enrolled university students' satisfaction with the availability of academic support. Define academic support as opportunities to obtain help with course-related learning from university teaching and support staff. Reproduce the following draft questionnaire item verbatim: 'How satisfied are you with the availability and quality of academic support at your university?' Present the five response options in their original order: Very dissatisfied; Dissatisfied; Neither satisfied nor dissatisfied; Satisfied; Very satisfied. State that the item has been constructed for this learning experience and is not taken from an actual research instrument. Preserve the distinction between the research objective and the draft item. Present the complete item and response options in a readily inspectable form. Do not annotate problematic wording, identify a design weakness, explain methodological consequences, suggest a revision or introduce additional questionnaire items. Do not invent survey responses, institutional circumstances or empirical findings.",
+          "evidence_requirement": {
+            "kind": "learner_evidence",
+            "purpose": "Supply the actual questionnaire wording, response format and stated research objective as grounds for identifying a consequential design weakness and justifying an improvement.",
+            "learner_action": "Inspect the research objective, intended respondents, definition of academic support, complete question wording and response options. Identify a consequential weakness, explain its plausible effect on respondents' answers or data interpretation, and construct a justified revision using the supplied particulars.",
+            "observable_features": [
+              "The research objective concerning currently enrolled students' satisfaction with the availability of academic support.",
+              "The definition of academic support as opportunities to obtain help with course-related learning from university teaching and support staff.",
+              "The complete wording of the draft questionnaire item.",
+              "The five ordered satisfaction response options."
+            ],
+            "provenance": "system_generated_simulation",
+            "evidence_layout": "separate_provider",
+            "minimum_suitable_form": "One short research context containing the intended respondent population, research objective and definition of academic support, followed by the verbatim questionnaire item and all five response options.",
+            "disclosure_constraint": "Keep the evidence unannotated and available before the independent attempt. Do not disclose any diagnosis, preferred interpretation or illustrative revision until the learner has attempted the evaluation.",
+            "processing_notes": "The exact constructed questionnaire item and contextual particulars are supplied by the authoritative commission specification. Preserve them without substitution. Although supplied in the conversation, this is explicitly constructed instructional evidence rather than an extract from an authentic research instrument or an empirical dataset."
+          }
+        },
+        {
+          "material_id": "A1-M2",
+          "material_type": "template",
+          "purpose": "Provide one editable learner-authored response surface for the independent evaluation, methodological explanation, revised questionnaire item and justification, with subsequent improvement of that same response.",
+          "specification": "Commission one initially blank, multiline text response field labelled 'Your evaluation and revised item'. Support a coherent response of approximately three or four short sentences together with the revised questionnaire item. Provide procedural guidance corresponding to the three commissioned reasoning operations: identify one consequential weakness in relation to the research objective; explain its possible effect on respondents' answers or the usefulness of the resulting data; propose and briefly justify an improved questionnaire item. Permit the learner to retain the original response options or specify changed options where appropriate. Do not provide diagnostic choices, sentence completions that reveal the weakness, pre-populated reasoning, illustrative answers or substantive methodological hints. The learner must generate the evaluation, explanation, revision and justification independently. Preserve access to the same editable response field after explanatory feedback is revealed. The learner must be able to make a small, meaningful improvement directly to their existing response. Do not commission separate initial-response, revised-response, reflection or change-description fields. Bind the authentic learner-authored contribution to elicitation E1 for the journey-level Learning Journal. Do not summarise, automatically correct or replace the learner's wording. Do not require additional journal writing or transcription, and do not assume that a separate pre-feedback version is retained.",
+          "response_fields": [
+            {
+              "label": "Your evaluation and revised item",
+              "input_modality": "text"
+            }
+          ],
+          "response_fulfilment": {
+            "kind": "learner_text_production",
+            "response_kind": "text_compose",
+            "binds_production_steps": [
+              1,
+              2,
+              3,
+              4
+            ],
+            "allows_partial_exemplar": false,
+            "artefact_elicitation_id": "E1"
+          }
+        },
+        {
+          "material_id": "A1-M3",
+          "material_type": "sample_output",
+          "purpose": "Provide post-attempt explanatory feedback connecting a consequential questionnaire design weakness to respondent experience, data interpretability and a justified improvement, while recognising alternative defensible evaluations.",
+          "specification": "Reveal after the learner has attempted their independent evaluation and revision in A1-M2. Commission concise explanatory feedback grounded in the actual questionnaire item in A1-M1. Explain that the item combines availability and quality, which respondents may evaluate differently. Illustrate the consequence through a student who is satisfied with the quality of academic support when it is available but dissatisfied with how difficult it is to access. Explain why a single satisfaction response cannot distinguish these experiences and why this makes the resulting evidence difficult to interpret in relation to the stated research objective. Present the following defensible illustrative revision verbatim: 'How satisfied are you with the availability of academic support at your university?' Retain the original five-point satisfaction scale. Explain that narrowing the question to availability improves alignment with the intended construct and makes the response more interpretable. Briefly acknowledge that separating availability and quality into two questions would also be defensible if the research objective included both constructs, although this would increase questionnaire length. Recognise that learners may identify another consequential weakness, including whether students without sufficient experience of academic support can answer meaningfully. Explain that the suitability of a non-applicable response option or eligibility instruction depends on the intended respondent population and the meaning of availability within the research design. Do not present the illustrative revision as uniquely correct or empirically validated. Conclude with a concise invitation to return to A1-M2 and strengthen one aspect of the existing response. Encourage greater precision or acknowledgement of a relevant limitation where the original response is already defensible. Keep the feedback proportionate to the five-minute complete practice cycle. Do not add a separate checklist, extended reflection, additional practice item or second response surface.",
+          "instructional_archetype": "mechanism_explanation",
+          "archetype_plan": {
+            "start": "A single satisfaction question asks respondents to evaluate both the availability and quality of academic support.",
+            "outcome": "The resulting response may be difficult to interpret as evidence of satisfaction with availability, whereas a more focused item improves alignment with the stated research objective.",
+            "required_links": [
+              "Respondents may experience the availability and quality of academic support differently.",
+              "A respondent with contrasting evaluations of availability and quality must nevertheless select one satisfaction response.",
+              "The selected response does not reveal which aspect of academic support primarily informed the respondent's judgement.",
+              "The researcher therefore cannot confidently interpret that response as an evaluation of availability alone.",
+              "Restricting the item to availability removes the requirement to combine these two evaluations and makes the response more directly relevant to the intended construct."
+            ]
+          }
+        }
+      ],
+      "evidence_decision": {
+        "required": true,
+        "reason": "The learner must inspect the actual questionnaire wording and response options in relation to the stated research objective and intended respondents. These particulars provide the grounds for identifying a consequential weakness, explaining its methodological effects and justifying a revision. General knowledge of questionnaire design without inspection of the supplied item would not fulfil the mapped learning outcomes.",
+        "provider_material_ids": [
+          "A1-M1"
+        ]
+      }
+    }
+  ],
+  "generation_notes": {
+    "design_decisions": [
+      "Preserve the inherited single-activity evaluate episode and its framing, evaluative_judgement and verification beat progression without reconstructing or changing the Episode Plan.",
+      "Fulfil framing through the concise activity preamble and the separate inspectable questionnaire evidence in A1-M1.",
+      "Fulfil evaluative_judgement through the independent learner-authored evaluation, methodological explanation and justified revision in A1-M2.",
+      "Fulfil verification through the post-attempt explanatory feedback in A1-M3 and subsequent improvement of the existing response in A1-M2.",
+      "Use one open-text response surface rather than a selection cluster because independently identifying the weakness, articulating its methodological consequences and constructing revised wording are themselves load-bearing learning outcomes. Diagnostic selection options would compromise the commissioned independent attempt.",
+      "Commission explanatory feedback as sample_output rather than worked_example because it addresses the learner's own task operand after the independent attempt. A distinct pre-attempt modelling example is neither required nor appropriate.",
+      "Do not commission a separate diagnostic checklist because the explanatory feedback and focused improvement instruction already provide a proportionate opportunity for criterion-informed self-evaluation.",
+      "Treat the pasted workflow specifications as authoring instructions and supporting commission context, not as authentic research evidence. The commissioned questionnaire item is explicitly constructed instructional evidence and is therefore classified as system_generated_simulation.",
+      "Retain E1 as the sole learner artefact elicitation. The same authored response supports all four mapped outcomes and remains the object of feedback-informed improvement."
+    ],
+    "workload_planning": {
+      "allocated_duration_minutes": 5,
+      "context_reading_and_inspection_minutes": 1,
+      "independent_reasoning_and_response_minutes": 2,
+      "explanatory_feedback_engagement_minutes": 1,
+      "response_refinement_minutes": 1,
+      "workload_rationale": "One short research scenario, one questionnaire item, one concise constructed response and one explanatory feedback material support the complete practice cycle without unnecessary teaching, navigation or duplicated writing. Timing allocations are internal planning metadata and must not appear in learner-facing prose."
+    },
+    "validation": {
+      "inherited_episode_plan": "preserved",
+      "mapped_outcome_coverage": "complete",
+      "task_input_provider_closure": "satisfied",
+      "evidence_requirement_closure": "satisfied",
+      "response_fulfilment_closure": "satisfied",
+      "artefact_elicitation_binding": "E1",
+      "discovery_sequence_protection": "specified",
+      "model_practice_independence": "not_applicable",
+      "diagnostic_review": "not_commissioned",
+      "material_body_generation": "deferred_to_gam",
+      "known_issues": [],
+      "validation_limitations": [
+        "The five-minute workload is a design estimate and has not been empirically tested with learners.",
+        "Post-attempt feedback disclosure and continued editability of the same learner response are binding downstream commissioning requirements; their runtime implementation has not been verified at this stage.",
+        "The shared artefact binding identifies E1, but Learning Journal persistence and retrieval have not been tested.",
+        "The partial artefact has been checked against the supplied DLA field and closure requirements without executing an external schema validator or downstream runner."
+      ]
+    }
+  }
+}

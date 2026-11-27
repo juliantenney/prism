@@ -171,7 +171,9 @@ test("1. Evaluate (framing -> evaluative_judgement -> verification) places A1-M1
   const html = rendered.html;
 
   const evidencePos = html.indexOf('data-material-id="A1-M1"');
-  const templatePos = html.indexOf('data-material-id="A1-M2"');
+  // The fully consumed template's title-only shell is suppressed (F12); its response
+  // workspace (bound to elicitation E1) is the rendered A1-M2 surface.
+  const templatePos = html.indexOf('data-response-part-id="E1"');
   const checkHeadingPos = html.indexOf('id="learner-check-a1-heading"');
   const feedbackPos = html.indexOf('data-material-id="A1-M3"');
 

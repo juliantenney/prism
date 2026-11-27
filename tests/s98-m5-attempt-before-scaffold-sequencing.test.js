@@ -421,7 +421,9 @@ test("explanation-first activity keeps preparatory Learn when no attempt-before 
   const doMoment = momentHtml(html, "A5", "do");
   assert.ok(learn.indexOf('data-material-id="A5-M1"') >= 0);
   assert.equal(revealAroundMaterial(html, "A5-M1"), null);
-  assert.ok(doMoment.indexOf('data-material-id="A5-M2"') >= 0);
+  // A5-M2 is a fully consumed template: its title-only shell is suppressed (F12), so the
+  // material is evidenced in Do by its response workspace.
+  assert.match(doMoment, /data-response-part-id="[^"]*a5-m2[^"]*"/i);
   assert.ok(html.indexOf('data-composition-moment="learn"') < html.indexOf('data-composition-moment="do"'));
 });
 

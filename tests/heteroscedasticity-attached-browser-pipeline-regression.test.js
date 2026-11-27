@@ -204,7 +204,14 @@ test("attached heteroscedasticity fixture: browser preview pipeline keeps unique
   assert.doesNotMatch(html, /Material matches more than one beat rule: A6-M3/i);
 
   assert.equal(countOccurrences(html, 'data-material-id="A4-M2"'), 1, "A4-M2 must render exactly once");
-  assert.equal(countOccurrences(html, 'data-material-id="A6-M3"'), 1, "A6-M3 must render exactly once");
+  // A6-M3 is a fully consumed template: its title-only shell is suppressed (F12), so it
+  // renders exactly once through its response-section workspaces.
+  const a6m3Parts = Array.from(
+    html.matchAll(/data-response-part-id="(A6-template-section-a6-m3-section-[^"]+)"/g)
+  ).map((m) => m[1]);
+  assert.ok(a6m3Parts.length > 0, "A6-M3 must render through its response workspaces");
+  assert.equal(new Set(a6m3Parts).size, a6m3Parts.length, "A6-M3 must render exactly once");
+  assert.equal(countOccurrences(html, 'data-material-id="A6-M3"'), 0, "no orphaned A6-M3 title shell");
   ["A1", "A2", "A3", "A4", "A5", "A6"].forEach((id) => {
     assert.match(html, new RegExp(`data-activity-id="${id}"`, "i"));
   });

@@ -300,3 +300,135 @@ test("5. Learning Journey editorial opening image: discovery, fulfilment, unifie
   assert.match(legacyPrompt, /favour decision "generate" by default/i);
   assert.match(legacyPrompt, /conflate editorial opening imagery with instructional graphical representations/i);
 });
+
+test("6. Unified sidebar footer hosts collapsed-by-default 'Saving your work' disclosure and removes repeated saving signposts from component orientation", () => {
+  const page = makeJourneyPage();
+  const built = unifiedShell.buildLearningJourneyUnifiedShellHtml(page, [
+    {
+      commissionId: "comm_1",
+      title: "C1 Foundations",
+      html: '<main class="util-learner-renderer-vnext"><p>Content</p></main>',
+      pageKey: "page-c1",
+      productId: "expository"
+    }
+  ]);
+  assert.equal(built.ok, true);
+
+  // Pinned footer sits inside sidebar panel immediately beneath scrollable TOC wrap
+  const tocWrapIdx = built.html.indexOf('class="lj-shell__toc-wrap"');
+  const footerIdx = built.html.indexOf('class="lj-shell__sidebar-footer"');
+  const sidebarCloseIdx = built.html.indexOf("</aside>", footerIdx);
+  assert.ok(tocWrapIdx > -1 && footerIdx > tocWrapIdx && sidebarCloseIdx > footerIdx);
+
+  // Collapsed by default (no open attribute), small decorative info icon, keyboard-accessible <details>/<summary>
+  assert.match(built.html, /<details class="lj-shell__saving-info" data-lj-saving-info="true">/);
+  assert.doesNotMatch(built.html, /<details class="lj-shell__saving-info"[^>]*\bopen\b/);
+  assert.match(built.html, /class="lj-shell__saving-info-summary"/);
+  assert.match(built.html, /class="lj-shell__saving-info-icon"[^>]*aria-hidden="true"/);
+  assert.match(built.html, /<span>Saving your work<\/span>/);
+  assert.match(
+    built.html,
+    /Your responses are saved in this browser on this device\. Saved work can appear in your Learning Journal\. Keep your own copy if you need to access your work elsewhere\./
+  );
+
+  // CSS pins footer beneath scrollable TOC and keeps keyboard focus visible
+  assert.match(built.html, /\.lj-shell__sidebar-footer\{flex:0 0 auto;/);
+  assert.match(built.html, /\.lj-shell__saving-info-summary:focus-visible\{outline:2px solid #2563eb/);
+
+  // Non-journal journey omits Learning Journal sentence
+  const noJournalPage = makeJourneyPage();
+  noJournalPage.learning_journey = Object.assign({}, noJournalPage.learning_journey, { journal: { enabled: false, entries: [] } });
+  const builtNoJournal = unifiedShell.buildLearningJourneyUnifiedShellHtml(noJournalPage, [
+    {
+      commissionId: "comm_1",
+      title: "C1 Foundations",
+      html: '<main class="util-learner-renderer-vnext"><p>Content</p></main>',
+      pageKey: "page-c1",
+      productId: "expository"
+    }
+  ]);
+  assert.equal(builtNoJournal.ok, true);
+  assert.match(
+    builtNoJournal.html,
+    /Your responses are saved in this browser on this device\. Keep your own copy if you need to access your work elsewhere\./
+  );
+  assert.doesNotMatch(builtNoJournal.html, /Saved work can appear in your Learning Journal\./);
+
+  // Unified shell runtime suppresses repeated producer saving signposts in component orientation
+  assert.match(built.html, /injectArtefactReferences\([^)]*includeProducerSignpost:false/);
+
+  // Direct verification of injectArtefactReferences with includeProducerSignpost:false:
+  // producer-only component injects 0 orientation signposts; consumer+producer retains earlier-response panel without producer saving signpost
+  function makeHostMockRoot() {
+    const children = [];
+    const doc = {
+      createElement(tag) {
+        const el = {
+          tagName: String(tag).toUpperCase(),
+          attrs: {},
+          className: "",
+          innerHTML: "",
+          setAttribute(k, v) { this.attrs[k] = String(v); },
+          getAttribute(k) { return this.attrs[k] || null; }
+        };
+        return el;
+      }
+    };
+    return {
+      ownerDocument: doc,
+      firstChild: null,
+      children,
+      querySelector() { return null; },
+      querySelectorAll() { return []; },
+      insertBefore(node) {
+        children.unshift(node);
+        this.firstChild = children[0];
+        return node;
+      },
+      appendChild(node) {
+        children.push(node);
+        this.firstChild = children[0];
+        return node;
+      }
+    };
+  }
+
+  const contract = {
+    produces: [
+      { artefactId: "c1.E1", commissionId: "c1", workspaceId: "w1", label: "Initial claim" },
+      { artefactId: "c2.E1", commissionId: "c2", workspaceId: "w2", label: "Revised claim" }
+    ],
+    references: [{ artefactId: "c1.E1", commissionId: "c2", usage: "reference", label: "Your earlier response" }]
+  };
+  const resources = [
+    { commissionId: "c1", title: "C1 Initial", pageKey: "page-c1" },
+    { commissionId: "c2", title: "C2 Revise", pageKey: "page-c2" }
+  ];
+
+  const c1Root = makeHostMockRoot();
+  const c1Res = artefactContract.injectArtefactReferences(c1Root, {
+    contract,
+    commissionId: "c1",
+    resources,
+    includeProducerSignpost: false
+  });
+  assert.equal(c1Res.ok, true);
+  assert.equal(c1Res.injected, 0);
+  assert.equal(c1Root.children.length, 0);
+
+  const c2Root = makeHostMockRoot();
+  const c2Res = artefactContract.injectArtefactReferences(c2Root, {
+    contract,
+    commissionId: "c2",
+    resources,
+    includeProducerSignpost: false,
+    storage: { getItem() { return "Saved draft from C1"; } }
+  });
+  assert.equal(c2Res.ok, true);
+  assert.equal(c2Res.injected, 1);
+  assert.equal(c2Res.signposted, false);
+  assert.equal(c2Root.children.length, 1);
+  assert.match(c2Root.children[0].innerHTML, /class="lj-artefact-ref/);
+  assert.doesNotMatch(c2Root.children[0].innerHTML, /data-lj-artefact-signpost="producer"/);
+  assert.doesNotMatch(c2Root.children[0].innerHTML, /About saving and backup/);
+});

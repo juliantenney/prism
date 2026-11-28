@@ -242,3 +242,26 @@ The live 5/15/30-minute Practice experiment (M6) demonstrated pedagogical propor
 3. 2026-11-26's estimator, adapter and advisory-wiring work, its tests and diagnostics are preserved **only** on branch `recovery/s104-m6-workload-estimator`, **not merged to `master`**. `master` keeps the previously committed estimator and adapter implementations unchanged (retained for possible research; not deleted or refactored).
 4. A single internal switch in `app.js` (`workloadAssessmentEnabled`, default `false`) deactivates deterministic workload assessment across all four product families: the four `append*WorkloadFeasibilityWarnings` entry points and `attachLearningJourneyWorkloadWarningsToGate` return before any adapter/estimator runs; `notifyWorkloadAdvisoryToast` is inert; previously stored advisories are not rendered. It is not user-facing configuration. Tests of the dormant machinery enable it via `setWorkloadAssessmentEnabledForTest`.
 5. Duration contracts, allocation transport, locking, arithmetic reconciliation, indicative timing presentation, authoring guidance, capture, assembly and publication are unchanged. No replacement mechanism, AI call, workflow stage or setting is introduced.
+
+## S104-D09 — Sprint 104 Closure with Qualifications
+
+**Date:** 2026-11-27  
+**Status:** Accepted — **Sprint 104 CLOSED — COMPLETE WITH QUALIFICATIONS**
+
+**Context.** Following the S104-D08 recovery, the diagnostic test results Learning Journey (nine components) was produced and published, and four defects found during its live acceptance were resolved and live-accepted, each by republication of existing content **without component regeneration**: the Stage 4 shared-source duplication false positive (`093d8c5`), the selection cluster model (`694fe08`), F12 orphaned template headings (`fa45fde`) and F01 literal Markdown in the Assessment Pack (`dd8dd86`).
+
+**Decision.** Sprint 104 is closed on the following basis.
+
+1. **Completed objectives.**
+   - Live acceptance of the 5-, 15- and 30-minute Practice proportionality probes (pedagogical proportionality only).
+   - Successful production and publication of the nine-component diagnostic test results Learning Journey.
+   - Resolution and live acceptance of F01, F11, F12 and F13 (labels as designated by the operator during that acceptance; the repository defines none of F11/F13 beyond that designation and no mapping is inferred here).
+   - Successful republication of existing content without component regeneration; legacy captures remain compatible.
+   - Retention of the exact internal duration contracts, indicative learner timings and the shared authoring proportionality principles.
+   - The Economics Learning Journey accepted as an end-to-end exemplar.
+2. **Explicitly deferred; not completed.**
+   - Deterministic workload estimation remains **disabled** (S104-D08). It has **not been calibrated or validated**, and this closure makes no claim that the estimator, its thresholds or its advisories are accurate. Measured learner workload remains unverified.
+   - The experimental estimator work is preserved solely on `recovery/s104-m6-workload-estimator` and is not merged. **Estimator development remains deferred** and requires a fresh architectural decision before any resumption.
+   - [PB-FA-025](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-025--duration-fidelity-learner-workload-budgeting) therefore remains open.
+3. **Outstanding items** are recorded in the product backlog for future consideration, not allocated to any sprint: pre-beta consolidation of the automated regression baseline ([PB-S-008](../../../backlog/PRODUCT-BACKLOG.md#pb-s-008--full-suite-pre-existing-failures-technical-debt)); mandatory selection declaration enforcement for newly authored captures ([PB-FA-038](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-038--mandatory-selection-declaration-enforcement-for-newly-authored-captures)); the shared Markdown display-math edge case ([PB-FA-039](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-039--shared-markdown-display-math-edge-case)); minor premature review instructions ([PB-FA-040](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-040--minor-premature-review-instructions)); improved QA reconciliation of declared, authored and realised learner responses ([PB-FA-041](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-041--qa-reconciliation-of-declared-authored-and-realised-learner-responses)); and Learning Journey commissioning granularity with proportionate component consolidation ([PB-FA-042](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-042--learning-journey-commissioning-granularity-and-proportionate-component-consolidation)).
+4. The closure introduces no code change, investigation or follow-on sprint. The recovery branch and the untracked Sprint 90 ZIP are untouched.

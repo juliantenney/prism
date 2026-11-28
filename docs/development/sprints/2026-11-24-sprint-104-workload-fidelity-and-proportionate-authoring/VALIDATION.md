@@ -1,6 +1,6 @@
 # Sprint 104 — Validation ledger
 
-**Status:** **OPEN — ECONOMICS CONSOLIDATED LIVE ACCEPTANCE PASSED; OPEN FOR M6 PROPORTIONALITY ACCEPTANCE & FINAL CLOSURE CHECKS** — Milestones 1–5 committed (`c461770` → `f1f1269`), `S104-D06` (`eebb162`), F01/F02 (`8c0b98a`), `S104-D07` (`86d40ad`); Sprint 105 **CLOSED — COMPLETE** (`76f44ef`)  
+**Status:** **CLOSED — COMPLETE WITH QUALIFICATIONS** (`S104-D09`, 2026-11-27) — see [S104-D09](decisions.md#s104-d09--sprint-104-closure-with-qualifications). Workload estimation disabled (S104-D08) and **not calibrated or validated**; estimator development deferred. Prior status text superseded.  
 **Resumption baseline:** `76f44ef` (Sprint 104 M1–M5 `c461770`–`f1f1269` + Sprint 105 M1–M4 & closure `4b698db`–`76f44ef`)
 
 ---

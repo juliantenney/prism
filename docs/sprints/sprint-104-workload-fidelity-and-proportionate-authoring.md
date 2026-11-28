@@ -1,6 +1,6 @@
 # Sprint 104 — Workload Fidelity and Proportionate Authoring
 
-**Status:** **OPEN — RESUMED AT LIVE ACCEPTANCE (`S104-D05`)** — Milestones 1–5 committed (`c461770` → `f1f1269`); [Sprint 105 CLOSED — COMPLETE](sprint-105-learning-journey-progressive-capture-and-assembly.md) (`4b698db`–`a7ad249`)  
+**Status:** **CLOSED — COMPLETE WITH QUALIFICATIONS** (`S104-D09`, 2026-11-27) — see [S104-D09](../development/sprints/2026-11-24-sprint-104-workload-fidelity-and-proportionate-authoring/decisions.md#s104-d09--sprint-104-closure-with-qualifications). Workload estimation disabled (S104-D08), **not calibrated or validated**; estimator development deferred. [Sprint 105 CLOSED — COMPLETE](sprint-105-learning-journey-progressive-capture-and-assembly.md)  
 **Opened:** 2026-11-24 · **Suspended:** 2026-11-25 (`S104-D04`) · **Resumed:** 2026-11-25 ([S104-D05](../development/sprints/2026-11-24-sprint-104-workload-fidelity-and-proportionate-authoring/decisions.md#s104-d05--resume-sprint-104-at-live-acceptance-after-sprint-105-closure))  
 **Resumption baseline:** `a7ad249` (Sprint 104 M1–M5 `c461770`–`f1f1269` + Sprint 105 M1–M4 `4b698db`–`a7ad249`)  
 **Primary backlog item:** [PB-FA-025](../backlog/PRODUCT-BACKLOG.md#pb-fa-025--duration-fidelity-learner-workload-budgeting)  

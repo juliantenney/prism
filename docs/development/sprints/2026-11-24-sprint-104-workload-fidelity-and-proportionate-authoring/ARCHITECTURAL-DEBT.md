@@ -27,3 +27,7 @@
 - **PB-S-008** (86 pre-existing full-suite test failures recorded in [PB-S-008-full-suite-failure-baseline-2026-11-24.md](../../../development/governance/PB-S-008-full-suite-failure-baseline-2026-11-24.md)) — explicitly **out of scope**.
 - **PB-FA-018** (shared statistical visualisation architecture), **new interaction types**, **snapshot persistence**, **general renderer refactoring**, **new pedagogical capabilities**, and **automatic changes to authoritative durations** — explicitly **excluded non-goals**.
 - **Pre-intervention Economics baseline** — retain existing journey and captures untouched.
+
+## Sprint 104 closure note (2026-11-27)
+
+Deterministic workload estimation remains disabled (`S104-D08`) and is not calibrated or validated; the dormant estimator on `master` is unchanged and experimental development is preserved only on `recovery/s104-m6-workload-estimator`. Estimator development is deferred pending a new architectural decision. Outstanding items from closure are recorded as PB-FA-038 to PB-FA-042 and PB-S-008 in the product backlog (`S104-D09`).

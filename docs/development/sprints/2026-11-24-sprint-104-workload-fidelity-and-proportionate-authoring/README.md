@@ -1,7 +1,7 @@
 # Sprint 104 — Index
 
 **Sprint:** 104 — Workload Fidelity and Proportionate Authoring  
-**Status:** **OPEN — RESUMED AT LIVE ACCEPTANCE (`S104-D05`)** — M1–M5 committed (`c461770` → `f1f1269`); [Sprint 105 CLOSED — COMPLETE](../2026-11-25-sprint-105-learning-journey-progressive-capture-and-assembly/SPRINT-105-CLOSURE.md) (`a7ad249`)  
+**Status:** **CLOSED — COMPLETE WITH QUALIFICATIONS** (`S104-D09`, 2026-11-27) — see [S104-D09](decisions.md#s104-d09--sprint-104-closure-with-qualifications). Workload estimation disabled (S104-D08) and **not calibrated or validated**; estimator development deferred. Prior status text superseded.  
 **Resumption baseline:** `a7ad249`  
 **Primary backlog item:** [PB-FA-025](../../../backlog/PRODUCT-BACKLOG.md#pb-fa-025--duration-fidelity-learner-workload-budgeting)  
 **Decisions:** [S104-D01](decisions.md#s104-d01--open-sprint-104--workload-fidelity-and-proportionate-authoring) · [S104-D02](decisions.md#s104-d02--architectural-agreement-principles-a-e-and-separately-gated-milestones) · [S104-D03](decisions.md#s104-d03--milestone-2-multi-lo-compatibility-and-milestone-3-contract-reconciliation) · [S104-D04](decisions.md#s104-d04--suspend-sprint-104-at-live-acceptance-pending-sprint-105) · [S104-D05](decisions.md#s104-d05--resume-sprint-104-at-live-acceptance-after-sprint-105-closure)  

@@ -2,9 +2,9 @@
 
 **Canonical location:** `docs/backlog/PRODUCT-BACKLOG.md`  
 **Status:** Active — **alpha-use period** (Alpha development complete, 2026-09-02)  
-**Last updated:** 2026-11-26 (PB-FA-027 refined; PB-FA-036 and PB-FA-037 recorded; **Sprint 105 — Learning Journey Progressive Capture and Assembly CLOSED — COMPLETE** [`4b698db`–`a7ad249`, `S105-D04`]; **Sprint 104 — Workload Fidelity and Proportionate Authoring** formally resumed at live acceptance per `S104-D05`: M1 integrated acceptance, M6 Practice probes, M7 Economics completion/QA/runtime)  
-**Open sprint:** [Sprint 104 — Workload Fidelity and Proportionate Authoring](../development/sprints/2026-11-24-sprint-104-workload-fidelity-and-proportionate-authoring/SPRINT-104-START-HERE.md) — **OPEN — RESUMED AT LIVE ACCEPTANCE (`S104-D05`)** (M1–M5 committed `f1f1269`; M1/M6/M7 live acceptance active ahead of Connect More; `PB-FA-025`).  
-**Last closed sprint:** [Sprint 105 — Learning Journey Progressive Capture and Assembly](../development/sprints/2026-11-25-sprint-105-learning-journey-progressive-capture-and-assembly/SPRINT-105-CLOSURE.md) — **CLOSED — COMPLETE**. Prior: [Sprint 103](../development/sprints/2026-11-23-sprint-103-learning-journey-runtime-continuity-and-commissioning-fidelity/SPRINT-103-CLOSURE.md) · [Sprint 102](../development/sprints/2026-11-20-sprint-102-learning-journey-owned-outcomes/SPRINT-102-CLOSURE.md) · [Sprint 101](../development/sprints/2026-11-19-sprint-101-practice-as-a-learning-journey-component/SPRINT-101-CLOSURE.md) · [Sprint 97](../development/sprints/2026-11-12-sprint-97-learning-journal-and-design-pattern-foundations/SPRINT-97-CLOSURE.md) (PB-FA-028 delivered).  
+**Last updated:** 2026-11-27 (**Sprint 104 — Workload Fidelity and Proportionate Authoring CLOSED — COMPLETE WITH QUALIFICATIONS**, `S104-D09`; PB-FA-025 updated; PB-FA-038 to PB-FA-042 recorded; PB-S-008 updated). Earlier 2026-11-26: PB-FA-027 refined; PB-FA-036 and PB-FA-037 recorded; Sprint 105 CLOSED — COMPLETE [`4b698db`–`a7ad249`, `S105-D04`].  
+**Open sprint:** none. **Most recently closed:** [Sprint 104 — Workload Fidelity and Proportionate Authoring](../development/sprints/2026-11-24-sprint-104-workload-fidelity-and-proportionate-authoring/SPRINT-104-START-HERE.md) — **CLOSED — COMPLETE WITH QUALIFICATIONS** ([S104-D09](../development/sprints/2026-11-24-sprint-104-workload-fidelity-and-proportionate-authoring/decisions.md#s104-d09--sprint-104-closure-with-qualifications)); workload estimation disabled and not calibrated or validated; `PB-FA-025` remains open.  
+**Prior closed sprint:** [Sprint 105 — Learning Journey Progressive Capture and Assembly](../development/sprints/2026-11-25-sprint-105-learning-journey-progressive-capture-and-assembly/SPRINT-105-CLOSURE.md) — **CLOSED — COMPLETE**. Prior: [Sprint 103](../development/sprints/2026-11-23-sprint-103-learning-journey-runtime-continuity-and-commissioning-fidelity/SPRINT-103-CLOSURE.md) · [Sprint 102](../development/sprints/2026-11-20-sprint-102-learning-journey-owned-outcomes/SPRINT-102-CLOSURE.md) · [Sprint 101](../development/sprints/2026-11-19-sprint-101-practice-as-a-learning-journey-component/SPRINT-101-CLOSURE.md) · [Sprint 97](../development/sprints/2026-11-12-sprint-97-learning-journal-and-design-pattern-foundations/SPRINT-97-CLOSURE.md) (PB-FA-028 delivered).  
 **Architectural policy:** [S103-D01 — Learning Journey-first architecture](../development/sprints/2026-11-20-sprint-102-learning-journey-owned-outcomes/decisions.md#s103-d01--learning-journey-first-architecture) — **Accepted**; commissioning alignment verified in Sprint 103.
 
 This file answers: **what might we actually choose to work on next?**
@@ -321,7 +321,7 @@ Author and publish Expository resources with a coherent editorial hierarchy, so 
 
 ### PB-FA-025 — Duration fidelity: learner workload budgeting
 
-**Status:** **Retain — open.** Partially advanced in Sprint 103 (guidance refinement only). **Not formally closed.**  
+**Status:** **Retain — open.** Partially advanced in Sprint 103 (guidance refinement) and Sprint 104 (**closed with qualifications**, `S104-D09`). **Not formally closed. Workload estimation is not calibrated or validated.**  
 **Priority:** Medium–high (recurring, systemic instructional-design issue).
 
 **Problem:** PRISM frequently generates resources whose actual learner workload substantially exceeds the duration specified during commissioning. The issue is insufficient control of cumulative learner workload, not poor activity quality.
@@ -329,6 +329,8 @@ Author and publish Expository resources with a coherent editorial hierarchy, so 
 **Reconciliation (2026-11-23):** Learning Journey commissioning has demonstrated coherent **planned** duration allocation across components, but **actual learner workload fidelity remains unverified**. Distinguish **planned duration** from **observed learner workload**. Do **not** mark this item complete based solely on component durations summing to the requested journey length.
 
 **Sprint 103 progress (not completion):** The Sprint 100 advisory workload stack already covered most indicative planning behaviour. Sprint 103 made the smallest coherent refinement: a **familiar/revisit** reading band (distinct from first-pass evidence engagement), adapter inference for bring-forward / earlier-work language, commissioning-prompt duration-fidelity guidance, and advisory wording that prefers workload/staging/feedback adjustments over rewriting authoritative allocations. Focused automated tests pass. This does **not** validate measured learner completion times and does **not** alter the clinical journey’s authoritative 180-minute total or 40-minute final assessment allocation.
+
+**Sprint 104 outcome (2026-11-27, closed with qualifications — not completion):** Achieved: exact internal duration contracts (allocation transport, locking, arithmetic reconciliation), indicative learner timings, and shared authoring proportionality principles, with pedagogical proportionality live-accepted in the 5-/15-/30-minute Practice probes and in the Economics Learning Journey (accepted as an end-to-end exemplar). **Not achieved:** deterministic workload *estimation* was not accepted; it is disabled behind an internal default-off switch (`S104-D08`), has **not been calibrated or validated**, and measured learner workload remains unverified. Experimental estimator work is preserved only on `recovery/s104-m6-workload-estimator`; **estimator development is deferred** and would need a new architectural decision.
 
 **Evidence:** *The Impossible Alibi: The Blackthorn Notebook Mystery* was commissioned as a 25-minute standalone Interactive resource, but review of the complete experience suggests approximately 60–85 minutes of learner activity (QA benchmark 88/100). The same overshoot pattern has been observed repeatedly across PRISM resources. Sprint 103 clinical Assessment Pack authoring and Learning Journey QA both flagged a commissioned 40-minute independent judgement as potentially tight for a 500–700-word argument — **indicative workload judgements**, not timed learner runs.
 
@@ -346,7 +348,7 @@ Author and publish Expository resources with a coherent editorial hierarchy, so 
 
 **Boundaries:** Backlog investigation / eventual contract and QA improvements. Do not absorb into the retired Interactive V2 programme ([PB-FA-019](#pb-fa-019--interactive-v2-educational-solution-design-and-interaction-surfaces)) as a substitute for this cross-resource concern.
 
-**Readiness:** Proposed 2026-11-09; open after LJ duration-allocation observation 2026-11-23; Sprint 103 guidance refinement recorded — **measured validation and remaining fidelity work still open**.
+**Readiness:** Proposed 2026-11-09; open after LJ duration-allocation observation 2026-11-23; Sprint 103 guidance refinement recorded — **measured validation and remaining fidelity work still open**. Sprint 104 closed 2026-11-27 with estimation deferred (see above).
 
 ### PB-FA-026 — Assisted brief development: from teaching intention to learning experience
 
@@ -698,6 +700,38 @@ Running `node --test --test-concurrency=4 tests/*.test.js` at committed HEAD (`2
 **Not yet classified.** Each failure needs triage as stale assertion, environment/harness (IndexedDB, file-picker and browser E2E), or genuine defect, using the PB-S-007 method. Do not weaken tests to pass; escalate any genuine defect separately.
 
 **Operational note:** several `s96` browser tests regenerate Sprint 96 evidence PNGs as a side effect of running; revert them unless a refresh is intended.
+
+**Sprint 104 closure note (2026-11-27):** this is the **pre-beta consolidation of the automated regression baseline**. Sprint 104 added focused, passing tests but deliberately did not repair unrelated failures; the full suite still carries pre-existing failures (97 of 5168 at the 2026-11-27 run, including A5 compose, S75 layout/selection, T-042, and the M1/M2/M3/M5.3/S95 browser tests, with Playwright suites failing on an unmodified tree in the development environment). Classify and consolidate before beta; do not weaken tests to pass. Not sprint-allocated.
+
+### PB-FA-038 — Mandatory selection declaration enforcement for newly authored captures
+
+**Status:** **Open — recorded 2026-11-27 (S104-D09), not sprint-allocated.**
+
+The Sprint 104 selection cluster model (contract v2) validates the DLA `response_fulfilment` declaration (`contract_version: 2`, `response_items[{item_id, form}]`) **only when present**, so legacy captures remain valid. Make the declaration **mandatory for newly authored captures** once newly authored captures can be distinguished from stored ones, because DLA validators also re-run on stored captures. **Boundary:** no change to legacy-capture compatibility; no regeneration of accepted components.
+
+### PB-FA-039 — Shared Markdown display-math edge case
+
+**Status:** **Open — recorded 2026-11-27 (S104-D09), not sprint-allocated.**
+
+The shared Markdown renderer (`renderMarkdownBlock`) mishandles a `$$…$$` display-math span inside a paragraph that also contains other math. Pre-existing and shared across surfaces; surfaced while implementing the Assessment Pack F01 correction (`dd8dd86`) and deliberately left unchanged. Scope: shared Markdown/math handling only, with regression tests that preserve existing math protection.
+
+### PB-FA-040 — Minor premature review instructions
+
+**Status:** **Open — recorded 2026-11-27 (S104-D09), minor, not sprint-allocated.**
+
+Some Practice and Assessment components carry review or self-check instructions earlier than the learner can act on them. Low severity; no accepted component is blocked. Address through authoring guidance or a narrow contract adjustment when next touched.
+
+### PB-FA-041 — QA reconciliation of declared, authored and realised learner responses
+
+**Status:** **Open — recorded 2026-11-27 (S104-D09), not sprint-allocated.**
+
+Educational QA should reconcile the responses a component **declares**, the responses its material **authors**, and the responses the learner runtime actually **realises**, so mismatches (as in the C2/C6 selection defect) surface before publication rather than at live acceptance. Related: [PB-FA-038](#pb-fa-038--mandatory-selection-declaration-enforcement-for-newly-authored-captures).
+
+### PB-FA-042 — Learning Journey commissioning granularity and proportionate component consolidation
+
+**Status:** **Open — recorded 2026-11-27 (S104-D09), not sprint-allocated.**
+
+Review how finely a Learning Journey is divided into components at commissioning, and whether short or closely related components should be consolidated proportionately to the commissioned duration. Relates to the shared proportionality principles retained by Sprint 104 and to [PB-FA-025](#pb-fa-025--duration-fidelity-learner-workload-budgeting); no estimator work is implied.
 ---
 
 ## 3. Lightweight future product ideas
